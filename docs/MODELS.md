@@ -1,4 +1,4 @@
-# JPER: Data Model design specifications
+# JPER: Data Models
 
 This document defines the core system models that will be used to represent the notifications as they 
 arrive and are analysed and then delivered to repositories.
@@ -24,7 +24,7 @@ It also documents other key system entities such as the user account models.
     "id" : "<opaque identifier for this notification>",
     "created_date" : "<date this notification was received>",
     
-    "event" : "<keyword for the kind of notification: acceptance, publication, etc.>"
+    "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
     
     "provider" : {
         "id" : "<user account id of the provider>",
@@ -49,8 +49,9 @@ It also documents other key system entities such as the user account models.
         {
             "type" : "<link type: splash|fulltext>",
             "format" : "<html|pdf|xml>",
-            "access" : "<some kind of actionable information on access: router-only, public, ip-restricted, auth, etc>"
+            "access" : "<some kind of actionable information on access: router-only, public, ip-restricted, auth, etc>",
             "url" : "<provider's splash, fulltext or machine readable page>"
+        }
     ],
     
     "embargo" : {
@@ -61,7 +62,7 @@ It also documents other key system entities such as the user account models.
     
     "metadata" : {
         "title" : "<publication title>",
-        "version" : "<version of the record, e.g. AAM>"
+        "version" : "<version of the record, e.g. AAM>",
         "publisher" : "<publisher of the content>",
         "source" : {
             "name" : "<name of the journal or other source (e.g. book)>",
@@ -82,7 +83,7 @@ It also documents other key system entities such as the user account models.
                 "identifier" : [
                     {"type" : "orcid", "id" : "<author's orcid>"},
                     {"type" : "email", "id" : "<author's email address>"},
-                ]
+                ],
                 "affiliation" : "<author affiliation>"
             }
         ],
@@ -101,7 +102,7 @@ It also documents other key system entities such as the user account models.
                 "name" : "<name of funder>", 
                 "identifier" : [
                     {"type" : "<identifier type>", "id" : "<funder identifier>"}
-                ]
+                ],
                 "grant_number" : "<funder's grant number>"
             }
         ],
@@ -166,7 +167,7 @@ This defines the data that repositories will need to provide for matches against
             "type" : "<author id type (e.g. orcid, or name)>"
         }
     ],
-    "postcodes" : ["<list of postcodes that appear in the repository's institution's addresses>"]
+    "postcodes" : ["<list of postcodes that appear in the repository's institution's addresses>"],
     "addresses" : ["<full organisation addresses>"],
     "keywords" : ["<keywords and subject classifications>"],
     "grants" : ["<grant names or numbers>"],
