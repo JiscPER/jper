@@ -111,6 +111,8 @@ It also documents other key system entities such as the user account models.
 }
 ```
 
+Note that *target* will not be implemnented in the first version of this system
+
 ## Routed Notification
 
 A **Routed Notification** is almost the same as an **Unrouted Notification**, with the following data structure added to it.
@@ -152,6 +154,8 @@ it for testing purposes.
 }
 ```
 
+Note that *content_types* will not be implemented in this version of the system
+
 ## Repository Configuration
 
 This defines the data that repositories will need to provide for matches against the **Routing Metadata** to happen
@@ -174,6 +178,8 @@ This defines the data that repositories will need to provide for matches against
     "content_types" : ["<list of content types the repository is interested in>"]
 }
 ```
+
+Note that *content_types* will not be implemented in this version of the system
 
 ## Repository Match Provenance
 
