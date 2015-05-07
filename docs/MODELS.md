@@ -49,7 +49,7 @@ It also documents other key system entities such as the user account models.
         {
             "type" : "<link type: splash|fulltext>",
             "format" : "<html|pdf|xml>",
-            "access" : "<some kind of actionable information on access: router-only, public, ip-restricted, auth, etc>",
+            "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
             "url" : "<provider's splash, fulltext or machine readable page>"
         }
     ],

@@ -42,7 +42,7 @@ Any notifications coming from the provider should meet the following specificati
         {
             "type" : "<link type: splash|fulltext>",
             "format" : "<html|pdf|xml>",
-            "access" : "<some kind of actionable information on access: router-only, public, ip-restricted, auth, etc>",
+            "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
             "url" : "<provider's splash, fulltext or machine readable page>"
         }
     ],
@@ -104,13 +104,17 @@ Any notifications coming from the provider should meet the following specificati
 }
 ```
 
+Note that in this version of the system the "targets" field will not be implemented.
 
 ### Outgoing Data Model
+
+Any request for a routed notification (except from the provider who created it) will meet the following specification:
 
 ```json
 {
     "id" : "<opaque identifier for this notification>",
     "created_date" : "<date this notification was received>",
+    "analysis_date" : "<date the routing analysis was carried out>",
     
     "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
     
@@ -122,7 +126,7 @@ Any notifications coming from the provider should meet the following specificati
         {
             "type" : "<link type: splash|fulltext>",
             "format" : "<html|pdf|xml>",
-            "access" : "<some kind of actionable information on access: router-only, public, ip-restricted, auth, etc>",
+            "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
             "url" : "<provider's splash, fulltext or machine readable page>"
         }
     ],
@@ -181,9 +185,6 @@ Any notifications coming from the provider should meet the following specificati
         ],
         "subject" : ["<subject keywords/classifications>"]
     }
-    
-    "analysis_date" : "<date the routing analysis was carried out>",
-    "repositories" : ["<ids of repository user accounts whcih match this notification>"]
 }
 ```
 
@@ -223,7 +224,7 @@ If you are sending only the JSON notification, the request must take the form:
     
     [Incoming Data Model JSON]
 
-On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Forbidden) and no response body.
+On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
 
 On validation failure the system will respond with the following
 
@@ -242,11 +243,11 @@ On validation success, the system will respond with 204 (No Content) and no resp
 
 The Notification API takes an identical request to the Validation API, so that providers can develop
 against the Validation API and then switch seamlessly over to live notifications.  The only difference will
-be in the response body
+be in the response body.
 
 You must have the user role "provider" to access this endpoint.
 
-NOTE: should we consider making the response to the Validation API the same as the Notification API too?
+**NOTE: should we consider making the response to the Validation API the same as the Notification API too?**
 
 If you are sending binary content, the request must take the form:
 
@@ -277,13 +278,13 @@ If you are sending only the JSON notification, the request must take the form:
     
     [Incoming Data Model JSON]
 
-On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Forbidden) and no response body.
+On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
 
 On completion of the request, the system will respond with 202 (Accepted) and the following response body
 
     HTTP 1.1  202 Accepted
     Content-Type: application/json
-    Location: <url for api endpoint for newly created notification>
+    Location: <url for api endpoint for accepted notification>
     
     {
         "status" : "accepted",
@@ -298,42 +299,39 @@ for routing - at this point it has only been accepted for processing, which will
 
 This endpoint will return to you the JSON record for the notifications.
 
-Anyone can access this endpoint, but authentication failure may result, depending on the current state of the notification
-in the routing process.
+Anyone can access this endpoint.
 
     GET /notification/<id>[?api_key=<api_key>]
 
-Authentication failure will result in a 401 (Forbidden), and no response body.  Authentication failure can happen for
-the following reasons:
+If the notification does not exist, you will receive a 404 (Not Found), and no response body.
 
-* no api_key has been provided, and the notification has not yet been routed
-* api_key is invalid
-* an api_key has been provided, your user role is not "publisher", and the notification has not yet been routed
+If the requester is not authenticated as the provider of the notification, and the notification has not yet been routed, 
+you will also receive a 404 (Not Found) and no response body.
 
-If the notification is not found, you will receive a 404 (Not Found) and no response body.
-
-If the notification is found and authentication succeeds you will receive a 200 (OK) and the following response:
+If the notification is found and has been routed, you will receive a 200 (OK) and the following response body:
 
     HTTP 1.1  200 OK
     Content-Type: application/json
     
     [Incoming/Outgoing Data Model JSON]
 
-If you are the provider of the notification, you will receive back the Incoming Data Model.
+If you are the provider of the notification, you will receive back the Incoming Data Model, augumented with any
+data from the Outgoing Data Model that is not already present (e.g. analysed_date).
 
 All other requesters will receive the Outgoing Data Model.
 
-QUESTION: is this not quite REST enough?  Perhaps separate endpoints for the provider and the repository for retrieval?
 
-### Retrieve content associated with notifications
+### Retrieve router-held content associated with notifications
 
-This endpoint will return to you the original deposit package containing the fulltext content for the notification.
+This endpoint will return to you the original deposit package from the provider containing the fulltext content for the notification (if available)
+
+This URL will appear in the notification JSON "link" field if it is available to use.
 
 You need to have the user role "provider" or "repository" to access this endpoint.
 
     GET /notification/<id>/content?api_key=<api_key>
     
-Authentication failure will result in a 401 (Forbidden), and no response body.  Authentication failure can happen for
+Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
 the following reasons:
 
 * api_key is invalid
@@ -352,11 +350,11 @@ If the notification content is found and authentication succeeds you will receiv
     
     [Binary Content]
 
-If you are the provider of the notification, you will receive back the Incoming Data Model.
+Note that a successful access by a user with the role "repository" will log a successful delivery of content notification
+into the router (used for reporting on the router's ability to support REF compliance).
 
-If you are a repository, you will receive the Outgoing Data Model.
-
-Q: is this not quite REST enough?  Perhaps separate endpoints for the provider and the repository for retrieval?
+If you are retrieving content from a public link directly from the publisher's site, you should consider sending an
+event to the Receipt API.
 
 ## Routing API
 
@@ -395,7 +393,9 @@ Note that the "total" may increase between requests, as new notifications are ad
 
 ### All routed notifications
 
-The endpoint lists all routed notifications
+The endpoint lists all routed notifications, without restricting them to the repositories they have been routed to.
+
+You will not be able to tell from this endpoint which repositories have been identified for this notification.
 
     GET /routed[?<params>]
 
@@ -405,6 +405,26 @@ params and response are as specified above.
 
 The endpoint lists all routed notifications for a given repository.
 
+You will not be able to tell from this endpoint which other repositories have been identified for this notification.
+
     GET /routed/<repo_id>[?<params>]
 
 params and response are as specified above.
+
+## Receipt API
+
+In order to support reporting around router's support for REF compliance, it is important for the router to record when content has been
+successfully delivered to a repository.
+
+When a repository retrieves content from the "/notification/[id]/content" endpoint a log of the retrieval will
+automatically be created.
+
+In other cases - such as when the repository retrieves the content directly from a publicly accessible publisher link - this
+event cannot be recorded, so this API call should be used to record that retrieval.
+
+    POST /notification/<notification id>/<repository id>?api_key=<api_key>
+
+If authentication fails you will receive a 401 (Unauthorised) and no response body
+
+If successful you will receive a 204 (No Content) and no response body
+
