@@ -1,6 +1,7 @@
 from octopus.lib import dataobj
+from service import dao
 
-class UnroutedNotification(dataobj.DataObj):
+class BaseNotification(dataobj.DataObj):
     """
     {
         "id" : "<opaque identifier for this notification>",
@@ -14,13 +15,6 @@ class UnroutedNotification(dataobj.DataObj):
             "ref" : "<provider's globally unique reference for this research object>",
             "route" : "<method by which notification was received: native api, sword, ftp>"
         },
-
-        "targets" : [
-            {
-                "repository" : "<identifying string for repository - base URL, user account>",
-                "requirement" : "<must|should>"
-            }
-        ],
 
         "content" : {
             "packaging_format" : "<identifier for packaging format used>",
@@ -93,145 +87,185 @@ class UnroutedNotification(dataobj.DataObj):
     }
     """
 
-    STRUCT = {
-        "fields" : {
-            "id" : {"coerce" :"unicode"},
-            "created_date" : {"coerce" : "utcdatetime"},
-            "event" : {"coerce" : "unicode"},
+    def __init__(self, raw):
+        struct = {
+            "fields" : {
+                "id" : {"coerce" :"unicode"},
+                "created_date" : {"coerce" : "utcdatetime"},
+                "event" : {"coerce" : "unicode"},
 
-        },
-        "objects" : [
-            "provider", "content", "embargo", "metadata"
-        ],
-        "lists" : {
-            "targets" : {"contains" : "object"},
-            "links" : {"contains" : "object"}
-        },
-        "reqired" : [],
+            },
+            "objects" : [
+                "provider", "content", "embargo", "metadata"
+            ],
+            "lists" : {
+                "targets" : {"contains" : "object"},
+                "links" : {"contains" : "object"}
+            },
+            "reqired" : [],
 
-        "structs" : {
-            "provider" : {
-                "fields" : {
-                    "id" : {"coerce" :"unicode"},
-                    "agent" : {"coerce" :"unicode"},
-                    "ref" : {"coerce" :"unicode"},
-                    "route" : {"coerce" :"unicode"}
+            "structs" : {
+                "provider" : {
+                    "fields" : {
+                        "id" : {"coerce" :"unicode"},
+                        "agent" : {"coerce" :"unicode"},
+                        "ref" : {"coerce" :"unicode"},
+                        "route" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
                 },
-                "required" : []
-            },
-            "content" : {
-                "fields" : {
-                    "packaging_format" : {"coerce" :"unicode"},
-                    "store_id" : {"coerce" :"unicode"}
+                "content" : {
+                    "fields" : {
+                        "packaging_format" : {"coerce" :"unicode"},
+                        "store_id" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
                 },
-                "required" : []
-            },
-            "embargo" : {
-                "end" : {"coerce" : "utcdatetime"},
-                "start" : {"coerce" : "utcdatetime"},
-                "duration" : {"coerce" : "integer"}
-            },
-            "metadata" : {
-                "fields" : {
-                    "title" : {"coerce" :"unicode"},
-                    "version" : {"coerce" :"unicode"},
-                    "publisher" : {"coerce" :"unicode"},
-                    "type" : {"coerce" :"unicode"},
-                    "language" : {"coerce" :"isolang"},
-                    "publication_date" : {"coerce" :"utcdatetime"},
-                    "date_accepted" : {"coerce" :"utcdatetime"},
-                    "date_submitted" : {"coerce" :"utcdatetime"}
+                "embargo" : {
+                    "end" : {"coerce" : "utcdatetime"},
+                    "start" : {"coerce" : "utcdatetime"},
+                    "duration" : {"coerce" : "integer"}
                 },
-                "objects" : [
-                    "source", "license_ref"
-                ],
-                "lists" : {
-                    "identifier" : {"contains" : "object"},
-                    "author" : {"contains" : "object"},
-                    "project" : {"contains" : "object"},
-                    "subject" : {"coerce" : "unicode"}
-                },
-                "required" : [],
-                "structs" : {
-                    "source" : {
-                        "fields" : {
-                            "name" : {"coerce" : "unicode"},
-                        },
-                        "lists" : {
-                            "identifier" : {"contains" : "object"}
-                        },
-                        "structs" : {
-                            "identifier" : {
-                                "fields" : {
-                                    "type" : {"coerce" : "unicode"},
-                                    "id" : {"coerce" : "unicode"}
+                "metadata" : {
+                    "fields" : {
+                        "title" : {"coerce" :"unicode"},
+                        "version" : {"coerce" :"unicode"},
+                        "publisher" : {"coerce" :"unicode"},
+                        "type" : {"coerce" :"unicode"},
+                        "language" : {"coerce" :"isolang"},
+                        "publication_date" : {"coerce" :"utcdatetime"},
+                        "date_accepted" : {"coerce" :"utcdatetime"},
+                        "date_submitted" : {"coerce" :"utcdatetime"}
+                    },
+                    "objects" : [
+                        "source", "license_ref"
+                    ],
+                    "lists" : {
+                        "identifier" : {"contains" : "object"},
+                        "author" : {"contains" : "object"},
+                        "project" : {"contains" : "object"},
+                        "subject" : {"coerce" : "unicode"}
+                    },
+                    "required" : [],
+                    "structs" : {
+                        "source" : {
+                            "fields" : {
+                                "name" : {"coerce" : "unicode"},
+                            },
+                            "lists" : {
+                                "identifier" : {"contains" : "object"}
+                            },
+                            "structs" : {
+                                "identifier" : {
+                                    "fields" : {
+                                        "type" : {"coerce" : "unicode"},
+                                        "id" : {"coerce" : "unicode"}
+                                    }
                                 }
                             }
-                        }
-                    },
-                    "license_ref" : {
-                        "fields" : {
-                            "title" : {"coerce" : "unicode"},
-                            "type" : {"coerce" : "unicode"},
-                            "url" : {"coerce" : "url"},
-                            "version" : {"coerce" : "unicode"}
-                        }
-                    },
-                    "identifier" : {
-                        "fields" : {
-                            "type" : {"coerce" : "unicode"},
-                            "id" : {"coerce" : "unicode"}
-                        }
-                    },
-                    "author" : {
-                        "fields" : {
-                            "name" : {"coerce" : "unicode"},
-                            "affiliation" : {"coerce" : "unicode"},
                         },
-                        "lists" : {
-                            "identifier" : {"contains" : "object"}
+                        "license_ref" : {
+                            "fields" : {
+                                "title" : {"coerce" : "unicode"},
+                                "type" : {"coerce" : "unicode"},
+                                "url" : {"coerce" : "url"},
+                                "version" : {"coerce" : "unicode"}
+                            }
                         },
-                        "structs" : {
-                            "identifier" : {
-                                "fields" : {
-                                    "type" : {"coerce" : "unicode"},
-                                    "id" : {"coerce" : "unicode"}
+                        "identifier" : {
+                            "fields" : {
+                                "type" : {"coerce" : "unicode"},
+                                "id" : {"coerce" : "unicode"}
+                            }
+                        },
+                        "author" : {
+                            "fields" : {
+                                "name" : {"coerce" : "unicode"},
+                                "affiliation" : {"coerce" : "unicode"},
+                            },
+                            "lists" : {
+                                "identifier" : {"contains" : "object"}
+                            },
+                            "structs" : {
+                                "identifier" : {
+                                    "fields" : {
+                                        "type" : {"coerce" : "unicode"},
+                                        "id" : {"coerce" : "unicode"}
+                                    }
                                 }
                             }
-                        }
-                    },
-                    "project" : {
-                        "fields" : {
-                            "name" : {"coerce" : "unicode"},
-                            "grant_number" : {"coerce" : "unicode"},
                         },
-                        "lists" : {
-                            "identifier" : {"contains" : "object"}
-                        },
-                        "structs" : {
-                            "identifier" : {
-                                "fields" : {
-                                    "type" : {"coerce" : "unicode"},
-                                    "id" : {"coerce" : "unicode"}
+                        "project" : {
+                            "fields" : {
+                                "name" : {"coerce" : "unicode"},
+                                "grant_number" : {"coerce" : "unicode"},
+                            },
+                            "lists" : {
+                                "identifier" : {"contains" : "object"}
+                            },
+                            "structs" : {
+                                "identifier" : {
+                                    "fields" : {
+                                        "type" : {"coerce" : "unicode"},
+                                        "id" : {"coerce" : "unicode"}
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            },
-            "targets" : {
-                "fields" : {
-                    "repository" : {"coerce" :"unicode"},
-                    "requirement" : {"coerce" :"unicode"}
-                }
-            },
-            "links" : {
-                "fields" : {
-                    "type" : {"coerce" :"unicode"},
-                    "format" : {"coerce" :"unicode"},
-                    "access" : {"coerce" :"unicode", "allowed" : ["router", "public"]},
-                    "url" : {"coerce" :"url"}
+                },
+                "targets" : {
+                    "fields" : {
+                        "repository" : {"coerce" :"unicode"},
+                        "requirement" : {"coerce" :"unicode"}
+                    }
+                },
+                "links" : {
+                    "fields" : {
+                        "type" : {"coerce" :"unicode"},
+                        "format" : {"coerce" :"unicode"},
+                        "access" : {"coerce" :"unicode", "allowed" : ["router", "public"]},
+                        "url" : {"coerce" :"url"}
+                    }
                 }
             }
         }
+
+        if hasattr(self, "struct"):
+            self.struct = dataobj.construct_merge(self.struct, struct)
+        else:
+            self.struct = struct
+        super(BaseNotification, self).__init__(raw)
+
+class RoutingInformation(dataobj.DataObj):
+    """
+    {
+        "analysis_date" : "<date the routing analysis was carried out>",
+        "repositories" : ["<ids of repository user accounts whcih match this notification>"]
     }
+    """
+
+    def __init__(self, raw):
+        struct = {
+            "fields" : {
+                "analysis_date" : {"coerce" : "utcdatetime"}
+            },
+            "lists" : {
+                "repositories" : {"contains" : "field", "coerce" : "unicode"}
+            }
+        }
+
+        if hasattr(self, "struct"):
+            self.struct = dataobj.construct_merge(self.struct, struct)
+        else:
+            self.struct = struct
+        super(RoutingInformation, self).__init__(raw)
+
+
+class UnroutedNotification(BaseNotification, dao.UnroutedNotification):
+    def __init__(self, raw=None):
+        super(UnroutedNotification, self).__init__(raw=raw)
+
+class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotification):
+    def __init__(self, raw=None):
+        super(RoutedNotification, self).__init__(raw=raw)
