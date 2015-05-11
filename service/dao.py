@@ -1,8 +1,16 @@
 from octopus.modules.es import dao
-from octopus.core import app
 
-class UnroutedNotification(dao.ESDAO):
+class UnroutedNotificationDAO(dao.ESDAO):
     __type__ = 'unrouted'
 
-class RoutedNotification(dao.ESDAO):
+class RoutedNotificationDAO(dao.ESDAO):
     __type__ = 'routed'
+
+class RepositoryConfigDAO(dao.ESDAO):
+    __type__ = 'repo_config'
+
+class MatchProvenanceDAO(dao.ESDAO):
+    __type__ = "match_prov"
+
+class RetrievalRecordDAO(dao.ESDAO):
+    __type__ = "retrieval"

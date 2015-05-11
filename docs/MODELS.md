@@ -192,9 +192,10 @@ in order to refine their configuration.  This object records the match taking pl
     "notification" : "<id of the notification to which the match pertains>",
     "provenance" : [
         {
+            "source_field" : "<field from the configuration that matched>",
             "term" : "<term from the configuration that matched>",
-            "field" : "<field from the configuration that matched>",
-            "source" : "<text from the notification routing metadata that matched>",
+            "notification_field" : "<field from the notification that matched>"
+            "matched" : "<text from the notification routing metadata that matched>",
             "explanation" : "<any additional explanatory text to go with this match (e.g. description of levenstein criteria)>"
         }
     ]

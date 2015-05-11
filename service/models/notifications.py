@@ -231,10 +231,7 @@ class BaseNotification(dataobj.DataObj):
             }
         }
 
-        if hasattr(self, "struct"):
-            self.struct = dataobj.construct_merge(self.struct, struct)
-        else:
-            self.struct = struct
+        self._add_struct(struct)
         super(BaseNotification, self).__init__(raw)
 
 class RoutingInformation(dataobj.DataObj):
@@ -255,17 +252,57 @@ class RoutingInformation(dataobj.DataObj):
             }
         }
 
-        if hasattr(self, "struct"):
-            self.struct = dataobj.construct_merge(self.struct, struct)
-        else:
-            self.struct = struct
+        self._add_struct(struct)
         super(RoutingInformation, self).__init__(raw)
 
 
-class UnroutedNotification(BaseNotification, dao.UnroutedNotification):
+class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
     def __init__(self, raw=None):
         super(UnroutedNotification, self).__init__(raw=raw)
 
-class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotification):
+class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotificationDAO):
     def __init__(self, raw=None):
         super(RoutedNotification, self).__init__(raw=raw)
+
+class RoutingMetadata(dataobj.DataObj):
+    """
+    {
+        "urls" : ["<list of affiliation urls found in the data>"],
+        "emails" : ["<list of contact emails found in the data>"],
+        "affiliations" : ["<names of organisations found in the data>"],
+        "author_ids" : [
+            {
+                "id" : "<author id string>",
+                "type" : "<author id type (e.g. orcid, or name)>"
+            }
+        ],
+        "addresses" : ["<organisation addresses found in the data>"],
+        "keywords" : ["<keywords and subject classifications found in the data>"],
+        "grants" : ["<grant names or numbers found in the data>"],
+        "content_types" : ["<list of content types of the object (probably just one)>"]
+    }
+    """
+    def __init__(self, raw=None):
+        struct = {
+            "lists" : {
+                "urls" : {"contains" : "field", "coerce" : "unicode"},
+                "emails" : {"contains" : "field", "coerce" : "unicode"},
+                "affiliations" : {"contains" : "field", "coerce" : "unicode"},
+                "author_ids" : {"contains" : "object"},
+                "addresses" : {"contains" : "field", "coerce" : "unicode"},
+                "keywords" : {"contains" : "field", "coerce" : "unicode"},
+                "grants" : {"contains" : "field", "coerce" : "unicode"},
+                "content_types" : {"contains" : "field", "coerce" : "unicode"}
+            },
+            "structs" : {
+                "author_ids" : {
+                    "fields" : {
+                        "id" : {"coerce" : "unicode"},
+                        "type" : {"coerce", "unicode"}
+                    }
+                }
+            }
+        }
+
+        self._add_struct(struct)
+        super(RoutingMetadata, self).__init__(raw=raw)

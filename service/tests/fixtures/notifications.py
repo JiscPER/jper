@@ -5,9 +5,58 @@ class NotificationFactory(object):
 
     @classmethod
     def unrouted_notification(cls):
-        return deepcopy(UNROUTED_NOTIFICATION)
+        return deepcopy(BASE_NOTIFICATION)
 
-UNROUTED_NOTIFICATION = {
+    @classmethod
+    def routed_notification(cls):
+        base = deepcopy(BASE_NOTIFICATION)
+        base["links"].append(deepcopy(ROUTED_LINK))
+        base.update(deepcopy(ROUTING_INFO))
+        return base
+
+    @classmethod
+    def routing_metadata(cls):
+        return deepcopy(ROUTING_METADATA)
+
+ROUTING_METADATA = {
+    "urls" : ["http://www.ed.ac.uk", "http://www.ucl.ac.uk"],
+    "emails" : ["richard@example.com", "mark@example.com", "someone@sms.ucl.ac.uk"],
+    "affiliations" : ["Cottage Labs", "Edinburgh Univerisity", "UCL"],
+    "author_ids" : [
+        {
+            "id" : "Richard Jones",
+            "type" : "name"
+        },
+        {
+            "id" : "Mark MacGillivray",
+            "type" : "name"
+        },
+        {
+            "id" : "aaaa-0000-1111-bbbb",
+            "type" : "orcid"
+        }
+    ],
+    "addresses" : ["Central London Campus", "George Sq"],
+    "keywords" : ["science", "technology", "arts", "medicine"],
+    "grants" : ["BB/34/juwef"],
+    "content_types" : ["article"]
+}
+
+ROUTED_LINK = {
+    "type" : "fulltext",
+    "format" : "application/zip",
+    "access" : "router",
+    "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content"
+}
+
+ROUTING_INFO = {
+    "analysis_date" : "2015-02-02T00:00:00Z",
+    "repositories" : [
+        "repo1", "repo2", "repo3"
+    ]
+}
+
+BASE_NOTIFICATION = {
     "id" : "1234567890",
     "created_date" : "2015-02-02T00:00:00Z",
 
@@ -37,12 +86,6 @@ UNROUTED_NOTIFICATION = {
             "format" : "application/pdf",
             "access" : "public",
             "url" : "http://example.com/article/1/pdf"
-        },
-        {
-            "type" : "fulltext",
-            "format" : "application/zip",
-            "access" : "router",
-            "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content"
         }
     ],
 
