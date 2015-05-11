@@ -48,7 +48,7 @@ It also documents other key system entities such as the user account models.
     "links" : [
         {
             "type" : "<link type: splash|fulltext>",
-            "format" : "<html|pdf|xml>",
+            "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
             "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
             "url" : "<provider's splash, fulltext or machine readable page>"
         }

@@ -1,0 +1,2 @@
+
+from service.tests.fixtures.notifications import NotificationFactory
