@@ -6,6 +6,7 @@ class BaseNotification(dataobj.DataObj):
     {
         "id" : "<opaque identifier for this notification>",
         "created_date" : "<date this notification was received>",
+        "last_updated" : "<last modification time - required by storage layer>",
 
         "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
 
@@ -92,6 +93,7 @@ class BaseNotification(dataobj.DataObj):
             "fields" : {
                 "id" : {"coerce" :"unicode"},
                 "created_date" : {"coerce" : "utcdatetime"},
+                "last_updated" : {"coerce" : "utcdatetime"},
                 "event" : {"coerce" : "unicode"},
 
             },

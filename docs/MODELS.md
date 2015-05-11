@@ -23,6 +23,7 @@ It also documents other key system entities such as the user account models.
 {
     "id" : "<opaque identifier for this notification>",
     "created_date" : "<date this notification was received>",
+    "last_updated" : "<last modification time - required by storage layer>",
     
     "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
     
@@ -162,6 +163,10 @@ This defines the data that repositories will need to provide for matches against
 
 ```json
 {
+    "id" : "<opaque id for repository config record>",
+    "created_date" : "<date the configuration was originally created>",
+    "last_updated" : "<last modification time - required by storage layer>",
+    
     "repository" : "<account id of repository that owns this configuration>",
     "domains" : ["<list of all domains that match this repository's institution>"],
     "name_variants" : ["<The names by which this repository's institution is known>"],
@@ -188,6 +193,10 @@ in order to refine their configuration.  This object records the match taking pl
 
 ```json
 {
+    "id" : "<opaque id for match provenance record>",
+    "created_date" : "<date the configuration was originally created>",
+    "last_updated" : "<last modification time - required by storage layer>",
+    
     "repository" : "<account id of repository to which the match pertains>",
     "notification" : "<id of the notification to which the match pertains>",
     "provenance" : [
@@ -211,6 +220,10 @@ simple index which notes the time of the access, and what was accessed.
 
 ```json
 {
+    "id" : "<opaque id for repository retrieval record>",
+    "created_date" : "<date the configuration was originally created>",
+    "last_updated" : "<last modification time - required by storage layer>",
+    
     "repository" : "<user id of repository doing the retrieval>",
     "notification" : "<id of the notification retrieved>",
     "retrieval_date" : "<date the repository retrieved the record>",

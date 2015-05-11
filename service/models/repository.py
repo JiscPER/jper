@@ -4,6 +4,10 @@ from service import dao
 class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     """
     {
+        "id" : "<opaque id for repository config record>",
+        "created_date" : "<date this notification was received>",
+        "last_updated" : "<last modification time - required by storage layer>",
+
         "repository" : "<account id of repository that owns this configuration>",
         "domains" : ["<list of all domains that match this repository's institution>"],
         "name_variants" : ["<The names by which this repository's institution is known>"],
@@ -24,6 +28,9 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def __init__(self, raw=None):
         struct = {
             "fields" : {
+                "id" : {"coerce" : "unicode"},
+                "created_date" : {"coerce" : "unicode"},
+                "last_updated" : {"coerce" : "unicode"},
                 "repository" : {"coerce" : "unicode"}
             },
             "lists" : {
@@ -51,6 +58,10 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
 class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
     """
     {
+        "id" : "<opaque id for repository config record>",
+        "created_date" : "<date this notification was received>",
+        "last_updated" : "<last modification time - required by storage layer>",
+
         "repository" : "<account id of repository to which the match pertains>",
         "notification" : "<id of the notification to which the match pertains>",
         "provenance" : [
@@ -68,6 +79,9 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
     def __init__(self, raw=None):
         struct = {
             "fields" : {
+                "id" : {"coerce" : "unicode"},
+                "created_date" : {"coerce" : "unicode"},
+                "last_updated" : {"coerce" : "unicode"},
                 "repository" : {"coerce" : "unicode"},
                 "notification" : {"coerce" : "unicode"}
             },
@@ -93,6 +107,10 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
 class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
     """
     {
+        "id" : "<opaque id for repository config record>",
+        "created_date" : "<date this notification was received>",
+        "last_updated" : "<last modification time - required by storage layer>",
+
         "repository" : "<user id of repository doing the retrieval>",
         "notification" : "<id of the notification retrieved>",
         "retrieval_date" : "<date the repository retrieved the record>",
@@ -102,6 +120,9 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
     def __init__(self, raw=None):
         struct = {
             "fields" : {
+                "id" : {"coerce" : "unicode"},
+                "created_date" : {"coerce" : "unicode"},
+                "last_updated" : {"coerce" : "unicode"},
                 "repository" : {"coerce" : "unicode"},
                 "notification" : {"coerce" : "unicode"},
                 "retrieval_date" : {"coerce" : "utcdatetime"},

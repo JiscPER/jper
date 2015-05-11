@@ -1,9 +1,8 @@
-# from octopus.modules.es.testindex import ESTestCase
-from unittest import TestCase
+from octopus.modules.es.testindex import ESTestCase
 from service import models
 from service.tests import fixtures
 
-class TestModels(TestCase):
+class TestModels(ESTestCase):
     def setUp(self):
         super(TestModels, self).setUp()
 
@@ -21,6 +20,12 @@ class TestModels(TestCase):
         # just check the properties are retrievable
         assert urn.id == "1234567890"
 
+        # check that we can write/read
+        urn.save(blocking=True)
+
+        urn2 = models.UnroutedNotification.pull("1234567890")
+        assert urn2.data == urn.data
+
     def test_02_routed(self):
         # try making one from scratch
         rn = models.RoutedNotification()
@@ -31,6 +36,12 @@ class TestModels(TestCase):
 
         assert rn.id == "1234567890"
 
+        # check that we can write/read
+        rn.save(blocking=True)
+
+        rn2 = models.RoutedNotification.pull("1234567890")
+        assert rn2.data == rn.data
+
     def test_03_routing_meta(self):
         # make one from scratch
         rm = models.RoutingMetadata()
@@ -38,6 +49,8 @@ class TestModels(TestCase):
         # build one from an example document
         source = fixtures.NotificationFactory.routing_metadata()
         rm = models.RoutingMetadata(source)
+
+        # Note: at this point we don't serialise routing metadata, it's an in-memory model only
 
     def test_04_repository_config(self):
         # make one from scratch
@@ -47,6 +60,12 @@ class TestModels(TestCase):
         source = fixtures.RepositoryFactory.repo_config()
         rc = models.RepositoryConfig(source)
 
+        # check that we can write/read
+        rc.save(blocking=True)
+
+        rc2 = models.RepositoryConfig.pull(rc.id)
+        assert rc2.data == rc.data
+
     def test_05_match_provenance(self):
         # make one from scratch
         mp = models.MatchProvenance()
@@ -55,10 +74,22 @@ class TestModels(TestCase):
         source = fixtures.RepositoryFactory.match_provenance()
         mp = models.MatchProvenance(source)
 
+        # check that we can write/read
+        mp.save(blocking=True)
+
+        mp2 = models.MatchProvenance.pull(mp.id)
+        assert mp2.data == mp.data
+
     def test_06_retrieval(self):
         # make one from scratch
-        mp = models.RetrievalRecord()
+        rr = models.RetrievalRecord()
 
         # build one from example document
         source = fixtures.RepositoryFactory.retreival_record()
-        mp = models.RetrievalRecord(source)
+        rr = models.RetrievalRecord(source)
+
+        # check that we can write/read
+        rr.save(blocking=True)
+
+        rr2 = models.RetrievalRecord.pull(rr.id)
+        assert rr2.data == rr.data
