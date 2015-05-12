@@ -2,6 +2,32 @@
 
 Core notification manager for JPER - receives incoming notifications, matches to target recipients, and delivers notifications onward.
 
+## Developers
+
+This project uses "git flow" for code development management.  Branches are as follows:
+
+* master - main stable branch
+* develop - development branch
+
+When installing this software locally (for the first time), you should
+
+    git clone https://github.com/JiscPER/jper.git
+    git flow init
+    git checkout develop
+
+During "git flow init" accept the default settings.
+
+To create a new feature:
+
+    git flow feature start feature_name
+    
+Then push the feature branch to the repository with
+
+    git push origin feature/feature_name
+    
+Major features should be raised as pull requests, and merged by another developer, where possible.
+
+
 ## Installation
 
 Clone the project:
