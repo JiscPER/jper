@@ -1,9 +1,9 @@
 from flask import Blueprint, make_response, url_for, request, abort
 import json
-from octopus.lib.dataobj import ObjectSchemaValidationError
 from octopus.core import app
 from octopus.lib import webapp
-from octopus.modules.crud.factory import CRUDFactory
+from flask.ext.login import login_user, logout_user, current_user, login_required
+from service.api import JPER, ValidationException
 
 blueprint = Blueprint('webapi', __name__)
 
@@ -14,9 +14,9 @@ def _not_found():
     resp.status_code = 404
     return resp
 
-def _bad_request(e):
-    app.logger.info("Sending 400 Bad Request from client: {x}".format(x=e.message))
-    resp = make_response(json.dumps({"status" : "error", "error" : e.message}))
+def _bad_request(message):
+    app.logger.info("Sending 400 Bad Request from client: {x}".format(x=message))
+    resp = make_response(json.dumps({"status" : "error", "error" : message}))
     resp.mimetype = "application/json"
     resp.status_code = 400
     return resp
@@ -35,10 +35,53 @@ def _success():
     resp = make_response(json.dumps({"status" : "success"}))
     return resp
 
+@blueprint.before_request
+def authenticate():
+    # this is where we should inspect the api key, and login the user
+    # FIXME: maybe belongs in the account module
+    pass
+
 @blueprint.route("/validate", methods=["POST"])
 @webapp.jsonp
 def validate():
-    pass
+    md = None
+    zipfile = None
+
+    if len(request.files) > 0:
+        # this is a multipart request, so extract the data accordingly
+        metadata = request.files["metadata"]
+        content = request.files["content"]
+
+        # now, do some basic validation on the incoming http request (not validating the content,
+        # that's for the underlying validation API to do
+        if metadata.mimetype != "application/json":
+            return _bad_request("Content-Type for metadata part of multipart request must be application/json")
+
+        rawmd = metadata.stream.read()
+        try:
+            md = json.loads(rawmd)
+        except:
+            return _bad_request("Unable to parse metadata part of multipart request as valid json")
+
+        if content.mimetype != "application/zip":
+            return _bad_request("Content-Type for content part of multipart request must be application/zip")
+
+        zipfile = content.stream
+    else:
+        if "content-type" not in request.headers or request.headers["content-type"] != "application/json":
+            return _bad_request("Content-Type must be application/json")
+
+        try:
+            md = json.loads(request.data)
+        except:
+            return _bad_request("Unable to parse request body as valid json")
+
+    try:
+        JPER.validate(current_user, md, zipfile)
+    except ValidationException as e:
+        return _bad_request(e.message)
+
+    return '', 204
 
 @blueprint.route("/notification", methods=["POST"])
 @webapp.jsonp

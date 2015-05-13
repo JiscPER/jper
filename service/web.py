@@ -33,6 +33,10 @@ def root():
 from service.views.webapi import blueprint as webapi
 app.register_blueprint(webapi, url_prefix="/api/v1")
 
+# adding account management, which enables the login functionality for the api
+from octopus.modules.account.account import blueprint as account
+app.register_blueprint(account, url_prefix="/account")
+
 """
 # this allows us to override the standard static file handling with our own dynamic version
 @app.route("/static/<path:filename>")
@@ -60,9 +64,7 @@ app.register_blueprint(fact, url_prefix="/fact")
 from octopus.modules.clientjs.fragments import blueprint as fragments
 app.register_blueprint(fragments, url_prefix="/frag")
 
-# adding account management, which enables the login functionality
-from octopus.modules.account.account import blueprint as account
-app.register_blueprint(account, url_prefix="/account")
+
 
 @app.errorhandler(404)
 def page_not_found(e):

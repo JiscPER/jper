@@ -41,7 +41,7 @@ Any notifications coming from the provider should meet the following specificati
     "links" : [
         {
             "type" : "<link type: splash|fulltext>",
-            "format" : "<html|pdf|xml>",
+            "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
             "url" : "<provider's splash, fulltext or machine readable page>"
         }
     ],
@@ -276,7 +276,6 @@ If you are sending binary content, the request must take the form:
     
     Content-Disposition: form-data; name="content"
     Content-Type: application/zip
-    Content-Transfer-Encoding: base64
     
     [binary content]
     

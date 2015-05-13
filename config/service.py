@@ -31,5 +31,5 @@ MAIL_SUBJECT_PREFIX = "[router] "
 ############################################
 # important overrides for account module
 
-ACCOUNT_ENABLE = False
+ACCOUNT_ENABLE = True
 SECRET_KEY = "super-secret-key"
