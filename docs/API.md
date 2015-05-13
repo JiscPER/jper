@@ -360,7 +360,6 @@ This, in turn, will result in a 200 (OK) and the binary content:
 
     HTTP 1.1  200 OK
     Content-Type: application/zip
-    Content-Transfer-Encoding: base64
     
     [Binary Content]
 
@@ -413,6 +412,17 @@ Allowed parameters for each request are:
     * YYYY-MM-DD will be considered equivalent to YYYY-MM-DDT00:00:00Z
 * page - Optional; defaults to 1.  Page number of results to return.
 * pageSize - Optional; defaults to 25, maximum 100.  Number of results per page to return.
+
+If any of the required parameters are missing, or fall outside the allowed range, you will receive a 400 (Bad Request) and an error
+message in the body:
+
+    HTTP 1.1  400 Bad Request
+    Content-Type: application/json
+    
+    {
+        "error" : "<human readable error message>"
+    }
+
 
 The response will be a 200 OK, with the following body
 

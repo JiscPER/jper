@@ -33,3 +33,11 @@ MAIL_SUBJECT_PREFIX = "[router] "
 
 ACCOUNT_ENABLE = True
 SECRET_KEY = "super-secret-key"
+
+
+############################################
+# Service-specific config
+
+DEFAULT_LIST_PAGE_START = 1
+DEFAULT_LIST_PAGE_SIZE = 25
+MAX_LIST_PAGE_SIZE = 100
