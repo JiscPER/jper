@@ -30,6 +30,10 @@ from octopus.lib.webapp import custom_static
 def root():
     return render_template("index.html")
 
+from service.views.webapi import blueprint as webapi
+app.register_blueprint(webapi, url_prefix="/api/v1")
+
+"""
 # this allows us to override the standard static file handling with our own dynamic version
 @app.route("/static/<path:filename>")
 def static(filename):
@@ -63,7 +67,7 @@ app.register_blueprint(account, url_prefix="/account")
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('errors/404.html'), 404
-
+"""
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'], threaded=False)
