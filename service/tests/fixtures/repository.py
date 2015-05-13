@@ -18,6 +18,7 @@ class RepositoryFactory(object):
 RETRIEVAL = {
     "repository" : "abcdefg",
     "notification" : "1234567890",
+    "content" : "http://example.com/file",
     "retrieval_date" : "2015-05-04T00:00:00Z",
     "scope" : "notification"
 }

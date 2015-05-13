@@ -113,6 +113,7 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
 
         "repository" : "<user id of repository doing the retrieval>",
         "notification" : "<id of the notification retrieved>",
+        "content" : "<the url or internal identifier of the content retrieved>",
         "retrieval_date" : "<date the repository retrieved the record>",
         "scope" : "<what the repository actually retrieved: notification, fulltext>"
     }
@@ -125,6 +126,7 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
                 "last_updated" : {"coerce" : "unicode"},
                 "repository" : {"coerce" : "unicode"},
                 "notification" : {"coerce" : "unicode"},
+                "content" : {"coerce" : "unicode"},
                 "retrieval_date" : {"coerce" : "utcdatetime"},
                 "scope" : {"coerce" : "unicode", "allowed" : ["notification", "fulltext"]}
             }
