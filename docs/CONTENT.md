@@ -4,6 +4,8 @@
 
 PROPOSAL: All content that is publicly accessible should be provided by reference, all other content should be provided by value.
 
+ADDENDUM: Not only should the content be publicly accessible by reference, but it must be under a GETtable URL (so, not POST, or any other method)
+
 NOTE: in the case that publicly accessible by-reference files are provided, the system will not be able to track accesses to that
 content.  This means that we may need to explicitly receive notifications of retrieval from API users.
 

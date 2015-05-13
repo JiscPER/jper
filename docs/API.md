@@ -42,7 +42,6 @@ Any notifications coming from the provider should meet the following specificati
         {
             "type" : "<link type: splash|fulltext>",
             "format" : "<html|pdf|xml>",
-            "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
             "url" : "<provider's splash, fulltext or machine readable page>"
         }
     ],
@@ -104,7 +103,15 @@ Any notifications coming from the provider should meet the following specificati
 }
 ```
 
-Note that in this version of the system the "targets" field will not be implemented.
+Some important things to observe:
+
+* The "links" field must only contain links to content which is publicly accessible.
+
+TODO: enumerate the differences between this and the core model
+
+* The "links" field does not contain the "access" element - all incoming links must be public
+
+Note also that in this version of the system the "targets" field will not be implemented.
 
 ### Outgoing Data Model
 
@@ -188,6 +195,10 @@ Any request for a routed notification (except from the provider who created it) 
 }
 ```
 
+Note that "links" provided via this model will be restricted only to URLs controlled by the router.  This means that
+public links from the publisher will not be shared, instead replaced with proxy URLs which are redirected by the router
+on request.  This is to enable tracking of content delivery to repositories - requests for content will result in a
+record that the authenticated repository has received the content.
 
 ## Validation API
 
@@ -341,20 +352,52 @@ the following reasons:
 
 If the notification content is not found, you will receive a 404 (Not Found) and no response body.
 
-If the notification content is found and authentication succeeds you will receive a 200 (OK) and the following response:
+If the notification content is found and authentication succeeds you will receive a 303 (See Other):
+
+    HTTP/1.1 303 See Other
+    Location: <url to storage system to retrieve file>
+
+This, in turn, will result in a 200 (OK) and the binary content:
 
     HTTP 1.1  200 OK
     Content-Type: application/zip
     Content-Transfer-Encoding: base64
-    Packaging: <content packaging identifier>
     
     [Binary Content]
 
 Note that a successful access by a user with the role "repository" will log a successful delivery of content notification
 into the router (used for reporting on the router's ability to support REF compliance).
 
-If you are retrieving content from a public link directly from the publisher's site, you should consider sending an
-event to the Receipt API.
+### Retrieve router-proxied content associated with notifications
+
+This endpoint will redirect you to any links made publicly available by the provider (if available).
+
+These URLs will appear in the notification JSON "link" field if they are available to use.
+
+You need to have the user role "repository" to access this endpoint.
+
+    GET /notification/<id>/content/<content_id>?api_key=<api_key>
+
+Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
+the following reasons:
+
+* api_key is invalid
+* You do not have the user role "repository"
+* You have the role "repository" and this notification has not yet been routed
+
+If the requested link from the notification is not found, you will receive a 404 (Not Found) and no response body.
+
+If the requested link from the notification is found and authentication succeeds you will receive a 303 (See Other):
+
+    HTTP/1.1 303 See Other
+    Location: <url to provider site to retrieve file>
+
+At this point the caller will be directed to a URL outside of the domain of the router, so behaviour will be dependent
+on the provider's service.  The requirements placed on the provider by the router under these circumstances are that
+the content be publicly accessible to a GET request.
+
+Note that a successful access will log a successful delivery of content notification
+into the router (used for reporting on the router's ability to support REF compliance).
 
 ## Routing API
 
@@ -412,6 +455,8 @@ You will not be able to tell from this endpoint which other repositories have be
 params and response are as specified above.
 
 ## Receipt API
+
+**NOTE: this will not be implemented at this stage, but it will be required if we ever start exposing public links**
 
 In order to support reporting around router's support for REF compliance, it is important for the router to record when content has been
 successfully delivered to a repository.

@@ -226,6 +226,7 @@ simple index which notes the time of the access, and what was accessed.
     
     "repository" : "<user id of repository doing the retrieval>",
     "notification" : "<id of the notification retrieved>",
+    "content" : "<the url or internal identifier of the content retrieved>",
     "retrieval_date" : "<date the repository retrieved the record>",
     "scope" : "<what the repository actually retrieved: notification, fulltext>"
 }
