@@ -21,6 +21,8 @@ def _bad_request(message):
     resp.status_code = 400
     return resp
 
+"""
+Not currently used, but kept around in case we want them later
 def _created(obj, container_type):
     app.logger.info("Sending 201 Created: {x} {y}".format(x=container_type, y=obj.id))
     url = url_for("crud.entity", container_type=container_type, type_id=obj.id)
@@ -34,10 +36,11 @@ def _success():
     app.logger.debug("Sending 200 OK")
     resp = make_response(json.dumps({"status" : "success"}))
     return resp
+"""
 
 def _accepted(obj):
     app.logger.info("Sending 202 Accepted: {x}".format(x=obj.id))
-    url = url_for("webapi.retrieve_notification", notification_id=obj.id)
+    url = request.url_root + url_for("webapi.retrieve_notification", notification_id=obj.id)
     resp = make_response(json.dumps({"status" : "accepted", "id" : obj.id, "location" : url }))
     resp.mimetype = "application/json"
     resp.headers["Location"] = url

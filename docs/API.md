@@ -221,7 +221,6 @@ If you are sending binary content, the request must take the form:
     
     Content-Disposition: form-data; name="content"
     Content-Type: application/zip
-    Content-Transfer-Encoding: base64
     
     [binary content]
     
@@ -289,7 +288,18 @@ If you are sending only the JSON notification, the request must take the form:
 
 On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
 
-On completion of the request, the system will respond with 202 (Accepted) and the following response body
+The system will not attempt to aggressively validate the request (this is what the **Validation API** is for), but the
+request must still be well-formed in order to succeed.  In the event of a malformed HTTP request, the system will respond
+with a 400 (Bad Request) and the response body:
+
+    HTTP 1.1  400 Bad Request
+    Content-Type: application/json
+    
+    {
+        "error" : "<human readable error message>"
+    }
+
+On successful completion of the request, the system will respond with 202 (Accepted) and the following response body
 
     HTTP 1.1  202 Accepted
     Content-Type: application/json

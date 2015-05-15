@@ -7,7 +7,11 @@ from octopus.core import app
 from service import web
 from octopus.lib import paths
 
+# FIXME: at this point these don't do anything.  We'll need to create user accounts
+# in the remote system and get their api keys.  This may mean spawning another
+# app which actually runs the account system.
 API_KEY = "1234567890"
+INVALID_API_KEY = "abcdefg"
 
 class TestAPI(ESTestCase):
     def setUp(self):
@@ -36,7 +40,29 @@ class TestAPI(ESTestCase):
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "application/json"})
         assert resp.status_code == 204
 
-    def test_02_validation_multipart(self):
+    def test_02_validation_singlepart_fail(self):
+        # ways in which the validation http request can fail
+        # 1. invalid/wrong auth credentials
+        # FIXME: we can't do this test yet
+
+        # 2. incorrect content-type header
+        notification = fixtures.APIFactory.incoming()
+        url = self.api_base + "validate?api_key=" + API_KEY
+
+        resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "text/plain"})
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "application/json" in j["error"]
+
+        # 3. invalid json
+        resp = requests.post(url, data="this is not json", headers={"Content-Type" : "application/json"})
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "Unable to parse" in j["error"]
+
+    def test_03_validation_multipart(self):
         notification = fixtures.APIFactory.incoming()
         example_package = fixtures.APIFactory.example_package_path()
         url = self.api_base + "validate?api_key=" + API_KEY
@@ -47,20 +73,83 @@ class TestAPI(ESTestCase):
         resp = requests.post(url, files=files)
         assert resp.status_code == 204
 
-    def test_03_validation_fail(self):
+    def test_04_validation_multipart_fail(self):
         # ways in which the validation http request can fail
         # 1. invalid/wrong auth credentials
-        # 2. incorrect content-type header on metadata/content parts
-        # 3. invalid json
-        pass
+        # FIXME: we can't do this test yet
 
-    def test_04_notification_singlepart(self):
+        # 2. incorrect content-type header on metadata/content parts
+        notification = fixtures.APIFactory.incoming()
+        example_package = fixtures.APIFactory.example_package_path()
+        url = self.api_base + "validate?api_key=" + API_KEY
+
+        files = [
+            ("metadata", ("metadata.json", json.dumps(notification), "text/plain")),
+            ("content", ("content.zip", open(example_package, "rb"), "application/zip"))
+        ]
+        resp = requests.post(url, files=files)
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "application/json" in j["error"]
+
+        files = [
+            ("metadata", ("metadata.json", json.dumps(notification), "application/json")),
+            ("content", ("content.zip", open(example_package, "rb"), "text/plain"))
+        ]
+        resp = requests.post(url, files=files)
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "application/zip" in j["error"]
+
+        # 3. invalid json
+        files = [
+            ("metadata", ("metadata.json", "this string is not json", "application/json")),
+            ("content", ("content.zip", open(example_package, "rb"), "text/plain"))
+        ]
+        resp = requests.post(url, files=files)
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "Unable to parse" in j["error"]
+
+    def test_05_notification_singlepart(self):
         notification = fixtures.APIFactory.incoming()
         url = self.api_base + "notification?api_key=" + API_KEY
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "application/json"})
         assert resp.status_code == 202
+        j = resp.json()
+        assert "status" in j
+        assert j["status"] == "accepted"
+        assert "id" in j
+        assert "location" in j
+        assert "location" in resp.headers
+        assert resp.headers["location"] == j["location"], (resp.headers["location"], j["location"])
 
-    def test_05_notification_multipart(self):
+    def test_06_notification_singlepart_fail(self):
+        # ways in which the validation http request can fail
+        # 1. invalid/wrong auth credentials
+        # FIXME: we can't do this test yet
+
+        # 2. incorrect content-type header
+        notification = fixtures.APIFactory.incoming()
+        url = self.api_base + "notification?api_key=" + API_KEY
+
+        resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "text/plain"})
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "application/json" in j["error"]
+
+        # 3. invalid json
+        resp = requests.post(url, data="this is not json", headers={"Content-Type" : "application/json"})
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "Unable to parse" in j["error"]
+
+    def test_07_notification_multipart(self):
         notification = fixtures.APIFactory.incoming()
         example_package = fixtures.APIFactory.example_package_path()
         url = self.api_base + "notification?api_key=" + API_KEY
@@ -70,29 +159,71 @@ class TestAPI(ESTestCase):
         ]
         resp = requests.post(url, files=files)
         assert resp.status_code == 202
+        j = resp.json()
+        assert "status" in j
+        assert j["status"] == "accepted"
+        assert "id" in j
+        assert "location" in j
+        assert "location" in resp.headers
+        assert resp.headers["location"] == j["location"], (resp.headers["location"], j["location"])
 
-    def test_06_notification_fail(self):
+    def test_08_notification_multipart_fail(self):
         # ways in which the notification http request can fail
         # 1. invalid/wrong auth credentials
-        # 2. incorrect content-type header on metadata/content parts
-        # 3. invalid json
-        pass
+        # FIXME: we can't do this test yet
 
-    def test_07_get_notification(self):
+        # 2. incorrect content-type header on metadata/content parts
+        notification = fixtures.APIFactory.incoming()
+        example_package = fixtures.APIFactory.example_package_path()
+        url = self.api_base + "notification?api_key=" + API_KEY
+
+        files = [
+            ("metadata", ("metadata.json", json.dumps(notification), "text/plain")),
+            ("content", ("content.zip", open(example_package, "rb"), "application/zip"))
+        ]
+        resp = requests.post(url, files=files)
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "application/json" in j["error"]
+
+        files = [
+            ("metadata", ("metadata.json", json.dumps(notification), "application/json")),
+            ("content", ("content.zip", open(example_package, "rb"), "text/plain"))
+        ]
+        resp = requests.post(url, files=files)
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "application/zip" in j["error"]
+
+        # 3. invalid json
+        files = [
+            ("metadata", ("metadata.json", "this string is not json", "application/json")),
+            ("content", ("content.zip", open(example_package, "rb"), "text/plain"))
+        ]
+        resp = requests.post(url, files=files)
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "Unable to parse" in j["error"]
+
+    def test_09_get_notification(self):
         notification = fixtures.APIFactory.incoming()
         url = self.api_base + "notification?api_key=" + API_KEY
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "application/json"})
         url = resp.headers["location"]
         resp2 = requests.get(url)
+        # try from both location sources
         assert resp2.status_code == 200
 
-    def test_08_get_notification_fail(self):
+    def test_10_get_notification_fail(self):
         # ways in which the notification http request can fail
         # 1. invalid/wrong auth credentials
         # 2. invalid/not found notification id
         pass
 
-    def test_09_get_store_content(self):
+    def test_11_get_store_content(self):
         notification = fixtures.APIFactory.incoming()
         example_package = fixtures.APIFactory.example_package_path()
         url = self.api_base + "notification?api_key=" + API_KEY
@@ -105,13 +236,13 @@ class TestAPI(ESTestCase):
         resp2 = requests.get(loc + "/content?api_key=" + API_KEY, allow_redirects=False)
         assert resp2.status_code == 303
 
-    def test_10_get_store_content(self):
+    def test_12_get_store_content_fail(self):
         # ways in which the content http request can fail
         # 1. invalid/wrong auth credentials
         # 2. invalid/not found notification id
         pass
 
-    def test_11_get_public_content(self):
+    def test_13_get_public_content(self):
         notification = fixtures.APIFactory.incoming()
         url = self.api_base + "notification?api_key=" + API_KEY
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "application/json"})
@@ -119,18 +250,18 @@ class TestAPI(ESTestCase):
         resp2 = requests.get(loc + "/content/1?api_key=" + API_KEY, allow_redirects=False)
         assert resp2.status_code == 303
 
-    def test_12_get_public_content(self):
+    def test_14_get_public_content(self):
         # ways in which the content http request can fail
         # 1. invalid/wrong auth credentials
         # 2. invalid/not found notification id
         pass
 
-    def test_13_list_all(self):
+    def test_15_list_all(self):
         url = self.api_base + "routed?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z"
         resp = requests.get(url)
         assert resp.status_code == 200
 
-    def test_14_list_all_fail(self):
+    def test_16_list_all_fail(self):
         # ways in which the list all http request can fail
         # 1. invalid/wrong auth credentials (if supplied)
         # 2. since parameter not supplied
@@ -139,12 +270,12 @@ class TestAPI(ESTestCase):
 
         pass
 
-    def test_15_list_repository(self):
+    def test_17_list_repository(self):
         url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z"
         resp = requests.get(url)
         assert resp.status_code == 200
 
-    def test_16_list_repository_fail(self):
+    def test_18_list_repository_fail(self):
         # ways in which the list all http request can fail
         # 1. invalid/wrong auth credentials (if supplied)
         # 2. since parameter not supplied
