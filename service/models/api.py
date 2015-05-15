@@ -1,4 +1,153 @@
 from octopus.lib import dataobj
+from service.models.notifications import NotificationMetadata
+
+class IncomingNotification(NotificationMetadata):
+    """
+    {
+        "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
+
+        "provider" : {
+            "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
+            "ref" : "<provider's globally unique reference for this research object>"
+        },
+
+        "content" : {
+            "packaging_format" : "<identifier for packaging format used>"
+        },
+
+        "links" : [
+            {
+                "type" : "<link type: splash|fulltext>",
+                "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
+                "url" : "<provider's splash, fulltext or machine readable page>"
+            }
+        ],
+
+        "embargo" : {
+            "end" : "<date embargo expires>",
+            "start" : "<date embargo starts>",
+            "duration" : "<number of months for embargo to run>"
+        },
+
+        "metadata" : {"<INHERITED from NotificationMetadata}
+    }
+    """
+
+    def __init__(self, raw=None):
+        struct = {
+            "fields" : {
+                "event" : {"coerce" : "unicode"},
+            },
+            "objects" : [
+                "provider", "content", "embargo"
+            ],
+            "lists" : {
+                "links" : {"contains" : "object"}
+            },
+            "reqired" : [],
+
+            "structs" : {
+                "provider" : {
+                    "fields" : {
+                        "agent" : {"coerce" :"unicode"},
+                        "ref" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
+                },
+                "content" : {
+                    "fields" : {
+                        "packaging_format" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
+                },
+                "embargo" : {
+                    "end" : {"coerce" : "utcdatetime"},
+                    "start" : {"coerce" : "utcdatetime"},
+                    "duration" : {"coerce" : "integer"}
+                },
+                "links" : {
+                    "fields" : {
+                        "type" : {"coerce" :"unicode"},
+                        "format" : {"coerce" :"unicode"},
+                        "url" : {"coerce" :"url"}
+                    }
+                }
+            }
+        }
+
+        self._add_struct(struct)
+        super(IncomingNotification, self).__init__(raw=raw)
+
+class OutgoingNotification(NotificationMetadata):
+    """
+    {
+        "id" : "<opaque identifier for this notification>",
+        "created_date" : "<date this notification was received>",
+        "analysis_date" : "<date the routing analysis was carried out>",
+
+        "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
+
+        "content" : {
+            "packaging_format" : "<identifier for packaging format used>",
+        },
+
+        "links" : [
+            {
+                "type" : "<link type: splash|fulltext>",
+                "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
+                "url" : "<provider's splash, fulltext or machine readable page>"
+            }
+        ],
+
+        "embargo" : {
+            "end" : "<date embargo expires>",
+            "start" : "<date embargo starts>",
+            "duration" : "<number of months for embargo to run>"
+        },
+
+        "metadata" : {"<INHERITED from NotificationMetadata}
+    }
+    """
+    def __init__(self, raw=None):
+        struct = {
+            "fields" : {
+                "id" : {"coerce" : "unicode"},
+                "created_date" : {"coerce" : "utcdatetime"},
+                "analysis_date" : {"coerce" : "utcdatetime"},
+                "event" : {"coerce" : "unicode"},
+            },
+            "objects" : [
+                "content", "embargo"
+            ],
+            "lists" : {
+                "links" : {"contains" : "object"}
+            },
+            "reqired" : [],
+
+            "structs" : {
+                "content" : {
+                    "fields" : {
+                        "packaging_format" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
+                },
+                "embargo" : {
+                    "end" : {"coerce" : "utcdatetime"},
+                    "start" : {"coerce" : "utcdatetime"},
+                    "duration" : {"coerce" : "integer"}
+                },
+                "links" : {
+                    "fields" : {
+                        "type" : {"coerce" :"unicode"},
+                        "format" : {"coerce" :"unicode"},
+                        "url" : {"coerce" :"url"}
+                    }
+                }
+            }
+        }
+
+        self._add_struct(struct)
+        super(OutgoingNotification, self).__init__(raw=raw)
 
 class NotificationList(dataobj.DataObj):
     """

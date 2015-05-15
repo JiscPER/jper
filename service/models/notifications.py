@@ -1,42 +1,9 @@
 from octopus.lib import dataobj
 from service import dao
 
-class BaseNotification(dataobj.DataObj):
+class NotificationMetadata(dataobj.DataObj):
     """
     {
-        "id" : "<opaque identifier for this notification>",
-        "created_date" : "<date this notification was received>",
-        "last_updated" : "<last modification time - required by storage layer>",
-
-        "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
-
-        "provider" : {
-            "id" : "<user account id of the provider>",
-            "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
-            "ref" : "<provider's globally unique reference for this research object>",
-            "route" : "<method by which notification was received: native api, sword, ftp>"
-        },
-
-        "content" : {
-            "packaging_format" : "<identifier for packaging format used>",
-            "store_id" : "<information for retrieving the content from local store (tbc)>"
-        },
-
-        "links" : [
-            {
-                "type" : "<link type: splash|fulltext>",
-                "format" : "<html|pdf|xml>",
-                "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
-                "url" : "<provider's splash, fulltext or machine readable page>"
-            }
-        ],
-
-        "embargo" : {
-            "end" : "<date embargo expires>",
-            "start" : "<date embargo starts>",
-            "duration" : "<number of months for embargo to run>"
-        },
-
         "metadata" : {
             "title" : "<publication title>",
             "version" : "<version of the record, e.g. AAM>",
@@ -87,47 +54,12 @@ class BaseNotification(dataobj.DataObj):
         }
     }
     """
-
     def __init__(self, raw):
         struct = {
-            "fields" : {
-                "id" : {"coerce" :"unicode"},
-                "created_date" : {"coerce" : "utcdatetime"},
-                "last_updated" : {"coerce" : "utcdatetime"},
-                "event" : {"coerce" : "unicode"},
-
-            },
             "objects" : [
-                "provider", "content", "embargo", "metadata"
+                "metadata"
             ],
-            "lists" : {
-                "targets" : {"contains" : "object"},
-                "links" : {"contains" : "object"}
-            },
-            "reqired" : [],
-
             "structs" : {
-                "provider" : {
-                    "fields" : {
-                        "id" : {"coerce" :"unicode"},
-                        "agent" : {"coerce" :"unicode"},
-                        "ref" : {"coerce" :"unicode"},
-                        "route" : {"coerce" :"unicode"}
-                    },
-                    "required" : []
-                },
-                "content" : {
-                    "fields" : {
-                        "packaging_format" : {"coerce" :"unicode"},
-                        "store_id" : {"coerce" :"unicode"}
-                    },
-                    "required" : []
-                },
-                "embargo" : {
-                    "end" : {"coerce" : "utcdatetime"},
-                    "start" : {"coerce" : "utcdatetime"},
-                    "duration" : {"coerce" : "integer"}
-                },
                 "metadata" : {
                     "fields" : {
                         "title" : {"coerce" :"unicode"},
@@ -215,12 +147,92 @@ class BaseNotification(dataobj.DataObj):
                             }
                         }
                     }
-                },
-                "targets" : {
+                }
+            }
+        }
+
+        self._add_struct(struct)
+        super(NotificationMetadata, self).__init__(raw)
+
+class BaseNotification(NotificationMetadata):
+    """
+    {
+        "id" : "<opaque identifier for this notification>",
+        "created_date" : "<date this notification was received>",
+        "last_updated" : "<last modification time - required by storage layer>",
+
+        "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
+
+        "provider" : {
+            "id" : "<user account id of the provider>",
+            "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
+            "ref" : "<provider's globally unique reference for this research object>",
+            "route" : "<method by which notification was received: native api, sword, ftp>"
+        },
+
+        "content" : {
+            "packaging_format" : "<identifier for packaging format used>",
+            "store_id" : "<information for retrieving the content from local store (tbc)>"
+        },
+
+        "links" : [
+            {
+                "type" : "<link type: splash|fulltext>",
+                "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
+                "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
+                "url" : "<provider's splash, fulltext or machine readable page>"
+            }
+        ],
+
+        "embargo" : {
+            "end" : "<date embargo expires>",
+            "start" : "<date embargo starts>",
+            "duration" : "<number of months for embargo to run>"
+        },
+
+        "metadata" : {<INHERITED from NotificationMetadata>}
+    }
+
+    """
+
+    def __init__(self, raw):
+        struct = {
+            "fields" : {
+                "id" : {"coerce" :"unicode"},
+                "created_date" : {"coerce" : "utcdatetime"},
+                "last_updated" : {"coerce" : "utcdatetime"},
+                "event" : {"coerce" : "unicode"}
+            },
+            "objects" : [
+                "provider", "content", "embargo"
+            ],
+            "lists" : {
+                "targets" : {"contains" : "object"},
+                "links" : {"contains" : "object"}
+            },
+            "reqired" : [],
+
+            "structs" : {
+                "provider" : {
                     "fields" : {
-                        "repository" : {"coerce" :"unicode"},
-                        "requirement" : {"coerce" :"unicode"}
-                    }
+                        "id" : {"coerce" :"unicode"},
+                        "agent" : {"coerce" :"unicode"},
+                        "ref" : {"coerce" :"unicode"},
+                        "route" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
+                },
+                "content" : {
+                    "fields" : {
+                        "packaging_format" : {"coerce" :"unicode"},
+                        "store_id" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
+                },
+                "embargo" : {
+                    "end" : {"coerce" : "utcdatetime"},
+                    "start" : {"coerce" : "utcdatetime"},
+                    "duration" : {"coerce" : "integer"}
                 },
                 "links" : {
                     "fields" : {

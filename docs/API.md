@@ -132,8 +132,7 @@ Any request for a routed notification (except from the provider who created it) 
     "links" : [
         {
             "type" : "<link type: splash|fulltext>",
-            "format" : "<html|pdf|xml>",
-            "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
+            "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
             "url" : "<provider's splash, fulltext or machine readable page>"
         }
     ],

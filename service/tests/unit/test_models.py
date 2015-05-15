@@ -1,6 +1,7 @@
 from octopus.modules.es.testindex import ESTestCase
 from service import models
 from service.tests import fixtures
+from octopus.lib import dataobj
 
 class TestModels(ESTestCase):
     def setUp(self):
@@ -93,3 +94,23 @@ class TestModels(ESTestCase):
 
         rr2 = models.RetrievalRecord.pull(rr.id)
         assert rr2.data == rr.data
+
+    def test_07_incoming_notification(self):
+        # make one from scratch
+        rr = models.IncomingNotification()
+
+        # build one from example document
+        source = fixtures.APIFactory.incoming()
+        rr = models.IncomingNotification(source)
+
+    def test_08_outgoing_notification(self):
+        # make one from scratch
+        rr = models.OutgoingNotification()
+
+        # build one from example document
+        source = fixtures.APIFactory.outgoing()
+        rr = models.OutgoingNotification(source)
+
+    def test_09_notification_list(self):
+        kv = fixtures.APIFactory.notification_list_set_get()
+        dataobj.test_dataobj(models.NotificationList(), kv)
