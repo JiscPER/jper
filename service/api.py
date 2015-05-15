@@ -17,23 +17,31 @@ class JPER(object):
 
     @classmethod
     def create_notification(cls, account, metadata, file_handle=None):
+        # Note, this is just for testing
         urn = models.UnroutedNotification()
-        urn.id = urn.makeid()
+        urn.save(blocking=True)
         return urn
 
     @classmethod
-    def get_notification(cls, account, notitification_id):
-        urn = models.UnroutedNotification()
-        urn.id = urn.makeid()
+    def get_notification(cls, account, notification_id):
+        urn = models.UnroutedNotification.pull(notification_id)
         return urn
 
     @classmethod
     def get_store_url(cls, account, notification_id):
-        return "http://store.router.jisc.ac.uk/1"
+        urn = models.UnroutedNotification.pull(notification_id)
+        if urn is not None:
+            return "http://store.router.jisc.ac.uk/1"
+        else:
+            return None
 
     @classmethod
     def get_public_url(cls, account, notification_id, content_id):
-        return "http://example.com/1"
+        urn = models.UnroutedNotification.pull(notification_id)
+        if urn is not None:
+            return "http://example.com/1"
+        else:
+            return None
 
     @classmethod
     def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
@@ -52,6 +60,9 @@ class JPER(object):
         nl.since = dates.format(since)
         nl.page = page
         nl.page_size = page_size
+        nl.timestamp = dates.now()
+        nl.total = 1000         # Testing
+        nl.notifications = ["not a notification"]   # Testing
         return nl
 
     @classmethod

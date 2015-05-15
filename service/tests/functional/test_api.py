@@ -211,17 +211,29 @@ class TestAPI(ESTestCase):
     def test_09_get_notification(self):
         notification = fixtures.APIFactory.incoming()
         url = self.api_base + "notification?api_key=" + API_KEY
+
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "application/json"})
         url = resp.headers["location"]
+        j = resp.json()
+
         resp2 = requests.get(url)
-        # try from both location sources
         assert resp2.status_code == 200
+        assert resp2.headers["content-type"] == "application/json"
+        j2 = resp2.json()
+        assert j2["id"] == j["id"]
+
+        # FIXME: should do additional tests for retrieving routed notifications, but this is
+        # difficult to do at this stage
 
     def test_10_get_notification_fail(self):
         # ways in which the notification http request can fail
         # 1. invalid/wrong auth credentials
+        # FIXME: we can't test for this yet
+
         # 2. invalid/not found notification id
-        pass
+        url = self.api_base + "notification/2394120938412098348901275812u?api_key=" + API_KEY
+        resp = requests.get(url)
+        assert resp.status_code == 404
 
     def test_11_get_store_content(self):
         notification = fixtures.APIFactory.incoming()
@@ -239,8 +251,12 @@ class TestAPI(ESTestCase):
     def test_12_get_store_content_fail(self):
         # ways in which the content http request can fail
         # 1. invalid/wrong auth credentials
+        # FIXME: we can't test for this yet
+
         # 2. invalid/not found notification id
-        pass
+        url = self.api_base + "notification/2394120938412098348901275812u/content?api_key=" + API_KEY
+        resp = requests.get(url)
+        assert resp.status_code == 404
 
     def test_13_get_public_content(self):
         notification = fixtures.APIFactory.incoming()
@@ -250,36 +266,150 @@ class TestAPI(ESTestCase):
         resp2 = requests.get(loc + "/content/1?api_key=" + API_KEY, allow_redirects=False)
         assert resp2.status_code == 303
 
-    def test_14_get_public_content(self):
+    def test_14_get_public_content_fail(self):
         # ways in which the content http request can fail
         # 1. invalid/wrong auth credentials
+        # FIXME: we can't test for this yet
+
         # 2. invalid/not found notification id
-        pass
+        url = self.api_base + "notification/2394120938412098348901275812u/content/1?api_key=" + API_KEY
+        resp = requests.get(url)
+        assert resp.status_code == 404
 
     def test_15_list_all(self):
         url = self.api_base + "routed?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z"
         resp = requests.get(url)
         assert resp.status_code == 200
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert j["since"] == "2001-01-01T00:00:00Z"
+        assert j["page"] == 1
+        assert j["pageSize"] == 25
+        assert "timestamp" in j
+        assert "total" in j
+        assert "notifications" in j
 
     def test_16_list_all_fail(self):
         # ways in which the list all http request can fail
         # 1. invalid/wrong auth credentials (if supplied)
-        # 2. since parameter not supplied
-        # 3. since parameter wrongly formatted
-        # 4. page/pageSize parameters wrongly formatted
+        # FIXME: we can't test for this yet
 
-        pass
+        # 2. since parameter not supplied
+        url = self.api_base + "routed?api_key=" + API_KEY
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "since" in j["error"]
+
+        # 3. since parameter wrongly formatted
+        url = self.api_base + "routed?api_key=" + API_KEY + "&since=wednesday"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "since" in j["error"]
+
+        # 4. page/pageSize parameters wrongly formatted
+        url = self.api_base + "routed?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=0&pageSize=25"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "page" in j["error"]
+
+        url = self.api_base + "routed?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=first&pageSize=25"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "page" in j["error"]
+
+        url = self.api_base + "routed?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=1&pageSize=10000000"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "page size" in j["error"]
+
+        url = self.api_base + "routed?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=1&pageSize=loads"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "pageSize" in j["error"]
 
     def test_17_list_repository(self):
-        url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z"
+        url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=2&pageSize=67"
         resp = requests.get(url)
         assert resp.status_code == 200
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert j["since"] == "2001-01-01T00:00:00Z"
+        assert j["page"] == 2
+        assert j["pageSize"] == 67
+        assert "timestamp" in j
+        assert "total" in j
+        assert "notifications" in j
 
     def test_18_list_repository_fail(self):
-        # ways in which the list all http request can fail
+        # ways in which the list repository http request can fail
         # 1. invalid/wrong auth credentials (if supplied)
-        # 2. since parameter not supplied
-        # 3. since parameter wrongly formatted
-        # 4. page/pageSize parameters wrongly formatted
+        # FIXME: we can't test for this yet
 
-        pass
+        # 2. since parameter not supplied
+        url = self.api_base + "routed/repo1?api_key=" + API_KEY
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "since" in j["error"]
+
+        # 3. since parameter wrongly formatted
+        url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=wednesday"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "since" in j["error"]
+
+        # 4. page/pageSize parameters wrongly formatted
+        url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=0&pageSize=25"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "page" in j["error"]
+
+        url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=first&pageSize=25"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "page" in j["error"]
+
+        url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=1&pageSize=10000000"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "page size" in j["error"]
+
+        url = self.api_base + "routed/repo1?api_key=" + API_KEY + "&since=2001-01-01T00:00:00Z&page=1&pageSize=loads"
+        resp = requests.get(url)
+        assert resp.status_code == 400
+        assert resp.headers["content-type"] == "application/json"
+        j = resp.json()
+        assert "error" in j
+        assert "pageSize" in j["error"]

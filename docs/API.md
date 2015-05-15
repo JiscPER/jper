@@ -339,6 +339,8 @@ data from the Outgoing Data Model that is not already present (e.g. analysed_dat
 
 All other requesters will receive the Outgoing Data Model.
 
+Note that notifications may not immediately be available for retrieval after creation.
+
 
 ### Retrieve router-held content associated with notifications
 

@@ -40,7 +40,10 @@ def _success():
 
 def _accepted(obj):
     app.logger.info("Sending 202 Accepted: {x}".format(x=obj.id))
-    url = request.url_root + url_for("webapi.retrieve_notification", notification_id=obj.id)
+    root = request.url_root
+    if root.endswith("/"):
+        root = root[:-1]
+    url = root + url_for("webapi.retrieve_notification", notification_id=obj.id)
     resp = make_response(json.dumps({"status" : "accepted", "id" : obj.id, "location" : url }))
     resp.mimetype = "application/json"
     resp.headers["Location"] = url
@@ -136,6 +139,8 @@ def retrieve_notification(notification_id):
 @webapp.jsonp
 def retrieve_content(notification_id):
     store_url = JPER.get_store_url(current_user, notification_id)
+    if store_url is None:
+        return _not_found()
     JPER.record_retrieval(current_user, notification_id)
     return redirect(store_url, 303)
 
@@ -143,6 +148,8 @@ def retrieve_content(notification_id):
 @webapp.jsonp
 def proxy_content(notification_id, content_id):
     public_url = JPER.get_public_url(current_user, notification_id, content_id)
+    if public_url is None:
+        return _not_found()
     JPER.record_retrieval(current_user, notification_id, content_id)
     return redirect(public_url, 303)
 
