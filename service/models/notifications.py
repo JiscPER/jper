@@ -54,7 +54,7 @@ class NotificationMetadata(dataobj.DataObj):
         }
     }
     """
-    def __init__(self, raw):
+    def __init__(self, raw=None):
         struct = {
             "objects" : [
                 "metadata"
@@ -195,7 +195,7 @@ class BaseNotification(NotificationMetadata):
 
     """
 
-    def __init__(self, raw):
+    def __init__(self, raw=None):
         struct = {
             "fields" : {
                 "id" : {"coerce" :"unicode"},
@@ -256,7 +256,7 @@ class RoutingInformation(dataobj.DataObj):
     }
     """
 
-    def __init__(self, raw):
+    def __init__(self, raw=None):
         struct = {
             "fields" : {
                 "analysis_date" : {"coerce" : "utcdatetime"}

@@ -41,3 +41,12 @@ SECRET_KEY = "super-secret-key"
 DEFAULT_LIST_PAGE_START = 1
 DEFAULT_LIST_PAGE_SIZE = 25
 MAX_LIST_PAGE_SIZE = 100
+
+PACKAGE_HANDLERS = {
+    "http://router.jisc.ac.uk/packages/FilesAndJATS" : "service.packages.FilesAndJATS"
+}
+
+STORE_IMPL = "service.store.StoreLocal"
+
+from octopus.lib import paths
+STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store")
