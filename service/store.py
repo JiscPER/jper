@@ -23,8 +23,10 @@ class Store(object):
         pass
 
     def get(self, container_id, target_name):
-        pass
+        return None
 
+    def delete(self, container_id, target_name=None):
+        pass
 
 class StoreLocal(Store):
     """
