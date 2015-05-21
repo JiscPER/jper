@@ -1,7 +1,7 @@
 import requests, json, os
 
 from octopus.modules.es.testindex import ESTestCase
-from octopus.modules.test.helpers import get_first_free_port, TestServer, make_test_config
+from octopus.modules.test.helpers import get_first_free_port, TestServer, make_config
 from service.tests import fixtures
 from octopus.core import app
 from service import web
@@ -22,7 +22,7 @@ class TestAPI(ESTestCase):
         }
         self.cfg_file = paths.rel2abs(__file__, "..", "resources", "test-server.cfg")
 
-        make_test_config(self.config, self.cfg_file)
+        make_config(self.config, self.cfg_file)
         self.test_server = TestServer(port=None, index=None, python_app_module_path=os.path.abspath(web.__file__), cfg_file=self.cfg_file)
         self.test_server.spawn_with_config()
 
