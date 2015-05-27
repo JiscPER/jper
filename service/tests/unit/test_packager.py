@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # from octopus.modules.es.testindex import ESTestCase
 from unittest import TestCase
 from service import packages, store
@@ -312,6 +314,69 @@ class TestPackager(TestCase):
         assert len(es) == len(emails)
         for e in emails:
             assert e in es
+
+    def test_09_epmc_metadata(self):
+        """
+        Ok, so technically this is testing a private method on a specific instance of the
+        packager, but that method does some quite difficult work, so needs to be tested in isolation
+        We will also test it further down as part of the broader function it is part of
+        :return:
+        """
+        fhs = fixtures.PackageFactory.file_handles(elife_jats=False, epmc_jats=True)
+        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=fhs)
+        md = inst._epmc_metadata()
+
+        # These are the results we would expect
+        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers."
+        type = "Journal Article"
+        lang = "eng"
+        pubdate = "2015-03-19T00:00:00Z"
+        pmid = "25853119"
+        pmcid = "PMC4365737"
+        doi = "10.3389/fchem.2015.00017"
+        issns = ["2296-2646"]
+        authors = [
+            {"name" : "Cerasoli E", "affiliation" : "Biotechnology Department, National Physical Laboratory Teddington, UK."},
+            {"name" : "Ryadnov MG", "affiliation" : "Biotechnology Department, National Physical Laboratory Teddington, UK."},
+            {"name" : "Austen BM", "affiliation" : "Basic Medical Sciences, St. George's University of London London, UK."}
+        ]
+        projects = [
+            {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
+            {"name" : "Wellcome Trust", "grant_number" : "085475/08/Z"}
+        ]
+        subjects = ["Humans", "Glaucoma, Open-Angle", u'A\u03b2 Oligomers',
+                    "Neurodegeneration", "protein misfolding", "Fibrillogenesis", "Alzheimer's disease"]
+
+        assert md.title == title
+        assert md.type == type
+        assert md.language == lang
+        assert md.publication_date == pubdate
+        assert md.get_identifiers("pmid")[0] == pmid
+        assert md.get_identifiers("pmcid")[0] == pmcid
+        assert md.get_identifiers("doi")[0] == doi
+        assert md.get_identifiers("issn") == issns
+
+        count = 0
+        for a in md.authors:
+            for comp in authors:
+                if a.get("name") == comp.get("name"):
+                    assert a.get("affiliation") == comp.get("affiliation")
+                    count += 1
+        assert count == 3
+
+        count = 0
+        for p in md.projects:
+            for comp in projects:
+                if p.get("grant_number") == comp.get("grant_number"):
+                    assert p.get("name") == comp.get("name")
+                    count += 1
+        assert count == 2
+
+        for s in md.subjects:
+            assert s in subjects
+        assert len(subjects) == len(md.subjects)
+
+
 
 
 

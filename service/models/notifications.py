@@ -154,6 +154,79 @@ class NotificationMetadata(dataobj.DataObj):
         self._add_struct(struct)
         super(NotificationMetadata, self).__init__(raw)
 
+    @property
+    def title(self):
+        return self._get_single("metadata.title", coerce=dataobj.to_unicode())
+
+    @title.setter
+    def title(self, val):
+        self._set_single("metadata.title", val, coerce=dataobj.to_unicode(), allow_none=False, ignore_none=True)
+
+    @property
+    def type(self):
+        return self._get_single("metadata.type", coerce=dataobj.to_unicode())
+
+    @type.setter
+    def type(self, val):
+        self._set_single("metadata.type", val, coerce=dataobj.to_unicode(), allow_none=False, ignore_none=True)
+
+    @property
+    def language(self):
+        # Note that in this case we don't coerce to iso language, as it's a slightly costly operation, and all incoming
+        # data should already be coerced
+        return self._get_single("metadata.language", coerce=dataobj.to_unicode())
+
+    @language.setter
+    def language(self, val):
+        self._set_single("metadata.language", val, coerce=dataobj.to_isolang(), allow_coerce_failure=True, allow_none=False, ignore_none=True)
+
+    @property
+    def publication_date(self):
+        return self._get_single("metadata.publication_date", coerce=dataobj.date_str())
+
+    @publication_date.setter
+    def publication_date(self, val):
+        self._set_single("metadata.publication_date", val, coerce=dataobj.date_str(), allow_coerce_failure=True, allow_none=False, ignore_none=True)
+
+    def get_identifiers(self, type):
+        ids = self._get_list("metadata.identifier")
+        res = []
+        for i in ids:
+            if i.get("type") == type:
+                res.append(i.get("id"))
+        return res
+
+    def add_identifier(self, id, type):
+        if id is None or type is None:
+            return
+        uc = dataobj.to_unicode()
+        obj = {"id" : self._coerce(id, uc), "type" : self._coerce(type, uc)}
+        self._delete_from_list("metadata.identifier", matchsub=obj, prune=False)
+        self._add_to_list("metadata.identifier", obj)
+
+    @property
+    def authors(self):
+        return self._get_list("metadata.author")
+
+    def add_author(self, author_object):
+        self._delete_from_list("metadata.author", matchsub=author_object)
+        self._add_to_list("metadata.author", author_object)
+
+    @property
+    def projects(self):
+        return self._get_list("metadata.project")
+
+    def add_project(self, project_obj):
+        self._delete_from_list("metadata.project", matchsub=project_obj)
+        self._add_to_list("metadata.project", project_obj)
+
+    @property
+    def subjects(self):
+        return self._get_list("metadata.subject")
+
+    def add_subject(self, kw):
+        self._add_to_list("metadata.subject", kw, coerce=dataobj.to_unicode(), unique=True)
+
 class BaseNotification(NotificationMetadata):
     """
     {

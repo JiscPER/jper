@@ -114,7 +114,23 @@ class FilesAndJATS(PackageHandler):
                 yield n, StringIO(x.tostring())
 
     def notification_metadata(self):
-        pass
+        emd = None
+        jmd = None
+
+        # extract all the relevant data from epmc
+        if self.epmc is not None:
+            emd = self._epmc_metadata()
+
+        # extract all the relevant data from jats
+        if self.jats is not None:
+            jmd = self._jats_matadata()
+
+        md = models.NotificationMetadata()
+        if emd is not None:
+            md.merge(emd)
+        if jmd is not None:
+            md.merge(jmd)
+        return md
 
     def match_data(self):
         match = models.RoutingMetadata()
@@ -128,6 +144,53 @@ class FilesAndJATS(PackageHandler):
             self._jats_match_data(match)
 
         return match
+
+    def _jats_metadata(self):
+        md = models.NotificationMetadata()
+        return md
+
+    def _epmc_metadata(self):
+        md = models.NotificationMetadata()
+
+        md.title = self.epmc.title
+        md.type = self.epmc.publication_type
+        md.language = self.epmc.language
+        md.publication_date = self.epmc.publication_date
+
+        md.add_identifier(self.epmc.pmid, "pmid")
+        md.add_identifier(self.epmc.pmcid, "pmcid")
+        md.add_identifier(self.epmc.doi, "doi")
+
+        for issn in self.epmc.issns:
+            md.add_identifier(issn, "issn")
+
+        for author in self.epmc.authors:
+            fn = author.get("fullName")
+            if fn is None:
+                continue
+            aff = author.get("affiliation")
+            obj = {"name" : fn}
+            if aff is not None:
+                obj["affiliation"] = aff
+            md.add_author(obj)
+
+        for grant in self.epmc.grants:
+            obj = {}
+            gid = grant.get("grantId")
+            if gid is not None:
+                obj["grant_number"] = gid
+            ag = grant.get("agency")
+            if ag is not None:
+                obj["name"] = ag
+            if len(obj.keys()) > 0:
+                md.add_project(obj)
+
+        for kw in self.epmc.mesh_descriptors:
+            md.add_subject(kw)
+        for kw in self.epmc.keywords:
+            md.add_subject(kw)
+
+        return md
 
     def _jats_match_data(self, match):
         # subject keywords
