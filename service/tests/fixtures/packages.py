@@ -53,10 +53,20 @@ class PackageFactory(object):
         zip.close()
 
     @classmethod
-    def file_handles(cls):
-        jats = codecs.open(os.path.join(RESOURCES, "valid_jats_elife.xml"), "rb")
+    def file_handles(cls, elife_jats=True, epmc_jats=False):
+        jats = None
+        if elife_jats:
+            jats = codecs.open(os.path.join(RESOURCES, "valid_jats_elife.xml"), "rb")
+        elif epmc_jats:
+            jats = codecs.open(os.path.join(RESOURCES, "valid_jats_epmc.xml"), "rb")
+
         epmc = codecs.open(os.path.join(RESOURCES, "valid_epmc.xml"), "rb")
-        return [("jats.xml", jats), ("epmc.xml", epmc)]
+
+        fhs = [("epmc.xml", epmc)]
+        if jats is not None:
+            fhs.append(("jats.xml", jats))
+
+        return fhs
 
     @classmethod
     def custom_file_handles(cls, no_jats=False, no_epmc=False, invalid_jats=False, invalid_epmc=False):

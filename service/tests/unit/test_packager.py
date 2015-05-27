@@ -14,9 +14,9 @@ TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 TEST_HANDLER = "service.tests.fixtures.TestPackageHandler"
 STORE_ID = "12345"
 
-class TestModels(TestCase):
+class TestPackager(TestCase):
     def setUp(self):
-        super(TestModels, self).setUp()
+        super(TestPackager, self).setUp()
 
         self.old_ph = deepcopy(app.config["PACKAGE_HANDLERS"])
         app.config["PACKAGE_HANDLERS"].update({TEST_FORMAT : TEST_HANDLER})
@@ -27,7 +27,7 @@ class TestModels(TestCase):
         self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
 
     def tearDown(self):
-        super(TestModels, self).tearDown()
+        super(TestPackager, self).tearDown()
         app.config["PACKAGE_HANDLERS"] = self.old_ph
         app.config["STORE_IMPL"] = self.old_store
 
@@ -261,6 +261,59 @@ class TestModels(TestCase):
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path)
         with self.assertRaises(store.StoreException):
             packages.PackageManager.ingest(STORE_ID, self.custom_zip_path, PACKAGE)
+
+    def test_08_match_data(self):
+        # generate the match data
+        fhs = fixtures.PackageFactory.file_handles(elife_jats=False, epmc_jats=True)
+        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=fhs)
+        rm = inst.match_data()
+
+        # this is the data we expect to have been extracted
+        author_list = "Cerasoli E, Ryadnov MG, Austen BM."
+        authors = ["Cerasoli E", "Ryadnov MG", "Austen BM", "Eleonora Cerasoli", "Maxim G. Ryadnov", "Brian M. Austen"]
+        affs = [
+            "Biotechnology Department, National Physical Laboratory Teddington, UK.",
+            "Basic Medical Sciences, St. George's University of London London, UK.",
+            "1 Biotechnology Department, National Physical Laboratory Teddington, UK",
+            "2 Basic Medical Sciences, St. George's University of London London, UK"
+        ]
+        grants = ["085475/B/08/Z", "085475/08/Z"]
+        keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", u'A\u03b2 oligomers',
+                    "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
+        emails = ["sghk200@sgul.ac.uk"]
+
+
+        # check that we got all the data we expected
+        als = rm.get_author_ids(type="author-list")
+        assert len(als) == 1
+        assert als[0]["id"] == author_list
+
+        names = rm.get_author_ids(type="name")
+        assert len(names) == len(authors)
+        for a in names:
+            assert a["id"] in authors
+
+        affiliations = rm.affiliations
+        assert len(affiliations) == len(affs)
+        for a in affs:
+            assert a in affiliations
+
+        gids = rm.grants
+        assert len(gids) == len(grants)
+        for g in grants:
+            assert g in gids
+
+        keys = rm.keywords
+        assert len(keys) == len(keywords)
+        for k in keywords:
+            assert k in keys
+
+        es = rm.emails
+        assert len(es) == len(emails)
+        for e in emails:
+            assert e in es
+
+
 
 
 

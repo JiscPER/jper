@@ -320,3 +320,43 @@ class RoutingMetadata(dataobj.DataObj):
 
         self._add_struct(struct)
         super(RoutingMetadata, self).__init__(raw=raw)
+
+    def add_author_id(self, id, type):
+        uc = dataobj.to_unicode()
+        obj = {"id" : self._coerce(id, uc), "type" : self._coerce(type, uc)}
+        self._delete_from_list("author_ids", matchsub=obj, prune=False)
+        self._add_to_list("author_ids", obj)
+
+    def get_author_ids(self, type=None):
+        if type is None:
+            return self._get_list("author_ids")
+        else:
+            return [aid for aid in self._get_list("author_ids") if aid.get("type") == type]
+
+    @property
+    def affiliations(self):
+        return self._get_list("affiliations", coerce=dataobj.to_unicode())
+
+    def add_affiliation(self, aff):
+        self._add_to_list("affiliations", aff, coerce=dataobj.to_unicode(), unique=True)
+
+    @property
+    def grants(self):
+        return self._get_list("grants", coerce=dataobj.to_unicode())
+
+    def add_grant_id(self, gid):
+        self._add_to_list("grants", gid, coerce=dataobj.to_unicode(), unique=True)
+
+    @property
+    def keywords(self):
+        return self._get_list("keywords", coerce=dataobj.to_unicode())
+
+    def add_keyword(self, kw):
+        self._add_to_list("keywords", kw, coerce=dataobj.to_unicode(), unique=True)
+
+    @property
+    def emails(self):
+        return self._get_list("emails", coerce=dataobj.to_unicode())
+
+    def add_email(self, email):
+        self._add_to_list("emails", email, coerce=dataobj.to_unicode(), unique=True)

@@ -16,7 +16,7 @@ class PackageFactory(object):
         formats = app.config.get("PACKAGE_HANDLERS", {})
         cname = formats.get(format)
         klazz = plugin.load_class(cname)
-        return klazz(zip_path, metadata_files)
+        return klazz(zip_path=zip_path, metadata_files=metadata_files)
 
 class PackageManager(object):
 
@@ -117,7 +117,78 @@ class FilesAndJATS(PackageHandler):
         pass
 
     def match_data(self):
-        pass
+        match = models.RoutingMetadata()
+
+        # extract all the relevant match data from epmc
+        if self.epmc is not None:
+            self._epmc_match_data(match)
+
+        # extract all the relevant match data from jats
+        if self.jats is not None:
+            self._jats_match_data(match)
+
+        return match
+
+    def _jats_match_data(self, match):
+        # subject keywords
+        for c in self.jats.categories:
+            match.add_keyword(c)
+
+        # individual authors, emails, affiliations
+        for a in self.jats.contribs:
+            # name
+            name = a.get("given-names", "") + " " + a.get("surname", "")
+            if name.strip() != "":
+                match.add_author_id(name, "name")
+
+            # email
+            email = a.get("email")
+            if email is not None:
+                match.add_email(email)
+
+            # affiliations
+            affs = a.get("affiliations", [])
+            for a in affs:
+                match.add_affiliation(a)
+
+        # other keywords
+        for k in self.jats.keywords:
+            match.add_keyword(k)
+
+        # other email addresses
+        for e in self.jats.emails:
+            match.add_email(e)
+
+    def _epmc_match_data(self, match):
+        # author string
+        author_string = self.epmc.author_string
+        if author_string is not None:
+            match.add_author_id(author_string, "author-list")
+
+        # individual authors and their affiliations
+        authors = self.epmc.authors
+        for a in authors:
+            # name
+            fn = a.get("fullName")
+            if fn is not None:
+                match.add_author_id(fn, "name")
+
+            # affiliation
+            aff = a.get("affiliation")
+            if aff is not None:
+                match.add_affiliation(aff)
+
+        # grant ids
+        gs = self.epmc.grants
+        for g in gs:
+            gid = g.get("grantId")
+            if gid is not None:
+                match.add_grant_id(gid)
+
+        # keywords
+        keys = self.epmc.mesh_descriptors
+        for k in keys:
+            match.add_keyword(k)
 
     def _load_from_metadata(self):
         for name, stream in self.metadata_files:
