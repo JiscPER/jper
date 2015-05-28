@@ -376,9 +376,60 @@ class TestPackager(TestCase):
             assert s in subjects
         assert len(subjects) == len(md.subjects)
 
+    def test_10_jats_metadata(self):
+        """
+        Ok, so technically this is testing a private method on a specific instance of the
+        packager, but that method does some quite difficult work, so needs to be tested in isolation
+        We will also test it further down as part of the broader function it is part of
+        :return:
+        """
+        fhs = fixtures.PackageFactory.file_handles(elife_jats=False, epmc_jats=True)
+        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=fhs)
+        md = inst._jats_metadata()
 
+        # These are the results we would expect
+        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers"
+        publisher = "Frontiers Media S.A."
+        accepted = "2015-02-24T00:00:00Z"
+        submitted = "2014-12-15T00:00:00Z"
+        license_type = "open-access"
+        license_url = "http://creativecommons.org/licenses/by/4.0/"
+        pmcid = "PMC4365737"
+        doi = "10.3389/fchem.2015.00017"
+        issns = ["2296-2646"]
+        authors = [
+            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
+            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
+            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London London, UK"}
+        ]
+        subjects = ["Chemistry", u'A\u03b2 oligomers',
+                    "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
 
+        assert md.title == title
+        assert md.publisher == publisher
+        assert md.date_accepted == accepted
+        assert md.date_submitted == submitted
 
+        lic = md.license
+        assert lic.get("title") == license_type
+        assert lic.get("type") == license_type
+        assert lic.get("url") == license_url
+
+        assert md.get_identifiers("pmcid")[0] == pmcid
+        assert md.get_identifiers("doi")[0] == doi
+        assert md.get_identifiers("issn") == issns
+
+        count = 0
+        for a in md.authors:
+            for comp in authors:
+                if a.get("name") == comp.get("name"):
+                    assert a.get("affiliation") == comp.get("affiliation")
+                    count += 1
+        assert count == 3
+
+        for s in md.subjects:
+            assert s in subjects
+        assert len(subjects) == len(md.subjects)
 
 
 

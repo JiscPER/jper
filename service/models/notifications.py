@@ -171,6 +171,14 @@ class NotificationMetadata(dataobj.DataObj):
         self._set_single("metadata.type", val, coerce=dataobj.to_unicode(), allow_none=False, ignore_none=True)
 
     @property
+    def publisher(self):
+        return self._get_single("metadata.publisher", coerce=dataobj.to_unicode())
+
+    @publisher.setter
+    def publisher(self, val):
+        self._set_single("metadata.publisher", val, coerce=dataobj.to_unicode(), allow_none=False, ignore_none=True)
+
+    @property
     def language(self):
         # Note that in this case we don't coerce to iso language, as it's a slightly costly operation, and all incoming
         # data should already be coerced
@@ -187,6 +195,22 @@ class NotificationMetadata(dataobj.DataObj):
     @publication_date.setter
     def publication_date(self, val):
         self._set_single("metadata.publication_date", val, coerce=dataobj.date_str(), allow_coerce_failure=True, allow_none=False, ignore_none=True)
+
+    @property
+    def date_accepted(self):
+        return self._get_single("metadata.date_accepted", coerce=dataobj.date_str())
+
+    @date_accepted.setter
+    def date_accepted(self, val):
+        self._set_single("metadata.date_accepted", val, coerce=dataobj.date_str(), allow_coerce_failure=True, allow_none=False, ignore_none=True)
+
+    @property
+    def date_submitted(self):
+        return self._get_single("metadata.date_submitted", coerce=dataobj.date_str())
+
+    @date_submitted.setter
+    def date_submitted(self, val):
+        self._set_single("metadata.date_submitted", val, coerce=dataobj.date_str(), allow_coerce_failure=True, allow_none=False, ignore_none=True)
 
     def get_identifiers(self, type):
         ids = self._get_list("metadata.identifier")
@@ -226,6 +250,17 @@ class NotificationMetadata(dataobj.DataObj):
 
     def add_subject(self, kw):
         self._add_to_list("metadata.subject", kw, coerce=dataobj.to_unicode(), unique=True)
+
+    @property
+    def license(self):
+        return self._get_single("metadata.license_ref")
+
+    def set_license(self, type, url):
+        uc = dataobj.to_unicode()
+        type = self._coerce(type, uc)
+        url = self._coerce(url, uc)
+        obj = {"title" : type, "type" : type, "url" : url}
+        self._set_single("metadata.license_ref", obj)
 
 class BaseNotification(NotificationMetadata):
     """

@@ -147,6 +147,37 @@ class FilesAndJATS(PackageHandler):
 
     def _jats_metadata(self):
         md = models.NotificationMetadata()
+
+        md.title = self.jats.title
+        md.publisher = self.jats.publisher
+        md.publication_date = self.jats.publication_date
+        md.date_accepted = self.jats.date_accepted
+        md.date_submitted = self.jats.date_submitted
+
+        type, url, _ = self.jats.get_licence_details()
+        md.set_license(type, url)
+
+        for issn in self.jats.issn:
+            md.add_identifier(issn, "issn")
+
+        md.add_identifier(self.jats.pmcid, "pmcid")
+        md.add_identifier(self.jats.doi, "doi")
+
+        for author in self.jats.authors:
+            name = author.get("given-names", "") + " " + author.get("surname", "")
+            if name.strip() == "":
+                continue
+            affs = "; ".join(author.get("affiliations", []))
+            obj = {"name" : name}
+            if affs is not None and affs != "":
+                obj["affiliation"] = affs
+            md.add_author(obj)
+
+        for kw in self.jats.categories:
+            md.add_subject(kw)
+        for kw in self.jats.keywords:
+            md.add_subject(kw)
+
         return md
 
     def _epmc_metadata(self):
