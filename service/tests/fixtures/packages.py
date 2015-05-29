@@ -41,7 +41,7 @@ class PackageFactory(object):
             if invalid_jats:
                 zip.writestr("invalidjats.xml", "akdsjiwqefiw2fuwefoiwqejhqfwe")
             else:
-                zip.write(os.path.join(RESOURCES, "valid_jats_elife.xml"), "validjats.xml")
+                zip.write(os.path.join(RESOURCES, "valid_jats_epmc.xml"), "validjats.xml")
 
         # determine if we need to write an epmc file
         if not no_epmc:

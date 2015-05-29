@@ -123,14 +123,9 @@ class FilesAndJATS(PackageHandler):
 
         # extract all the relevant data from jats
         if self.jats is not None:
-            jmd = self._jats_matadata()
+            jmd = self._jats_metadata()
 
-        md = models.NotificationMetadata()
-        if emd is not None:
-            md.merge(emd)
-        if jmd is not None:
-            md.merge(jmd)
-        return md
+        return self._merge_metadata(emd, jmd)
 
     def match_data(self):
         match = models.RoutingMetadata()
@@ -144,6 +139,38 @@ class FilesAndJATS(PackageHandler):
             self._jats_match_data(match)
 
         return match
+
+    def _merge_metadata(self, emd, jmd):
+        if emd is None:
+            emd = models.NotificationMetadata()
+        if jmd is None:
+            jmd = models.NotificationMetadata()
+
+        md = models.NotificationMetadata()
+
+        md.title = jmd.title if jmd.title is not None else emd.title
+        md.publisher = jmd.publisher
+        md.type = emd.type
+        md.language = emd.language
+        md.publication_date = emd.publication_date if emd.publication_date is not None else jmd.publication_date
+        md.date_accepted = jmd.date_accepted
+        md.date_submitted = jmd.date_submitted
+        md.license = jmd.license
+
+        for id in emd.identifiers:
+            md.add_identifier(id.get("id"), id.get("type"))
+        for id in jmd.identifiers:
+            md.add_identifier(id.get("id"), id.get("type"))
+
+        md.authors = jmd.authors if len(jmd.authors) > 0 else emd.authors
+        md.projects = emd.projects
+
+        for s in emd.subjects:
+            md.add_subject(s)
+        for s in jmd.subjects:
+            md.add_subject(s)
+
+        return md
 
     def _jats_metadata(self):
         md = models.NotificationMetadata()

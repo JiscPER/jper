@@ -431,6 +431,192 @@ class TestPackager(TestCase):
             assert s in subjects
         assert len(subjects) == len(md.subjects)
 
+    def test_11_notification_metadata(self):
+        fhs = fixtures.PackageFactory.file_handles(elife_jats=False, epmc_jats=True)
+        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=fhs)
+        md = inst.notification_metadata()
+
+        # These are the results we would expect
+        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers"
+        publisher = "Frontiers Media S.A."
+        type = "Journal Article"
+        lang = "eng"
+        pubdate = "2015-03-19T00:00:00Z"
+        accepted = "2015-02-24T00:00:00Z"
+        submitted = "2014-12-15T00:00:00Z"
+        license_type = "open-access"
+        license_url = "http://creativecommons.org/licenses/by/4.0/"
+        pmid = "25853119"
+        pmcid = "PMC4365737"
+        doi = "10.3389/fchem.2015.00017"
+        issns = ["2296-2646"]
+        authors = [
+            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
+            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
+            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London London, UK"}
+        ]
+        projects = [
+            {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
+            {"name" : "Wellcome Trust", "grant_number" : "085475/08/Z"}
+        ]
+        subjects = ["Chemistry", u'A\u03b2 oligomers', "neurodegeneration", "protein misfolding", "fibrillogenesis",
+                    "Alzheimer's disease", "Humans", "Glaucoma, Open-Angle", u'A\u03b2 Oligomers', "Neurodegeneration",
+                    "Fibrillogenesis"]
+
+        assert md.title == title
+        assert md.publisher == publisher
+        assert md.type == type
+        assert md.language == lang
+        assert md.publication_date == pubdate
+        assert md.date_accepted == accepted
+        assert md.date_submitted == submitted
+
+        lic = md.license
+        assert lic.get("title") == license_type
+        assert lic.get("type") == license_type
+        assert lic.get("url") == license_url
+
+        assert md.get_identifiers("pmid")[0] == pmid
+        assert md.get_identifiers("pmcid")[0] == pmcid
+        assert md.get_identifiers("doi")[0] == doi
+        assert md.get_identifiers("issn") == issns
+
+        count = 0
+        for a in md.authors:
+            for comp in authors:
+                if a.get("name") == comp.get("name"):
+                    assert a.get("affiliation") == comp.get("affiliation")
+                    count += 1
+        assert count == 3
+
+        count = 0
+        for p in md.projects:
+            for comp in projects:
+                if p.get("grant_number") == comp.get("grant_number"):
+                    assert p.get("name") == comp.get("name")
+                    count += 1
+        assert count == 2
+
+        for s in md.subjects:
+            assert s in subjects
+        assert len(subjects) == len(md.subjects)
+
+    def test_12_package_manager_extract(self):
+        # create a custom zip (the package manager will delete it, so don't use the fixed example)
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path)
+
+        # get the package manager to ingest
+        packages.PackageManager.ingest(STORE_ID, self.custom_zip_path, PACKAGE)
+
+        # now the item is in the store, get the package manager to extract from store
+        md, rm = packages.PackageManager.extract(STORE_ID, PACKAGE)
+
+        # These are the results we would expect from the metadata (same as in the previous test)
+        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers"
+        publisher = "Frontiers Media S.A."
+        type = "Journal Article"
+        lang = "eng"
+        pubdate = "2015-03-19T00:00:00Z"
+        accepted = "2015-02-24T00:00:00Z"
+        submitted = "2014-12-15T00:00:00Z"
+        license_type = "open-access"
+        license_url = "http://creativecommons.org/licenses/by/4.0/"
+        pmid = "25853119"
+        pmcid = "PMC4365737"
+        doi = "10.3389/fchem.2015.00017"
+        issns = ["2296-2646"]
+        authors = [
+            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
+            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
+            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London London, UK"}
+        ]
+        projects = [
+            {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
+            {"name" : "Wellcome Trust", "grant_number" : "085475/08/Z"}
+        ]
+        subjects = ["Chemistry", u'A\u03b2 oligomers', "neurodegeneration", "protein misfolding", "fibrillogenesis",
+                    "Alzheimer's disease", "Humans", "Glaucoma, Open-Angle", u'A\u03b2 Oligomers', "Neurodegeneration",
+                    "Fibrillogenesis"]
+
+        assert md.title == title
+        assert md.publisher == publisher
+        assert md.type == type
+        assert md.language == lang
+        assert md.publication_date == pubdate
+        assert md.date_accepted == accepted
+        assert md.date_submitted == submitted
+
+        lic = md.license
+        assert lic.get("title") == license_type
+        assert lic.get("type") == license_type
+        assert lic.get("url") == license_url
+
+        assert md.get_identifiers("pmid")[0] == pmid
+        assert md.get_identifiers("pmcid")[0] == pmcid
+        assert md.get_identifiers("doi")[0] == doi
+        assert md.get_identifiers("issn") == issns
+
+        count = 0
+        for a in md.authors:
+            for comp in authors:
+                if a.get("name") == comp.get("name"):
+                    assert a.get("affiliation") == comp.get("affiliation")
+                    count += 1
+        assert count == 3
+
+        count = 0
+        for p in md.projects:
+            for comp in projects:
+                if p.get("grant_number") == comp.get("grant_number"):
+                    assert p.get("name") == comp.get("name")
+                    count += 1
+        assert count == 2
+
+        for s in md.subjects:
+            assert s in subjects
+        assert len(subjects) == len(md.subjects)
+
+        # this is the data we expect to have been extracted for the match
+        author_list = "Cerasoli E, Ryadnov MG, Austen BM."
+        authors = ["Cerasoli E", "Ryadnov MG", "Austen BM", "Eleonora Cerasoli", "Maxim G. Ryadnov", "Brian M. Austen"]
+        affs = [
+            "Biotechnology Department, National Physical Laboratory Teddington, UK.",
+            "Basic Medical Sciences, St. George's University of London London, UK.",
+            "1 Biotechnology Department, National Physical Laboratory Teddington, UK",
+            "2 Basic Medical Sciences, St. George's University of London London, UK"
+        ]
+        grants = ["085475/B/08/Z", "085475/08/Z"]
+        keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", u'A\u03b2 oligomers',
+                    "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
+        emails = ["sghk200@sgul.ac.uk"]
 
 
+        # check that we got all the data we expected
+        als = rm.get_author_ids(type="author-list")
+        assert len(als) == 1
+        assert als[0]["id"] == author_list
 
+        names = rm.get_author_ids(type="name")
+        assert len(names) == len(authors)
+        for a in names:
+            assert a["id"] in authors
+
+        affiliations = rm.affiliations
+        assert len(affiliations) == len(affs)
+        for a in affs:
+            assert a in affiliations
+
+        gids = rm.grants
+        assert len(gids) == len(grants)
+        for g in grants:
+            assert g in gids
+
+        keys = rm.keywords
+        assert len(keys) == len(keywords)
+        for k in keywords:
+            assert k in keys
+
+        es = rm.emails
+        assert len(es) == len(emails)
+        for e in emails:
+            assert e in es

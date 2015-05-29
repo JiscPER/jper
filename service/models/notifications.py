@@ -212,6 +212,10 @@ class NotificationMetadata(dataobj.DataObj):
     def date_submitted(self, val):
         self._set_single("metadata.date_submitted", val, coerce=dataobj.date_str(), allow_coerce_failure=True, allow_none=False, ignore_none=True)
 
+    @property
+    def identifiers(self):
+        return self._get_list("metadata.identifier")
+
     def get_identifiers(self, type):
         ids = self._get_list("metadata.identifier")
         res = []
@@ -232,6 +236,24 @@ class NotificationMetadata(dataobj.DataObj):
     def authors(self):
         return self._get_list("metadata.author")
 
+    @authors.setter
+    def authors(self, objlist):
+        # validate the object structure quickly
+        allowed = ["name", "affiliation", "identifier"]
+        for obj in objlist:
+            for k in obj.keys():
+                if k not in allowed:
+                    raise dataobj.DataSchemaException("Author object must only contain the following keys: {x}".format(x=", ".join(allowed)))
+
+            # coerce the values of some of the keys
+            uc = dataobj.to_unicode()
+            for k in ["name", "affiliation"]:
+                if k in obj:
+                    obj[k] = self._coerce(obj[k], uc)
+
+        # finally write it
+        self._set_list("metadata.author", objlist)
+
     def add_author(self, author_object):
         self._delete_from_list("metadata.author", matchsub=author_object)
         self._add_to_list("metadata.author", author_object)
@@ -239,6 +261,24 @@ class NotificationMetadata(dataobj.DataObj):
     @property
     def projects(self):
         return self._get_list("metadata.project")
+
+    @projects.setter
+    def projects(self, objlist):
+        # validate the object structure quickly
+        allowed = ["name", "grant_number", "identifier"]
+        for obj in objlist:
+            for k in obj.keys():
+                if k not in allowed:
+                    raise dataobj.DataSchemaException("Project object must only contain the following keys: {x}".format(x=", ".join(allowed)))
+
+            # coerce the values of some of the keys
+            uc = dataobj.to_unicode()
+            for k in ["name", "grant_number"]:
+                if k in obj:
+                    obj[k] = self._coerce(obj[k], uc)
+
+        # finally write it
+        self._set_list("metadata.project", objlist)
 
     def add_project(self, project_obj):
         self._delete_from_list("metadata.project", matchsub=project_obj)
@@ -254,6 +294,23 @@ class NotificationMetadata(dataobj.DataObj):
     @property
     def license(self):
         return self._get_single("metadata.license_ref")
+
+    @license.setter
+    def license(self, obj):
+        # validate the object structure quickly
+        allowed = ["title", "type", "url", "version"]
+        for k in obj.keys():
+            if k not in allowed:
+                raise dataobj.DataSchemaException("License object must only contain the following keys: {x}".format(x=", ".join(allowed)))
+
+        # coerce the values of the keys
+        uc = dataobj.to_unicode()
+        for k in allowed:
+            if k in obj:
+                obj[k] = self._coerce(obj[k], uc)
+
+        # finally write it
+        self._set_single("metadata.license_ref", obj)
 
     def set_license(self, type, url):
         uc = dataobj.to_unicode()
