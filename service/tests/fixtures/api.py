@@ -40,7 +40,7 @@ OUTGOING = {
     "event" : "submission",
 
     "content" : {
-        "packaging_format" : "http://router.jisc.ac.uk/package/RouterNative",
+        "packaging_format" : "http://router.jisc.ac.uk/packages/FilesAndJATS",
     },
 
     "links" : [
@@ -129,7 +129,7 @@ INCOMING = {
     },
 
     "content" : {
-        "packaging_format" : "http://router.jisc.ac.uk/package/RouterNative"
+        "packaging_format" : "http://router.jisc.ac.uk/packages/FilesAndJATS"
     },
 
     "links" : [

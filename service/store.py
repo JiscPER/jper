@@ -10,7 +10,22 @@ class StoreFactory(object):
 
     @classmethod
     def get(cls):
+        """
+        Returns an implementation of the base Store class
+        """
         si = app.config.get("STORE_IMPL")
+        sm = plugin.load_class(si)
+        return sm()
+
+    @classmethod
+    def tmp(cls):
+        """
+        Returns an implementation of the base Store class which should be able
+        to provide local temp storage to the app.  In addition to the methods supplied
+        by Store, it must also provide a "path" function to give the path on-disk to
+        the file
+        """
+        si = app.config.get("STORE_TMP_IMPL")
         sm = plugin.load_class(si)
         return sm()
 
@@ -30,9 +45,7 @@ class Store(object):
 
 class StoreLocal(Store):
     """
-    Primitive local storage system.  Use this for testing.
-
-    Probably don't use it in production - it doesn't do anything intelligent, and may break
+    Primitive local storage system.  Use this for testing in place of remote store
     """
     def __init__(self):
         self.dir = app.config.get("STORE_LOCAL_DIR")
@@ -71,3 +84,14 @@ class StoreLocal(Store):
             else:
                 shutil.rmtree(cpath)
 
+class TempStore(StoreLocal):
+    def __init__(self):
+        self.dir = app.config.get("STORE_TMP_DIR")
+        if self.dir is None:
+            raise StoreException("STORE_TMP_DIR is not defined in config")
+
+    def path(self, container_id, filename):
+        fpath = os.path.join(self.dir, container_id, filename)
+        if not os.path.exists(fpath):
+            raise StoreException("Unable to create path for container {x}, file {y}".format(x=container_id, y=filename))
+        return fpath

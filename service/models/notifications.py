@@ -413,6 +413,59 @@ class BaseNotification(NotificationMetadata):
         self._add_struct(struct)
         super(BaseNotification, self).__init__(raw)
 
+    @property
+    def packaging_format(self):
+        return self._get_single("content.packaging_format", coerce=dataobj.to_unicode())
+
+    @property
+    def links(self):
+        return self._get_list("links")
+
+    def match_data(self):
+        ma = RoutingMetadata()
+
+        # urls - we don't have a specific place to look for these, so we may choose to mine the
+        # metadata for them later
+        #for a in self.authors:
+        #    if a.get("affiliation") is not None:
+        #        # extract the
+
+        # emails
+        for a in self.authors:
+            for ident in a.get("identifier", []):
+                if ident.get("type") == "email":
+                    ma.add_email(ident.get("id"))
+
+        # affiliations
+        for a in self.authors:
+            if a.get("affiliation") is not None:
+                ma.add_affiliation(a.get("affiliation"))
+
+        # author_ids
+        for a in self.authors:
+            if a.get("name") is not None:
+                ma.add_author_id(a.get("name"), "name")
+            for ident in a.get("identifier", []):
+                ma.add_author_id(ident.get("id"), ident.get("type"))
+
+        # addresses
+        for a in self.authors:
+            if a.get("affiliation") is not None:
+                ma.add_address(a.get("affiliation"))
+
+        # keywords
+        ma.keywords = self.subjects
+
+        # grants
+        for p in self.projects:
+            if p.get("grant_number") is not None:
+                ma.add_grant_id(p.get("grant_number"))
+
+        # content_types
+        ma.add_content_type(self.type)
+
+        return ma
+
 class RoutingInformation(dataobj.DataObj):
     """
     {
@@ -516,6 +569,10 @@ class RoutingMetadata(dataobj.DataObj):
     def keywords(self):
         return self._get_list("keywords", coerce=dataobj.to_unicode())
 
+    @keywords.setter
+    def keywords(self, val):
+        self._set_list("keywords", val, coerce=dataobj.to_unicode())
+
     def add_keyword(self, kw):
         self._add_to_list("keywords", kw, coerce=dataobj.to_unicode(), unique=True)
 
@@ -525,3 +582,25 @@ class RoutingMetadata(dataobj.DataObj):
 
     def add_email(self, email):
         self._add_to_list("emails", email, coerce=dataobj.to_unicode(), unique=True)
+
+    @property
+    def content_types(self):
+        return self._get_list("content_types", coerce=dataobj.to_unicode())
+
+    def add_content_type(self, val):
+        self._add_to_list("content_types", val, coerce=dataobj.to_unicode())
+
+    @property
+    def addresses(self):
+        return self._get_list("addresses", coerce=dataobj.to_unicode())
+
+    def add_address(self, val):
+        self._add_to_list("addresses", val, coerce=dataobj.to_unicode())
+
+    def has_data(self):
+        if len(self.data.keys()) == 0:
+            return False
+        for k, v in self.data.iteritems():
+            if v is not None and len(v) > 0:
+                return True
+        return False

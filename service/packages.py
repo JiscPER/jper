@@ -15,41 +15,45 @@ class PackageFactory(object):
     def incoming(cls, format, zip_path=None, metadata_files=None):
         formats = app.config.get("PACKAGE_HANDLERS", {})
         cname = formats.get(format)
+        if cname is None:
+            raise PackageException("No handler for package format {x}".format(x=format))
         klazz = plugin.load_class(cname)
         return klazz(zip_path=zip_path, metadata_files=metadata_files)
 
 class PackageManager(object):
 
     @classmethod
-    def ingest(cls, store_id, zip_path, format):
+    def ingest(cls, store_id, zip_path, format, storage_manager=None):
         # load the package manager and the storage manager
         pm = PackageFactory.incoming(format, zip_path)
-        sm = store.StoreFactory.get()
+        if storage_manager is None:
+            storage_manager = store.StoreFactory.get()
 
         # store the zip file as-is
-        sm.store(store_id, "content.zip", source_path=zip_path)
+        storage_manager.store(store_id, "content.zip", source_path=zip_path)
 
         # now extract the metadata streams from the package
         for name, stream in pm.metadata_streams():
-            sm.store(store_id, name, source_stream=stream)
+            storage_manager.store(store_id, name, source_stream=stream)
 
         # finally remove the local copy of the zip file
         os.remove(zip_path)
 
     @classmethod
-    def extract(cls, store_id, format):
+    def extract(cls, store_id, format, storage_manager=None):
         # load the storage manager
-        sm = store.StoreFactory.get()
+        if storage_manager is None:
+            storage_manager = store.StoreFactory.get()
 
         # list the stored file and determine which are the metadata files
-        remotes = sm.list(store_id)
+        remotes = storage_manager.list(store_id)
         if "content.zip" in remotes:
             remotes.remove("content.zip")
 
         # create a list of tuples of filenames and contents
         handles = []
         for r in remotes:
-            fh = sm.get(store_id, r)
+            fh = storage_manager.get(store_id, r)
             handles.append((r, fh))
 
         # create the specific package manager around the new metadata
