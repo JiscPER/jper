@@ -65,6 +65,10 @@ class JPER(object):
                 s.delete(validated_id)
                 raise ValidationException("Problem extracting data from the zip file: {x}".format(x=e.message))
 
+            # ensure that we don't keep copies of the files
+            s.delete(local_id)
+            s.delete(validated_id)
+
         # now check that we got some kind of actionable match data from the notification or the package
         if not nma.has_data() and (ma is None or not ma.has_data()):
             raise ValidationException("Unable to extract any actionable routing metadata from notification or associated package")
@@ -88,11 +92,49 @@ class JPER(object):
                 raise ValidationException("Received no content when downloading from {x}".format(x=url))
 
     @classmethod
-    def create_notification(cls, account, metadata, file_handle=None):
-        # Note, this is just for testing
-        urn = models.UnroutedNotification()
-        urn.save(blocking=True)
-        return urn
+    def create_notification(cls, account, notification, file_handle=None):
+        # attempt to serialise the record
+        try:
+            note = models.UnroutedNotification(notification)
+        except dataobj.DataStructureException as e:
+            raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
+
+        # set the id for the record, as we'll use this when we save the notification, and
+        # when we store the associated file
+        note.id = note.makeid()
+
+        # if we've been given a file handle, save it
+        if file_handle is not None:
+            # get the format of the package
+            format = note.packaging_format
+
+            # generate ids for putting it into the store
+            local_id = uuid.uuid4().hex
+
+            # get the Temporary Store implementation, and serialise the file handle to the local id
+            tmp = store.StoreFactory.tmp()
+            tmp.store(local_id, "incoming.zip", source_stream=file_handle)
+
+            # now try ingesting the temporarily stored package, using the note's id to store it
+            # in the remote storage
+            #
+            # If this is unsuccessful, we ensure that the local and note ids are both deleted from
+            # the store, then we can raise the exception
+            remote = store.StoreFactory.get()
+            try:
+                packages.PackageManager.ingest(note.id, tmp.path(local_id, "incoming.zip"), format, storage_manager=remote)
+            except packages.PackageException as e:
+                tmp.delete(local_id)
+                remote.delete(note.id)
+                raise ValidationException("Problem reading from the zip file: {x}".format(x=e.message))
+
+            # remove the local copy
+            tmp.delete(local_id)
+
+        # if we get to here there was either no package, or the package saved successfully, so we can store the
+        # note
+        note.save()
+        return note
 
     @classmethod
     def get_notification(cls, account, notification_id):

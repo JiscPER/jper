@@ -95,3 +95,6 @@ class TempStore(StoreLocal):
         if not os.path.exists(fpath):
             raise StoreException("Unable to create path for container {x}, file {y}".format(x=container_id, y=filename))
         return fpath
+
+    def list_container_ids(self):
+        return [x for x in os.listdir(self.dir) if os.path.isdir(os.path.join(self.dir, x))]

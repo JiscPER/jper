@@ -1,7 +1,8 @@
 from octopus.modules.es.testindex import ESTestCase
 from octopus.lib import http, paths
+from octopus.core import app
 from service.tests import fixtures
-from service import api
+from service import api, models, store
 import os
 
 class MockResponse(object):
@@ -28,16 +29,22 @@ class TestAPI(ESTestCase):
         super(TestAPI, self).setUp()
         self.old_get_stream = http.get_stream
         self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
+        self.store_impl = app.config.get("STORE_IMPL")
+        app.config["STORE_IMPL"] = "service.store.TempStore"
+        self.stored_ids = []
 
     def tearDown(self):
         super(TestAPI, self).tearDown()
         http.get_stream = self.old_get_stream
-
+        app.config["STORE_IMPL"] = self.store_impl
         if os.path.exists(self.custom_zip_path):
             os.remove(self.custom_zip_path)
+        s = store.StoreFactory.get()
+        for id in self.stored_ids:
+            s.delete(id)
 
     def test_01_validate(self):
-        # 3 different kinds of validation requires
+        # 3 different kinds of validation required
 
         # 1. Validation of plain metadata-only notification
         notification = fixtures.APIFactory.incoming()
@@ -122,3 +129,46 @@ class TestAPI(ESTestCase):
         with open(self.custom_zip_path) as f:
             with self.assertRaises(api.ValidationException):
                 api.JPER.validate(None, {}, f)
+
+    def test_01_create(self):
+        # 2 different kinds of create mechanism
+
+        # 1. Validation of plain metadata-only notification (with links that aren't checked)
+        notification = fixtures.APIFactory.incoming()
+        note = api.JPER.create_notification(None, notification)
+        assert note is not None
+        assert note.id is not None
+        check = models.UnroutedNotification.pull(note.id)
+        assert check is not None
+
+        # 2. Validation of metadata + zip content
+        notification = fixtures.APIFactory.incoming()
+        del notification["links"]
+        filepath = fixtures.PackageFactory.example_package_path()
+        with open(filepath) as f:
+            note = api.JPER.create_notification(None, notification, f)
+
+        self.stored_ids.append(note.id)
+
+        assert note is not None
+        assert note.id is not None
+        check = models.UnroutedNotification.pull(note.id)
+        assert check is not None
+
+        s = store.StoreFactory.get()
+        stored = s.list(note.id)
+        assert len(stored) == 3
+
+    def test_05_create_fail(self):
+        # There are only 2 circumstances under which the notification will fail
+
+        # 1. Invalid notification metadata
+        with self.assertRaises(api.ValidationException):
+            note = api.JPER.create_notification(None, {"random" : "content"})
+
+        # 2. Corrupt zip file
+        notification = fixtures.APIFactory.incoming()
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
+        with open(self.custom_zip_path) as f:
+            with self.assertRaises(api.ValidationException):
+                api.JPER.validate(None, notification, f)

@@ -121,7 +121,11 @@ def create_notification():
     except BadRequest as e:
         return _bad_request(e.message)
 
-    notification = JPER.create_notification(current_user, md, zipfile)
+    try:
+        notification = JPER.create_notification(current_user, md, zipfile)
+    except ValidationException as e:
+        return _bad_request(e.message)
+
     return _accepted(notification)
 
 @blueprint.route("/notification/<notification_id>", methods=["GET"])

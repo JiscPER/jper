@@ -4,7 +4,7 @@ from octopus.modules.es.testindex import ESTestCase
 from octopus.modules.test.helpers import get_first_free_port, TestServer, make_config
 from service.tests import fixtures
 from octopus.core import app
-from service import web
+from service import web, store
 from octopus.lib import paths
 
 # FIXME: at this point these don't do anything.  We'll need to create user accounts
@@ -20,7 +20,8 @@ class TestAPI(ESTestCase):
             "PORT" : get_first_free_port(),
             "ELASTIC_SEARCH_INDEX" : app.config['ELASTIC_SEARCH_INDEX'],
             "THREADED" : True,
-            "FUNCTIONAL_TEST_MODE" : True
+            "FUNCTIONAL_TEST_MODE" : True,
+            "STORE_IMPL" : "service.store.TempStore"
         }
         self.cfg_file = paths.rel2abs(__file__, "..", "resources", "test-server.cfg")
 
@@ -31,10 +32,18 @@ class TestAPI(ESTestCase):
         self.appurl = "http://localhost:{x}".format(x=self.config["PORT"])
         self.api_base = self.appurl + "/api/v1/"
 
+        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
+
     def tearDown(self):
         super(TestAPI, self).tearDown()
         self.test_server.terminate()
         os.remove(self.cfg_file)
+        # this is the temp store where we told the server to put the files
+        s = store.StoreFactory.tmp()
+        for cid in s.list_container_ids():
+            s.delete(cid)
+        if os.path.exists(self.custom_zip_path):
+            os.remove(self.custom_zip_path)
 
     def test_01_validation_singlepart(self):
         notification = fixtures.APIFactory.incoming()
@@ -155,6 +164,14 @@ class TestAPI(ESTestCase):
         assert "error" in j
         assert "Unable to parse" in j["error"]
 
+        # 4. incorrectly structured json
+        obj = {"random" : "content"}
+        resp = requests.post(url, data=json.dumps(obj), headers={"Content-Type" : "application/json"})
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "Field 'random' is not permitted at 'root'" in j["error"]
+
     def test_07_notification_multipart(self):
         notification = fixtures.APIFactory.incoming()
         example_package = fixtures.APIFactory.example_package_path()
@@ -213,6 +230,18 @@ class TestAPI(ESTestCase):
         j = resp.json()
         assert "error" in j
         assert "Unable to parse" in j["error"]
+
+        # 4. validation exception on the content
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
+        files = [
+            ("metadata", ("metadata.json", json.dumps(notification), "application/json")),
+            ("content", ("content.zip", open(self.custom_zip_path, "rb"), "application/zip"))
+        ]
+        resp = requests.post(url, files=files)
+        assert resp.status_code == 400
+        j = resp.json()
+        assert "error" in j
+        assert "Zip file is corrupt" in j["error"]
 
     def test_09_get_notification(self):
         notification = fixtures.APIFactory.incoming()
