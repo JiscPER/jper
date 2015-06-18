@@ -1,7 +1,8 @@
 from octopus.modules.es.testindex import ESTestCase
-from octopus.lib import http
+from octopus.lib import http, paths
 from service.tests import fixtures
 from service import api
+import os
 
 class MockResponse(object):
     def __init__(self, status_code):
@@ -13,14 +14,27 @@ def mock_get_stream(*args, **kwargs):
     if args[0] == "http://example.com/pub/1/file.pdf":
         return MockResponse(200), "a bunch of text", 5000
 
+def get_stream_fail(*args, **kwargs):
+    return None, "", 0
+
+def get_stream_status(*args, **kwargs):
+    return MockResponse(401), "", 6000
+
+def get_stream_empty(*args, **kwargs):
+    return MockResponse(200), "", 0
+
 class TestAPI(ESTestCase):
     def setUp(self):
         super(TestAPI, self).setUp()
         self.old_get_stream = http.get_stream
+        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
 
     def tearDown(self):
         super(TestAPI, self).tearDown()
         http.get_stream = self.old_get_stream
+
+        if os.path.exists(self.custom_zip_path):
+            os.remove(self.custom_zip_path)
 
     def test_01_validate(self):
         # 3 different kinds of validation requires
@@ -59,18 +73,52 @@ class TestAPI(ESTestCase):
             api.JPER.validate(None, notification)
 
         # 4. HTTP connection failure
+        notification = fixtures.APIFactory.incoming()
+        http.get_stream = get_stream_fail
+        with self.assertRaises(api.ValidationException):
+            api.JPER.validate(None, notification)
 
         # 5. Incorrect status code
+        notification = fixtures.APIFactory.incoming()
+        http.get_stream = get_stream_status
+        with self.assertRaises(api.ValidationException):
+            api.JPER.validate(None, notification)
 
         # 6. Empty content
-        pass
+        notification = fixtures.APIFactory.incoming()
+        http.get_stream = get_stream_empty
+        with self.assertRaises(api.ValidationException):
+            api.JPER.validate(None, notification)
 
     def test_04_validate_md_content_fail(self):
         # 7. No format supplied
+        notification = fixtures.APIFactory.incoming()
+        del notification["links"]
+        del notification["content"]
+        path = fixtures.PackageFactory.example_package_path()
+        with open(path) as f:
+            with self.assertRaises(api.ValidationException):
+                api.JPER.validate(None, notification, f)
 
         # 8. Incorrect format supplied
+        notification = fixtures.APIFactory.incoming()
+        del notification["links"]
+        notification["content"]["packaging_format"] = "http://some.random.url"
+        path = fixtures.PackageFactory.example_package_path()
+        with open(path) as f:
+            with self.assertRaises(api.ValidationException):
+                api.JPER.validate(None, notification, f)
 
         # 9. Package invald/corrupt
+        notification = fixtures.APIFactory.incoming()
+        del notification["links"]
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
+        with open(self.custom_zip_path) as f:
+            with self.assertRaises(api.ValidationException):
+                api.JPER.validate(None, notification, f)
 
         # 10. No match data in either md or package
-        pass
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, no_jats=True, no_epmc=True)
+        with open(self.custom_zip_path) as f:
+            with self.assertRaises(api.ValidationException):
+                api.JPER.validate(None, {}, f)

@@ -37,6 +37,10 @@ app.register_blueprint(webapi, url_prefix="/api/v1")
 from octopus.modules.account.account import blueprint as account
 app.register_blueprint(account, url_prefix="/account")
 
+if app.config.get("FUNCTIONAL_TEST_MODE", False):
+    from service.views.test import blueprint as test
+    app.register_blueprint(test, url_prefix="/test")
+
 """
 # this allows us to override the standard static file handling with our own dynamic version
 @app.route("/static/<path:filename>")
@@ -72,5 +76,5 @@ def page_not_found(e):
 """
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'], threaded=False)
+    app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'], threaded=app.config.get("THREADED", False))
 

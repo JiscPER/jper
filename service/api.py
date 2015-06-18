@@ -78,8 +78,11 @@ class JPER(object):
             # just ensure that we can get the first few bytes, and that the response is the right one
             resp, content, size = http.get_stream(url, cut_off=100, chunk_size=100)
 
+            if resp is None:
+                raise ValidationException("Unable to connecto to server to retrieve {x}".format(x=url))
+
             if resp.status_code != 200:
-                raise ValidationException("Received unexpected status code when downloading from {x}".format(x=url))
+                raise ValidationException("Received unexpected status code when downloading from {x} - {y}".format(x=url, y=resp.status_code))
 
             if content is None or content == "":
                 raise ValidationException("Received no content when downloading from {x}".format(x=url))

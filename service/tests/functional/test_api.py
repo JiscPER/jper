@@ -18,7 +18,9 @@ class TestAPI(ESTestCase):
         super(TestAPI, self).setUp()
         self.config = {
             "PORT" : get_first_free_port(),
-            "ELASTIC_SEARCH_INDEX" : app.config['ELASTIC_SEARCH_INDEX']
+            "ELASTIC_SEARCH_INDEX" : app.config['ELASTIC_SEARCH_INDEX'],
+            "THREADED" : True,
+            "FUNCTIONAL_TEST_MODE" : True
         }
         self.cfg_file = paths.rel2abs(__file__, "..", "resources", "test-server.cfg")
 
@@ -36,6 +38,7 @@ class TestAPI(ESTestCase):
 
     def test_01_validation_singlepart(self):
         notification = fixtures.APIFactory.incoming()
+        notification["links"][0]["url"] = self.appurl + "/test/download/file.pdf"
         url = self.api_base + "validate?api_key=" + API_KEY
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "application/json"})
         assert resp.status_code == 204
@@ -47,6 +50,7 @@ class TestAPI(ESTestCase):
 
         # 2. incorrect content-type header
         notification = fixtures.APIFactory.incoming()
+        notification["links"][0]["url"] = self.appurl + "/test/download/file.pdf"
         url = self.api_base + "validate?api_key=" + API_KEY
 
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "text/plain"})
@@ -64,6 +68,7 @@ class TestAPI(ESTestCase):
 
     def test_03_validation_multipart(self):
         notification = fixtures.APIFactory.incoming()
+        del notification["links"]
         example_package = fixtures.APIFactory.example_package_path()
         url = self.api_base + "validate?api_key=" + API_KEY
         files = [
@@ -80,6 +85,7 @@ class TestAPI(ESTestCase):
 
         # 2. incorrect content-type header on metadata/content parts
         notification = fixtures.APIFactory.incoming()
+        del notification["links"]
         example_package = fixtures.APIFactory.example_package_path()
         url = self.api_base + "validate?api_key=" + API_KEY
 
