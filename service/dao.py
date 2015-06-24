@@ -1,10 +1,20 @@
 from octopus.modules.es import dao
 
-class UnroutedNotificationDAO(dao.ESDAO):
+class UnroutedNotificationDAO(dao.TimeBoxedTypeESDAO):
     __type__ = 'unrouted'
 
-class RoutedNotificationDAO(dao.ESDAO):
+    @classmethod
+    def example(cls):
+        from service.tests import fixtures
+        return cls(fixtures.NotificationFactory.unrouted_notification())
+
+class RoutedNotificationDAO(dao.TimeBoxedTypeESDAO):
     __type__ = 'routed'
+
+    @classmethod
+    def example(cls):
+        from service.tests import fixtures
+        return cls(fixtures.NotificationFactory.routed_notification())
 
 class RepositoryConfigDAO(dao.ESDAO):
     __type__ = 'repo_config'

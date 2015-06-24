@@ -15,13 +15,27 @@ ELASTIC_SEARCH_INDEX = "jper"
 ELASTIC_SEARCH_VERSION = "1.4.4"
 
 # Classes from which to retrieve ES mappings to be used in this application
+# Note: right now this is an empty list, as the ELASTIC_SEARCH_DEFAULT_MAPPING covers us
 ELASTIC_SEARCH_MAPPINGS = [
+# right now there are no types which require explicit mappings beyond the default
+]
+
+# initialise the index with example documents from each of the types
+ELASTIC_SEARCH_EXAMPLE_DOCS = [
     "service.dao.UnroutedNotificationDAO",
     "service.dao.RoutedNotificationDAO",
     "service.dao.RepositoryConfigDAO",
     "service.dao.MatchProvenanceDAO",
     "service.dao.RetrievalRecordDAO"
 ]
+
+# time box configuration for unrouted notificatons
+ESDAO_TIME_BOX_UNROUTED = "month"
+ESDAO_TIME_BOX_LOOKBACK_UNROUTED = 3
+
+# time box configuration for routed notificatons
+ESDAO_TIME_BOX_ROUTED = "month"
+ESDAO_TIME_BOX_LOOKBACK_ROUTED = 3
 
 ###########################################
 # Email configuration
