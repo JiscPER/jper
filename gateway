@@ -2,10 +2,10 @@
 #ssl_session_timeout 10m;
 
 # THE MACHINES THAT RUN THE APPS
-#upstream apps {
-#    ip_hash;
-#    server localhost;
-#}
+upstream apps {
+    ip_hash;
+    server 10.0.94.165;
+}
 
 # THE MACHINES ON WHICH ELASTICSEARCH CLUSTER IS ACCEPTING INPUT
 # APPS THAT CALL IT "DIRECTLY" SHOULD CALL THIS GATEWAY MACHINE AND THEN THIS ROUTES TO THE INDEX
@@ -47,6 +47,19 @@ server {
         proxy_set_header Authorization "";
         # proxy_buffering off;
     }
+
+    location /api {
+	rewrite ^/api(.*) /$1 break;
+        proxy_pass http://apps;
+        #proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "";
+        # proxy_buffering off;
+
+    }
+
 }
 
 
