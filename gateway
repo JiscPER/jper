@@ -14,7 +14,7 @@ upstream index {
     server 10.0.85.58:9200;
 }
 
-{
+server {
     listen	    9200;
     server_name     gateway;
 
