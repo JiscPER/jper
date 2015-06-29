@@ -55,6 +55,10 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         self._add_struct(struct)
         super(RepositoryConfig, self).__init__(raw=raw)
 
+    @property
+    def repository(self):
+        return self._get_single("repository", coerce=dataobj.to_unicode())
+
 class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
     """
     {

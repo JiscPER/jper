@@ -1,5 +1,6 @@
 from octopus.lib import dataobj
 from service import dao
+from copy import deepcopy
 
 class NotificationMetadata(dataobj.DataObj):
     """
@@ -487,10 +488,33 @@ class RoutingInformation(dataobj.DataObj):
         self._add_struct(struct)
         super(RoutingInformation, self).__init__(raw)
 
+    @property
+    def analysis_date(self):
+        return self._get_single("analysis_date", coerce=dataobj.date_str())
+
+    @analysis_date.setter
+    def analysis_date(self, val):
+        self._set_single("analysis_date", val, coerce=dataobj.date_str())
+
+    @property
+    def repositories(self):
+        return self._get_list("repositories", coerce=dataobj.to_unicode())
+
+    @repositories.setter
+    def repositories(self, val):
+        self._set_list("repositories", val, coerce=dataobj.to_unicode())
+
 
 class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
     def __init__(self, raw=None):
         super(UnroutedNotification, self).__init__(raw=raw)
+
+    def make_routed(self):
+        d = deepcopy(self.data)
+        if "targets" in d:
+            del d["targets"]
+        routed = RoutedNotification(d)
+        return routed
 
 class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotificationDAO):
     def __init__(self, raw=None):
