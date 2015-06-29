@@ -38,7 +38,8 @@ server {
 
     keepalive_timeout 70;
 
-    location /es/ {
+    location /es {
+	rewrite ^/es(.*) /$1 break;
         proxy_pass http://index;
         proxy_redirect off;
         proxy_set_header Host $host;
