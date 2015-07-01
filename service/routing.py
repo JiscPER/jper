@@ -40,6 +40,7 @@ def route(unrouted):
         routed = unrouted.make_routed()
         routed.repositories = match_ids
         routed.analysis_date = dates.now()
+        enhance(routed, metadata)
         routed.save()
 
 def match(notification_data, repository_config):
@@ -53,3 +54,13 @@ def match(notification_data, repository_config):
     """
     # FIXME: can't implement this until we know more about the RepositoryConfig
     return []
+
+def enhance(routed, metadata):
+    """
+    Enhance the routed notification with the extracted metadata
+
+    :param routed:
+    :param metadata:
+    :return:
+    """
+    pass
