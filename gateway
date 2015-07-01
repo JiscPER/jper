@@ -1,0 +1,66 @@
+#ssl_session_cache shared:SSL:10m;
+#ssl_session_timeout 10m;
+
+# THE MACHINES THAT RUN THE APPS
+upstream apps {
+    ip_hash;
+    server 10.0.94.165;
+}
+
+# THE MACHINES ON WHICH ELASTICSEARCH CLUSTER IS ACCEPTING INPUT
+# APPS THAT CALL IT "DIRECTLY" SHOULD CALL THIS GATEWAY MACHINE AND THEN THIS ROUTES TO THE INDEX
+upstream index {
+    server 10.0.85.57:9200;
+    server 10.0.85.58:9200;
+}
+
+server {
+    listen	    9200;
+    server_name     gateway;
+
+    client_max_body_size 1024M;
+    proxy_read_timeout 600s;
+
+    location / {
+        proxy_pass http://index;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+}
+
+server {
+    listen          80;
+    server_name     router2.mimas.ac.uk;
+
+    keepalive_timeout 70;
+
+    location / {
+        proxy_pass http://index;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "";
+        # proxy_buffering off;
+    }
+
+    location /api {
+	rewrite ^/api(.*) /$1 break;
+        proxy_pass http://apps;
+        #proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "";
+        # proxy_buffering off;
+
+    }
+
+}
+
+
+
