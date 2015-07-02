@@ -2,7 +2,8 @@ from octopus.modules.es.testindex import ESTestCase
 from octopus.lib import http, paths
 from octopus.core import app
 from service.tests import fixtures
-from service import api, models, store
+from service import api, models
+from octopus.modules.store import store
 import os
 
 class MockResponse(object):
@@ -30,7 +31,7 @@ class TestAPI(ESTestCase):
         self.old_get_stream = http.get_stream
         self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
         self.store_impl = app.config.get("STORE_IMPL")
-        app.config["STORE_IMPL"] = "service.store.TempStore"
+        app.config["STORE_IMPL"] = "octopus.modules.store.store.TempStore"
         self.stored_ids = []
 
     def tearDown(self):

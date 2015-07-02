@@ -1,6 +1,7 @@
-from service import models, store, packages
+from service import models, packages
 from octopus.lib import dates, dataobj, http
 from octopus.core import app
+from octopus.modules.store import store
 import uuid
 
 

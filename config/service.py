@@ -60,8 +60,8 @@ PACKAGE_HANDLERS = {
     "http://router.jisc.ac.uk/packages/FilesAndJATS" : "service.packages.FilesAndJATS"
 }
 
-STORE_IMPL = "service.store.StoreLocal"
-STORE_TMP_IMPL = "service.store.TempStore"
+#STORE_IMPL = "octopus.modules.store.store.StoreLocal"
+#STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 
 from octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store")

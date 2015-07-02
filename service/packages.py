@@ -3,7 +3,8 @@ from octopus.lib import plugin
 import zipfile, os, sys
 from lxml import etree
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML
-from service import store, models
+from service import models
+from octopus.modules.store import store
 from StringIO import StringIO
 
 class PackageException(Exception):
