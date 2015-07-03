@@ -22,7 +22,7 @@ class TestAPI(ESTestCase):
             "ELASTIC_SEARCH_INDEX" : app.config['ELASTIC_SEARCH_INDEX'],
             "THREADED" : True,
             "FUNCTIONAL_TEST_MODE" : True,
-            "STORE_IMPL" : "service.store.TempStore"
+            "STORE_IMPL" : "octopus.modules.store.store.TempStore"
         }
         self.cfg_file = paths.rel2abs(__file__, "..", "resources", "test-server.cfg")
 

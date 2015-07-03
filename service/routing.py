@@ -41,6 +41,7 @@ def route(unrouted):
         routed.repositories = match_ids
         routed.analysis_date = dates.now()
         enhance(routed, metadata)
+        links(routed)
         routed.save()
 
 def match(notification_data, repository_config):
@@ -61,6 +62,16 @@ def enhance(routed, metadata):
 
     :param routed:
     :param metadata:
+    :return:
+    """
+    pass
+
+def links(routed):
+    """
+    Set the links on the routed object to provide the fulltext download
+    in the event that it is hosted by the router
+
+    :param routed:
     :return:
     """
     pass

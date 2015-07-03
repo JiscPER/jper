@@ -145,8 +145,27 @@ class JPER(object):
 
     @classmethod
     def get_notification(cls, account, notification_id):
+        # FIXME: this is a bit of a hack because we haven't implemented accounts yet
+        try:
+            accid = account.id
+        except:
+            accid = None
+
+        # notifications may either be in the unrouted or routed indices.
+        # start at the routed notification (as they may appear in both)
+        rn = models.RoutedNotification.pull(notification_id)
+        if rn is not None:
+            if accid == rn.provider_id:
+                return rn.make_outgoing(provider=True)
+            else:
+                return rn.make_outgoing()
         urn = models.UnroutedNotification.pull(notification_id)
-        return urn
+        if urn is not None:
+            if accid == urn.provider_id:
+                return urn.make_outgoing(provider=True)
+            else:
+                return urn.make_outgoing()
+        return None
 
     @classmethod
     def get_store_url(cls, account, notification_id):

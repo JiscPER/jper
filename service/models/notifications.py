@@ -422,6 +422,10 @@ class BaseNotification(NotificationMetadata):
     def links(self):
         return self._get_list("links")
 
+    @property
+    def provider_id(self):
+        return self._get_single("provider.id", coerce=dataobj.to_unicode())
+
     def match_data(self):
         ma = RoutingMetadata()
 
@@ -516,9 +520,70 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
         routed = RoutedNotification(d)
         return routed
 
+    def make_outgoing(self, provider=False):
+        d = deepcopy(self.data)
+        if "last_updated" in d:
+            del d["last_updated"]
+        if not provider:
+            if "provider" in d:
+                del d["provider"]
+        if "content" in d and "store_id" in d.get("content", {}):
+            del d["content"]["store_id"]
+
+        # filter out all non-router links if the request is not for the provider copy
+        if "links" in d and not provider:
+            keep = []
+            for link in d.get("links", []):
+                if link.get("access") == "router":
+                    del link["access"]
+                    keep.append(link)
+            if len(keep) > 0:
+                d["links"] = keep
+            else:
+                del d["links"]
+
+        # delayed import required because of circular dependencies
+        from service.models import OutgoingNotification, ProviderOutgoingNotification
+        if not provider:
+            return OutgoingNotification(d)
+        else:
+            return ProviderOutgoingNotification(d)
+
+
 class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotificationDAO):
     def __init__(self, raw=None):
         super(RoutedNotification, self).__init__(raw=raw)
+
+    def make_outgoing(self, provider=False):
+        d = deepcopy(self.data)
+        if "last_updated" in d:
+            del d["last_updated"]
+        if not provider:
+            if "provider" in d:
+                del d["provider"]
+        if "content" in d and "store_id" in d.get("content", {}):
+            del d["content"]["store_id"]
+        if "repositories" in d:
+            del d["repositories"]
+
+        # filter out all non-router links if the request is not for the provider copy
+        if "links" in d and not provider:
+            keep = []
+            for link in d.get("links", []):
+                if link.get("access") == "router":
+                    del link["access"]
+                    keep.append(link)
+            if len(keep) > 0:
+                d["links"] = keep
+            else:
+                del d["links"]
+
+        # delayed import required because of circular dependencies
+        from service.models import OutgoingNotification, ProviderOutgoingNotification
+        if not provider:
+            return OutgoingNotification(d)
+        else:
+            return ProviderOutgoingNotification(d)
 
 class RoutingMetadata(dataobj.DataObj):
     """
