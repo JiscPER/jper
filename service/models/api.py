@@ -1,5 +1,6 @@
 from octopus.lib import dataobj
-from service.models.notifications import NotificationMetadata
+from service.models.notifications import NotificationMetadata, UnroutedNotification
+from copy import deepcopy
 
 class IncomingNotification(NotificationMetadata):
     """
@@ -77,6 +78,9 @@ class IncomingNotification(NotificationMetadata):
 
         self._add_struct(struct)
         super(IncomingNotification, self).__init__(raw=raw)
+
+    def make_unrouted(self):
+        return UnroutedNotification(deepcopy(self.data))
 
 class OutgoingNotification(NotificationMetadata):
     """

@@ -17,9 +17,12 @@ class JPER(object):
     def validate(cls, account, notification, file_handle=None):
         # does the metadata parse as valid
         try:
-            note = models.UnroutedNotification(notification)
+            incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
+
+        # if so, convert it to an unrouted notification
+        note = incoming.make_unrouted()
 
         # extract the package format from the metadata
         format = note.packaging_format
@@ -96,9 +99,12 @@ class JPER(object):
     def create_notification(cls, account, notification, file_handle=None):
         # attempt to serialise the record
         try:
-            note = models.UnroutedNotification(notification)
+            incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
+
+        # if successful, convert it to an unrouted notification
+        note = incoming.make_unrouted()
 
         # set the id for the record, as we'll use this when we save the notification, and
         # when we store the associated file
