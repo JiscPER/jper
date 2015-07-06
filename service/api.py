@@ -1,6 +1,7 @@
-from service import models, store, packages
+from service import models, packages
 from octopus.lib import dates, dataobj, http
 from octopus.core import app
+from octopus.modules.store import store
 import uuid
 
 
@@ -16,9 +17,12 @@ class JPER(object):
     def validate(cls, account, notification, file_handle=None):
         # does the metadata parse as valid
         try:
-            note = models.UnroutedNotification(notification)
+            incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
+
+        # if so, convert it to an unrouted notification
+        note = incoming.make_unrouted()
 
         # extract the package format from the metadata
         format = note.packaging_format
@@ -95,9 +99,12 @@ class JPER(object):
     def create_notification(cls, account, notification, file_handle=None):
         # attempt to serialise the record
         try:
-            note = models.UnroutedNotification(notification)
+            incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
+
+        # if successful, convert it to an unrouted notification
+        note = incoming.make_unrouted()
 
         # set the id for the record, as we'll use this when we save the notification, and
         # when we store the associated file
@@ -138,8 +145,27 @@ class JPER(object):
 
     @classmethod
     def get_notification(cls, account, notification_id):
+        # FIXME: this is a bit of a hack because we haven't implemented accounts yet
+        try:
+            accid = account.id
+        except:
+            accid = None
+
+        # notifications may either be in the unrouted or routed indices.
+        # start at the routed notification (as they may appear in both)
+        rn = models.RoutedNotification.pull(notification_id)
+        if rn is not None:
+            if accid == rn.provider_id:
+                return rn.make_outgoing(provider=True)
+            else:
+                return rn.make_outgoing()
         urn = models.UnroutedNotification.pull(notification_id)
-        return urn
+        if urn is not None:
+            if accid == urn.provider_id:
+                return urn.make_outgoing(provider=True)
+            else:
+                return urn.make_outgoing()
+        return None
 
     @classmethod
     def get_store_url(cls, account, notification_id):

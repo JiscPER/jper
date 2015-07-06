@@ -4,8 +4,9 @@ from octopus.modules.es.testindex import ESTestCase
 from octopus.modules.test.helpers import get_first_free_port, TestServer, make_config
 from service.tests import fixtures
 from octopus.core import app
-from service import web, store
+from service import web
 from octopus.lib import paths
+from octopus.modules.store import store
 
 # FIXME: at this point these don't do anything.  We'll need to create user accounts
 # in the remote system and get their api keys.  This may mean spawning another
@@ -21,7 +22,7 @@ class TestAPI(ESTestCase):
             "ELASTIC_SEARCH_INDEX" : app.config['ELASTIC_SEARCH_INDEX'],
             "THREADED" : True,
             "FUNCTIONAL_TEST_MODE" : True,
-            "STORE_IMPL" : "service.store.TempStore"
+            "STORE_IMPL" : "octopus.modules.store.store.TempStore"
         }
         self.cfg_file = paths.rel2abs(__file__, "..", "resources", "test-server.cfg")
 

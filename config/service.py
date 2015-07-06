@@ -60,8 +60,8 @@ PACKAGE_HANDLERS = {
     "http://router.jisc.ac.uk/packages/FilesAndJATS" : "service.packages.FilesAndJATS"
 }
 
-STORE_IMPL = "service.store.StoreLocal"
-STORE_TMP_IMPL = "service.store.TempStore"
+#STORE_IMPL = "octopus.modules.store.store.StoreLocal"
+#STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 
 STORE_JPER_URL = 'http://gateway'
 

@@ -2,7 +2,8 @@
 
 # from octopus.modules.es.testindex import ESTestCase
 from unittest import TestCase
-from service import packages, store
+from service import packages
+from octopus.modules.store import store
 from copy import deepcopy
 
 from service.tests import fixtures
@@ -24,7 +25,7 @@ class TestPackager(TestCase):
         app.config["PACKAGE_HANDLERS"].update({TEST_FORMAT : TEST_HANDLER})
 
         self.old_store = app.config["STORE_IMPL"]
-        app.config["STORE_IMPL"] = "service.store.StoreLocal"
+        app.config["STORE_IMPL"] = "octopus.modules.store.store.StoreLocal"
 
         self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
 

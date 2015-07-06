@@ -40,6 +40,8 @@ def route(unrouted):
         routed = unrouted.make_routed()
         routed.repositories = match_ids
         routed.analysis_date = dates.now()
+        enhance(routed, metadata)
+        links(routed)
         routed.save()
 
 def match(notification_data, repository_config):
@@ -53,3 +55,23 @@ def match(notification_data, repository_config):
     """
     # FIXME: can't implement this until we know more about the RepositoryConfig
     return []
+
+def enhance(routed, metadata):
+    """
+    Enhance the routed notification with the extracted metadata
+
+    :param routed:
+    :param metadata:
+    :return:
+    """
+    pass
+
+def links(routed):
+    """
+    Set the links on the routed object to provide the fulltext download
+    in the event that it is hosted by the router
+
+    :param routed:
+    :return:
+    """
+    pass

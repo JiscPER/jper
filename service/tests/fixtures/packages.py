@@ -1,6 +1,6 @@
 from service.packages import PackageHandler
 from octopus.lib import paths
-from service import store
+from octopus.modules.store import store
 
 import zipfile, os, codecs
 from StringIO import StringIO

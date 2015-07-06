@@ -1,5 +1,6 @@
 from octopus.lib import dataobj
-from service.models.notifications import NotificationMetadata
+from service.models.notifications import NotificationMetadata, UnroutedNotification
+from copy import deepcopy
 
 class IncomingNotification(NotificationMetadata):
     """
@@ -78,6 +79,9 @@ class IncomingNotification(NotificationMetadata):
         self._add_struct(struct)
         super(IncomingNotification, self).__init__(raw=raw)
 
+    def make_unrouted(self):
+        return UnroutedNotification(deepcopy(self.data))
+
 class OutgoingNotification(NotificationMetadata):
     """
     {
@@ -148,6 +152,43 @@ class OutgoingNotification(NotificationMetadata):
 
         self._add_struct(struct)
         super(OutgoingNotification, self).__init__(raw=raw)
+
+    @property
+    def links(self):
+        return self._get_list("links")
+
+class ProviderOutgoingNotification(OutgoingNotification):
+    """
+    In addition to OutgoingNotification...
+    {
+        "provider" : {
+            "id" : "<user account id of the provider>",
+            "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
+            "ref" : "<provider's globally unique reference for this research object>",
+            "route" : "<method by which notification was received: native api, sword, ftp>"
+        },
+    }
+    """
+    def __init__(self, raw=None):
+        struct = {
+            "objects" : [
+                "provider"
+            ],
+            "structs" : {
+                "provider" : {
+                    "fields" : {
+                        "id" : {"coerce" :"unicode"},
+                        "agent" : {"coerce" :"unicode"},
+                        "ref" : {"coerce" :"unicode"},
+                        "route" : {"coerce" :"unicode"}
+                    },
+                    "required" : []
+                }
+            }
+        }
+
+        self._add_struct(struct)
+        super(ProviderOutgoingNotification, self).__init__(raw=raw)
 
 class NotificationList(dataobj.DataObj):
     """

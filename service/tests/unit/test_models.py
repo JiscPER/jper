@@ -103,6 +103,11 @@ class TestModels(ESTestCase):
         source = fixtures.APIFactory.incoming()
         rr = models.IncomingNotification(source)
 
+        # request an unrouted notification
+        ur = rr.make_unrouted()
+        assert isinstance(ur, models.UnroutedNotification)
+        assert ur.data == rr.data
+
     def test_08_outgoing_notification(self):
         # make one from scratch
         rr = models.OutgoingNotification()
@@ -111,6 +116,48 @@ class TestModels(ESTestCase):
         source = fixtures.APIFactory.outgoing()
         rr = models.OutgoingNotification(source)
 
-    def test_09_notification_list(self):
+    def test_09_provider_outgoing_notification(self):
+        # make one from scratch
+        rr = models.ProviderOutgoingNotification()
+
+        # build one from example document
+        source = fixtures.APIFactory.outgoing(provider=True)
+        rr = models.ProviderOutgoingNotification(source)
+
+    def test_10_notification_list(self):
         kv = fixtures.APIFactory.notification_list_set_get()
         dataobj.test_dataobj(models.NotificationList(), kv)
+
+    def test_11_unrouted_outgoing(self):
+        # create an unrouted notification to work with
+        source = fixtures.NotificationFactory.unrouted_notification()
+        urn = models.UnroutedNotification(source)
+        urn.save(blocking=True)
+
+        # get an ordinary outgoing notification
+        out = urn.make_outgoing()
+        assert isinstance(out, models.OutgoingNotification)
+        assert len(out.links) == 0
+
+        # get the provider's outgoing notification
+        out2 = urn.make_outgoing(provider=True)
+        assert isinstance(out2, models.ProviderOutgoingNotification)
+        assert len(out2.links) == 2
+
+    def test_12_routed_outgoing(self):
+        # create an unrouted notification to work with
+        source = fixtures.NotificationFactory.routed_notification()
+        rn = models.RoutedNotification(source)
+        rn.save(blocking=True)
+
+        # get an ordinary outgoing notification
+        out = rn.make_outgoing()
+        assert isinstance(out, models.OutgoingNotification)
+        assert len(out.links) == 1
+
+        # get the provider's outgoing notification
+        out2 = rn.make_outgoing(provider=True)
+        assert isinstance(out2, models.ProviderOutgoingNotification)
+        assert len(out2.links) == 3
+
+

@@ -15,8 +15,11 @@ class APIFactory(object):
         return os.path.join(RESOURCES, "example.zip")
 
     @classmethod
-    def outgoing(cls):
-        return deepcopy(OUTGOING)
+    def outgoing(cls, provider=False):
+        if provider:
+            return deepcopy(PROVIDER_OUTGOING)
+        else:
+            return deepcopy(OUTGOING)
 
     @classmethod
     def notification_list_set_get(cls):
@@ -119,6 +122,16 @@ OUTGOING = {
         "subject" : ["science", "technology", "arts", "medicine"]
     }
 }
+
+PROVIDER_OUTGOING = deepcopy(OUTGOING)
+PROVIDER_OUTGOING.update({
+    "provider" : {
+        "id" : "pub1",
+        "agent" : "test/0.1",
+        "ref" : "xyz",
+        "route" : "api"
+    },
+})
 
 INCOMING = {
     "event" : "acceptance",
