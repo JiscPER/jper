@@ -39,7 +39,7 @@ server {
 
 server {
     listen	    80;
-    server_name     gateway;
+    server_name     store;
 
     client_max_body_size 1024M;
     proxy_read_timeout 600s;
