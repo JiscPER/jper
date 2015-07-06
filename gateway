@@ -1,10 +1,15 @@
 #ssl_session_cache shared:SSL:10m;
 #ssl_session_timeout 10m;
 
-# THE MACHINES THAT RUN THE APPS
+# THE MACHINES THAT RUN THE APP
 upstream apps {
-    ip_hash;
+    #ip_hash;
     server 10.0.94.165;
+}
+
+# THE MACHINE THAT RUN THE STORE
+upstream store {
+    server 10.0.94.164;
 }
 
 # THE MACHINES ON WHICH ELASTICSEARCH CLUSTER IS ACCEPTING INPUT
@@ -33,6 +38,26 @@ server {
 }
 
 server {
+    listen	    80;
+    server_name     gateway;
+
+    client_max_body_size 1024M;
+    proxy_read_timeout 600s;
+
+    location / {
+        proxy_pass http://store;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+}
+
+# THESE GIVE DIRECT ROUTES FROM EXTERNAL TO THE INDEX, APPS, AND STORE
+# SO BE SURE TO TURN OFF OR SECURE BEFORE LIVE
+server {
     listen          80;
     server_name     router2.mimas.ac.uk;
 
@@ -49,7 +74,7 @@ server {
     }
 
     location /api {
-	rewrite ^/api(.*) /$1 break;
+		rewrite ^/api(.*) /$1 break;
         proxy_pass http://apps;
         #proxy_redirect off;
         proxy_set_header Host $host;
@@ -57,7 +82,17 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Authorization "";
         # proxy_buffering off;
+    }
 
+    location /store {
+		rewrite ^/store(.*) /$1 break;
+        proxy_pass http://store;
+        #proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "";
+        # proxy_buffering off;
     }
 
 }

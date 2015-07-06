@@ -10,9 +10,9 @@ THREADED = True
 # important overrides for the ES module
 
 # elasticsearch back-end connection settings
-ELASTIC_SEARCH_HOST = "http://localhost:9200"
+ELASTIC_SEARCH_HOST = "http://gateway:9200"
 ELASTIC_SEARCH_INDEX = "jper"
-ELASTIC_SEARCH_VERSION = "1.4.4"
+ELASTIC_SEARCH_VERSION = "1.5.2"
 
 # Classes from which to retrieve ES mappings to be used in this application
 # Note: right now this is an empty list, as the ELASTIC_SEARCH_DEFAULT_MAPPING covers us
@@ -62,6 +62,8 @@ PACKAGE_HANDLERS = {
 
 STORE_IMPL = "service.store.StoreLocal"
 STORE_TMP_IMPL = "service.store.TempStore"
+
+STORE_JPER_URL = 'http://gateway'
 
 from octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store")
