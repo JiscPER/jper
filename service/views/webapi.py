@@ -1,9 +1,11 @@
-from flask import Blueprint, make_response, url_for, request, abort, redirect
-import json
+
+from flask import Blueprint, make_response, url_for, request, abort, redirect, current_app
+import json, csv
 from octopus.core import app
 from octopus.lib import webapp, dates
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask.ext.login import login_user, logout_user, current_user, login_required, LoginManager
 from service.api import JPER, ValidationException, ParameterException
+from service import models
 
 blueprint = Blueprint('webapi', __name__)
 
@@ -50,12 +52,35 @@ def _accepted(obj):
     resp.status_code = 202
     return resp
 
+
+@login_manager.user_loader
+def load_account_for_login_manager(userid):
+	out = models.Account.pull(userid)
+	return out
+
 @blueprint.before_request
 def authenticate():
-    # this is where we should inspect the api key, and login the user
-    # FIXME: maybe belongs in the account module
-    pass
-
+	"""Check remote_user on a per-request basis."""
+	remote_user = request.headers.get('REMOTE_USER', '')
+	#tp, apik = request.headers.get('Authorization', '').lower().split(None, 1)
+	apik = False
+	if not apik:
+		apik = request.json.get('API_KEY', request.json.get('api_key', False))
+	if not apik: 
+		apik = request.values.get('API_KEY', request.values.get('api_key', False))
+	
+	if remote_user:
+		user = models.Account.pull(remote_user)
+		if user:
+			login_user(user, remember=False)
+	elif apik:
+		res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
+		if len(res) == 1:
+			user = models.Account.pull(res[0]['_source']['id'])
+			if user is not None:
+				login_user(user, remember=False)
+				
+				
 class BadRequest(Exception):
     pass
 
@@ -199,3 +224,74 @@ def list_all_routed():
 @webapp.jsonp
 def list_repository_routed(repo_id):
     return _list_request(repo_id)
+
+@blueprint.route("/config", methods=["GET","POST"])
+@blueprint.route("/config/<repoid>", methods=["GET","POST"])
+@webapp.jsonp
+def config(repoid=None):
+	# TODO: this should be restricted to accepting a POST to /config for only the logged in user
+	# or to /config/repoid for a superuser of some sort
+	if repoid is None:
+		if current_user.data.get('repository',False):
+			repoid = current_user.data['repository']
+		else:
+			abort(400)
+	rec = models.RepositoryConfig.pull(repoid)
+	if rec is None:
+		rec = models.RepositoryConfig()
+	if request.method == 'GET':
+		# get the config for the current user and return it
+		# this route may not actually be needed, but is convenient during development
+		# also it should be more than just the strings data once complex configs are accepted
+		resp = make_response(rec.data.get('strings',[]))
+		resp.mimetype = "application/json"
+		return resp
+	elif request.method == 'POST':
+		if request.json:
+			# expect a list of values to feed in - check for blank ones and discard
+			# this can later become more complex if we accept structured configs
+			lines = request.json
+			if isinstance(lines,list):
+				obj = lines
+				lines = False
+		else:
+			# accept a new config file
+			try:
+				file = request.files['file']
+				if file.filename.endswith('.csv'):
+					# could do some checking of the obj
+					lines = False
+					obj = []
+					inp = csv.DictReader(file)
+					for row in inp:
+						obj.append(row)
+				else:
+					lines = [line.rstrip('\n').rstrip('\r').strip() for line in file if len(line.rstrip('\n').rstrip('\r').strip()) > 1]
+			except:
+				lines = False
+		if lines:
+			# save the lines into the repo config
+			rec.data['strings'] = lines
+			rec.save()
+		    app.logger.info("Saved simple config for repo: {x}".format(x=repoid))
+			return ''
+		elif obj:
+			# NOTE: how would people identify different types of author IDs in a csv?
+			# how would they understand what keywords are?
+			# how would they know what format to put an address in? 
+			# how would they make sense of putting postcodes into different rows from the addresses?
+			fields = ['domains','name_variants','author_ids','postcodes','keywords','grants','content_types']
+			for f in fields:
+				rec.data[f] = [i[f] for i in obj if f in i and len(i[f]) > 1]
+			rec.save()
+		    app.logger.info("Saved complex config for repo: {x}".format(x=repoid))
+			return ''
+		else:
+			abort(400)
+		
+		
+		
+		
+		
+		
+		
