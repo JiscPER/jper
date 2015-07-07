@@ -3,7 +3,7 @@ from flask import Blueprint, make_response, url_for, request, abort, redirect, c
 import json, csv
 from octopus.core import app
 from octopus.lib import webapp, dates
-from flask.ext.login import login_user, logout_user, current_user, login_required, LoginManager
+from flask.ext.login import login_user, logout_user, current_user, login_required
 from service.api import JPER, ValidationException, ParameterException
 from service import models
 
@@ -52,11 +52,6 @@ def _accepted(obj):
     resp.status_code = 202
     return resp
 
-
-@login_manager.user_loader
-def load_account_for_login_manager(userid):
-	out = models.Account.pull(userid)
-	return out
 
 @blueprint.before_request
 def authenticate():
@@ -255,7 +250,6 @@ def config(repoid=None):
 				obj = lines
 				lines = False
 		else:
-			# accept a new config file
 			try:
 				file = request.files['file']
 				if file.filename.endswith('.csv'):
@@ -273,7 +267,7 @@ def config(repoid=None):
 			# save the lines into the repo config
 			rec.data['strings'] = lines
 			rec.save()
-		    app.logger.info("Saved simple config for repo: {x}".format(x=repoid))
+			app.logger.info("Saved simple config for repo: {x}".format(x=repoid))
 			return ''
 		elif obj:
 			# NOTE: how would people identify different types of author IDs in a csv?
@@ -284,7 +278,7 @@ def config(repoid=None):
 			for f in fields:
 				rec.data[f] = [i[f] for i in obj if f in i and len(i[f]) > 1]
 			rec.save()
-		    app.logger.info("Saved complex config for repo: {x}".format(x=repoid))
+			app.logger.info("Saved complex config for repo: {x}".format(x=repoid))
 			return ''
 		else:
 			abort(400)
