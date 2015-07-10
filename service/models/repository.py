@@ -21,6 +21,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         "addresses" : ["<full organisation addresses>"],
         "keywords" : ["<keywords and subject classifications>"],
         "grants" : ["<grant names or numbers>"],
+		"strings": ["<list of strings>"],
         "content_types" : ["<list of content types the repository is interested in>"]
     }
     """
@@ -42,6 +43,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 "keywords" : {"contains" : "field", "coerce" : "unicode"},
                 "grants" : {"contains" : "field", "coerce" : "unicode"},
                 "content_types" : {"contains" : "field", "coerce" : "unicode"},
+                "strings" : {"contains" : "field", "coerce" : "unicode"}
             },
             "structs" : {
                 "author_ids" : {

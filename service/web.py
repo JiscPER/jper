@@ -26,15 +26,23 @@ if __name__ == "__main__":
 from flask import render_template
 from octopus.lib.webapp import custom_static
 
+from service import models
+
+@app.login_manager.user_loader
+def load_account_for_login_manager(userid):
+    acc = models.Account().pull(userid)
+    return acc
+
+
 @app.route("/")
-def root():
+def index():
     return render_template("index.html")
 
 from service.views.webapi import blueprint as webapi
 app.register_blueprint(webapi, url_prefix="/api/v1")
 
 # adding account management, which enables the login functionality for the api
-from octopus.modules.account.account import blueprint as account
+from service.views.account import blueprint as account
 app.register_blueprint(account, url_prefix="/account")
 
 if app.config.get("FUNCTIONAL_TEST_MODE", False):

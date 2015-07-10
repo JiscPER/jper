@@ -270,17 +270,6 @@ of the additional fields beyond the basic authentication.
     "embargo" : {
         "duration" : "<length of default embargo>",
         "from" : "<reference to field in data to measure embargo from>"
-    },
-    
-    "sword_provider" : {
-        "username" : "<username for accessing sword deposit endpoint>",
-        "password" : "<hashed password for accessing sword deposit endpoint>"
-    },
-    
-    "ftp_provider" : {
-        "username" : "<username for accessing ftp deposit endpoint>",
-        "password" : "<hashed password for accessing ftp deposit endpoint>",
-        "home" : "<home directory - is this right here?>"
     }
 }
 ```

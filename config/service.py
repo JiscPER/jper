@@ -63,7 +63,7 @@ PACKAGE_HANDLERS = {
 #STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 #STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 
-STORE_JPER_URL = 'http://gateway'
+STORE_JPER_URL = 'http://store'
 
 from octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store")

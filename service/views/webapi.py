@@ -68,12 +68,16 @@ def authenticate():
 		user = models.Account.pull(remote_user)
 		if user:
 			login_user(user, remember=False)
+		else:
+			abort(401)
 	elif apik:
 		res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
 		if len(res) == 1:
 			user = models.Account.pull(res[0]['_source']['id'])
 			if user is not None:
 				login_user(user, remember=False)
+			else:
+				abort(401)
 				
 				
 class BadRequest(Exception):

@@ -2,3 +2,4 @@
 from service.models.notifications import RoutedNotification, UnroutedNotification, RoutingMetadata, NotificationMetadata
 from service.models.repository import RepositoryConfig, MatchProvenance, RetrievalRecord
 from service.models.api import NotificationList, IncomingNotification, OutgoingNotification, ProviderOutgoingNotification
+from service.models.account import Account
