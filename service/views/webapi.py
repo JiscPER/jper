@@ -55,31 +55,32 @@ def _accepted(obj):
 
 @blueprint.before_request
 def authenticate():
-	"""Check remote_user on a per-request basis."""
-	remote_user = request.headers.get('REMOTE_USER', '')
-	#tp, apik = request.headers.get('Authorization', '').lower().split(None, 1)
-	apik = False
-	if not apik:
-		vals = request.json if request.json else request.values
-		if vals is not None:
-		apik = vals.get('API_KEY', vals.get('api_key', False))
-	
-	if remote_user:
-		user = models.Account.pull(remote_user)
-		if user:
-			login_user(user, remember=False)
-		else:
-			abort(401)
-	elif apik:
-		res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
-		if len(res) == 1:
-			user = models.Account.pull(res[0]['_source']['id'])
-			if user is not None:
-				login_user(user, remember=False)
-			else:
-				abort(401)
-				
-				
+    """Check remote_user on a per-request basis."""
+    remote_user = request.headers.get('REMOTE_USER', '')
+    #tp, apik = request.headers.get('Authorization', '').lower().split(None, 1)
+    apik = False
+    if not apik:
+        vals = request.json if request.json else request.values
+        if vals is not None:
+            apik = vals.get('API_KEY', vals.get('api_key', False))
+
+    if remote_user:
+        user = models.Account.pull(remote_user)
+        if user:
+            login_user(user, remember=False)
+        else:
+            abort(401)
+    elif apik:
+        res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
+        if len(res) == 1:
+            user = models.Account.pull(res[0]['_source']['id'])
+            if user is not None:
+                login_user(user, remember=False)
+            else:
+                abort(401)
+        else:
+            abort(401)
+
 class BadRequest(Exception):
     pass
 
