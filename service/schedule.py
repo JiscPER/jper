@@ -15,7 +15,7 @@ our backlog is the files in the ftp folder, and the unroutednotification index
 
 schedule backups? - ask Mike
 
-schedule dropping unwanted indexes - such as unwanted time types, old logs
+schedule dropping unwanted indexes - such as unwanted unrouted notification time types, old logs
 
 schedule generating stats for reports
 

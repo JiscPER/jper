@@ -60,9 +60,9 @@ def authenticate():
 	#tp, apik = request.headers.get('Authorization', '').lower().split(None, 1)
 	apik = False
 	if not apik:
-		apik = request.json.get('API_KEY', request.json.get('api_key', False))
-	if not apik: 
-		apik = request.values.get('API_KEY', request.values.get('api_key', False))
+		vals = request.json if request.json else request.values
+		if vals is not None:
+		apik = vals.get('API_KEY', vals.get('api_key', False))
 	
 	if remote_user:
 		user = models.Account.pull(remote_user)
