@@ -422,6 +422,19 @@ class BaseNotification(NotificationMetadata):
     def links(self):
         return self._get_list("links")
 
+    def add_link(self, url, type, format, access):
+        if access not in ["router", "public"]:
+            raise dataobj.DataSchemaException("link access must be 'router' or 'public'")
+
+        uc = dataobj.to_unicode()
+        obj = {
+            "url" : self._coerce(url, uc),
+            "type" : self._coerce(type, uc),
+            "format" : self._coerce(format, uc),
+            "access" : self._coerce(access, uc)
+        }
+        self._add_to_list("links", obj)
+
     @property
     def provider_id(self):
         return self._get_single("provider.id", coerce=dataobj.to_unicode())

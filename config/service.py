@@ -52,6 +52,8 @@ SECRET_KEY = "super-secret-key"
 ############################################
 # Service-specific config
 
+BASE_URL = "http://router2.mimas.ac.uk/"
+
 DEFAULT_LIST_PAGE_START = 1
 DEFAULT_LIST_PAGE_SIZE = 25
 MAX_LIST_PAGE_SIZE = 100

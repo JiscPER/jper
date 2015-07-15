@@ -131,7 +131,7 @@ class TestAPI(ESTestCase):
             with self.assertRaises(api.ValidationException):
                 api.JPER.validate(None, {}, f)
 
-    def test_01_create(self):
+    def test_05_create(self):
         # 2 different kinds of create mechanism
 
         # 1. Validation of plain metadata-only notification (with links that aren't checked)
@@ -141,6 +141,8 @@ class TestAPI(ESTestCase):
         assert note.id is not None
         check = models.UnroutedNotification.pull(note.id)
         assert check is not None
+        assert len(check.links) == 1
+        assert check.links[0]["url"] == "http://example.com/pub/1/file.pdf"
 
         # 2. Validation of metadata + zip content
         notification = fixtures.APIFactory.incoming()
@@ -155,12 +157,14 @@ class TestAPI(ESTestCase):
         assert note.id is not None
         check = models.UnroutedNotification.pull(note.id)
         assert check is not None
+        assert len(check.links) == 1
+        assert check.links[0]["url"].endswith("notification/" + note.id + "/content")
 
         s = store.StoreFactory.get()
         stored = s.list(note.id)
         assert len(stored) == 3
 
-    def test_05_create_fail(self):
+    def test_06_create_fail(self):
         # There are only 2 circumstances under which the notification will fail
 
         # 1. Invalid notification metadata
