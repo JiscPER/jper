@@ -1,3 +1,4 @@
+from flask import url_for
 from service import models, packages
 from octopus.lib import dates, dataobj, http
 from octopus.core import app
@@ -137,6 +138,10 @@ class JPER(object):
 
             # remove the local copy
             tmp.delete(local_id)
+
+            # if the content was successfully ingested, then annotate the notification with the content url
+            url = app.config.get("BASE_URL") + "notification/" + note.id + "/content"
+            note.add_link(url, "package", "application/zip", "router")
 
         # if we get to here there was either no package, or the package saved successfully, so we can store the
         # note
