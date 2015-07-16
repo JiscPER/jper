@@ -7,11 +7,16 @@ class RoutingException(Exception):
 
 def route(unrouted):
     # first get the packaging system to load and retrieve all the metadata
-    # and match data
+    # and match data from the content file (if it exists)
     try:
-        metadata, match_data = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
+        metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
         raise RoutingException(e.message)
+
+    # extract the match data from the notification and combine it with the match data from the package
+    match_data = unrouted.match_data()
+    if pmd is not None:
+        match_data.merge(pmd)
 
     # iterate through all the repository configs, collecting match provenance and
     # id information

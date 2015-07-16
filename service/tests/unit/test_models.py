@@ -160,4 +160,67 @@ class TestModels(ESTestCase):
         assert isinstance(out2, models.ProviderOutgoingNotification)
         assert len(out2.links) == 3
 
+    def test_13_unrouted_match_data(self):
+        source = fixtures.NotificationFactory.unrouted_notification()
+        urn = models.UnroutedNotification(source)
+        md = urn.match_data()
+
+        assert len(md.urls) == 0
+        assert len(md.emails) == 2
+        assert "richard@example.com" in md.emails
+        assert "mark@example.com" in md.emails
+        assert len(md.affiliations) == 1
+        assert "Cottage Labs" in md.affiliations
+        assert len(md.get_author_ids()) == 6
+        assert "richard@example.com" in [aid.get("id") for aid in md.get_author_ids("email")]
+        assert "mark@example.com" in [aid.get("id") for aid in md.get_author_ids("email")]
+        assert "aaaa-0000-1111-bbbb" in [aid.get("id") for aid in md.get_author_ids("orcid")]
+        assert "dddd-2222-3333-cccc" in [aid.get("id") for aid in md.get_author_ids("orcid")]
+        assert "Richard Jones" in [aid.get("id") for aid in md.get_author_ids("name")]
+        assert "Mark MacGillivray" in [aid.get("id") for aid in md.get_author_ids("name")]
+        assert len(md.keywords) == 4
+        assert "science" in md.keywords
+        assert "technology" in md.keywords
+        assert "arts" in md.keywords
+        assert "medicine" in md.keywords
+        assert len(md.content_types) == 1
+        assert "article" in md.content_types
+
+    def test_14_match_merge(self):
+        source1 = fixtures.NotificationFactory.routing_metadata()
+        rm1 = models.RoutingMetadata(source1)
+
+        source2 = fixtures.NotificationFactory.unrouted_notification()
+        urn = models.UnroutedNotification(source2)
+        rm2 = urn.match_data()
+
+        rm1.merge(rm2)
+
+        assert len(rm1.urls) == 2
+        assert "http://www.ed.ac.uk" in rm1.urls
+        assert "http://www.ucl.ac.uk" in rm1.urls
+        assert len(rm1.emails) == 3
+        assert "richard@example.com" in rm1.emails
+        assert "mark@example.com" in rm1.emails
+        assert "someone@sms.ucl.ac.uk" in rm1.emails
+        assert len(rm1.affiliations) == 3
+        assert "Cottage Labs" in rm1.affiliations
+        assert "Edinburgh Univerisity" in rm1.affiliations
+        assert "UCL" in rm1.affiliations
+        assert len(rm1.get_author_ids()) == 6
+        assert "richard@example.com" in [aid.get("id") for aid in rm1.get_author_ids("email")]
+        assert "mark@example.com" in [aid.get("id") for aid in rm1.get_author_ids("email")]
+        assert "aaaa-0000-1111-bbbb" in [aid.get("id") for aid in rm1.get_author_ids("orcid")]
+        assert "dddd-2222-3333-cccc" in [aid.get("id") for aid in rm1.get_author_ids("orcid")]
+        assert "Richard Jones" in [aid.get("id") for aid in rm1.get_author_ids("name")]
+        assert "Mark MacGillivray" in [aid.get("id") for aid in rm1.get_author_ids("name")]
+        assert len(rm1.keywords) == 4
+        assert "science" in rm1.keywords
+        assert "technology" in rm1.keywords
+        assert "arts" in rm1.keywords
+        assert "medicine" in rm1.keywords
+        assert len(rm1.content_types) == 1
+        assert "article" in rm1.content_types
+
+
 

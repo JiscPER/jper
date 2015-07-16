@@ -562,6 +562,41 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
         else:
             return ProviderOutgoingNotification(d)
 
+    def match_data(self):
+        md = RoutingMetadata()
+
+        # authors, and all their various properties
+        for a in self.authors:
+            # name
+            if "name" in a:
+                md.add_author_id(a.get("name"), "name")
+
+            # affiliation
+            if "affiliation" in a:
+                md.add_affiliation(a.get("affiliation"))
+                md.add_address(a.get("affiliation"))
+
+            # other author ids
+            for id in a.get("identifier", []):
+                md.add_author_id(id.get("id"), id.get("type"))
+                if id.get("type") == "email":
+                    md.add_email(id.get("id"))
+
+        # subjects
+        for s in self.subjects:
+            md.add_keyword(s)
+
+        # grants
+        for p in self.projects:
+            if "grant_number" in p:
+                md.add_grant_id(p.get("grant_number"))
+
+        # content type
+        if self.type is not None:
+            md.add_content_type(self.type)
+
+        return md
+
 
 class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotificationDAO):
     def __init__(self, raw=None):
@@ -641,6 +676,17 @@ class RoutingMetadata(dataobj.DataObj):
         self._add_struct(struct)
         super(RoutingMetadata, self).__init__(raw=raw)
 
+    @property
+    def urls(self):
+        return self._get_list("urls", coerce=dataobj.to_unicode())
+
+    @urls.setter
+    def urls(self, val):
+        self._set_list("urls", val, coerce=dataobj.to_unicode())
+
+    def add_url(self, val):
+        self._add_to_list("urls", val, coerce=dataobj.to_unicode(), unique=True)
+
     def add_author_id(self, id, type):
         uc = dataobj.to_unicode()
         obj = {"id" : self._coerce(id, uc), "type" : self._coerce(type, uc)}
@@ -690,14 +736,14 @@ class RoutingMetadata(dataobj.DataObj):
         return self._get_list("content_types", coerce=dataobj.to_unicode())
 
     def add_content_type(self, val):
-        self._add_to_list("content_types", val, coerce=dataobj.to_unicode())
+        self._add_to_list("content_types", val, coerce=dataobj.to_unicode(), unique=True)
 
     @property
     def addresses(self):
         return self._get_list("addresses", coerce=dataobj.to_unicode())
 
     def add_address(self, val):
-        self._add_to_list("addresses", val, coerce=dataobj.to_unicode())
+        self._add_to_list("addresses", val, coerce=dataobj.to_unicode(), unique=True)
 
     def has_data(self):
         if len(self.data.keys()) == 0:
@@ -706,3 +752,23 @@ class RoutingMetadata(dataobj.DataObj):
             if v is not None and len(v) > 0:
                 return True
         return False
+
+    def merge(self, other):
+        for u in other.urls:
+            self.add_url(u)
+        for e in other.emails:
+            self.add_email(e)
+        for a in other.affiliations:
+            self.add_affiliation(a)
+        for aid in other.get_author_ids():
+            self.add_author_id(aid.get("id"), aid.get("type"))
+
+        # FIXME: not doing addresses, will be replaced by postcode later
+
+        for k in other.keywords:
+            self.add_keyword(k)
+        for g in other.grants:
+            self.add_grant_id(g)
+        for c in other.content_types:
+            self.add_content_type(c)
+

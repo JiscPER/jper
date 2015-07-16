@@ -46,6 +46,10 @@ class PackageManager(object):
         if storage_manager is None:
             storage_manager = store.StoreFactory.get()
 
+        # check the object exists in the store - if not do nothing
+        if not storage_manager.exists(store_id):
+            return None, None
+
         # list the stored file and determine which are the metadata files
         remotes = storage_manager.list(store_id)
         if "content.zip" in remotes:
