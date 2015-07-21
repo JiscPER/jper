@@ -148,7 +148,7 @@ it for testing purposes.
             "type" : "<author id type (e.g. orcid, or name)>"
         }
     ],
-    "addresses" : ["<organisation addresses found in the data>"],
+    "postcodes" : ["<postcodes found in the data>"],
     "keywords" : ["<keywords and subject classifications found in the data>"],
     "grants" : ["<grant names or numbers found in the data>"],
     "content_types" : ["<list of content types of the object (probably just one)>"]
@@ -177,7 +177,6 @@ This defines the data that repositories will need to provide for matches against
         }
     ],
     "postcodes" : ["<list of postcodes that appear in the repository's institution's addresses>"],
-    "addresses" : ["<full organisation addresses>"],
     "keywords" : ["<keywords and subject classifications>"],
     "grants" : ["<grant names or numbers>"],
     "content_types" : ["<list of content types the repository is interested in>"]

@@ -469,7 +469,7 @@ class BaseNotification(NotificationMetadata):
         # addresses
         for a in self.authors:
             if a.get("affiliation") is not None:
-                ma.add_address(a.get("affiliation"))
+                ma.add_postcode(a.get("affiliation"))   # FIXME: normalise postcodes
 
         # keywords
         ma.keywords = self.subjects
@@ -574,7 +574,7 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
             # affiliation
             if "affiliation" in a:
                 md.add_affiliation(a.get("affiliation"))
-                md.add_address(a.get("affiliation"))
+                md.add_postcode(a.get("affiliation"))   # FIXME: normalise postcodes
 
             # other author ids
             for id in a.get("identifier", []):
@@ -645,7 +645,7 @@ class RoutingMetadata(dataobj.DataObj):
                 "type" : "<author id type (e.g. orcid, or name)>"
             }
         ],
-        "addresses" : ["<organisation addresses found in the data>"],
+        "postcodes" : ["<organisation addresses found in the data>"],
         "keywords" : ["<keywords and subject classifications found in the data>"],
         "grants" : ["<grant names or numbers found in the data>"],
         "content_types" : ["<list of content types of the object (probably just one)>"]
@@ -658,7 +658,7 @@ class RoutingMetadata(dataobj.DataObj):
                 "emails" : {"contains" : "field", "coerce" : "unicode"},
                 "affiliations" : {"contains" : "field", "coerce" : "unicode"},
                 "author_ids" : {"contains" : "object"},
-                "addresses" : {"contains" : "field", "coerce" : "unicode"},
+                "postcodes" : {"contains" : "field", "coerce" : "unicode"},
                 "keywords" : {"contains" : "field", "coerce" : "unicode"},
                 "grants" : {"contains" : "field", "coerce" : "unicode"},
                 "content_types" : {"contains" : "field", "coerce" : "unicode"}
@@ -739,11 +739,11 @@ class RoutingMetadata(dataobj.DataObj):
         self._add_to_list("content_types", val, coerce=dataobj.to_unicode(), unique=True)
 
     @property
-    def addresses(self):
-        return self._get_list("addresses", coerce=dataobj.to_unicode())
+    def postcodes(self):
+        return self._get_list("postcodes", coerce=dataobj.to_unicode())
 
-    def add_address(self, val):
-        self._add_to_list("addresses", val, coerce=dataobj.to_unicode(), unique=True)
+    def add_postcode(self, val):
+        self._add_to_list("postcodes", val, coerce=dataobj.to_unicode(), unique=True)
 
     def has_data(self):
         if len(self.data.keys()) == 0:
@@ -762,13 +762,11 @@ class RoutingMetadata(dataobj.DataObj):
             self.add_affiliation(a)
         for aid in other.get_author_ids():
             self.add_author_id(aid.get("id"), aid.get("type"))
-
-        # FIXME: not doing addresses, will be replaced by postcode later
-
+        for p in other.postcodes:
+            self.add_postcode(p)
         for k in other.keywords:
             self.add_keyword(k)
         for g in other.grants:
             self.add_grant_id(g)
         for c in other.content_types:
             self.add_content_type(c)
-

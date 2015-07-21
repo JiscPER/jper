@@ -36,7 +36,7 @@ ROUTING_METADATA = {
             "type" : "orcid"
         }
     ],
-    "addresses" : ["Central London Campus", "George Sq"],
+    "postcodes" : ["SW1 1AA", "EH23 5TZ"],
     "keywords" : ["science", "technology", "arts", "medicine"],
     "grants" : ["BB/34/juwef"],
     "content_types" : ["article"]

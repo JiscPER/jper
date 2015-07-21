@@ -18,7 +18,6 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             }
         ],
         "postcodes" : ["<list of postcodes that appear in the repository's institution's addresses>"],
-        "addresses" : ["<full organisation addresses>"],
         "keywords" : ["<keywords and subject classifications>"],
         "grants" : ["<grant names or numbers>"],
 		"strings": ["<list of strings>"],
@@ -39,7 +38,6 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 "name_variants" : {"contains" : "field", "coerce" : "unicode"},
                 "author_ids" : {"contains" : "object"},
                 "postcodes" : {"contains" : "field", "coerce" : "unicode"},
-                "addresses" : {"contains" : "field", "coerce" : "unicode"},
                 "keywords" : {"contains" : "field", "coerce" : "unicode"},
                 "grants" : {"contains" : "field", "coerce" : "unicode"},
                 "content_types" : {"contains" : "field", "coerce" : "unicode"},

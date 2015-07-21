@@ -38,7 +38,6 @@ REPO_CONFIG = {
         }
     ],
     "postcodes" : ["SW1 0AA"],
-    "addresses" : ["Bloomsbury, London"],
     "keywords" : ["science", "technology", "medicine"],
     "grants" : ["BB/34/juwef"],
     "content_types" : ["article"]
@@ -51,9 +50,9 @@ MATCH_PROV = {
         {
             "source_field" : "postcode",
             "term" : "SW1 0AA",
-            "notification_field" : "address",
-            "matched" : "Some Address, SW1 0AA",
-            "explanation" : "found postcode in address"
+            "notification_field" : "postcodes",
+            "matched" : "SW1 0AA",
+            "explanation" : "found matching postcodes"
         },
         {
             "source_field" : "author_ids",
