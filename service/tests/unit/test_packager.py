@@ -277,13 +277,14 @@ class TestPackager(TestCase):
         affs = [
             "Biotechnology Department, National Physical Laboratory Teddington, UK.",
             "Basic Medical Sciences, St. George's University of London London, UK.",
-            "1 Biotechnology Department, National Physical Laboratory Teddington, UK",
-            "2 Basic Medical Sciences, St. George's University of London London, UK"
+            "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK",
+            "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"
         ]
         grants = ["085475/B/08/Z", "085475/08/Z"]
         keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", u'A\u03b2 oligomers',
                     "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
         emails = ["sghk200@sgul.ac.uk"]
+        postcodes = ["SW1 5EY", "EH106KL"]
 
 
         # check that we got all the data we expected
@@ -315,6 +316,11 @@ class TestPackager(TestCase):
         assert len(es) == len(emails)
         for e in emails:
             assert e in es
+
+        codes = rm.postcodes
+        assert len(codes) == len(postcodes)
+        for c in codes:
+            assert c in postcodes
 
     def test_09_epmc_metadata(self):
         """
@@ -399,9 +405,9 @@ class TestPackager(TestCase):
         doi = "10.3389/fchem.2015.00017"
         issns = ["2296-2646"]
         authors = [
-            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
-            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
-            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London London, UK"}
+            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK"},
+            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK"},
+            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"}
         ]
         subjects = ["Chemistry", u'A\u03b2 oligomers',
                     "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
@@ -452,9 +458,9 @@ class TestPackager(TestCase):
         doi = "10.3389/fchem.2015.00017"
         issns = ["2296-2646"]
         authors = [
-            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
-            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
-            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London London, UK"}
+            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK"},
+            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK"},
+            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"}
         ]
         projects = [
             {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
@@ -527,9 +533,9 @@ class TestPackager(TestCase):
         doi = "10.3389/fchem.2015.00017"
         issns = ["2296-2646"]
         authors = [
-            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
-            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory Teddington, UK"},
-            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London London, UK"}
+            {"name" : "Eleonora Cerasoli", "affiliation" : "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK"},
+            {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK"},
+            {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"}
         ]
         projects = [
             {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
@@ -583,13 +589,14 @@ class TestPackager(TestCase):
         affs = [
             "Biotechnology Department, National Physical Laboratory Teddington, UK.",
             "Basic Medical Sciences, St. George's University of London London, UK.",
-            "1 Biotechnology Department, National Physical Laboratory Teddington, UK",
-            "2 Basic Medical Sciences, St. George's University of London London, UK"
+            "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK",
+            "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"
         ]
         grants = ["085475/B/08/Z", "085475/08/Z"]
         keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", u'A\u03b2 oligomers',
                     "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
         emails = ["sghk200@sgul.ac.uk"]
+        postcodes = ["SW1 5EY", "EH106KL"]
 
 
         # check that we got all the data we expected
@@ -621,3 +628,8 @@ class TestPackager(TestCase):
         assert len(es) == len(emails)
         for e in emails:
             assert e in es
+
+        codes = rm.postcodes
+        assert len(codes) == len(postcodes)
+        for c in codes:
+            assert c in postcodes

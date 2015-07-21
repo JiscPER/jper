@@ -119,7 +119,7 @@ BASE_NOTIFICATION = {
                     {"type" : "orcid", "id" : "aaaa-0000-1111-bbbb"},
                     {"type" : "email", "id" : "richard@example.com"},
                 ],
-                "affiliation" : "Cottage Labs"
+                "affiliation" : "Cottage Labs, HP3 9AA"
             },
             {
                 "name" : "Mark MacGillivray",
@@ -127,7 +127,7 @@ BASE_NOTIFICATION = {
                     {"type" : "orcid", "id" : "dddd-2222-3333-cccc"},
                     {"type" : "email", "id" : "mark@example.com"},
                 ],
-                "affiliation" : "Cottage Labs"
+                "affiliation" : "Cottage Labs, EH9 5TP"
             }
         ],
         "language" : "eng",

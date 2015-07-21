@@ -3,6 +3,7 @@ from octopus.lib import plugin
 import zipfile, os, sys
 from lxml import etree
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML
+from octopus.modules.identifiers import postcode
 from service import models
 from octopus.modules.store import store
 from StringIO import StringIO
@@ -276,10 +277,13 @@ class FilesAndJATS(PackageHandler):
             if email is not None:
                 match.add_email(email)
 
-            # affiliations
+            # affiliations (and postcodes)
             affs = a.get("affiliations", [])
             for a in affs:
                 match.add_affiliation(a)
+                codes = postcode.extract_all(a)
+                for code in codes:
+                    match.add_postcode(code)
 
         # other keywords
         for k in self.jats.keywords:
@@ -303,10 +307,13 @@ class FilesAndJATS(PackageHandler):
             if fn is not None:
                 match.add_author_id(fn, "name")
 
-            # affiliation
+            # affiliation (and postcode)
             aff = a.get("affiliation")
             if aff is not None:
                 match.add_affiliation(aff)
+                codes = postcode.extract_all(aff)
+                for code in codes:
+                    match.add_postcode(code)
 
         # grant ids
         gs = self.epmc.grants

@@ -169,8 +169,9 @@ class TestModels(ESTestCase):
         assert len(md.emails) == 2
         assert "richard@example.com" in md.emails
         assert "mark@example.com" in md.emails
-        assert len(md.affiliations) == 1
-        assert "Cottage Labs" in md.affiliations
+        assert len(md.affiliations) == 2
+        assert "Cottage Labs, HP3 9AA" in md.affiliations
+        assert "Cottage Labs, EH9 5TP" in md.affiliations
         assert len(md.get_author_ids()) == 6
         assert "richard@example.com" in [aid.get("id") for aid in md.get_author_ids("email")]
         assert "mark@example.com" in [aid.get("id") for aid in md.get_author_ids("email")]
@@ -185,6 +186,9 @@ class TestModels(ESTestCase):
         assert "medicine" in md.keywords
         assert len(md.content_types) == 1
         assert "article" in md.content_types
+        assert len(md.postcodes) == 2
+        assert "HP3 9AA" in md.postcodes
+        assert "EH9 5TP" in md.postcodes
 
     def test_14_match_merge(self):
         source1 = fixtures.NotificationFactory.routing_metadata()
@@ -203,10 +207,12 @@ class TestModels(ESTestCase):
         assert "richard@example.com" in rm1.emails
         assert "mark@example.com" in rm1.emails
         assert "someone@sms.ucl.ac.uk" in rm1.emails
-        assert len(rm1.affiliations) == 3
+        assert len(rm1.affiliations) == 5
         assert "Cottage Labs" in rm1.affiliations
         assert "Edinburgh Univerisity" in rm1.affiliations
         assert "UCL" in rm1.affiliations
+        assert "Cottage Labs, HP3 9AA" in rm1.affiliations
+        assert "Cottage Labs, EH9 5TP" in rm1.affiliations
         assert len(rm1.get_author_ids()) == 6
         assert "richard@example.com" in [aid.get("id") for aid in rm1.get_author_ids("email")]
         assert "mark@example.com" in [aid.get("id") for aid in rm1.get_author_ids("email")]
@@ -221,6 +227,10 @@ class TestModels(ESTestCase):
         assert "medicine" in rm1.keywords
         assert len(rm1.content_types) == 1
         assert "article" in rm1.content_types
+        assert len(rm1.postcodes) == 4
+        for c in ["HP3 9AA", "EH9 5TP", "SW1 1AA", "EH23 5TZ"]:
+            assert c in rm1.postcodes
+
 
 
 

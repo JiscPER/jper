@@ -9,9 +9,8 @@ from octopus.lib import paths
 from octopus.modules.store import store
 
 # FIXME: at this point these don't do anything.  We'll need to create user accounts
-# in the remote system and get their api keys.  This may mean spawning another
-# app which actually runs the account system.
-API_KEY = "1234567890"
+# in the remote system and get their api keys.
+API_KEY = "admin"   # this is the password for the account, not the api-key, so it won't work
 INVALID_API_KEY = "abcdefg"
 
 class TestAPI(ESTestCase):
@@ -402,7 +401,7 @@ class TestAPI(ESTestCase):
         # 2. since parameter not supplied
         url = self.api_base + "routed/repo1?api_key=" + API_KEY
         resp = requests.get(url)
-        assert resp.status_code == 400
+        assert resp.status_code == 400, resp.status_code
         assert resp.headers["content-type"] == "application/json"
         j = resp.json()
         assert "error" in j

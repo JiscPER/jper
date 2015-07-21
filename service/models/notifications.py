@@ -1,6 +1,7 @@
 from octopus.lib import dataobj
 from service import dao
 from copy import deepcopy
+from octopus.modules.identifiers import postcode
 
 class NotificationMetadata(dataobj.DataObj):
     """
@@ -440,49 +441,45 @@ class BaseNotification(NotificationMetadata):
         return self._get_single("provider.id", coerce=dataobj.to_unicode())
 
     def match_data(self):
-        ma = RoutingMetadata()
+        md = RoutingMetadata()
 
         # urls - we don't have a specific place to look for these, so we may choose to mine the
         # metadata for them later
-        #for a in self.authors:
-        #    if a.get("affiliation") is not None:
-        #        # extract the
 
-        # emails
+        # authors, and all their various properties
         for a in self.authors:
-            for ident in a.get("identifier", []):
-                if ident.get("type") == "email":
-                    ma.add_email(ident.get("id"))
+            # name
+            if "name" in a:
+                md.add_author_id(a.get("name"), "name")
 
-        # affiliations
-        for a in self.authors:
-            if a.get("affiliation") is not None:
-                ma.add_affiliation(a.get("affiliation"))
+            # affiliation (and postcode)
+            if "affiliation" in a:
+                aff = a.get("affiliation")
+                md.add_affiliation(aff)
+                codes = postcode.extract_all(aff)
+                for code in codes:
+                    md.add_postcode(code)
 
-        # author_ids
-        for a in self.authors:
-            if a.get("name") is not None:
-                ma.add_author_id(a.get("name"), "name")
-            for ident in a.get("identifier", []):
-                ma.add_author_id(ident.get("id"), ident.get("type"))
+            # other author ids
+            for id in a.get("identifier", []):
+                md.add_author_id(id.get("id"), id.get("type"))
+                if id.get("type") == "email":
+                    md.add_email(id.get("id"))
 
-        # addresses
-        for a in self.authors:
-            if a.get("affiliation") is not None:
-                ma.add_postcode(a.get("affiliation"))   # FIXME: normalise postcodes
-
-        # keywords
-        ma.keywords = self.subjects
+        # subjects
+        for s in self.subjects:
+            md.add_keyword(s)
 
         # grants
         for p in self.projects:
-            if p.get("grant_number") is not None:
-                ma.add_grant_id(p.get("grant_number"))
+            if "grant_number" in p:
+                md.add_grant_id(p.get("grant_number"))
 
-        # content_types
-        ma.add_content_type(self.type)
+        # content type
+        if self.type is not None:
+            md.add_content_type(self.type)
 
-        return ma
+        return md
 
 class RoutingInformation(dataobj.DataObj):
     """
@@ -561,42 +558,6 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
             return OutgoingNotification(d)
         else:
             return ProviderOutgoingNotification(d)
-
-    def match_data(self):
-        md = RoutingMetadata()
-
-        # authors, and all their various properties
-        for a in self.authors:
-            # name
-            if "name" in a:
-                md.add_author_id(a.get("name"), "name")
-
-            # affiliation
-            if "affiliation" in a:
-                md.add_affiliation(a.get("affiliation"))
-                md.add_postcode(a.get("affiliation"))   # FIXME: normalise postcodes
-
-            # other author ids
-            for id in a.get("identifier", []):
-                md.add_author_id(id.get("id"), id.get("type"))
-                if id.get("type") == "email":
-                    md.add_email(id.get("id"))
-
-        # subjects
-        for s in self.subjects:
-            md.add_keyword(s)
-
-        # grants
-        for p in self.projects:
-            if "grant_number" in p:
-                md.add_grant_id(p.get("grant_number"))
-
-        # content type
-        if self.type is not None:
-            md.add_content_type(self.type)
-
-        return md
-
 
 class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotificationDAO):
     def __init__(self, raw=None):

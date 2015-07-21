@@ -38,7 +38,7 @@ Note that here "exact match" means that the lowercased, whitespace-trimmed strin
 
 * Domain <-> URL - normalise the domain: strip prefixes and URL paths.  If either ends with the other, it is a match
 * Domain <-> Email - normalise the domain: strip prefixes an URL paths.  Normalise the email: strip everything before @.  If either ends with the other it is a match
-* Name Variant <-> Affiliation - exact match required
+* Name Variant <-> Affiliation - normalised name variant must be an exact substring of normalised affiliation
 * Author Identifier <-> Email - exact match required
 * Author Identifier <-> Author Identifier - exact match required
 * Postcode <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
@@ -47,7 +47,7 @@ Note that here "exact match" means that the lowercased, whitespace-trimmed strin
 * Content Type <-> Content Type - exact match required
 * Arbitrary String <-> URL - Normalise the String and the URL: strip prefixes and URL paths.  If either ends with the other, it is a match
 * Arbitrary String <-> email - exact match required
-* Arbitrary String <-> Affiliation - exact match required
+* Arbitrary String <-> Affiliation - normalised string must be an exact substring of normalised affiliation
 * Arbitrary String <-> Author ID - exact match required
 * Arbitrary String <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
 * Arbitrary String <-> Grant - exact match requried
