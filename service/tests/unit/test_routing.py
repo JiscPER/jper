@@ -1,17 +1,24 @@
 from octopus.modules.es.testindex import ESTestCase
 # from unittest import TestCase
+from octopus.core import app
 
-from service import routing, models
+from service import routing, models, api
 from service.tests import fixtures
 
+from datetime import datetime
 import time
 
 class TestPackager(ESTestCase):
     def setUp(self):
         super(TestPackager, self).setUp()
 
+        self.store_impl = app.config.get("STORE_IMPL")
+        app.config["STORE_IMPL"] = "octopus.modules.store.store.TempStore"
+
     def tearDown(self):
         super(TestPackager, self).tearDown()
+
+        app.config["STORE_IMPL"] = self.store_impl
 
     def test_01_domain_url(self):
         match_set = [
@@ -117,6 +124,10 @@ class TestPackager(ESTestCase):
                 assert isinstance(m, basestring)
                 assert len(m) > 0
 
+    def test_08_enhance(self):
+        # put a test for metadata enhancement here
+        pass
+
     def test_50_match_success(self):
         # example routing metadata from a notification
         source = fixtures.NotificationFactory.routing_metadata()
@@ -221,9 +232,25 @@ class TestPackager(ESTestCase):
         assert 0 not in check
 
     def test_51_match_fail(self):
-        pass
+        # example routing metadata from a notification
+        source = fixtures.NotificationFactory.routing_metadata()
+        md = models.RoutingMetadata(source)
 
-    def test_98_routing_success(self):
+        # example repo config data, with the keywords and content_types removed for these tests
+        # (they may be the subject of a later test)
+        source2 = fixtures.RepositoryFactory.useless_repo_config()
+        rc = models.RepositoryConfig(source2)
+
+        prov = models.MatchProvenance()
+
+        m = routing.match(md, rc, prov)
+        assert m is False
+        assert len(prov.provenance) == 0
+
+    def test_97_routing_success_metadata(self):
+        # start a timer so we can check the analysed date later
+        now = datetime.utcnow()
+
         # add a repository config to the index
         source = fixtures.RepositoryFactory.repo_config()
         del source["keywords"]
@@ -238,8 +265,51 @@ class TestPackager(ESTestCase):
         # now run the routing algorithm
         routing.route(urn)
 
-        # NOTE: at the moment this test can't pass, as URLs are not extracted from
-        # the metadata
+        # give the index a chance to catch up before checking the results
+        time.sleep(2)
+
+        # check that a match provenance was recorded
+        mps = models.MatchProvenance.pull_by_notification(urn.id)
+        assert len(mps) == 1
+
+        # check the properties of the match provenance
+        mp = mps[0]
+        assert mp.repository == rc.repository
+        assert mp.notification == urn.id
+        assert len(mp.provenance) > 0
+
+        # check that a routed notification was created
+        rn = models.RoutedNotification.pull(urn.id)
+        assert rn is not None
+        assert rn.analysis_datestamp >= now
+        assert rc.repository in rn.repositories
+
+        # FIXME: check for enhanced metadata
+        # FIXME: check for enhanced router links
+
+    def test_98_routing_success_package(self):
+        # start a timer so we can check the analysed date later
+        now = datetime.utcnow()
+
+        # 2. Creation of metadata + zip content
+        notification = fixtures.APIFactory.incoming()
+        del notification["links"]
+        filepath = fixtures.PackageFactory.example_package_path()
+        with open(filepath) as f:
+            note = api.JPER.create_notification(None, notification, f)
+
+        # add a repository config to the index
+        source = fixtures.RepositoryFactory.repo_config()
+        del source["keywords"]
+        del source["content_types"]
+        rc = models.RepositoryConfig(source)
+        rc.save(blocking=True)
+
+        # load the unrouted notification
+        urn = models.UnroutedNotification.pull(note.id)
+
+        # now run the routing algorithm
+        routing.route(urn)
 
         # give the index a chance to catch up before checking the results
         time.sleep(2)
@@ -247,12 +317,42 @@ class TestPackager(ESTestCase):
         # check that a match provenance was recorded
         mps = models.MatchProvenance.pull_by_notification(urn.id)
         assert len(mps) == 1
-        # FIXME: what else do we need to check for here?
+
+        # check the properties of the match provenance
+        mp = mps[0]
+        assert mp.repository == rc.repository
+        assert mp.notification == urn.id
+        assert len(mp.provenance) > 0
 
         # check that a routed notification was created
         rn = models.RoutedNotification.pull(urn.id)
         assert rn is not None
-        # FIXME: what else do we need to check for here?
+        assert rn.analysis_datestamp >= now
+        assert rc.repository in rn.repositories
+
+        # FIXME: check for enhanced metadata
+        # FIXME: check for enhanced router links
 
     def test_99_routing_fail(self):
-        pass
+        # useless (won't match) repo config data
+        source = fixtures.RepositoryFactory.useless_repo_config()
+        rc = models.RepositoryConfig(source)
+        rc.save(blocking=True)
+
+        # get an unrouted notification
+        source2 = fixtures.NotificationFactory.unrouted_notification()
+        urn = models.UnroutedNotification(source2)
+
+        # now run the routing algorithm
+        routing.route(urn)
+
+        # give the index a chance to catch up before checking the results
+        time.sleep(2)
+
+        # check that a match provenance was not recorded
+        mps = models.MatchProvenance.pull_by_notification(urn.id)
+        assert len(mps) == 0
+
+        # check that a routed notification was not created
+        rn = models.RoutedNotification.pull(urn.id)
+        assert rn is None

@@ -134,7 +134,7 @@ class TestAPI(ESTestCase):
     def test_05_create(self):
         # 2 different kinds of create mechanism
 
-        # 1. Validation of plain metadata-only notification (with links that aren't checked)
+        # 1. Creation of plain metadata-only notification (with links that aren't checked)
         notification = fixtures.APIFactory.incoming()
         note = api.JPER.create_notification(None, notification)
         assert note is not None
@@ -144,7 +144,7 @@ class TestAPI(ESTestCase):
         assert len(check.links) == 1
         assert check.links[0]["url"] == "http://example.com/pub/1/file.pdf"
 
-        # 2. Validation of metadata + zip content
+        # 2. Creation of metadata + zip content
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
         filepath = fixtures.PackageFactory.example_package_path()
