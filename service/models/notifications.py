@@ -511,6 +511,10 @@ class RoutingInformation(dataobj.DataObj):
         self._set_single("analysis_date", val, coerce=dataobj.date_str())
 
     @property
+    def analysis_datestamp(self):
+        return self._get_single("analysis_date", coerce=dataobj.to_datestamp())
+
+    @property
     def repositories(self):
         return self._get_list("repositories", coerce=dataobj.to_unicode())
 

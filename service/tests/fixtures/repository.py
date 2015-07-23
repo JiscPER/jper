@@ -15,12 +15,26 @@ class RepositoryFactory(object):
     def retreival_record(cls):
         return deepcopy(RETRIEVAL)
 
+    @classmethod
+    def useless_repo_config(cls):
+        return deepcopy(USELESS_REPO_CONFIG)
+
 RETRIEVAL = {
     "repository" : "abcdefg",
     "notification" : "1234567890",
     "content" : "http://example.com/file",
     "retrieval_date" : "2015-05-04T00:00:00Z",
     "scope" : "notification"
+}
+
+USELESS_REPO_CONFIG = {
+    "repository" : "abcdefg",
+    "domains" : ["someunknowndomain.withsubdomain.com"],
+    "name_variants" : ["The Amazing University of Science, the Arts and Business (not to mention Medicine)"],
+    "author_ids" : [],
+    "postcodes" : [],
+    "grants" : ["alkjsdfoiwqefwqefw"],
+    "strings": []
 }
 
 REPO_CONFIG = {
