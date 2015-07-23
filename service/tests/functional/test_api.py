@@ -255,7 +255,7 @@ class TestAPI(ESTestCase):
         assert resp2.status_code == 200
         assert resp2.headers["content-type"] == "application/json"
         j2 = resp2.json()
-        assert j2["id"] == j["id"]te
+        assert j2["id"] == j["id"]
 
         # FIXME: should do additional tests for retrieving routed notifications, but this is
         # difficult to do at this stage
