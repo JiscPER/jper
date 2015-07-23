@@ -10,6 +10,13 @@ from service import models
 blueprint = Blueprint('account', __name__)
 
 
+@blueprint.before_request
+def restrict():
+    if current_user.is_anonymous():
+        if not request.path.endswith('login'):
+            return redirect(request.path.rsplit('/',1)[0] + '/login')
+
+
 @blueprint.route('/')
 def index():
 	if not current_user.is_super:

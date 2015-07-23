@@ -53,16 +53,16 @@ def _accepted(obj):
     return resp
 
 
-@blueprint.before_app_request
+@blueprint.before_request
 def standard_authentication():
     """Check remote_user on a per-request basis."""
     remote_user = request.headers.get('REMOTE_USER', '')
     #tp, apik = request.headers.get('Authorization', '').lower().split(None, 1)
     apik = False
     if not apik:
-        vals = request.json if request.json else request.values
-        if vals is not None:
-            apik = vals.get('API_KEY', vals.get('api_key', False))
+        apik = request.values.get('API_KEY', request.values.get('api_key', False))
+    if not apik:
+        apik = request.json.get('API_KEY', request.json.get('api_key', False))    
 
     if remote_user:
         print "remote user present " + remote_user

@@ -251,11 +251,11 @@ class TestAPI(ESTestCase):
         url = resp.headers["location"]
         j = resp.json()
 
-        resp2 = requests.get(url)
+        resp2 = requests.get(url + '?api_key=' + API_KEY)
         assert resp2.status_code == 200
         assert resp2.headers["content-type"] == "application/json"
         j2 = resp2.json()
-        assert j2["id"] == j["id"]
+        assert j2["id"] == j["id"]te
 
         # FIXME: should do additional tests for retrieving routed notifications, but this is
         # difficult to do at this stage
