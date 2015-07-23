@@ -648,6 +648,10 @@ class RoutingMetadata(dataobj.DataObj):
     def add_url(self, val):
         self._add_to_list("urls", val, coerce=dataobj.to_unicode(), unique=True)
 
+    @property
+    def author_ids(self):
+        return self._get_list("author_ids")
+
     def add_author_id(self, id, type):
         uc = dataobj.to_unicode()
         obj = {"id" : self._coerce(id, uc), "type" : self._coerce(type, uc)}
@@ -656,7 +660,7 @@ class RoutingMetadata(dataobj.DataObj):
 
     def get_author_ids(self, type=None):
         if type is None:
-            return self._get_list("author_ids")
+            return self.author_ids
         else:
             return [aid for aid in self._get_list("author_ids") if aid.get("type") == type]
 

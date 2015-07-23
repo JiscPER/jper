@@ -34,9 +34,13 @@ ROUTING_METADATA = {
         {
             "id" : "aaaa-0000-1111-bbbb",
             "type" : "orcid"
+        },
+        {
+            "id" : "someone@sms.ucl.ac.uk",
+            "type" : "email"
         }
     ],
-    "postcodes" : ["SW1 1AA", "EH23 5TZ"],
+    "postcodes" : ["SW1 0AA", "EH23 5TZ"],
     "keywords" : ["science", "technology", "arts", "medicine"],
     "grants" : ["BB/34/juwef"],
     "content_types" : ["article"]

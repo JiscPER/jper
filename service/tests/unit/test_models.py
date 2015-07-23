@@ -213,13 +213,14 @@ class TestModels(ESTestCase):
         assert "UCL" in rm1.affiliations
         assert "Cottage Labs, HP3 9AA" in rm1.affiliations
         assert "Cottage Labs, EH9 5TP" in rm1.affiliations
-        assert len(rm1.get_author_ids()) == 6
+        assert len(rm1.get_author_ids()) == 7
         assert "richard@example.com" in [aid.get("id") for aid in rm1.get_author_ids("email")]
         assert "mark@example.com" in [aid.get("id") for aid in rm1.get_author_ids("email")]
         assert "aaaa-0000-1111-bbbb" in [aid.get("id") for aid in rm1.get_author_ids("orcid")]
         assert "dddd-2222-3333-cccc" in [aid.get("id") for aid in rm1.get_author_ids("orcid")]
         assert "Richard Jones" in [aid.get("id") for aid in rm1.get_author_ids("name")]
         assert "Mark MacGillivray" in [aid.get("id") for aid in rm1.get_author_ids("name")]
+        assert "someone@sms.ucl.ac.uk" in [aid.get("id") for aid in rm1.get_author_ids("email")]
         assert len(rm1.keywords) == 4
         assert "science" in rm1.keywords
         assert "technology" in rm1.keywords
@@ -228,7 +229,7 @@ class TestModels(ESTestCase):
         assert len(rm1.content_types) == 1
         assert "article" in rm1.content_types
         assert len(rm1.postcodes) == 4
-        for c in ["HP3 9AA", "EH9 5TP", "SW1 1AA", "EH23 5TZ"]:
+        for c in ["HP3 9AA", "EH9 5TP", "SW1 0AA", "EH23 5TZ"]:
             assert c in rm1.postcodes
 
 

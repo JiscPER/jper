@@ -59,6 +59,51 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def repository(self):
         return self._get_single("repository", coerce=dataobj.to_unicode())
 
+    @property
+    def domains(self):
+        return self._get_list("domains", coerce=dataobj.to_unicode())
+
+    @property
+    def name_variants(self):
+        return self._get_list("name_variants", coerce=dataobj.to_unicode())
+
+    @property
+    def author_ids(self):
+        return self._get_list("author_ids")
+
+    @property
+    def author_emails(self):
+        # special function just to return the email type from the author ids
+        return self.get_author_ids("email")
+
+    def get_author_ids(self, type):
+        aids = []
+        for aid in self.author_ids:
+            if aid.get("type") == type:
+                aids.append(aid.get("id"))
+        return aids
+
+    @property
+    def postcodes(self):
+        return self._get_list("postcodes", coerce=dataobj.to_unicode())
+
+    @property
+    def keywords(self):
+        return self._get_list("keywords", coerce=dataobj.to_unicode())
+
+    @property
+    def grants(self):
+        return self._get_list("grants", coerce=dataobj.to_unicode())
+
+    @property
+    def content_types(self):
+        return self._get_list("content_types", coerce=dataobj.to_unicode())
+
+    @property
+    def strings(self):
+        return self._get_list("strings", coerce=dataobj.to_unicode())
+
+
 class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
     """
     {
@@ -107,6 +152,37 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
 
         self._add_struct(struct)
         super(MatchProvenance, self).__init__(raw=raw)
+
+    @property
+    def repository(self):
+        return self._get_single("repository", coerce=dataobj.to_unicode())
+
+    @repository.setter
+    def repository(self, val):
+        self._set_single("repository", val, coerce=dataobj.to_unicode())
+
+    @property
+    def notification(self):
+        return self._get_single("notification", coerce=dataobj.to_unicode())
+
+    @notification.setter
+    def notification(self, val):
+        self._set_single("notification", val, coerce=dataobj.to_unicode())
+
+    @property
+    def provenance(self):
+        return self._get_list("provenance")
+
+    def add_provenance(self, source_field, term, notification_field, matched, explanation):
+        uc = dataobj.to_unicode()
+        obj = {
+            "source_field" : self._coerce(source_field, uc),
+            "term" : self._coerce(term, uc),
+            "notification_field" : self._coerce(notification_field, uc),
+            "matched" : self._coerce(matched, uc),
+            "explanation" : self._coerce(explanation, uc)
+        }
+        self._add_to_list("provenance", obj)
 
 class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
     """
