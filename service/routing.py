@@ -48,7 +48,8 @@ def route(unrouted):
         routed = unrouted.make_routed()
         routed.repositories = match_ids
         routed.analysis_date = dates.now()
-        enhance(routed, metadata)
+        if metadata is not None:
+            enhance(routed, metadata)
         links(routed)
         routed.save()
 
