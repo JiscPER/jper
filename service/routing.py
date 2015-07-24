@@ -160,7 +160,100 @@ def enhance(routed, metadata):
     :param metadata:
     :return:
     """
-    pass
+    # some of the fields are easy - we just want to accept the existing
+    # value if it is set, otherwise take the value from the other metadata
+    accept_existing = [
+        "title", "version", "publisher", "source_name", "type",
+        "language", "publication_date", "date_accepted", "date_submitted",
+        "license"
+    ]
+    for ae in accept_existing:
+        if getattr(routed, ae) is None and getattr(metadata, ae) is not None:
+            setattr(routed, ae, getattr(metadata, ae))
+
+    # add any new identifiers to the source identifiers
+    mis = metadata.source_identifiers
+    for id in mis:
+        # the API prevents us from adding duplicates, so just add them all and let the model handle it
+        routed.add_source_identifier(id.get("type"), id.get("id"))
+
+    # add any new identifiers
+    ids = metadata.identifiers
+    for id in ids:
+        routed.add_identifier(id.get("id"), id.get("type"))
+
+    # add any new authors, using a slightly complex merge strategy:
+    # 1. If both authors have identifiers and one matches, they are equivalent and missing name/affiliation/identifiers should be added
+    # 2. If one does not have identifiers, match by name.
+    # 3. If name matches, add any missing affiliation/identifiers
+    mas = metadata.authors
+    ras = routed.authors
+    for ma in mas:
+        for ra in ras:
+            merged = _merge_entities(ra, ma, "name", other_properties=["affiliation"])
+            if not merged:
+                routed.add_author(ma)
+
+    # merge project entities in with the same rule set as above
+    mps = metadata.projects
+    rps = routed.projects
+    for mp in mps:
+        for rp in rps:
+            merged = _merge_entities(rp, mp, "name", other_properties=["grant_number"])
+            if not merged:
+                routed.add_project(mp)
+
+    # add any new subjects
+    for s in metadata.subjects:
+        routed.add_subject(s)
+
+
+def _merge_entities(e1, e2, primary_property, other_properties=None):
+    if other_properties is None:
+        other_properties = []
+
+    # 1. If both entities have identifiers and one matches, they are equivalent and missing properties/identifiers should be added
+    if e2.get("identifier") is not None and e1.get("identifier") is not None:
+        for maid in e2.get("identifier"):
+            for raid in e1.get("identifier"):
+                if maid.get("type") == raid.get("type") and maid.get("id") == raid.get("id"):
+                    # at this point we know that e1 is the same entity as e2
+                    if e1.get(primary_property) is None and e2.get(primary_property) is not None:
+                        e1[primary_property] = e2[primary_property]
+                    for op in other_properties:
+                        if e1.get(op) is None and e2.get(op) is not None:
+                            e1[op] = e2[op]
+                    for maid2 in e2.get("identifier"):
+                        match = False
+                        for raid2 in e1.get("identifier"):
+                            if maid2.get("type") == raid2.get("type") and maid2.get("id") == raid2.get("id"):
+                                match = True
+                                break
+                        if not match:
+                            e1["identifier"].append(maid2)
+                    return True
+
+    # 2. If one does not have identifiers, match by primary property.
+    # 3. If primary property matches, add any missing other properties/identifiers
+    elif e2.get(primary_property) == e1.get(primary_property):
+        for op in other_properties:
+            if e1.get(op) is None and e2.get(op) is not None:
+                e1[op] = e2[op]
+        for maid2 in e2.get("identifier", []):
+            match = False
+            for raid2 in e1.get("identifier", []):
+                if maid2.get("type") == raid2.get("type") and maid2.get("id") == raid2.get("id"):
+                    match = True
+                    break
+            if not match:
+                if "identifier" not in e1:
+                    e1["identifier"] = []
+                e1["identifier"].append(maid2)
+        return True
+
+    return False
+
+
 
 def links(routed):
     """

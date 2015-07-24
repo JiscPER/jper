@@ -125,8 +125,80 @@ class TestPackager(ESTestCase):
                 assert len(m) > 0
 
     def test_08_enhance(self):
-        # put a test for metadata enhancement here
-        pass
+        source = fixtures.NotificationFactory.routed_notification()
+        del source["metadata"]["type"]  # just to check that a field which should get copied over does
+        routed = models.RoutedNotification(source)
+
+        source2 = fixtures.NotificationFactory.notification_metadata()
+        metadata = models.NotificationMetadata(source2)
+
+        routing.enhance(routed, metadata)
+
+        # now just check that elements of the metadata have made it over to the routed notification
+        # or not as needed, using a reference record to compare the changes
+        source3 = fixtures.NotificationFactory.routed_notification()
+        ref = models.RoutedNotification(source3)
+
+        # these are the fields that we expect not to have changed
+        assert routed.title == ref.title
+        assert routed.version == ref.version
+        assert routed.publisher == ref.publisher
+        assert routed.source_name == ref.source_name
+        assert routed.language == ref.language
+        assert routed.publication_date == ref.publication_date
+        assert routed.date_accepted == ref.date_accepted
+        assert routed.date_submitted == ref.date_submitted
+        assert routed.license == ref.license
+
+        # the fields which have taken on the new metadata instead
+        assert routed.type == metadata.type
+
+        # identifier sets that should have changed
+        assert len(routed.source_identifiers) == len(ref.source_identifiers) + len(metadata.source_identifiers)
+        assert len(routed.identifiers) == len(metadata.identifiers)
+
+        # changes to author list
+        assert len(routed.authors) == 3
+
+        names = [a.get("name") for a in routed.authors]
+        counter = 0
+        for n in ref.authors:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 2
+
+        counter = 0
+        for n in metadata.authors:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 2
+
+        for n in routed.authors:
+            if n.get("name") == "Richard Jones":
+                assert len(n.get("identifier", [])) == 3
+
+        # changes to the projects list
+        assert len(routed.projects) == 2
+
+        names = [a.get("name") for a in routed.projects]
+        counter = 0
+        for n in ref.projects:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 1
+
+        counter = 0
+        for n in metadata.projects:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 2
+
+        for n in routed.projects:
+            if n.get("name") == "BBSRC":
+                assert len(n.get("identifier", [])) == 2
+
+        # additional subjects
+        assert len(routed.subjects) == 5
 
     def test_50_match_success(self):
         # example routing metadata from a notification
@@ -284,7 +356,8 @@ class TestPackager(ESTestCase):
         assert rn.analysis_datestamp >= now
         assert rc.repository in rn.repositories
 
-        # FIXME: check for enhanced metadata
+        # No need to check for enhanced metadata as there is no package
+
         # FIXME: check for enhanced router links
 
     def test_98_routing_success_package(self):
@@ -294,6 +367,7 @@ class TestPackager(ESTestCase):
         # 2. Creation of metadata + zip content
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
+        del notification["metadata"]["type"]    # so that we can test later that it gets added with the metadata enhancement
         filepath = fixtures.PackageFactory.example_package_path()
         with open(filepath) as f:
             note = api.JPER.create_notification(None, notification, f)
@@ -330,7 +404,9 @@ class TestPackager(ESTestCase):
         assert rn.analysis_datestamp >= now
         assert rc.repository in rn.repositories
 
-        # FIXME: check for enhanced metadata
+        # check that the metadata field we removed gets populated with the data from the package
+        assert rn.type == "Journal Article"
+
         # FIXME: check for enhanced router links
 
     def test_99_routing_fail(self):
