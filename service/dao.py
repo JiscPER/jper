@@ -39,6 +39,6 @@ class MatchProvNotificationQuery(object):
 
 class RetrievalRecordDAO(dao.ESDAO):
     __type__ = "retrieval"
-	
+
 class AccountDAO(dao.ESDAO):
-	__type__ = "account"
+    __type__ = "account"
