@@ -1,6 +1,6 @@
 from octopus.core import app
 from octopus.lib import plugin
-import zipfile, os, sys
+import zipfile, os, shutil
 from lxml import etree
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML
 from octopus.modules.identifiers import postcode
@@ -21,6 +21,15 @@ class PackageFactory(object):
             raise PackageException("No handler for package format {x}".format(x=format))
         klazz = plugin.load_class(cname)
         return klazz(zip_path=zip_path, metadata_files=metadata_files)
+
+    @classmethod
+    def converter(cls, format):
+        formats = app.config.get("PACKAGE_HANDLERS", {})
+        cname = formats.get(format)
+        if cname is None:
+            raise PackageException("No handler for package format {x}".format(x=format))
+        klazz = plugin.load_class(cname)
+        return klazz()
 
 class PackageManager(object):
 
@@ -125,6 +134,9 @@ class PackageHandler(object):
     def match_data(self):
         return models.RoutingMetadata()
 
+    def convert(self, in_path, target_format, out_path):
+        return False
+
 class FilesAndJATS(PackageHandler):
     """
     This is the default format that we currently prefer to get from
@@ -204,8 +216,18 @@ class FilesAndJATS(PackageHandler):
 
         return match
 
+    def convert(self, in_path, target_format, out_path):
+        if target_format == "http://purl.org/net/sword/package/SimpleZip":
+            self._simple_zip(in_path, out_path)
+            return True
+        return False
+
     ################################################
     ## Internal methods
+
+    def _simple_zip(self, in_path, out_path):
+        # files and jats are already basically a simple zip, so a straight copy
+        shutil.copyfile(in_path, out_path)
 
     def _merge_metadata(self, emd, jmd):
         if emd is None:

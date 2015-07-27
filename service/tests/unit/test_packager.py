@@ -14,6 +14,7 @@ import os
 
 PACKAGE = "http://router.jisc.ac.uk/packages/FilesAndJATS"
 TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
+SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 TEST_HANDLER = "service.tests.fixtures.TestPackageHandler"
 STORE_ID = "12345"
 
@@ -41,10 +42,18 @@ class TestPackager(TestCase):
         sm.delete(STORE_ID)
 
     def test_01_factory(self):
+        # try loading incoming packages
         inst = packages.PackageFactory.incoming(PACKAGE)
         assert isinstance(inst, packages.FilesAndJATS)
 
         inst = packages.PackageFactory.incoming(TEST_FORMAT)
+        assert isinstance(inst, fixtures.TestPackageHandler)
+
+        # try loading converter packages
+        inst = packages.PackageFactory.converter(PACKAGE)
+        assert isinstance(inst, packages.FilesAndJATS)
+
+        inst = packages.PackageFactory.converter(TEST_FORMAT)
         assert isinstance(inst, fixtures.TestPackageHandler)
 
     def test_02_valid_zip(self):
@@ -640,3 +649,23 @@ class TestPackager(TestCase):
         assert "filesandjats_jats.xml" in pm.metadata_names()
         assert "filesandjats_epmc.xml" in pm.metadata_names()
         assert "FilesAndJATS" in pm.url_name()
+
+    def test_14_faj_sz_convert(self):
+        # get a package manager and the path to our test package
+        pm = packages.PackageFactory.converter(PACKAGE)
+        in_path = fixtures.PackageFactory.example_package_path()
+
+        # run the coversion to the custom zip path
+        converted = pm.convert(in_path, SIMPLE_ZIP, self.custom_zip_path)
+
+        assert converted is True
+        assert os.path.exists(self.custom_zip_path)
+        assert os.path.isfile(self.custom_zip_path)
+
+        # now try a conversion to an unsupported format
+        os.remove(self.custom_zip_path)
+        converted = pm.convert(in_path, "random string", self.custom_zip_path)
+
+        assert converted is False
+        assert not os.path.exists(self.custom_zip_path)
+
