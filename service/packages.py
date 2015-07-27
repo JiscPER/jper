@@ -31,8 +31,8 @@ class PackageManager(object):
         if storage_manager is None:
             storage_manager = store.StoreFactory.get()
 
-        # store the zip file as-is
-        storage_manager.store(store_id, "content.zip", source_path=zip_path)
+        # store the zip file as-is (with the name specified by the packager)
+        storage_manager.store(store_id, pm.zip_name(), source_path=zip_path)
 
         # now extract the metadata streams from the package
         for name, stream in pm.metadata_streams():
@@ -51,18 +51,24 @@ class PackageManager(object):
         if not storage_manager.exists(store_id):
             return None, None
 
+        # get an instance of the package manager that can answer naming convention questions
+        pm = PackageFactory.incoming(format)
+
         # list the stored file and determine which are the metadata files
         remotes = storage_manager.list(store_id)
-        if "content.zip" in remotes:
-            remotes.remove("content.zip")
+        mdfs = pm.metadata_names()
+        mds = []
+        for r in remotes:
+            if r in mdfs:
+                mds.append(r)
 
         # create a list of tuples of filenames and contents
         handles = []
-        for r in remotes:
+        for r in mds:
             fh = storage_manager.get(store_id, r)
             handles.append((r, fh))
 
-        # create the specific package manager around the new metadata
+        # create the specific package manager around the new metadata (replacing the old instance)
         pm = PackageFactory.incoming(format, metadata_files=handles)
 
         # now do the metadata and the match analysis extraction
@@ -81,6 +87,30 @@ class PackageHandler(object):
         self.zip_path = zip_path
         self.metadata_files = metadata_files
         self.zip = None
+
+    ################################################
+    ## methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+        """
+        raise NotImplementedError()
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+        """
+        raise NotImplementedError()
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+        """
+        raise NotImplementedError()
+
+    ################################################
+    ## Methods for retriving data from the actual package
 
     def metadata_streams(self):
         """
@@ -117,8 +147,32 @@ class FilesAndJATS(PackageHandler):
         elif self.metadata_files is not None:
             self._load_from_metadata()
 
+    ################################################
+    ## Overrides of methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+        """
+        return "FilesAndJATS.zip"
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+        """
+        return ["filesandjats_jats.xml", "filesandjats_epmc.xml"]
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+        """
+        return "FilesAndJATS"
+
+    ################################################
+    ## Overrids of methods for retriving data from the actual package
+
     def metadata_streams(self):
-        sources = [("jats.xml", self.jats), ("epmc.xml", self.epmc)]
+        sources = [("filesandjats_jats.xml", self.jats), ("filesandjats_epmc.xml", self.epmc)]
         for n, x in sources:
             if x is not None:
                 yield n, StringIO(x.tostring())
@@ -149,6 +203,9 @@ class FilesAndJATS(PackageHandler):
             self._jats_match_data(match)
 
         return match
+
+    ################################################
+    ## Internal methods
 
     def _merge_metadata(self, emd, jmd):
         if emd is None:
@@ -329,18 +386,18 @@ class FilesAndJATS(PackageHandler):
 
     def _load_from_metadata(self):
         for name, stream in self.metadata_files:
-            if name == "jats.xml":
+            if name == "filesandjats_jats.xml":
                 try:
                     xml = etree.fromstring(stream.read())
                     self._set_jats(xml)
                 except Exception:
-                    raise PackageException("Unable to parse jats.xml file from store")
-            elif name == "epmc.xml":
+                    raise PackageException("Unable to parse filesandjats_jats.xml file from store")
+            elif name == "filesandjats_epmc.xml":
                 try:
                     xml = etree.fromstring(stream.read())
                     self._set_epmc(xml)
                 except Exception:
-                    raise PackageException("Unable to parse epmc.xml file from store")
+                    raise PackageException("Unable to parse filesandjats_epmc.xml file from store")
 
         if not self._is_valid():
             raise PackageException("No JATS fulltext or EPMC metadata found in metadata files")

@@ -63,13 +63,13 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
             xml = etree.fromstring(stream.read())
-            if name == "jats.xml":
+            if name == "filesandjats_jats.xml":
                 assert xml.tag == "article"
-            elif name == "epmc.xml":
+            elif name == "filesandjats_epmc.xml":
                 assert xml.tag == "result"
 
-        assert "jats.xml" in names
-        assert "epmc.xml" in names
+        assert "filesandjats_jats.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
         # now try doing the same but with zips that only contain one of the relevant
         # metadata files (which would still be valid)
@@ -88,7 +88,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "jats.xml" in names
+        assert "filesandjats_jats.xml" in names
 
         # now a zip that just contains the epmc (no jats)
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, no_jats=True)
@@ -104,7 +104,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "epmc.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
     def test_03_invalid_zip(self):
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
@@ -154,13 +154,13 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
             xml = etree.fromstring(stream.read())
-            if name == "jats.xml":
+            if name == "filesandjats_jats.xml":
                 assert xml.tag == "article"
-            elif name == "epmc.xml":
+            elif name == "filesandjats_epmc.xml":
                 assert xml.tag == "result"
 
-        assert "jats.xml" in names
-        assert "epmc.xml" in names
+        assert "filesandjats_jats.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
         # now do the same but with handles containing only one of epmc and jats
 
@@ -177,7 +177,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "jats.xml" in names
+        assert "filesandjats_jats.xml" in names
 
         # then for files containing only epmc (no jats)
         handles = fixtures.PackageFactory.custom_file_handles(no_jats=True)
@@ -192,7 +192,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "epmc.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
     def test_05_invalid_file_handles(self):
         handles = fixtures.PackageFactory.custom_file_handles(no_epmc=True, no_jats=True)
@@ -208,7 +208,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse epmc.xml file from store"
+                assert e.message == "Unable to parse filesandjats_epmc.xml file from store"
                 raise e
 
         handles = fixtures.PackageFactory.custom_file_handles(invalid_jats=True)
@@ -216,7 +216,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse jats.xml file from store"
+                assert e.message == "Unable to parse filesandjats_jats.xml file from store"
                 raise e
 
     def test_06_package_manager_ingest(self):
@@ -237,16 +237,16 @@ class TestPackager(TestCase):
         # check that all the files have been stored
         stored = sm.list(STORE_ID)
         assert len(stored) == 3
-        assert "content.zip" in stored
-        assert "jats.xml" in stored
-        assert "epmc.xml" in stored
+        assert "FilesAndJATS.zip" in stored
+        assert "filesandjats_jats.xml" in stored
+        assert "filesandjats_epmc.xml" in stored
 
         # check that we can retrieve the metadata files and read them
-        jats = sm.get(STORE_ID, "jats.xml")
-        epmc = sm.get(STORE_ID, "epmc.xml")
+        jats = sm.get(STORE_ID, "filesandjats_jats.xml")
+        epmc = sm.get(STORE_ID, "filesandjats_epmc.xml")
 
         # should be able to initialse the package handler around them without error
-        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=[("jats.xml", jats), ("epmc.xml", epmc)])
+        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=[("filesandjats_jats.xml", jats), ("filesandjats_epmc.xml", epmc)])
 
     def test_07_package_manager_ingest_fail(self):
         # create a package that has an error in it
@@ -633,3 +633,10 @@ class TestPackager(TestCase):
         assert len(codes) == len(postcodes)
         for c in codes:
             assert c in postcodes
+
+    def test_13_filesandjats_names(self):
+        pm = packages.PackageFactory.incoming(PACKAGE)
+        assert pm.zip_name() == "FilesAndJATS.zip"
+        assert "filesandjats_jats.xml" in pm.metadata_names()
+        assert "filesandjats_epmc.xml" in pm.metadata_names()
+        assert "FilesAndJATS" in pm.url_name()
