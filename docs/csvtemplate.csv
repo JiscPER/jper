@@ -1,0 +1,9 @@
+Name Variants,Domains,Postcodes,Grant Numbers,ORCIDs,Author Emails
+,,,,,
+In this column place name variants your institution is known by,"In this column put all domain names that your institution owns or operates under, as may appear in URLs or email addresses",In this column place the postcodes of all your sites where authors may register their affiliation address,In this column place the grant numbers of any grants you wish to receive content for,In this column place the ORCIDs of any members of staff whose content you would like to receive,In this column place the email addresses (both institutional and non-institutional if you wish) of any authors you wish to receive content from
+,,,,,
+University of Edinburgh,ed.ac.uk,EH8 9AD,BB/34/abcd,aaaa-bbbb-cccc-dddd,richard@example.com
+Edinburgh University,edinburgh.ac.uk,EH8 9YL,WT/9845,1111-2222-3333-4444,mark@example.com
+,,,,,
+"In order to use this template, please remove all content except the headers in row 1, and then complete the columns for each type.  You do not have to complete all of the columns if you do not wish to.  You can have as many or as few entries in each column as you like.",,,,,
+"When exporting this CSV from your spreadsheet program, please ensure that you save it as a CSV with text encoding “UTF-8”",,,,,
