@@ -87,6 +87,60 @@ class PackageManager(object):
         # return the extracted data
         return md, ma
 
+    @classmethod
+    def convert(cls, store_id, source_format, target_formats, storage_manager=None):
+        # load the storage manager
+        if storage_manager is None:
+            storage_manager = store.StoreFactory.get()
+
+        # get an instance of the local temp store
+        tmp = store.StoreFactory.tmp()
+
+        # get the packager that will do the conversions
+        pm = PackageFactory.converter(source_format)
+
+        # check that there is a source package to convert
+        if not storage_manager.exists(store_id):
+            return []
+
+        try:
+            # first check the file we want exists
+            if not pm.zip_name() in storage_manager.list(store_id):
+                return []
+
+            # make a copy of the storage manager's version of the package manager's primary file into the local
+            # temp directory
+            stream = storage_manager.get(store_id, pm.zip_name())
+            tmp.store(store_id, pm.zip_name(), source_stream=stream)
+
+            # get the in path for the converter to use
+            in_path = tmp.path(store_id, pm.zip_name())
+
+            # a record of all the conversions which took place, with all the relevant additonal info
+            conversions = []
+
+            # for each target format, load it's equivalent packager to get the storage name,
+            # then run the conversion
+            for tf in target_formats:
+                tpm = PackageFactory.converter(tf)
+                out_path = tmp.path(store_id, tpm.zip_name(), must_exist=False)
+                converted = pm.convert(in_path, tf, out_path)
+                if converted:
+                    conversions.append((tf, tpm.zip_name(), tpm.url_name()))
+
+            # with the conversions completed, synchronise back to the storage system
+            for tf, zn, un in conversions:
+                stream = tmp.get(store_id, zn)
+                storage_manager.store(store_id, zn, source_stream=stream)
+        finally:
+            try:
+                # finally, burn the local copy
+                tmp.delete(store_id)
+            except:
+                raise store.StoreException("Unable to delete from tmp storage {x}".format(x=store_id))
+
+        # return the conversions record to the caller
+        return conversions
 
 class PackageHandler(object):
     """
@@ -134,8 +188,37 @@ class PackageHandler(object):
     def match_data(self):
         return models.RoutingMetadata()
 
+    def convertible(self, target_format):
+        return False
+
     def convert(self, in_path, target_format, out_path):
         return False
+
+class SimpleZip(PackageHandler):
+    """
+    Very basic class for representing the SimpleZip package format
+    """
+
+    ################################################
+    ## methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+        """
+        return "SimpleZip.zip"
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+        """
+        return []
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+        """
+        return "SimpleZip"
 
 class FilesAndJATS(PackageHandler):
     """
@@ -215,6 +298,9 @@ class FilesAndJATS(PackageHandler):
             self._jats_match_data(match)
 
         return match
+
+    def convertible(self, target_format):
+        return target_format in ["http://purl.org/net/sword/package/SimpleZip"]
 
     def convert(self, in_path, target_format, out_path):
         if target_format == "http://purl.org/net/sword/package/SimpleZip":

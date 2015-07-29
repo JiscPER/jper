@@ -669,3 +669,62 @@ class TestPackager(TestCase):
         assert converted is False
         assert not os.path.exists(self.custom_zip_path)
 
+    def test_15_package_manager_covert(self):
+        # first put a package into the store
+        # create a custom zip (the package manager will delete it, so don't use the fixed example)
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path)
+
+        # get the package manager to ingest
+        packages.PackageManager.ingest(STORE_ID, self.custom_zip_path, PACKAGE)
+
+        # now run the conversion to 2 formats, one of which cannot be converted to and the other of which can
+        conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
+
+        # check that the result looks right
+        assert len(conversions) == 1    # not 2!
+        assert len(conversions[0]) == 3     # it's a tuple
+        assert conversions[0][0] == SIMPLE_ZIP
+        assert conversions[0][1] == "SimpleZip.zip"
+        assert conversions[0][2] == "SimpleZip"
+
+        # now check that under the hood the right things happened
+        tmp = store.StoreFactory.tmp()
+        assert not tmp.exists(STORE_ID)
+
+        # check that the remote store still exists
+        s = store.StoreFactory.get()
+        assert s.exists(STORE_ID)
+
+        # check that the new file is there along with the others
+        l = s.list(STORE_ID)
+        assert "SimpleZip.zip" in l
+        assert len(l) == 4          # the files and jats zip, the 2 extracted metadata files, and the simple zip
+
+        # ensure that the new file has content
+        f = s.get(STORE_ID, "SimpleZip.zip")
+        c = f.read()        # file is only small and this is a test, so read it all into memory
+        assert len(c) > 0
+
+    def test_16_convert_no_source(self):
+        # try to run the conversion without creating the stored object in the first place
+        conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
+        assert len(conversions) == 0
+
+        # now create the container, but remove the file, to see if we can trip up the converter
+
+        # create a custom zip (the package manager will delete it, so don't use the fixed example)
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path)
+
+        # get the package manager to ingest
+        packages.PackageManager.ingest(STORE_ID, self.custom_zip_path, PACKAGE)
+
+        # interfere with the store, and delete the file we want to convert from, leaving behind the
+        # store directory itself
+        s = store.StoreFactory.get()
+        s.delete(STORE_ID, "FilesAndJATS.zip")
+
+        conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
+        assert len(conversions) == 0
+
+
+

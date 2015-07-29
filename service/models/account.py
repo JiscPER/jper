@@ -85,6 +85,9 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def packaging(self):
         return self._get_list("packaging", coerce=self._utf8_unicode())
 
+    def add_packaging(self, val):
+        self._add_to_list("packaging", val, coerce=self._utf8_unicode(), unique=True)
+
     def can_log_in(self):
         return True
 

@@ -1,6 +1,9 @@
 from octopus.lib import dates
+from octopus.modules.store import store
 from service import packages, models
 import esprit
+from service.web import app
+from flask import url_for
 
 class RoutingException(Exception):
     pass
@@ -42,10 +45,18 @@ def route(unrouted):
     for p in match_provenance:
         p.save()
 
-    # if there are matches, update the record with the information, and then
-    # write it to the index
+    # if there are matches then the routing is successful, and we want to finalise the
+    # notification for the routed index and its content for download
     if len(match_ids) > 0:
+        # repackage the content that came with the unrouted notification (if necessary) into
+        # the formats required by the repositories for which there was a match
+        pack_links = repackage(unrouted, match_ids)
+
+        # update the record with the information, and then
+        # write it to the index
         routed = unrouted.make_routed()
+        for pl in pack_links:
+            routed.add_link(pl.get("url"), pl.get("type"), pl.get("format"), pl.get("access"))
         routed.repositories = match_ids
         routed.analysis_date = dates.now()
         if metadata is not None:
@@ -255,6 +266,47 @@ def _merge_entities(e1, e2, primary_property, other_properties=None):
     return False
 
 
+def repackage(unrouted, repo_ids):
+    # if there's no package format, there's no repackaging to be done
+    if unrouted.packaging_format is None:
+        return []
+
+    pm = packages.PackageFactory.converter(unrouted.packaging_format)
+    conversions = []
+    for rid in repo_ids:
+        acc = models.Account.pull(rid)
+        for pack in acc.packaging:
+            # if it's already in the conversion list, job done
+            if pack in conversions:
+                break
+
+            # otherwise, if the package manager can convert it, also job done
+            if pm.convertible(pack):
+                conversions.append(pack)
+                break
+
+    if len(conversions) == 0:
+        return []
+
+    # at this point we have a de-duplicated list of all formats that we need to convert
+    # the package to, that the package is capable of converting itself into
+    #
+    # this pulls everything from remote storage, runs the conversion, and then synchronises
+    # back to remote storage
+    done = packages.PackageManager.convert(unrouted.id, unrouted.packaging_format, conversions)
+
+    links = []
+    for d in done:
+        with app.test_request_context():
+            url = app.config.get("BASE_URL") + url_for("webapi.proxy_content", notification_id=unrouted.id, content_id=d[2])
+        links.append({
+            "type": "package",
+            "format" : "application/zip",
+            "access" : "router",
+            "url" : url
+        })
+
+    return links
 
 def links(routed):
     """

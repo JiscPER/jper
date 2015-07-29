@@ -59,6 +59,10 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def repository(self):
         return self._get_single("repository", coerce=dataobj.to_unicode())
 
+    @repository.setter
+    def repository(self, val):
+        self._set_single("repository", val, coerce=dataobj.to_unicode())
+
     @property
     def domains(self):
         return self._get_list("domains", coerce=dataobj.to_unicode())

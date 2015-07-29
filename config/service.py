@@ -59,7 +59,8 @@ DEFAULT_LIST_PAGE_SIZE = 25
 MAX_LIST_PAGE_SIZE = 100
 
 PACKAGE_HANDLERS = {
-    "http://router.jisc.ac.uk/packages/FilesAndJATS" : "service.packages.FilesAndJATS"
+    "http://router.jisc.ac.uk/packages/FilesAndJATS" : "service.packages.FilesAndJATS",
+    "http://purl.org/net/sword/package/SimpleZip" : "service.packages.SimpleZip"
 }
 
 #STORE_IMPL = "octopus.modules.store.store.StoreLocal"
@@ -68,8 +69,8 @@ PACKAGE_HANDLERS = {
 STORE_JPER_URL = 'http://store'
 
 from octopus.lib import paths
-STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store")
-STORE_TMP_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store")
+STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "live")
+STORE_TMP_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "tmp")
 
 ############################################
 # Configuration for when the app is operated in functional testing mode
