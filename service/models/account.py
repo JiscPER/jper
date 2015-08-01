@@ -6,37 +6,42 @@ from octopus.core import app
 from service import dao
 from octopus.lib import dataobj
 
-'''
-{
-    "id" : "<unique persistent account id>",
-    "created_date" : "<date account created>",
-    "last_updated" : "<date account last modified>",
-    
-    "email" : "<account contact email>",
-    "contact_name" : "<name of key contact>",
-    "password" : "<hashed password for ui login>",
-    "api_key" : "<api key for api auth and sftp if publisher>",
-    "role" : ["<account role: repository, provider, admin>"],
-    
-    "repository" : {
-        "name" : "<name of the repository>",
-        "url" : "<url for the repository>"
-    },
-    
-    "sword_repository" : {
-        "username" : "<username for the router to authenticate with the repository>",
-        "password" : "<reversibly encrypted password for the router to authenticate with the repository>"
-    },
-    
-    "embargo" : {
-        "duration" : "<length of default embargo>",
-        "from" : "<reference to field in data to measure embargo from>"
-    }
-}
-'''
-
 class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
-    
+    '''
+    {
+        "id" : "<unique persistent account id>",
+        "created_date" : "<date account created>",
+        "last_updated" : "<date account last modified>",
+
+        "email" : "<account contact email>",
+        "contact_name" : "<name of key contact>",
+        "password" : "<hashed password for ui login>",
+        "api_key" : "<api key for api auth>",
+        "role" : ["<account role: repository, provider, admin>"],
+
+        "repository" : {
+            "name" : "<name of the repository>",
+            "url" : "<url for the repository>"
+        },
+
+        "sword_repository" : {
+            "username" : "<username for the router to authenticate with the repository>",
+            "password" : "<reversibly encrypted password for the router to authenticate with the repository>",
+            "collection" : "<url for deposit collection to receive content from the router>"
+        },
+
+        "packaging" : [
+            "<identifier - in order of preference - that should be available for this repo.  Esp. via sword interface>"
+        ],
+
+        "embargo" : {
+            "duration" : "<length of default embargo>",
+            "from" : "<reference to field in data to measure embargo from>"
+        }
+>>>>>>> f95ccfcf622df05825431611afce607c6fbf727b
+    }
+    '''
+
     @property
     def hashed_password(self):
         return self._get_single("password", coerce=self._utf8_unicode())
@@ -79,6 +84,13 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     @role.setter
     def role(self, role):
         self._set_list("role", role, coerce=self._utf8_unicode())
+
+    @property
+    def packaging(self):
+        return self._get_list("packaging", coerce=self._utf8_unicode())
+
+    def add_packaging(self, val):
+        self._add_to_list("packaging", val, coerce=self._utf8_unicode(), unique=True)
 
     def can_log_in(self):
         return True

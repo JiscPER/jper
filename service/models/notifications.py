@@ -165,6 +165,14 @@ class NotificationMetadata(dataobj.DataObj):
         self._set_single("metadata.title", val, coerce=dataobj.to_unicode(), allow_none=False, ignore_none=True)
 
     @property
+    def version(self):
+        return self._get_single("metadata.version", coerce=dataobj.to_unicode())
+
+    @version.setter
+    def version(self, val):
+        self._set_single("metadata.version", val, coerce=dataobj.to_unicode())
+
+    @property
     def type(self):
         return self._get_single("metadata.type", coerce=dataobj.to_unicode())
 
@@ -320,6 +328,27 @@ class NotificationMetadata(dataobj.DataObj):
         url = self._coerce(url, uc)
         obj = {"title" : type, "type" : type, "url" : url}
         self._set_single("metadata.license_ref", obj)
+
+    @property
+    def source_name(self):
+        return self._get_single("metadata.source.name", coerce=dataobj.to_unicode())
+
+    @source_name.setter
+    def source_name(self, val):
+        self._set_single("metadata.source.name", val, coerce=dataobj.to_unicode())
+
+    @property
+    def source_identifiers(self):
+        return self._get_list("metadata.source.identifier")
+
+    def add_source_identifier(self, type, id):
+        if id is None or type is None:
+            return
+        uc = dataobj.to_unicode()
+        obj = {"id" : self._coerce(id, uc), "type" : self._coerce(type, uc)}
+        self._delete_from_list("metadata.source.identifier", matchsub=obj, prune=False)
+        self._add_to_list("metadata.source.identifier", obj)
+
 
 class BaseNotification(NotificationMetadata):
     """

@@ -1,24 +1,41 @@
 from octopus.modules.es.testindex import ESTestCase
 # from unittest import TestCase
 from octopus.core import app
+from octopus.lib import paths
+from octopus.modules.store import store
 
-from service import routing, models, api
+from service import routing, models, api, packages
 from service.tests import fixtures
 
 from datetime import datetime
-import time
+import time, os
+
+PACKAGE = "http://router.jisc.ac.uk/packages/FilesAndJATS"
+SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
+TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 
 class TestPackager(ESTestCase):
     def setUp(self):
         super(TestPackager, self).setUp()
 
         self.store_impl = app.config.get("STORE_IMPL")
-        app.config["STORE_IMPL"] = "octopus.modules.store.store.TempStore"
+        app.config["STORE_IMPL"] = "octopus.modules.store.store.StoreLocal"
+
+        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
+
+        self.stored_ids = []
 
     def tearDown(self):
         super(TestPackager, self).tearDown()
 
         app.config["STORE_IMPL"] = self.store_impl
+
+        if os.path.exists(self.custom_zip_path):
+            os.remove(self.custom_zip_path)
+
+        sm = store.StoreFactory.get()
+        for sid in self.stored_ids:
+            sm.delete(sid)
 
     def test_01_domain_url(self):
         match_set = [
@@ -125,8 +142,114 @@ class TestPackager(ESTestCase):
                 assert len(m) > 0
 
     def test_08_enhance(self):
-        # put a test for metadata enhancement here
-        pass
+        source = fixtures.NotificationFactory.routed_notification()
+        del source["metadata"]["type"]  # just to check that a field which should get copied over does
+        routed = models.RoutedNotification(source)
+
+        source2 = fixtures.NotificationFactory.notification_metadata()
+        metadata = models.NotificationMetadata(source2)
+
+        routing.enhance(routed, metadata)
+
+        # now just check that elements of the metadata have made it over to the routed notification
+        # or not as needed, using a reference record to compare the changes
+        source3 = fixtures.NotificationFactory.routed_notification()
+        ref = models.RoutedNotification(source3)
+
+        # these are the fields that we expect not to have changed
+        assert routed.title == ref.title
+        assert routed.version == ref.version
+        assert routed.publisher == ref.publisher
+        assert routed.source_name == ref.source_name
+        assert routed.language == ref.language
+        assert routed.publication_date == ref.publication_date
+        assert routed.date_accepted == ref.date_accepted
+        assert routed.date_submitted == ref.date_submitted
+        assert routed.license == ref.license
+
+        # the fields which have taken on the new metadata instead
+        assert routed.type == metadata.type
+
+        # identifier sets that should have changed
+        assert len(routed.source_identifiers) == len(ref.source_identifiers) + len(metadata.source_identifiers)
+        assert len(routed.identifiers) == len(metadata.identifiers)
+
+        # changes to author list
+        assert len(routed.authors) == 3
+
+        names = [a.get("name") for a in routed.authors]
+        counter = 0
+        for n in ref.authors:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 2
+
+        counter = 0
+        for n in metadata.authors:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 2
+
+        for n in routed.authors:
+            if n.get("name") == "Richard Jones":
+                assert len(n.get("identifier", [])) == 3
+
+        # changes to the projects list
+        assert len(routed.projects) == 2
+
+        names = [a.get("name") for a in routed.projects]
+        counter = 0
+        for n in ref.projects:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 1
+
+        counter = 0
+        for n in metadata.projects:
+            assert n.get("name") in names
+            counter += 1
+        assert counter == 2
+
+        for n in routed.projects:
+            if n.get("name") == "BBSRC":
+                assert len(n.get("identifier", [])) == 2
+
+        # additional subjects
+        assert len(routed.subjects) == 5
+
+    def test_09_repackage(self):
+        # get an unrouted notification to work with
+        source = fixtures.NotificationFactory.unrouted_notification()
+        unrouted = models.UnroutedNotification(source)
+        unrouted.save()
+
+        # make some repository accounts that we'll be doing the coversion for
+        acc1 = models.Account()
+        acc1.add_packaging(SIMPLE_ZIP)
+        acc1.save()
+
+        acc2 = models.Account()
+        acc2.add_packaging(TEST_FORMAT)
+        acc2.add_packaging(SIMPLE_ZIP)
+        acc2.save(blocking=True)
+
+        # put an associated package into the store
+        # create a custom zip (the package manager will delete it, so don't use the fixed example)
+        # and get the package manager to ingest
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path)
+        packages.PackageManager.ingest(unrouted.id, self.custom_zip_path, PACKAGE)
+        self.stored_ids.append(unrouted.id)
+
+        # get the ids of the repo accounts so we can repackage for them
+        repo_ids = [acc1.id, acc2.id]
+
+        links = routing.repackage(unrouted, repo_ids)
+
+        assert len(links) == 1
+        assert links[0].get("type") == "package"
+        assert links[0].get("format") == "application/zip"
+        assert links[0].get("access") == "router"
+        assert links[0].get("url").endswith("SimpleZip")
 
     def test_50_match_success(self):
         # example routing metadata from a notification
@@ -251,11 +374,18 @@ class TestPackager(ESTestCase):
         # start a timer so we can check the analysed date later
         now = datetime.utcnow()
 
+        # add an account to the index, which will take simplezip, but there should be no repackaging done
+        # as there's no files
+        acc1 = models.Account()
+        acc1.add_packaging(SIMPLE_ZIP)
+        acc1.save()
+
         # add a repository config to the index
         source = fixtures.RepositoryFactory.repo_config()
         del source["keywords"]
         del source["content_types"]
         rc = models.RepositoryConfig(source)
+        rc.repository = acc1.id
         rc.save(blocking=True)
 
         # get an unrouted notification
@@ -284,16 +414,27 @@ class TestPackager(ESTestCase):
         assert rn.analysis_datestamp >= now
         assert rc.repository in rn.repositories
 
-        # FIXME: check for enhanced metadata
+        # No need to check for enhanced metadata as there is no package
+
+        # check the store to be sure that no conversions were made
+        s = store.StoreFactory.get()
+        assert not s.exists(rn.id)
+
         # FIXME: check for enhanced router links
 
     def test_98_routing_success_package(self):
         # start a timer so we can check the analysed date later
         now = datetime.utcnow()
 
+        # add an account to the index, which will take simplezip
+        acc1 = models.Account()
+        acc1.add_packaging(SIMPLE_ZIP)
+        acc1.save()
+
         # 2. Creation of metadata + zip content
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
+        del notification["metadata"]["type"]    # so that we can test later that it gets added with the metadata enhancement
         filepath = fixtures.PackageFactory.example_package_path()
         with open(filepath) as f:
             note = api.JPER.create_notification(None, notification, f)
@@ -303,6 +444,7 @@ class TestPackager(ESTestCase):
         del source["keywords"]
         del source["content_types"]
         rc = models.RepositoryConfig(source)
+        rc.repository = acc1.id
         rc.save(blocking=True)
 
         # load the unrouted notification
@@ -330,7 +472,21 @@ class TestPackager(ESTestCase):
         assert rn.analysis_datestamp >= now
         assert rc.repository in rn.repositories
 
-        # FIXME: check for enhanced metadata
+        # check that the metadata field we removed gets populated with the data from the package
+        assert rn.type == "Journal Article"
+
+        # check the store to see that the conversions were made
+        s = store.StoreFactory.get()
+        assert s.exists(rn.id)
+        assert "SimpleZip.zip" in s.list(rn.id)
+
+        # check the links to be sure that the conversion links were added
+        found = False
+        for l in rn.links:
+            if l.get("url").endswith("SimpleZip"):
+                found = True
+        assert found
+
         # FIXME: check for enhanced router links
 
     def test_99_routing_fail(self):

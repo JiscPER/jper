@@ -8,7 +8,14 @@ from StringIO import StringIO
 RESOURCES = paths.rel2abs(__file__, "..", "resources")
 
 class TestPackageHandler(PackageHandler):
-    pass
+    def zip_name(self):
+        return "TestPackageHandler.zip"
+
+    def metadata_names(self):
+        return []
+
+    def url_name(self):
+        return "TestPackageHandler"
 
 class StoreFailStore(store.StoreLocal):
     def store(self, container_id, target_name, source_path=None, source_stream=None):
@@ -62,9 +69,9 @@ class PackageFactory(object):
 
         epmc = codecs.open(os.path.join(RESOURCES, "valid_epmc.xml"), "rb")
 
-        fhs = [("epmc.xml", epmc)]
+        fhs = [("filesandjats_epmc.xml", epmc)]
         if jats is not None:
-            fhs.append(("jats.xml", jats))
+            fhs.append(("filesandjats_jats.xml", jats))
 
         return fhs
 
@@ -74,16 +81,16 @@ class PackageFactory(object):
 
         if not no_jats:
             if invalid_jats:
-                handles.append(("jats.xml", StringIO("akdsjiwqefiw2fuwefoiwqejhqfwe")))
+                handles.append(("filesandjats_jats.xml", StringIO("akdsjiwqefiw2fuwefoiwqejhqfwe")))
             else:
                 jats = codecs.open(os.path.join(RESOURCES, "valid_jats_elife.xml"), "rb")
-                handles.append(("jats.xml", jats))
+                handles.append(("filesandjats_jats.xml", jats))
 
         if not no_epmc:
             if invalid_epmc:
-                handles.append(("epmc.xml", StringIO("akdsjiwqefiw2fuwefoiwqejhqfwe")))
+                handles.append(("filesandjats_epmc.xml", StringIO("akdsjiwqefiw2fuwefoiwqejhqfwe")))
             else:
                 epmc = codecs.open(os.path.join(RESOURCES, "valid_epmc.xml"), "rb")
-                handles.append(("epmc.xml", epmc))
+                handles.append(("filesandjats_epmc.xml", epmc))
 
         return handles

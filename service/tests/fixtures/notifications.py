@@ -18,6 +18,10 @@ class NotificationFactory(object):
     def routing_metadata(cls):
         return deepcopy(ROUTING_METADATA)
 
+    @classmethod
+    def notification_metadata(cls):
+        return deepcopy(ALT_METADATA)
+
 ROUTING_METADATA = {
     "urls" : ["http://www.ed.ac.uk", "http://www.ucl.ac.uk"],
     "emails" : ["richard@example.com", "mark@example.com", "someone@sms.ucl.ac.uk"],
@@ -58,6 +62,71 @@ ROUTING_INFO = {
     "repositories" : [
         "repo1", "repo2", "repo3"
     ]
+}
+
+ALT_METADATA = {
+    "metadata" : {
+        "title" : "Alternative Article",
+        "version" : "AAM",
+        "publisher" : "Other Publisher",
+        "source" : {
+            "name" : "Journal of Important Things",
+            "identifier" : [
+                {"type" : "other", "id" : "over there" }
+            ]
+        },
+        "identifier" : [
+            {"type" : "doi", "id" : "10.pp/jit.1" },
+            {"type" : "url", "id" : "http://jit.com/1" }
+        ],
+        "type" : "paper",
+        "author" : [
+            {
+                "name" : "Richard Jones",
+                "identifier" : [
+                    {"type" : "orcid", "id" : "aaaa-0000-1111-bbbb"},
+                    {"type" : "email", "id" : "richard@example.com"},
+                    {"type" : "mendeley_id", "id" : "12345"}
+                ],
+                "affiliation" : "Cottage Labs, HP3 9AA"
+            },
+            {
+                "name" : "Dave Spiegel",
+                "identifier" : [
+                    {"type" : "email", "id" : "dave@example.com"},
+                ],
+                "affiliation" : "University of Life"
+            }
+        ],
+        "language" : "eng",
+        "publication_date" : "2015-01-01T00:00:00Z",
+        "date_accepted" : "2014-09-01T00:00:00Z",
+        "date_submitted" : "2014-07-03T00:00:00Z",
+        "license_ref" : {
+            "title" : "CC BY",
+            "type" : "CC BY",
+            "url" : "http://creativecommons.org/cc-by",
+            "version" : "4.0",
+        },
+        "project" : [
+            {
+                "name" : "BBSRC",
+                "identifier" : [
+                    {"type" : "ringold", "id" : "bbsrcid"},
+                    {"type" : "isni", "id" : "asdf-ghtk"}
+                ],
+                "grant_number" : "BB/34/juwef"
+            },
+            {
+                "name" : "EPSRC",
+                "identifier" : [
+                    {"type" : "ringold", "id" : "askjdhfasdf"}
+                ],
+                "grant_number" : "EP/34/juwef"
+            }
+        ],
+        "subject" : ["arts", "medicine", "literature"]
+    }
 }
 
 BASE_NOTIFICATION = {

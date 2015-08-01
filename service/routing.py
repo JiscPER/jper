@@ -1,6 +1,9 @@
 from octopus.lib import dates
+from octopus.modules.store import store
 from service import packages, models
 import esprit
+from service.web import app
+from flask import url_for
 
 class RoutingException(Exception):
     pass
@@ -42,13 +45,22 @@ def route(unrouted):
     for p in match_provenance:
         p.save()
 
-    # if there are matches, update the record with the information, and then
-    # write it to the index
+    # if there are matches then the routing is successful, and we want to finalise the
+    # notification for the routed index and its content for download
     if len(match_ids) > 0:
+        # repackage the content that came with the unrouted notification (if necessary) into
+        # the formats required by the repositories for which there was a match
+        pack_links = repackage(unrouted, match_ids)
+
+        # update the record with the information, and then
+        # write it to the index
         routed = unrouted.make_routed()
+        for pl in pack_links:
+            routed.add_link(pl.get("url"), pl.get("type"), pl.get("format"), pl.get("access"))
         routed.repositories = match_ids
         routed.analysis_date = dates.now()
-        enhance(routed, metadata)
+        if metadata is not None:
+            enhance(routed, metadata)
         links(routed)
         routed.save()
 
@@ -160,7 +172,141 @@ def enhance(routed, metadata):
     :param metadata:
     :return:
     """
-    pass
+    # some of the fields are easy - we just want to accept the existing
+    # value if it is set, otherwise take the value from the other metadata
+    accept_existing = [
+        "title", "version", "publisher", "source_name", "type",
+        "language", "publication_date", "date_accepted", "date_submitted",
+        "license"
+    ]
+    for ae in accept_existing:
+        if getattr(routed, ae) is None and getattr(metadata, ae) is not None:
+            setattr(routed, ae, getattr(metadata, ae))
+
+    # add any new identifiers to the source identifiers
+    mis = metadata.source_identifiers
+    for id in mis:
+        # the API prevents us from adding duplicates, so just add them all and let the model handle it
+        routed.add_source_identifier(id.get("type"), id.get("id"))
+
+    # add any new identifiers
+    ids = metadata.identifiers
+    for id in ids:
+        routed.add_identifier(id.get("id"), id.get("type"))
+
+    # add any new authors, using a slightly complex merge strategy:
+    # 1. If both authors have identifiers and one matches, they are equivalent and missing name/affiliation/identifiers should be added
+    # 2. If one does not have identifiers, match by name.
+    # 3. If name matches, add any missing affiliation/identifiers
+    mas = metadata.authors
+    ras = routed.authors
+    for ma in mas:
+        for ra in ras:
+            merged = _merge_entities(ra, ma, "name", other_properties=["affiliation"])
+            if not merged:
+                routed.add_author(ma)
+
+    # merge project entities in with the same rule set as above
+    mps = metadata.projects
+    rps = routed.projects
+    for mp in mps:
+        for rp in rps:
+            merged = _merge_entities(rp, mp, "name", other_properties=["grant_number"])
+            if not merged:
+                routed.add_project(mp)
+
+    # add any new subjects
+    for s in metadata.subjects:
+        routed.add_subject(s)
+
+
+def _merge_entities(e1, e2, primary_property, other_properties=None):
+    if other_properties is None:
+        other_properties = []
+
+    # 1. If both entities have identifiers and one matches, they are equivalent and missing properties/identifiers should be added
+    if e2.get("identifier") is not None and e1.get("identifier") is not None:
+        for maid in e2.get("identifier"):
+            for raid in e1.get("identifier"):
+                if maid.get("type") == raid.get("type") and maid.get("id") == raid.get("id"):
+                    # at this point we know that e1 is the same entity as e2
+                    if e1.get(primary_property) is None and e2.get(primary_property) is not None:
+                        e1[primary_property] = e2[primary_property]
+                    for op in other_properties:
+                        if e1.get(op) is None and e2.get(op) is not None:
+                            e1[op] = e2[op]
+                    for maid2 in e2.get("identifier"):
+                        match = False
+                        for raid2 in e1.get("identifier"):
+                            if maid2.get("type") == raid2.get("type") and maid2.get("id") == raid2.get("id"):
+                                match = True
+                                break
+                        if not match:
+                            e1["identifier"].append(maid2)
+                    return True
+
+    # 2. If one does not have identifiers, match by primary property.
+    # 3. If primary property matches, add any missing other properties/identifiers
+    elif e2.get(primary_property) == e1.get(primary_property):
+        for op in other_properties:
+            if e1.get(op) is None and e2.get(op) is not None:
+                e1[op] = e2[op]
+        for maid2 in e2.get("identifier", []):
+            match = False
+            for raid2 in e1.get("identifier", []):
+                if maid2.get("type") == raid2.get("type") and maid2.get("id") == raid2.get("id"):
+                    match = True
+                    break
+            if not match:
+                if "identifier" not in e1:
+                    e1["identifier"] = []
+                e1["identifier"].append(maid2)
+        return True
+
+    return False
+
+
+def repackage(unrouted, repo_ids):
+    # if there's no package format, there's no repackaging to be done
+    if unrouted.packaging_format is None:
+        return []
+
+    pm = packages.PackageFactory.converter(unrouted.packaging_format)
+    conversions = []
+    for rid in repo_ids:
+        acc = models.Account.pull(rid)
+        for pack in acc.packaging:
+            # if it's already in the conversion list, job done
+            if pack in conversions:
+                break
+
+            # otherwise, if the package manager can convert it, also job done
+            if pm.convertible(pack):
+                conversions.append(pack)
+                break
+
+    if len(conversions) == 0:
+        return []
+
+    # at this point we have a de-duplicated list of all formats that we need to convert
+    # the package to, that the package is capable of converting itself into
+    #
+    # this pulls everything from remote storage, runs the conversion, and then synchronises
+    # back to remote storage
+    done = packages.PackageManager.convert(unrouted.id, unrouted.packaging_format, conversions)
+
+    links = []
+    for d in done:
+        with app.test_request_context():
+            url = app.config.get("BASE_URL") + url_for("webapi.proxy_content", notification_id=unrouted.id, content_id=d[2])
+        links.append({
+            "type": "package",
+            "format" : "application/zip",
+            "access" : "router",
+            "url" : url
+        })
+
+    return links
 
 def links(routed):
     """

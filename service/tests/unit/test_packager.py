@@ -14,6 +14,7 @@ import os
 
 PACKAGE = "http://router.jisc.ac.uk/packages/FilesAndJATS"
 TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
+SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 TEST_HANDLER = "service.tests.fixtures.TestPackageHandler"
 STORE_ID = "12345"
 
@@ -41,10 +42,18 @@ class TestPackager(TestCase):
         sm.delete(STORE_ID)
 
     def test_01_factory(self):
+        # try loading incoming packages
         inst = packages.PackageFactory.incoming(PACKAGE)
         assert isinstance(inst, packages.FilesAndJATS)
 
         inst = packages.PackageFactory.incoming(TEST_FORMAT)
+        assert isinstance(inst, fixtures.TestPackageHandler)
+
+        # try loading converter packages
+        inst = packages.PackageFactory.converter(PACKAGE)
+        assert isinstance(inst, packages.FilesAndJATS)
+
+        inst = packages.PackageFactory.converter(TEST_FORMAT)
         assert isinstance(inst, fixtures.TestPackageHandler)
 
     def test_02_valid_zip(self):
@@ -63,13 +72,13 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
             xml = etree.fromstring(stream.read())
-            if name == "jats.xml":
+            if name == "filesandjats_jats.xml":
                 assert xml.tag == "article"
-            elif name == "epmc.xml":
+            elif name == "filesandjats_epmc.xml":
                 assert xml.tag == "result"
 
-        assert "jats.xml" in names
-        assert "epmc.xml" in names
+        assert "filesandjats_jats.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
         # now try doing the same but with zips that only contain one of the relevant
         # metadata files (which would still be valid)
@@ -88,7 +97,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "jats.xml" in names
+        assert "filesandjats_jats.xml" in names
 
         # now a zip that just contains the epmc (no jats)
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, no_jats=True)
@@ -104,7 +113,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "epmc.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
     def test_03_invalid_zip(self):
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
@@ -154,13 +163,13 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
             xml = etree.fromstring(stream.read())
-            if name == "jats.xml":
+            if name == "filesandjats_jats.xml":
                 assert xml.tag == "article"
-            elif name == "epmc.xml":
+            elif name == "filesandjats_epmc.xml":
                 assert xml.tag == "result"
 
-        assert "jats.xml" in names
-        assert "epmc.xml" in names
+        assert "filesandjats_jats.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
         # now do the same but with handles containing only one of epmc and jats
 
@@ -177,7 +186,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "jats.xml" in names
+        assert "filesandjats_jats.xml" in names
 
         # then for files containing only epmc (no jats)
         handles = fixtures.PackageFactory.custom_file_handles(no_jats=True)
@@ -192,7 +201,7 @@ class TestPackager(TestCase):
         for name, stream in inst.metadata_streams():
             names.append(name)
         assert len(names) == 1
-        assert "epmc.xml" in names
+        assert "filesandjats_epmc.xml" in names
 
     def test_05_invalid_file_handles(self):
         handles = fixtures.PackageFactory.custom_file_handles(no_epmc=True, no_jats=True)
@@ -208,7 +217,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse epmc.xml file from store"
+                assert e.message == "Unable to parse filesandjats_epmc.xml file from store"
                 raise e
 
         handles = fixtures.PackageFactory.custom_file_handles(invalid_jats=True)
@@ -216,7 +225,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse jats.xml file from store"
+                assert e.message == "Unable to parse filesandjats_jats.xml file from store"
                 raise e
 
     def test_06_package_manager_ingest(self):
@@ -237,16 +246,16 @@ class TestPackager(TestCase):
         # check that all the files have been stored
         stored = sm.list(STORE_ID)
         assert len(stored) == 3
-        assert "content.zip" in stored
-        assert "jats.xml" in stored
-        assert "epmc.xml" in stored
+        assert "FilesAndJATS.zip" in stored
+        assert "filesandjats_jats.xml" in stored
+        assert "filesandjats_epmc.xml" in stored
 
         # check that we can retrieve the metadata files and read them
-        jats = sm.get(STORE_ID, "jats.xml")
-        epmc = sm.get(STORE_ID, "epmc.xml")
+        jats = sm.get(STORE_ID, "filesandjats_jats.xml")
+        epmc = sm.get(STORE_ID, "filesandjats_epmc.xml")
 
         # should be able to initialse the package handler around them without error
-        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=[("jats.xml", jats), ("epmc.xml", epmc)])
+        inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=[("filesandjats_jats.xml", jats), ("filesandjats_epmc.xml", epmc)])
 
     def test_07_package_manager_ingest_fail(self):
         # create a package that has an error in it
@@ -633,3 +642,89 @@ class TestPackager(TestCase):
         assert len(codes) == len(postcodes)
         for c in codes:
             assert c in postcodes
+
+    def test_13_filesandjats_names(self):
+        pm = packages.PackageFactory.incoming(PACKAGE)
+        assert pm.zip_name() == "FilesAndJATS.zip"
+        assert "filesandjats_jats.xml" in pm.metadata_names()
+        assert "filesandjats_epmc.xml" in pm.metadata_names()
+        assert "FilesAndJATS" in pm.url_name()
+
+    def test_14_faj_sz_convert(self):
+        # get a package manager and the path to our test package
+        pm = packages.PackageFactory.converter(PACKAGE)
+        in_path = fixtures.PackageFactory.example_package_path()
+
+        # run the coversion to the custom zip path
+        converted = pm.convert(in_path, SIMPLE_ZIP, self.custom_zip_path)
+
+        assert converted is True
+        assert os.path.exists(self.custom_zip_path)
+        assert os.path.isfile(self.custom_zip_path)
+
+        # now try a conversion to an unsupported format
+        os.remove(self.custom_zip_path)
+        converted = pm.convert(in_path, "random string", self.custom_zip_path)
+
+        assert converted is False
+        assert not os.path.exists(self.custom_zip_path)
+
+    def test_15_package_manager_covert(self):
+        # first put a package into the store
+        # create a custom zip (the package manager will delete it, so don't use the fixed example)
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path)
+
+        # get the package manager to ingest
+        packages.PackageManager.ingest(STORE_ID, self.custom_zip_path, PACKAGE)
+
+        # now run the conversion to 2 formats, one of which cannot be converted to and the other of which can
+        conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
+
+        # check that the result looks right
+        assert len(conversions) == 1    # not 2!
+        assert len(conversions[0]) == 3     # it's a tuple
+        assert conversions[0][0] == SIMPLE_ZIP
+        assert conversions[0][1] == "SimpleZip.zip"
+        assert conversions[0][2] == "SimpleZip"
+
+        # now check that under the hood the right things happened
+        tmp = store.StoreFactory.tmp()
+        assert not tmp.exists(STORE_ID)
+
+        # check that the remote store still exists
+        s = store.StoreFactory.get()
+        assert s.exists(STORE_ID)
+
+        # check that the new file is there along with the others
+        l = s.list(STORE_ID)
+        assert "SimpleZip.zip" in l
+        assert len(l) == 4          # the files and jats zip, the 2 extracted metadata files, and the simple zip
+
+        # ensure that the new file has content
+        f = s.get(STORE_ID, "SimpleZip.zip")
+        c = f.read()        # file is only small and this is a test, so read it all into memory
+        assert len(c) > 0
+
+    def test_16_convert_no_source(self):
+        # try to run the conversion without creating the stored object in the first place
+        conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
+        assert len(conversions) == 0
+
+        # now create the container, but remove the file, to see if we can trip up the converter
+
+        # create a custom zip (the package manager will delete it, so don't use the fixed example)
+        fixtures.PackageFactory.make_custom_zip(self.custom_zip_path)
+
+        # get the package manager to ingest
+        packages.PackageManager.ingest(STORE_ID, self.custom_zip_path, PACKAGE)
+
+        # interfere with the store, and delete the file we want to convert from, leaving behind the
+        # store directory itself
+        s = store.StoreFactory.get()
+        s.delete(STORE_ID, "FilesAndJATS.zip")
+
+        conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
+        assert len(conversions) == 0
+
+
+

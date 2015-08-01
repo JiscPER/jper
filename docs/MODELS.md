@@ -243,6 +243,11 @@ of the additional fields beyond the basic authentication.
 * sword_provider - for "provider" user class
 * ftp_provider - for "provider" user class
 
+Also for the packaging section, note that for any repository that is going to use SWORDv2 there needs to be a
+package identifier here, or they won't be able to get any content.  That should, at minimum, contain the SimpleZip
+identifier, but may also include the FilesAndJATS identifier (TBC).
+
+    SimpleZip = http://purl.org/net/sword/package/SimpleZip
 
 ```json
 {
@@ -263,8 +268,13 @@ of the additional fields beyond the basic authentication.
     
     "sword_repository" : {
         "username" : "<username for the router to authenticate with the repository>",
-        "password" : "<reversibly encrypted password for the router to authenticate with the repository>"
+        "password" : "<reversibly encrypted password for the router to authenticate with the repository>",
+        "collection" : "<url for deposit collection to receive content from the router>"
     },
+    
+    "packaging" : [
+        "<identifier - in order of preference - that should be available for this repo.  Esp. via sword interface>" 
+    ],
     
     "embargo" : {
         "duration" : "<length of default embargo>",
