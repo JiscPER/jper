@@ -21,17 +21,7 @@ def restrict():
 def index():
 	if not current_user.is_super:
 		abort(401)
-	users = models.Account.query() #{"sort":{'id':{'order':'asc'}}},size=1000000
-	if users['hits']['total'] != 0:
-		accs = [models.Account.pull(i['_source']['id']) for i in users['hits']['hits']]
-		# explicitly mapped to ensure no leakage of sensitive data. augment as necessary
-		users = []
-		for acc in accs:
-			user = {'id':acc.id}
-			if 'created_date' in acc.data:
-				user['created_date'] = acc.data['created_date']
-				users.append(user)
-	return render_template('account/users.html', users=users)
+	return render_template('account/users.html')
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
@@ -43,7 +33,7 @@ def username(username):
     elif ( request.method == 'DELETE' or 
             ( request.method == 'POST' and 
             request.values.get('submit',False) == 'Delete' ) ):
-        if current_user.id != acc.id and not current_user.is_super:
+        if not current_user.is_super:
             abort(401)
         else:
             acc.delete()
@@ -59,7 +49,15 @@ def username(username):
             else:
                 newdata['api_key'] = acc.data['api_key']
         for k, v in newdata.items():
-            if k not in ['submit','password']:
+            if k in ['publisher','repository']:
+                if not current_user.is_super:
+                    abort(401)
+                else:
+                    if v in [True,"yes",1,"1","True","true"]:
+                        acc.data[k] = True
+                    else:
+                        acc.data[k] = False
+            elif k not in ['submit','password']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
             acc.set_password(newdata['password'])
@@ -98,17 +96,24 @@ def logout():
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-	if not current_user.is_super:
-		abort(401)
-	elif request.method == 'GET':
-		return render_template('account/register.html')
-	elif request.method == 'POST':
-		api_key = str(uuid.uuid4())
-		account = models.Account(
-			email=request.values['email'],
-			api_key=api_key
-		)
-		account.set_password(request.values.password)
-		account.save()
-		flash('Account created for ' + account.id + '. If not listed below, refresh the page to catch up.', 'success')
-		return redirect('/account')
+    if not current_user.is_super:
+        abort(401)
+    elif request.method == 'GET':
+        return render_template('account/register.html')
+    elif request.method == 'POST':
+        api_key = str(uuid.uuid4())
+        account = models.Account(
+            email = request.values['email'],
+            api_key = api_key,
+            publisher = True if request.values.get('publisher',False) else False,
+            repository = True if request.values.get('repository',False) else False
+        )
+        account.set_password(request.values.password)
+        if request.values.get('publisher',False):
+            account.become_publisher()
+        account.save()
+        flash('Account created for ' + account.id, 'success')
+        return redirect('/account')
+
+    
+    

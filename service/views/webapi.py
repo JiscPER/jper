@@ -60,9 +60,13 @@ def standard_authentication():
     #tp, apik = request.headers.get('Authorization', '').lower().split(None, 1)
     apik = False
     if not apik:
-        apik = request.values.get('API_KEY', request.values.get('api_key', False))
-    if not apik:
-        apik = request.json.get('API_KEY', request.json.get('api_key', False))    
+        try:
+            apik = request.values.get('API_KEY', request.values.get('api_key', False))
+        except:
+            try:
+                apik = request.json.get('API_KEY', request.json.get('api_key', False))    
+            except:
+                pass
 
     if remote_user:
         print "remote user present " + remote_user
@@ -234,18 +238,18 @@ def list_repository_routed(repo_id):
 @blueprint.route("/config/<repoid>", methods=["GET","POST"])
 @webapp.jsonp
 def config(repoid=None):
-    # TODO: this should be restricted to accepting a POST to /config for only the logged in user
-    # or to /config/repoid for a superuser of some sort
     if repoid is None:
-        if current_user.data.get('repository',False):
-            repoid = current_user.data['repository']
+        if current_user.has_role('repository'):
+            repoid = current_user.id
         elif current_user.has_role('admin'):
-            return ''
+            return '' # the admin cannot do anything at /config, but gets a 200 so it is clear they are allowed
         else:
             abort(400)
-        rec = models.RepositoryConfig.pull(repoid)
-        if rec is None:
-            rec = models.RepositoryConfig()
+    elif not current_user.has_role('admin'): # only the superuser can actually pass a repo id
+        abort(401)
+    rec = models.RepositoryConfig.pull(repoid)
+    if rec is None:
+        rec = models.RepositoryConfig()
     if request.method == 'GET':
         # get the config for the current user and return it
         # this route may not actually be needed, but is convenient during development
@@ -255,42 +259,13 @@ def config(repoid=None):
         return resp
     elif request.method == 'POST':
         if request.json:
-            # expect a list of values to feed in - check for blank ones and discard
-            # this can later become more complex if we accept structured configs
-            lines = request.json
-            if isinstance(lines,list):
-                obj = lines
-                lines = False
+            saved = rec.set_repo_config(config=request.json)
         else:
             try:
-                file = request.files['file']
-                if file.filename.endswith('.csv'):
-                    # could do some checking of the obj
-                    lines = False
-                    obj = []
-                    inp = csv.DictReader(file)
-                    for row in inp:
-                        obj.append(row)
-                else:
-                    lines = [line.rstrip('\n').rstrip('\r').strip() for line in file if len(line.rstrip('\n').rstrip('\r').strip()) > 1]
+                saved = rec.set_repo_config(file=request.files['file'])
             except:
-                lines = False
-        if lines:
-            # save the lines into the repo config
-            rec.data['strings'] = lines
-            rec.save()
-            app.logger.info("Saved simple config for repo: {x}".format(x=repoid))
-            return ''
-        elif obj:
-            # NOTE: how would people identify different types of author IDs in a csv?
-            # how would they understand what keywords are?
-            # how would they know what format to put an address in? 
-            # how would they make sense of putting postcodes into different rows from the addresses?
-            fields = ['domains','name_variants','author_ids','postcodes','keywords','grants','content_types']
-            for f in fields:
-                rec.data[f] = [i[f] for i in obj if f in i and len(i[f]) > 1]
-            rec.save()
-            app.logger.info("Saved complex config for repo: {x}".format(x=repoid))
+                saved = False
+        if saved:
             return ''
         else:
             abort(400)

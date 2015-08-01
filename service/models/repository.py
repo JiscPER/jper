@@ -103,6 +103,38 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def strings(self):
         return self._get_list("strings", coerce=dataobj.to_unicode())
 
+    
+    def set_repo_config(self,file=None,config=None):
+        if file is not None:
+            if file.filename.endswith('.csv'):
+                # could do some checking of the obj
+                lines = False
+                obj = []
+                inp = csv.DictReader(file)
+                for row in inp:
+                    obj.append(row)
+                fields = ['domains','name_variants','author_ids','postcodes','keywords','grants','content_types']
+                config = {}
+                for f in fields:
+                    config[f] = [i[f] for i in obj if f in i and len(i[f]) > 1]
+                app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
+            elif file.filename.endswith('.txt'):
+                app.logger.info("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
+                config = {"strings": [line.rstrip('\n').rstrip('\r').strip() for line in file if len(line.rstrip('\n').rstrip('\r').strip()) > 1] }
+            else:
+                app.logger.info("Could not extract config from file {f} for repo: {x}".format(x=self.id,f=file.filename))
+                return False
+        if config is not None:
+            # save the lines into the repo config
+            self.data = config
+            self.save()
+            app.logger.info("Saved config for repo: {x}".format(x=self.id))
+            return True
+        else:
+            app.logger.info("Could not save config for repo: {x}".format(x=self.id))            
+            return False
+        
+
 
 class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
     """
