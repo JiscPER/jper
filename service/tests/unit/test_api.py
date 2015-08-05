@@ -159,6 +159,7 @@ class TestAPI(ESTestCase):
         assert check is not None
         assert len(check.links) == 1
         assert check.links[0]["url"].endswith("notification/" + note.id + "/content")
+        assert check.links[0]["packaging"].endswith("FilesAndJATS")
 
         s = store.StoreFactory.get()
         stored = s.list(note.id)

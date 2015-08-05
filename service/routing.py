@@ -56,7 +56,7 @@ def route(unrouted):
         # write it to the index
         routed = unrouted.make_routed()
         for pl in pack_links:
-            routed.add_link(pl.get("url"), pl.get("type"), pl.get("format"), pl.get("access"))
+            routed.add_link(pl.get("url"), pl.get("type"), pl.get("format"), pl.get("access"), pl.get("packaging"))
         routed.repositories = match_ids
         routed.analysis_date = dates.now()
         if metadata is not None:
@@ -303,7 +303,8 @@ def repackage(unrouted, repo_ids):
             "type": "package",
             "format" : "application/zip",
             "access" : "router",
-            "url" : url
+            "url" : url,
+            "packaging" : d[0]
         })
 
     return links

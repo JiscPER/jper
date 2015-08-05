@@ -133,7 +133,8 @@ Any request for a routed notification (except from the provider who created it) 
         {
             "type" : "<link type: splash|fulltext>",
             "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
-            "url" : "<provider's splash, fulltext or machine readable page>"
+            "url" : "<provider's splash, fulltext or machine readable page>",
+            "packaging" : "<package format identifier, if required>"
         }
     ],
     

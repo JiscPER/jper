@@ -376,7 +376,8 @@ class BaseNotification(NotificationMetadata):
                 "type" : "<link type: splash|fulltext>",
                 "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
                 "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
-                "url" : "<provider's splash, fulltext or machine readable page>"
+                "url" : "<provider's splash, fulltext or machine readable page>",
+                "packaging" : "<packaging format identifier>"
             }
         ],
 
@@ -435,7 +436,8 @@ class BaseNotification(NotificationMetadata):
                         "type" : {"coerce" :"unicode"},
                         "format" : {"coerce" :"unicode"},
                         "access" : {"coerce" :"unicode", "allowed" : ["router", "public"]},
-                        "url" : {"coerce" :"url"}
+                        "url" : {"coerce" :"url"},
+                        "packaging" : {"coerce" : "unicode"}
                     }
                 }
             }
@@ -452,7 +454,7 @@ class BaseNotification(NotificationMetadata):
     def links(self):
         return self._get_list("links")
 
-    def add_link(self, url, type, format, access):
+    def add_link(self, url, type, format, access, packaging=None):
         if access not in ["router", "public"]:
             raise dataobj.DataSchemaException("link access must be 'router' or 'public'")
 
@@ -463,6 +465,8 @@ class BaseNotification(NotificationMetadata):
             "format" : self._coerce(format, uc),
             "access" : self._coerce(access, uc)
         }
+        if packaging is not None:
+            obj["packaging"] = self._coerce(packaging, uc)
         self._add_to_list("links", obj)
 
     @property

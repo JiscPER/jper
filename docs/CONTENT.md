@@ -42,7 +42,8 @@ Because of these layers of complexity in handling restricted by-reference files,
             "type" : "fulltext",
             "format" : "application/zip",
             "url" : "/api/v1/notification/<id>/content",
-            "access" : "router"
+            "access" : "router",
+            "packaging" : "http://pubrouter.jisc.ac.uk/packages/FilesAndJATS"
         }
     ]
 }

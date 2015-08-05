@@ -250,6 +250,7 @@ class TestPackager(ESTestCase):
         assert links[0].get("format") == "application/zip"
         assert links[0].get("access") == "router"
         assert links[0].get("url").endswith("SimpleZip")
+        assert links[0].get("packaging") == "http://purl.org/net/sword/package/SimpleZip"
 
     def test_50_match_success(self):
         # example routing metadata from a notification

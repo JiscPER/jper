@@ -141,7 +141,7 @@ class JPER(object):
 
             # if the content was successfully ingested, then annotate the notification with the content url
             url = app.config.get("BASE_URL") + "notification/" + note.id + "/content"
-            note.add_link(url, "package", "application/zip", "router")
+            note.add_link(url, "package", "application/zip", "router", note.packaging_format)
 
         # if we get to here there was either no package, or the package saved successfully, so we can store the
         # note
