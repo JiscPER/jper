@@ -14,9 +14,9 @@ PACKAGE = "http://router.jisc.ac.uk/packages/FilesAndJATS"
 SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 
-class TestPackager(ESTestCase):
+class TestRouting(ESTestCase):
     def setUp(self):
-        super(TestPackager, self).setUp()
+        super(TestRouting, self).setUp()
 
         self.store_impl = app.config.get("STORE_IMPL")
         app.config["STORE_IMPL"] = "octopus.modules.store.store.StoreLocal"
@@ -26,7 +26,7 @@ class TestPackager(ESTestCase):
         self.stored_ids = []
 
     def tearDown(self):
-        super(TestPackager, self).tearDown()
+        super(TestRouting, self).tearDown()
 
         app.config["STORE_IMPL"] = self.store_impl
 

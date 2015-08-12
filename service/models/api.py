@@ -45,7 +45,7 @@ class IncomingNotification(NotificationMetadata):
             "lists" : {
                 "links" : {"contains" : "object"}
             },
-            "reqired" : [],
+            "required" : [],
 
             "structs" : {
                 "provider" : {
@@ -62,9 +62,12 @@ class IncomingNotification(NotificationMetadata):
                     "required" : []
                 },
                 "embargo" : {
-                    "end" : {"coerce" : "utcdatetime"},
-                    "start" : {"coerce" : "utcdatetime"},
-                    "duration" : {"coerce" : "integer"}
+                    "fields" : {
+                        "end" : {"coerce" : "utcdatetime"},
+                        "start" : {"coerce" : "utcdatetime"},
+                        "duration" : {"coerce" : "integer"}
+                    },
+                    "required" : []
                 },
                 "links" : {
                     "fields" : {
@@ -137,9 +140,11 @@ class OutgoingNotification(NotificationMetadata):
                     "required" : []
                 },
                 "embargo" : {
-                    "end" : {"coerce" : "utcdatetime"},
-                    "start" : {"coerce" : "utcdatetime"},
-                    "duration" : {"coerce" : "integer"}
+                    "fields" : {
+                        "end" : {"coerce" : "utcdatetime"},
+                        "start" : {"coerce" : "utcdatetime"},
+                        "duration" : {"coerce" : "integer"}
+                    }
                 },
                 "links" : {
                     "fields" : {

@@ -38,7 +38,6 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
             "duration" : "<length of default embargo>",
             "from" : "<reference to field in data to measure embargo from>"
         }
->>>>>>> f95ccfcf622df05825431611afce607c6fbf727b
     }
     '''
 
