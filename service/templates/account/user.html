@@ -14,33 +14,59 @@
                 account details
             </h1>
             
-            <h2>{{account.data['email']}}</h2>
+            <h4>{{account.data['email']}}</h4>
             
-            <h3>Created: {{account.data['created_date']}}</h3>
+            {% if current_user.is_super %}
+            <h4>Created: {{account.data['created_date']}}</h4>
+            {% endif %}
             
-            <h3>Account ID: {{account.id}}</h3>
+            <h4>Account ID: {{account.id}}</h4>
             
-            <h3>Account API key: {{account.data['api_key']}}</h3>
+            <h4>API key: {{account.data['api_key']}}</h4>
             
             <div class="well" style="margin-top:30px;">
-            <a class="btn btn-info btn-block" id="new_apikey" href="#" style="margin-bottom:5px;">Generate new API key</a>
-            <br>
-            <form method="POST" action="">
-                <input type="password" name="password" class="form-control" style="width:50%;display:inline;" placeholder="new password">
-                <a class="btn btn-primary" style="width:49%;" id="reset_password" href="#">Reset account password</a>            
-            </form>
-            {% if account.has_role('repository') or True %}
-            <br><br>
-            <input type="file" id="config" class="form-control" style="width:50%;display:inline;">
-            <a class="btn btn-primary" style="width:49%;" id="config_upload" href="#">Upload new match config</a>            
-            {% endif %}
+                <!-- TODO enabling this requires changing user accounts on system as api key is sftp login password
+                <form method="POST" action="{{request.path}}/api_key" style="margin-bottom:10px;">
+                    <button class="btn btn-info btn-block" id="api_key" type="submit">
+                        Generate new API key
+                    </button>
+                </form>
+                -->
+                <form method="POST" action="">
+                    <input type="password" name="password" class="form-control" style="width:50%;display:inline;" placeholder="new password">
+                    <button class="btn btn-primary" id="reset_password" type="submit" style="width:49%;">
+                        Reset account password
+                    </button>
+                </form>
             </div>
+            
+            {% if account.has_role('repository') %}
+            <div class="well">
+                <form method="POST" action="{{request.path}}/config">
+                    <input type="file" name="file" id="file" class="form-control" style="width:50%;display:inline;">
+                    <button class="btn btn-primary" id="config_upload" type="submit" style="width:49%;">
+                        Upload new match config
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            {% if account.has_role('publisher') %}
+            <div class="well">
+                <p>
+                    For SFTP access, use the account ID above as username.<br>
+                    The account API key above is the password.<br>
+                    The SFTP address is sftp.pubrouter.jisc.ac.uk<br>
+                    It is on the standard SFTP port (22).
+                </p>                
+            </div>
+            {% endif %}
 
         </div>
         
         <div class="col-md-6">
             
-            {% if account.has_role('repository') or True %}
+            {% if account.has_role('repository') %}
             <div class="well">                
             <form method="post" action="">
 			<input type="text" name="repository_name" class="form-control" placeholder="repository name" value="{{account.data.get('repository',{}).get('name','')}}">
@@ -56,7 +82,7 @@
             </div>
             {% endif %}
             
-            {% if account.has_role('publisher') or True %}
+            {% if account.has_role('publisher') %}
             <div class="well">
             <form method="post" action="">
 			<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration months (number)" value="{{account.data.get('embargo',{}).get('duration','')}}">
@@ -71,21 +97,45 @@
             {% if current_user.is_super %}
             <div class="well">
                 {% if account.has_role('publisher') %}
-                <a class="btn btn-info btn-block cb" id="cease_publisher" href="#">Cease being a publisher account</a>
+                <form method="POST" action="{{request.path}}/cease/publisher">
+                    <button class="btn btn-info btn-block" type="submit" style="margin-bottom:3px;">
+                        Cease being a publisher account
+                    </button>
+                </form>
                 {% else %}
-                <a class="btn btn-info btn-block cb" id="become_publisher" href="#">Make this account a publisher account</a>
+                <form method="POST" action="{{request.path}}/become/publisher">
+                    <button class="btn btn-info btn-block" type="submit" style="margin-bottom:3px;">
+                        Make this account a publisher account
+                    </button>
+                </form>
                 {% endif %}
 
                 {% if account.has_role('repository') %}
-                <a class="btn btn-info btn-block cb" id="cease_repository" href="#">Cease being a repository account</a>
+                <form method="POST" action="{{request.path}}/cease/repository">
+                    <button class="btn btn-info btn-block" type="submit" style="margin-bottom:3px;">
+                        Cease being a repository account
+                    </button>
+                </form>
                 {% else %}
-                <a class="btn btn-info btn-block cb" id="become_publisher" href="#">Make this account a repository account</a>
+                <form method="POST" action="{{request.path}}/become/repository">
+                    <button class="btn btn-info btn-block" type="submit" style="margin-bottom:3px;">
+                        Make this account a repository account
+                    </button>
+                </form>
                 {% endif %}
 
                 {% if account.has_role('admin') %}
-                <a class="btn btn-warning btn-block cb" id="cease_admin" href="#">Cease being an admin account</a>
+                <form method="POST" action="{{request.path}}/cease/admin">
+                    <button class="btn btn-warning btn-block" type="submit" style="margin-bottom:3px;">
+                        Cease being an admin account
+                    </button>
+                </form>
                 {% else %}
-                <a class="btn btn-warning btn-block cb" id="become_admin" href="#">Make this account an admin account</a>
+                <form method="POST" action="{{request.path}}/cease/admin">
+                    <button class="btn btn-warning btn-block" type="submit" style="margin-bottom:3px;">
+                        Make this account an admin account
+                    </button>
+                </form>
                 {% endif %}
 
                 <br><br>
@@ -97,26 +147,7 @@
     </div>
 
     <script>
-    $( document ).ready(function() {
-        var roles = function(event) {
-            event.preventDefault();
-            var url = window.location.href;
-            if ( $(this).attr('id') === 'become_publisher' ) { url += '/become/publisher'; }
-            if ( $(this).attr('id') === 'cease_publisher' ) { url += '/cease/publisher'; }
-            if ( $(this).attr('id') === 'become_repository' ) { url += '/become/repository'; }
-            if ( $(this).attr('id') === 'cease_repository' ) { url += '/cease/repository'; }
-            if ( $(this).attr('id') === 'become_admin' ) { url += '/become/admin'; }
-            if ( $(this).attr('id') === 'cease_admin' ) { url += '/cease/admin'; }
-            $.ajax({
-                url: url,
-                method:'POST'
-            });
-            setTimeout(function() {
-                window.location = window.location;
-            }, 1000);
-        }
-        $('.cb').bind('click',roles);
-        
+    $( document ).ready(function() {        
         var deleteaccount = function(event) {
             event.preventDefault();
             alert("This has not been made possible yet. It may depend on further UI enhancements, and decisions about how to handle account deletion.");

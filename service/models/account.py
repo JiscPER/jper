@@ -48,10 +48,10 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     @hashed_password.setter
     def hashed_password(self, val):
         self._set_single("password", val, coerce=self._utf8_unicode())
-
-        def set_password(self, password):
-            coerced = self._utf8_unicode()(password)
-            self._set_single("password", generate_password_hash(coerced), coerce=self._utf8_unicode())
+        
+    def set_password(self, password):
+        coerced = self._utf8_unicode()(password)
+        self._set_single("password", generate_password_hash(coerced), coerce=self._utf8_unicode())
 
     def check_password(self, password):
         coerced = self._utf8_unicode()(password)
@@ -120,7 +120,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         un = self.id
         try:
             import os, subprocess
-            fl = os.path.dirname(os.path.abspath(__file__)) + 'createFTPuser.sh'
+            fl = os.path.dirname(os.path.abspath(__file__)) + '/createFTPuser.sh'
             print "subprocessing " + fl
             subprocess.call( [ 'sudo', fl, un, self.data['api_key'] ] )
             print "creating FTP user for " + un
@@ -133,7 +133,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         un = self.id
         try:
             import os, subprocess
-            fl = os.path.dirname(os.path.abspath(__file__)) + 'deleteFTPuser.sh'
+            fl = os.path.dirname(os.path.abspath(__file__)) + '/deleteFTPuser.sh'
             print "subprocessing " + fl
             subprocess.call(['sudo',fl,un])
             print "deleting FTP user for " + un
