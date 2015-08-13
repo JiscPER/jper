@@ -245,7 +245,7 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
                 "notification" : {"coerce" : "unicode"},
                 "content" : {"coerce" : "unicode"},
                 "retrieval_date" : {"coerce" : "utcdatetime"},
-                "scope" : {"coerce" : "unicode", "allowed" : ["notification", "fulltext"]}
+                "scope" : {"coerce" : "unicode", "allowed_values" : ["notification", "fulltext"]}
             }
         }
 

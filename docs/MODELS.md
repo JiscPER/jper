@@ -51,7 +51,8 @@ It also documents other key system entities such as the user account models.
             "type" : "<link type: splash|fulltext>",
             "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
             "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
-            "url" : "<provider's splash, fulltext or machine readable page>"
+            "url" : "<provider's splash, fulltext or machine readable page>",
+            "packaging" : "<packaging format identifier>"
         }
     ],
     

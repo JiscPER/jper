@@ -45,7 +45,7 @@ class IncomingNotification(NotificationMetadata):
             "lists" : {
                 "links" : {"contains" : "object"}
             },
-            "reqired" : [],
+            "required" : [],
 
             "structs" : {
                 "provider" : {
@@ -62,9 +62,12 @@ class IncomingNotification(NotificationMetadata):
                     "required" : []
                 },
                 "embargo" : {
-                    "end" : {"coerce" : "utcdatetime"},
-                    "start" : {"coerce" : "utcdatetime"},
-                    "duration" : {"coerce" : "integer"}
+                    "fields" : {
+                        "end" : {"coerce" : "utcdatetime"},
+                        "start" : {"coerce" : "utcdatetime"},
+                        "duration" : {"coerce" : "integer"}
+                    },
+                    "required" : []
                 },
                 "links" : {
                     "fields" : {
@@ -99,7 +102,8 @@ class OutgoingNotification(NotificationMetadata):
             {
                 "type" : "<link type: splash|fulltext>",
                 "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
-                "url" : "<provider's splash, fulltext or machine readable page>"
+                "url" : "<provider's splash, fulltext or machine readable page>",
+                "packaging" : "<package format identifier, if required>"
             }
         ],
 
@@ -136,15 +140,18 @@ class OutgoingNotification(NotificationMetadata):
                     "required" : []
                 },
                 "embargo" : {
-                    "end" : {"coerce" : "utcdatetime"},
-                    "start" : {"coerce" : "utcdatetime"},
-                    "duration" : {"coerce" : "integer"}
+                    "fields" : {
+                        "end" : {"coerce" : "utcdatetime"},
+                        "start" : {"coerce" : "utcdatetime"},
+                        "duration" : {"coerce" : "integer"}
+                    }
                 },
                 "links" : {
                     "fields" : {
                         "type" : {"coerce" :"unicode"},
                         "format" : {"coerce" :"unicode"},
-                        "url" : {"coerce" :"url"}
+                        "url" : {"coerce" :"url"},
+                        "packaging" : {"coerce" : "unicode"}
                     }
                 }
             }

@@ -80,9 +80,10 @@ class NotificationMetadata(dataobj.DataObj):
                         "identifier" : {"contains" : "object"},
                         "author" : {"contains" : "object"},
                         "project" : {"contains" : "object"},
-                        "subject" : {"coerce" : "unicode"}
+                        "subject" : {"contains" : "field", "coerce" : "unicode"}
                     },
                     "required" : [],
+
                     "structs" : {
                         "source" : {
                             "fields" : {
@@ -376,7 +377,8 @@ class BaseNotification(NotificationMetadata):
                 "type" : "<link type: splash|fulltext>",
                 "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
                 "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
-                "url" : "<provider's splash, fulltext or machine readable page>"
+                "url" : "<provider's splash, fulltext or machine readable page>",
+                "packaging" : "<packaging format identifier>"
             }
         ],
 
@@ -426,16 +428,19 @@ class BaseNotification(NotificationMetadata):
                     "required" : []
                 },
                 "embargo" : {
-                    "end" : {"coerce" : "utcdatetime"},
-                    "start" : {"coerce" : "utcdatetime"},
-                    "duration" : {"coerce" : "integer"}
+                    "fields" : {
+                        "end" : {"coerce" : "utcdatetime"},
+                        "start" : {"coerce" : "utcdatetime"},
+                        "duration" : {"coerce" : "integer"}
+                    }
                 },
                 "links" : {
                     "fields" : {
                         "type" : {"coerce" :"unicode"},
                         "format" : {"coerce" :"unicode"},
-                        "access" : {"coerce" :"unicode", "allowed" : ["router", "public"]},
-                        "url" : {"coerce" :"url"}
+                        "access" : {"coerce" :"unicode", "allowed_values" : ["router", "public"]},
+                        "url" : {"coerce" :"url"},
+                        "packaging" : {"coerce" : "unicode"}
                     }
                 }
             }
@@ -452,7 +457,7 @@ class BaseNotification(NotificationMetadata):
     def links(self):
         return self._get_list("links")
 
-    def add_link(self, url, type, format, access):
+    def add_link(self, url, type, format, access, packaging=None):
         if access not in ["router", "public"]:
             raise dataobj.DataSchemaException("link access must be 'router' or 'public'")
 
@@ -463,6 +468,8 @@ class BaseNotification(NotificationMetadata):
             "format" : self._coerce(format, uc),
             "access" : self._coerce(access, uc)
         }
+        if packaging is not None:
+            obj["packaging"] = self._coerce(packaging, uc)
         self._add_to_list("links", obj)
 
     @property
@@ -574,10 +581,13 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
             del d["content"]["store_id"]
 
         # filter out all non-router links if the request is not for the provider copy
-        if "links" in d and not provider:
+        if "links" in d:
             keep = []
             for link in d.get("links", []):
-                if link.get("access") == "router":
+                if provider:        # if you're the provider keep all the links
+                    del link["access"]
+                    keep.append(link)
+                elif link.get("access") == "router":    # otherwise, only share router links
                     del link["access"]
                     keep.append(link)
             if len(keep) > 0:
@@ -609,10 +619,13 @@ class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotific
             del d["repositories"]
 
         # filter out all non-router links if the request is not for the provider copy
-        if "links" in d and not provider:
+        if "links" in d:
             keep = []
             for link in d.get("links", []):
-                if link.get("access") == "router":
+                if provider:        # if you're the provider keep all the links
+                    del link["access"]
+                    keep.append(link)
+                elif link.get("access") == "router":    # otherwise, only share router links
                     del link["access"]
                     keep.append(link)
             if len(keep) > 0:
@@ -661,7 +674,7 @@ class RoutingMetadata(dataobj.DataObj):
                 "author_ids" : {
                     "fields" : {
                         "id" : {"coerce" : "unicode"},
-                        "type" : {"coerce", "unicode"}
+                        "type" : {"coerce" : "unicode"}
                     }
                 }
             }
