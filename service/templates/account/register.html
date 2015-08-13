@@ -13,17 +13,50 @@
         <div class="col-md-offset-4 col-md-4 form-horizontal wide">
 			<input type="text" name="email" class="form-control" placeholder="email">
 			<input type="password" name="password" class="form-control" placeholder="password">
-        </div>
-    </div>
+            
+            <div class="checkbox">
+                <label>
+                    <input class="roler" type="checkbox" name="publisher"> publisher account
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input class="roler" type="checkbox" name="repository"> repository account
+                </label>
+            </div>
 
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4">
-            <button class="btn btn-primary" id="register" type="submit" style="width: 100%; font-size: 30px; line-height: 30px">
-                Register <span style="font-size: 18px" class="glyphicon glyphicon-floppy-save"></span>
+            <div class="rolers repository">
+			<input type="text" name="repository_name" class="form-control" placeholder="repository name">
+			<input type="text" name="repository_url" class="form-control" placeholder="repository url">
+			<input type="text" name="sword_username" class="form-control" placeholder="repository SWORD username">
+			<input type="text" name="sword_password" class="form-control" placeholder="repository SWORD password">
+			<input type="text" name="sword_collection" class="form-control" placeholder="repository SWORD collection">
+			<input type="text" name="packaging" class="form-control" placeholder="packaging prefs (comma separated)">
+            </div>
+            
+            <div class="rolers publisher">
+			<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration months (number)">
+            </div>
+            
+            <button class="btn btn-primary btn-block" id="register" type="submit" style="margin-top:5px;">
+                Register
             </button>
         </div>
     </div>
 </form>
+
+<script>
+$( document ).ready(function() {
+    $('.rolers').hide();
+    var roler = function() {
+        $('.rolers').hide();
+        var cls = '.' + $(this).attr('name');
+        $(cls).show();
+    }
+    $('.roler').bind('change',roler);
+});
+</script>
+
 
 {% endblock %}
 

@@ -119,6 +119,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                     obj.append(row)
                 fields = ['domains','name_variants','author_ids','postcodes','keywords','grants','content_types']
                 config = {}
+                # TODO: match fields in object with fields in csv that Richard changed.
                 for f in fields:
                     config[f] = [i[f] for i in obj if f in i and len(i[f]) > 1]
                 app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))

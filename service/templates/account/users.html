@@ -13,10 +13,11 @@
 
 <h1>Manage Users</h1>
 
-<div id="userfacetview"></div>
+{% for user in users %}
+<p><a href="/account/{{user[0]}}">{{user[1]}}</a>{% for r in user[2] %} {{r}}{% endfor %}</p>
+{% endfor %}
 
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript" src="{{ url_for('static', filename='js/account/userlist.js') }}"></script>
 {% endblock extra_js_bottom %}

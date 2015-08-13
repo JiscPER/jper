@@ -19,9 +19,10 @@ def restrict():
 
 @blueprint.route('/')
 def index():
-	if not current_user.is_super:
-		abort(401)
-	return render_template('account/users.html')
+    if not current_user.is_super:
+        abort(401)
+    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
+    return render_template('account/users.html', users=users)
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
@@ -42,32 +43,76 @@ def username(username):
     elif request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
-        newdata = request.json if request.json else request.values
-        if newdata.get('id',False):
-            if newdata['id'] != username:
-                acc = models.Account.pull(newdata['id'])
+            
+        if request.values.get('repository_name',False):
+            account.data['repository'] = {
+                'name': request.values['repository_name']
+            }
+            if request.values.get('repository_url',False): account.data['repository']['url'] = request.values['repository_url']
+            
+        if request.values.get('sword_username',False):
+            account.data['sword'] = {
+                'username': request.values['sword_username']
+            }
+            if request.values.get('sword_password',False): account.data['sword']['password'] = request.values['sword_password']
+            if request.values.get('sword_collection',False): account.data['sword']['collection'] = request.values['sword_collection']
+
+        if request.values.get('packaging',False):
+            account.data['packaging'] = request.values['packaging'].split(',')
+
+        if request.values.get('embargo_duration',False):
+            account.data['embargo'] = {'duration': request.values['embargo_duration']}
+
+        if 'password' in request.values and not request.values['password'].startswith('sha1'):
+            if len(request.values['password']) < 8:
+                flash("Sorry. Password must be at least eight characters long")
+                return render_template('account/user.html', account=acc)
             else:
-                newdata['api_key'] = acc.data['api_key']
-        for k, v in newdata.items():
-            if k in ['publisher','repository']:
-                if not current_user.is_super:
-                    abort(401)
-                else:
-                    if v in [True,"yes",1,"1","True","true"]:
-                        acc.data[k] = True
-                    else:
-                        acc.data[k] = False
-            elif k not in ['submit','password']:
-                acc.data[k] = v
-        if 'password' in newdata and not newdata['password'].startswith('sha1'):
-            acc.set_password(newdata['password'])
+                acc.set_password(request.values['password'])
+            
         acc.save()
         flash("Record updated")
         return render_template('account/user.html', account=acc)
-    else:
+    elif current_user.id == acc.id or current_user.is_super:
         return render_template('account/user.html', account=acc)
+    else:
+        abort(404)
 
 
+@blueprint.route('/<username>/apikey', methods=['POST'])
+def apikey(username,role):
+    if current_user.id != acc.id and not current_user.is_super:
+        abort(401)
+    acc = models.Account.pull(username)
+    acc.data['api_key'] = str(uuid.uuid4())
+    acc.save()
+    return acc.data['api_key']
+
+
+@blueprint.route('/<username>/become/<role>', methods=['POST'])
+@blueprint.route('/<username>/cease/<role>', methods=['POST'])
+def changerole(username,role):
+    acc = models.Account.pull(username)
+    if acc is None:
+        abort(404)
+    elif request.method == 'POST' and current_user.is_super:
+        if 'become' in request.path:
+            if role == 'publisher':
+                acc.become_publisher()
+            else:
+                acc.add_role(role)
+                acc.save()
+        elif 'cease' in request.path:
+            if role == 'publisher':
+                acc.cease_publisher()
+            else:
+                acc.remove_role(role)
+                acc.save()
+        flash("Record updated")
+        return render_template('account/user.html', account=acc)
+    else:
+        abort(401)
+        
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
@@ -82,7 +127,7 @@ def login():
 		if user is not None and user.check_password(password):
 			login_user(user, remember=True)
 			flash('Welcome back.', 'success')
-			return render_template('account/login.html')
+			return redirect(url_for('.username', username))
 		else:
 			flash('Incorrect username/password', 'error')
 
@@ -105,13 +150,33 @@ def register():
         account = models.Account(
             email = request.values['email'],
             api_key = api_key,
-            publisher = True if request.values.get('publisher',False) else False,
-            repository = True if request.values.get('repository',False) else False
+            role = []
         )
-        account.set_password(request.values.password)
+        
+        if request.values.get('repository_name',False):
+            account.data['repository'] = {
+                'name': request.values['repository_name']
+            }
+            if request.values.get('repository_url',False): account.data['repository']['url'] = request.values['repository_url']
+            
+        if request.values.get('sword_username',False):
+            account.data['sword'] = {
+                'username': request.values['sword_username']
+            }
+            if request.values.get('sword_password',False): account.data['sword']['password'] = request.values['sword_password']
+            if request.values.get('sword_collection',False): account.data['sword']['collection'] = request.values['sword_collection']
+
+        if request.values.get('packaging',False):
+            account.data['packaging'] = request.values['packaging'].split(',')
+
+        if request.values.get('embargo_duration',False):
+            account.data['embargo'] = {'duration': request.values['embargo_duration']}
+        
+        account.set_password(request.values['password'])
+        if request.values.get('repository',False): role.push('repository')
+        account.save()
         if request.values.get('publisher',False):
             account.become_publisher()
-        account.save()
         flash('Account created for ' + account.id, 'success')
         return redirect('/account')
 

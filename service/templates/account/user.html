@@ -2,62 +2,131 @@
 
 {% block content %}
 
-{% if current_user.id == account.id or current_user.is_super %}
-
-    {% if current_user.id != account.id %}
-        <div class="alert alert-danger"><strong>NOTE</strong> you are editing a user account that is not your own.  Be careful!</div>
-    {% endif %}
-
-
     <div class="row">
-        <div class="col-md-offset-4 col-md-4">
-            <h1>Update your account details</h1>
-        </div>
-    </div>
-
-    <div class="row">
-        <form id="user_details" method="post" action="{{url_for('account.username', username=current_user.email)}}">
-            <div class="col-md-offset-4 col-md-4 form-horizontal wide">
-                <button class="btn btn-primary" id="update" type="submit" style="width: 100%; font-size: 30px; line-height: 30px">
-                    Update <i class="glyphicon glyphicon-pencil"></i>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4" style="text-align: center">
-            <h3 style="padding-bottom: 10px">Want to delete your account?</h3>
-            <p class="help-block" style="margin-bottom: 10px">If you delete your account it will be gone forever</p>
-
-            <form id="user_delete" class="form-inline" action="{{url_for('account.username', username=current_user.email)}}" method="POST">
-                <div class="form-group">
-                    <input class="form-control" type="password" name="password" placeholder="Enter password">
-                    <button type="submit" class="btn btn-danger" id="delete" value="Delete" name="submit">Delete <i class="glyphicon glyphicon-trash"></i></button>
-                </div>
+        <div class="col-md-6">
+            <h1>
+                {% if account.has_role('admin') %} <b>ADMIN</b> {% endif %}
+                {% if account.has_role('repository') %} Repository {% endif %}
+                {% if account.has_role('publisher') %} 
+                {% if account.has_role('repository') %} / {% endif %}
+                Publisher
+                {% endif %}
+                account details
+            </h1>
+            
+            <h2>{{account.data['email']}}</h2>
+            
+            <h3>Created: {{account.data['created_date']}}</h3>
+            
+            <h3>Account ID: {{account.id}}</h3>
+            
+            <h3>Account API key: {{account.data['api_key']}}</h3>
+            
+            <div class="well" style="margin-top:30px;">
+            <a class="btn btn-info btn-block" id="new_apikey" href="#" style="margin-bottom:5px;">Generate new API key</a>
+            <br>
+            <form method="POST" action="">
+                <input type="password" name="password" class="form-control" style="width:50%;display:inline;" placeholder="new password">
+                <a class="btn btn-primary" style="width:49%;" id="reset_password" href="#">Reset account password</a>            
             </form>
-        </div>
-    </div>
-
-
-{% else %}
-
-    <div class="row">
-        <div class="col-md-6">
-            <div style="padding-bottom: 10px; margin-bottom: 30px; padding-left: 30px; border-bottom: 3px dashed #aaaaaa">
-                <h1>{{account.email}}</h1>
+            {% if account.has_role('repository') or True %}
+            <br><br>
+            <input type="file" id="config" class="form-control" style="width:50%;display:inline;">
+            <a class="btn btn-primary" style="width:49%;" id="config_upload" href="#">Upload new match config</a>            
+            {% endif %}
             </div>
+
         </div>
+        
         <div class="col-md-6">
-            <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
+            
+            {% if account.has_role('repository') or True %}
+            <div class="well">                
+            <form method="post" action="">
+			<input type="text" name="repository_name" class="form-control" placeholder="repository name" value="{{account.data.get('repository',{}).get('name','')}}">
+			<input type="text" name="repository_url" class="form-control" placeholder="repository url" value="{{account.data.get('repository',{}).get('url','')}}">
+			<input type="text" name="sword_username" class="form-control" placeholder="repository SWORD username" value="{{account.data.get('sword',{}).get('username','')}}">
+			<input type="text" name="sword_password" class="form-control" placeholder="repository SWORD password" value="{{account.data.get('sword',{}).get('password','')}}">
+			<input type="text" name="sword_collection" class="form-control" placeholder="repository SWORD collection" value="{{account.data.get('sword',{}).get('collection','')}}">
+			<input type="text" name="packaging" class="form-control" placeholder="packaging prefs (comma separated)" value="{{','.join(account.data.get('packaging',[]))}}">
+            <button class="btn btn-primary btn-block" id="update" type="submit" style="margin-top:5px;">
+                Update details
+            </button>
+            </form>
+            </div>
+            {% endif %}
+            
+            {% if account.has_role('publisher') or True %}
+            <div class="well">
+            <form method="post" action="">
+			<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration months (number)" value="{{account.data.get('embargo',{}).get('duration','')}}">
+            <button class="btn btn-primary btn-block" id="update" type="submit" style="margin-top:5px;">
+                Update details
+            </button>
+            </form>
+            </div>
+            {% endif %}
+            
+            
+            {% if current_user.is_super %}
+            <div class="well">
+                {% if account.has_role('publisher') %}
+                <a class="btn btn-info btn-block cb" id="cease_publisher" href="#">Cease being a publisher account</a>
+                {% else %}
+                <a class="btn btn-info btn-block cb" id="become_publisher" href="#">Make this account a publisher account</a>
+                {% endif %}
+
+                {% if account.has_role('repository') %}
+                <a class="btn btn-info btn-block cb" id="cease_repository" href="#">Cease being a repository account</a>
+                {% else %}
+                <a class="btn btn-info btn-block cb" id="become_publisher" href="#">Make this account a repository account</a>
+                {% endif %}
+
+                {% if account.has_role('admin') %}
+                <a class="btn btn-warning btn-block cb" id="cease_admin" href="#">Cease being an admin account</a>
+                {% else %}
+                <a class="btn btn-warning btn-block cb" id="become_admin" href="#">Make this account an admin account</a>
+                {% endif %}
+
+                <br><br>
+                <a class="btn btn-danger btn-block cb" id="delete" href="#">Delete this account</a>
+
+            </div>
+            {% endif %}
         </div>
     </div>
-    
-{% endif %}
+
+    <script>
+    $( document ).ready(function() {
+        var roles = function(event) {
+            event.preventDefault();
+            var url = window.location.href;
+            if ( $(this).attr('id') === 'become_publisher' ) { url += '/become/publisher'; }
+            if ( $(this).attr('id') === 'cease_publisher' ) { url += '/cease/publisher'; }
+            if ( $(this).attr('id') === 'become_repository' ) { url += '/become/repository'; }
+            if ( $(this).attr('id') === 'cease_repository' ) { url += '/cease/repository'; }
+            if ( $(this).attr('id') === 'become_admin' ) { url += '/become/admin'; }
+            if ( $(this).attr('id') === 'cease_admin' ) { url += '/cease/admin'; }
+            $.ajax({
+                url: url,
+                method:'POST'
+            });
+            setTimeout(function() {
+                window.location = window.location;
+            }, 1000);
+        }
+        $('.cb').bind('click',roles);
+        
+        var deleteaccount = function(event) {
+            event.preventDefault();
+            alert("This has not been made possible yet. It may depend on further UI enhancements, and decisions about how to handle account deletion.");
+        }
+        $('#delete').bind('click',deleteaccount);
+
+    });
+    </script>
+
 
 {% endblock %}
 
-{% block extra_js_bottom %}
-<script type="text/javascript" src="{{ url_for('static', filename='js/account/userpage.js') }}"></script>
-{% endblock extra_js_bottom %}
 

@@ -17,7 +17,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         "contact_name" : "<name of key contact>",
         "password" : "<hashed password for ui login>",
         "api_key" : "<api key for api auth>",
-        "role" : ["<account role: repository, provider, admin>"],
+        "role" : ["<account role: repository, publisher, admin>"],
 
         "repository" : {
             "name" : "<name of the repository>",

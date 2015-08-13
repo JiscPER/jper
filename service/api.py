@@ -98,6 +98,9 @@ class JPER(object):
 
     @classmethod
     def create_notification(cls, account, notification, file_handle=None):
+        if not account.has_role('publisher') and not account.is_super:
+            return False
+        
         # attempt to serialise the record
         try:
             incoming = models.IncomingNotification(notification)
