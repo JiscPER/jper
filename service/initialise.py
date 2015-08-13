@@ -1,5 +1,6 @@
 from octopus.core import app
 from werkzeug import generate_password_hash
+from service import scheduler
 import uuid, requests, json
 
 ELASTIC_SEARCH_HOST = "http://gateway:9200"
@@ -21,3 +22,5 @@ def initialise():
         c = requests.post(ia, data=json.dumps(su))
         print "first superuser account created for user " + un + " with password " + un 
         print "THIS FIRST SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE..."
+    if app.config.get('RUN_SCHEDULE',False):
+        scheduler.go()

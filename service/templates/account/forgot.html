@@ -11,9 +11,6 @@
 <form method="post" action="{{url_for('account.forgot')}}">
     <div class="row">
         <div class="col-md-offset-4 col-md-4 form-horizontal wide">
-            {% autoescape off %}
-            {{ form_context.render_field_group("email") }}
-            {% endautoescape %}
             <p>Enter your email address, and we'll send you reset instructions</p>
         </div>
     </div>

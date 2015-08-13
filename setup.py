@@ -6,7 +6,8 @@ setup(
     packages = find_packages(),
     install_requires = [
         "octopus==1.0.0",
-        "esprit"
+        "esprit",
+        "schedule==0.3.2"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

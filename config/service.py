@@ -63,6 +63,8 @@ PACKAGE_HANDLERS = {
     "http://purl.org/net/sword/package/SimpleZip" : "service.packages.SimpleZip"
 }
 
+RUN_SCHEDULE = True
+
 #STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 #STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 

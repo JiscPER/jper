@@ -17,7 +17,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         "contact_name" : "<name of key contact>",
         "password" : "<hashed password for ui login>",
         "api_key" : "<api key for api auth>",
-        "role" : ["<account role: repository, provider, admin>"],
+        "role" : ["<account role: repository, publisher, admin>"],
 
         "repository" : {
             "name" : "<name of the repository>",
@@ -38,7 +38,6 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
             "duration" : "<length of default embargo>",
             "from" : "<reference to field in data to measure embargo from>"
         }
->>>>>>> f95ccfcf622df05825431611afce607c6fbf727b
     }
     '''
 
