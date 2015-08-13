@@ -167,11 +167,10 @@ def register():
         return render_template('account/register.html')
     elif request.method == 'POST':
         api_key = str(uuid.uuid4())
-        account = models.Account(
-            email = request.values['email'],
-            api_key = api_key,
-            role = []
-        )
+        account = models.Account()
+        account.data['email'] = request.values['email']
+        account.data['api_key'] = api_key
+        account.data['role'] = []
         
         if request.values.get('repository_name',False):
             account.data['repository'] = {
@@ -197,6 +196,7 @@ def register():
         account.save()
         if request.values.get('publisher',False):
             account.become_publisher()
+        time.sleep(1)
         flash('Account created for ' + account.id, 'success')
         return redirect('/account')
 
