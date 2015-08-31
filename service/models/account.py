@@ -21,7 +21,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
 
         "repository" : {
             "name" : "<name of the repository>",
-            "url" : "<url for the repository>"
+            "url" : "<url for the repository>",
+            "software" : "<name of the software>"
         },
 
         "sword_repository" : {
@@ -49,9 +50,9 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def hashed_password(self, val):
         self._set_single("password", val, coerce=self._utf8_unicode())
 
-        def set_password(self, password):
-            coerced = self._utf8_unicode()(password)
-            self._set_single("password", generate_password_hash(coerced), coerce=self._utf8_unicode())
+    def set_password(self, password):
+        coerced = self._utf8_unicode()(password)
+        self._set_single("password", generate_password_hash(coerced), coerce=self._utf8_unicode())
 
     def check_password(self, password):
         coerced = self._utf8_unicode()(password)
@@ -90,6 +91,31 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
 
     def add_packaging(self, val):
         self._add_to_list("packaging", val, coerce=self._utf8_unicode(), unique=True)
+
+    def add_sword_credentials(self, username, password, collection):
+        self._set_single("sword_repository.username", username, coerce=self._utf8_unicode())
+        self._set_single("sword_repository.password", password, coerce=self._utf8_unicode())
+        self._set_single("sword_repository.collection", collection, coerce=self._utf8_unicode())
+
+    @property
+    def sword_collection(self):
+        return self._get_single("sword_repository.collection", coerce=self._utf8_unicode())
+
+    @property
+    def sword_username(self):
+        return self._get_single("sword_repository.username", coerce=self._utf8_unicode())
+
+    @property
+    def sword_password(self):
+        return self._get_single("sword_repository.password", coerce=self._utf8_unicode())
+
+    @property
+    def repository_software(self):
+        return self._get_single("repository.software", coerce=self._utf8_unicode())
+
+    @repository_software.setter
+    def repository_software(self, val):
+        self._set_single("repository.software", val, coerce=self._utf8_unicode())
 
     def can_log_in(self):
         return True
