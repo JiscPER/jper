@@ -70,6 +70,7 @@ def standard_authentication():
 
     if remote_user:
         print "remote user present " + remote_user
+        app.logger.info("Remote user connecting: {x}".format(x=remote_user))
         user = models.Account.pull(remote_user)
         if user:
             login_user(user, remember=False)
@@ -77,6 +78,7 @@ def standard_authentication():
             abort(401)
     elif apik:
         print "API key provided " + apik
+        app.logger.info("API key connecting: {x}".format(x=apik))
         res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
         if len(res) == 1:
             user = models.Account.pull(res[0]['_source']['id'])
@@ -88,6 +90,7 @@ def standard_authentication():
             abort(401)
     else:
         print "aborting, no user"
+        app.logger.info("Standard authentication failed")
         abort(401)
 
 class BadRequest(Exception):
@@ -157,6 +160,8 @@ def create_notification():
 
     try:
         notification = JPER.create_notification(current_user, md, zipfile)
+        if not notification:
+            abort(401)
     except ValidationException as e:
         return _bad_request(e.message)
 
@@ -176,19 +181,19 @@ def retrieve_notification(notification_id):
 @blueprint.route("/notification/<notification_id>/content", methods=["GET"])
 @webapp.jsonp
 def retrieve_content(notification_id):
+    # TODO add app logging to record the getting of this content
     store_url = JPER.get_store_url(current_user, notification_id)
     if store_url is None:
         return _not_found()
-    JPER.record_retrieval(current_user, notification_id)
     return redirect(store_url, 303)
 
 @blueprint.route("/notification/<notification_id>/content/<content_id>", methods=["GET"])
 @webapp.jsonp
 def proxy_content(notification_id, content_id):
+    # TODO add app logging to record the getting of this content
     public_url = JPER.get_public_url(current_user, notification_id, content_id)
     if public_url is None:
         return _not_found()
-    JPER.record_retrieval(current_user, notification_id, content_id)
     return redirect(public_url, 303)
 
 def _list_request(repo_id=None):
@@ -242,14 +247,16 @@ def config(repoid=None):
         if current_user.has_role('repository'):
             repoid = current_user.id
         elif current_user.has_role('admin'):
+            app.logger.info("Admin touched config route")
             return '' # the admin cannot do anything at /config, but gets a 200 so it is clear they are allowed
         else:
             abort(400)
     elif not current_user.has_role('admin'): # only the superuser can actually pass a repo id
         abort(401)
-    rec = models.RepositoryConfig.pull(repoid)
+    rec = models.RepositoryConfig.pull_by_repo(repoid)
     if rec is None:
         rec = models.RepositoryConfig()
+        rec.repository = repoid
     if request.method == 'GET':
         # get the config for the current user and return it
         # this route may not actually be needed, but is convenient during development

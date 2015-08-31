@@ -1,4 +1,5 @@
 from flask import url_for
+from flask.ext.login import current_user
 from service import models, packages
 from octopus.lib import dates, dataobj, http
 from octopus.core import app
@@ -98,7 +99,7 @@ class JPER(object):
 
     @classmethod
     def create_notification(cls, account, notification, file_handle=None):
-        if not account.has_role('publisher') and not account.is_super:
+        if not account.has_role('publisher') and not current_user.is_super:
             return False
         
         # attempt to serialise the record
@@ -153,7 +154,6 @@ class JPER(object):
 
     @classmethod
     def get_notification(cls, account, notification_id):
-        # FIXME: this is a bit of a hack because we haven't implemented accounts yet
         try:
             accid = account.id
         except:
@@ -167,21 +167,24 @@ class JPER(object):
                 return rn.make_outgoing(provider=True)
             else:
                 return rn.make_outgoing()
-        urn = models.UnroutedNotification.pull(notification_id)
-        if urn is not None:
-            if accid == urn.provider_id:
-                return urn.make_outgoing(provider=True)
-            else:
-                return urn.make_outgoing()
+        if account.has_role('publisher') or current_user.is_super:
+            urn = models.UnroutedNotification.pull(notification_id)
+            if urn is not None:
+                if accid == urn.provider_id:
+                    return urn.make_outgoing(provider=True)
+                else:
+                    return urn.make_outgoing()
         return None
 
     @classmethod
     def get_store_url(cls, account, notification_id):
         urn = models.UnroutedNotification.pull(notification_id)
-        if urn is not None:
+        if urn is not None and account.has_role('publisher'):
             return "http://store.router.jisc.ac.uk/1"
         else:
-            return None
+            rn = models.RoutedNotification.pull(notification_id)
+            if rn is not None and account.has_role('publisher') or ( account.has_role('repository') and account.id in rn.repositories) or current_user.is_super:
+                return "http://store.router.jisc.ac.uk/1"
 
     @classmethod
     def get_public_url(cls, account, notification_id, content_id):
@@ -189,7 +192,11 @@ class JPER(object):
         if urn is not None:
             return "http://example.com/1"
         else:
-            return None
+            rn = models.RoutedNotification.pull(notification_id)
+            if rn is not None:
+                return "http://example.com/1"
+            else:
+                return None
 
     @classmethod
     def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
@@ -204,18 +211,47 @@ class JPER(object):
         if page_size == 0 or page_size > app.config.get("MAX_LIST_PAGE_SIZE"):
             raise ParameterException("page size must be between 1 and {x}".format(x=app.config.get("MAX_LIST_PAGE_SIZE")))
 
+        if repository_id is not None:
+            repo = repository_id
+        else:
+            repo = account.id
+            
         nl = models.NotificationList()
         nl.since = dates.format(since)
         nl.page = page
         nl.page_size = page_size
         nl.timestamp = dates.now()
-        nl.total = 1000         # Testing
-        nl.notifications = ["not a notification"]   # Testing
+        qr = {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "term": {
+                                        "repositories.exact": repo
+                                    }
+                                },
+                                {
+                                    "range": {
+                                        "created_date": {
+                                            "gte": nl.since
+                                        }
+                                    }
+                                }                                
+                            ]
+                        }
+                    }
+                }
+            },
+            "sort": [{"analysed_date":{"order":"asc"}}],
+            "from": (page - 1) * page_size,
+            "size": page_size
+        }
+        res = models.RoutedNotification.query(q=qr)
+        nl.notifications = [i['_source'] for i in res.get('hits',{}).get('hits',[])]
+        nl.total = res.get('hits',{}).get('total',0)
         return nl
-
-    @classmethod
-    def record_retrieval(cls, account, notification_id, content_id=None):
-        pass
 
 
 

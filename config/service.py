@@ -64,6 +64,7 @@ PACKAGE_HANDLERS = {
 }
 
 RUN_SCHEDULE = True
+LOGFILE = '/home/mark/jperlog'
 
 #STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 #STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"

@@ -226,11 +226,13 @@ class TestRouting(ESTestCase):
         # make some repository accounts that we'll be doing the coversion for
         acc1 = models.Account()
         acc1.add_packaging(SIMPLE_ZIP)
+        acc1.add_role('repository')
         acc1.save()
 
         acc2 = models.Account()
         acc2.add_packaging(TEST_FORMAT)
         acc2.add_packaging(SIMPLE_ZIP)
+        acc2.add_role('repository')
         acc2.save(blocking=True)
 
         # put an associated package into the store
@@ -379,6 +381,7 @@ class TestRouting(ESTestCase):
         # as there's no files
         acc1 = models.Account()
         acc1.add_packaging(SIMPLE_ZIP)
+        acc1.add_role('repository')
         acc1.save()
 
         # add a repository config to the index
@@ -430,6 +433,7 @@ class TestRouting(ESTestCase):
         # add an account to the index, which will take simplezip
         acc1 = models.Account()
         acc1.add_packaging(SIMPLE_ZIP)
+        acc1.add_role('publisher')
         acc1.save()
 
         # 2. Creation of metadata + zip content
@@ -438,7 +442,7 @@ class TestRouting(ESTestCase):
         del notification["metadata"]["type"]    # so that we can test later that it gets added with the metadata enhancement
         filepath = fixtures.PackageFactory.example_package_path()
         with open(filepath) as f:
-            note = api.JPER.create_notification(None, notification, f)
+            note = api.JPER.create_notification(acc1, notification, f)
 
         # add a repository config to the index
         source = fixtures.RepositoryFactory.repo_config()

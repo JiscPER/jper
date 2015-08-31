@@ -310,14 +310,15 @@ def repackage(unrouted, repo_ids):
     return links
 
 def links(routed):
-    """
-    Set the links on the routed object to provide the fulltext download
-    in the event that it is hosted by the router
-
-    :param routed:
-    :return:
-    """
-    pass
+    # set the link to the full zip package provided by the publisher
+    # TODO how to check that they actually provided anything more than metadata and links?
+    routed.add_link({
+        "type": "package",
+        "format" : "application/zip",
+        "access" : "router",
+        "url" : app.config.get("BASE_URL") + url_for("webapi.retrieve_content", notification_id=routed.id),
+        "packaging" : "zip" # what is this supposed to be?
+    })
 
 
 ###########################################################

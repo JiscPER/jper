@@ -107,7 +107,18 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def strings(self):
         return self._get_list("strings", coerce=dataobj.to_unicode())
 
-    
+    @classmethod
+    def pull_by_key(cls,key,value):
+        res = cls.query(q={"query":{"term":{key+'.exact':value}}})
+        if res.get('hits',{}).get('total',0) == 1:
+            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        else:
+            return None        
+
+    @classmethod
+    def pull_by_repo(repoid):
+        return cls.pull_by_key('repository',repoid)
+        
     def set_repo_config(self,file=None,config=None):
         if file is not None:
             if file.filename.endswith('.csv'):
@@ -115,11 +126,30 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 lines = False
                 obj = []
                 inp = csv.DictReader(file)
+                # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
+                fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types']
                 for row in inp:
+                    for x in row.keys():
+                        if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant':
+                            row['grants'] = row[x]
+                            del row[x]
+                        elif x.strip().lower().replace(' ','').replace('s','') == 'postcode':
+                            row['postcodes'] = row[x]
+                            del row[x]
+                        elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant':
+                            row['name_variants'] = row[x]
+                            del row[x]
+                        elif x.strip().lower().replace(' ','').replace('s','') == 'domain':
+                            row['domains'] = row[x]
+                            del row[x]
+                        elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author':
+                            row['author_ids'] = row[x]
+                            del row[x]
+                        elif x.strip().lower().replace(' ','').replace('s','') == 'orcid':
+                            row['author_ids'] = row.get('author_ids',[]) + row[x]
+                            del row[x]
                     obj.append(row)
-                fields = ['domains','name_variants','author_ids','postcodes','keywords','grants','content_types']
                 config = {}
-                # TODO: match fields in object with fields in csv that Richard changed.
                 for f in fields:
                     config[f] = [i[f] for i in obj if f in i and len(i[f]) > 1]
                 app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))

@@ -49,12 +49,13 @@ if app.config.get("FUNCTIONAL_TEST_MODE", False):
     from service.views.test import blueprint as test
     app.register_blueprint(test, url_prefix="/test")
 
-"""
+
 # this allows us to override the standard static file handling with our own dynamic version
 @app.route("/static/<path:filename>")
 def static(filename):
     return custom_static(filename)
 
+"""
 # this allows us to serve our standard javascript config
 from octopus.modules.clientjs.configjs import blueprint as configjs
 app.register_blueprint(configjs)
