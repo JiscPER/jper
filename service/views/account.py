@@ -1,4 +1,4 @@
-import uuid, json
+import uuid, json, time
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
@@ -45,33 +45,33 @@ def username(username):
             abort(401)
             
         if request.values.get('repository_name',False):
-            account.data['repository'] = {
+            acc.data['repository'] = {
                 'name': request.values['repository_name']
             }
-            if request.values.get('repository_url',False): account.data['repository']['url'] = request.values['repository_url']
+            if request.values.get('repository_url',False): acc.data['repository']['url'] = request.values['repository_url']
             
         if request.values.get('sword_username',False):
-            account.data['sword'] = {
+            acc.data['sword'] = {
                 'username': request.values['sword_username']
             }
-            if request.values.get('sword_password',False): account.data['sword']['password'] = request.values['sword_password']
-            if request.values.get('sword_collection',False): account.data['sword']['collection'] = request.values['sword_collection']
+            if request.values.get('sword_password',False): acc.data['sword']['password'] = request.values['sword_password']
+            if request.values.get('sword_collection',False): acc.data['sword']['collection'] = request.values['sword_collection']
 
         if request.values.get('packaging',False):
-            account.data['packaging'] = request.values['packaging'].split(',')
+            acc.data['packaging'] = request.values['packaging'].split(',')
 
         if request.values.get('embargo_duration',False):
-            account.data['embargo'] = {'duration': request.values['embargo_duration']}
+            acc.data['embargo'] = {'duration': request.values['embargo_duration']}
 
         if 'password' in request.values and not request.values['password'].startswith('sha1'):
             if len(request.values['password']) < 8:
-                flash("Sorry. Password must be at least eight characters long")
+                flash("Sorry. Password must be at least eight characters long", "error")
                 return render_template('account/user.html', account=acc)
             else:
                 acc.set_password(request.values['password'])
             
         acc.save()
-        flash("Record updated")
+        flash("Record updated", "success")
         return render_template('account/user.html', account=acc)
     elif current_user.id == acc.id or current_user.is_super:
         return render_template('account/user.html', account=acc)
@@ -79,14 +79,32 @@ def username(username):
         abort(404)
 
 
-@blueprint.route('/<username>/apikey', methods=['POST'])
-def apikey(username,role):
-    if current_user.id != acc.id and not current_user.is_super:
+@blueprint.route('/<username>/api_key', methods=['POST'])
+def apikey(username):
+    if current_user.id != username and not current_user.is_super:
         abort(401)
     acc = models.Account.pull(username)
     acc.data['api_key'] = str(uuid.uuid4())
     acc.save()
-    return acc.data['api_key']
+    time.sleep(2);
+    flash('Thank you. Your API key has been updated.', "success")
+    return redirect(url_for('.username', username=username))
+
+
+@blueprint.route('/<username>/config', methods=['POST'])
+def config():
+    if current_user.id != username and not current_user.is_super:
+        abort(401)
+    rec = models.RepositoryConfig.pull(username)
+    try:
+        saved = rec.set_repo_config(file=request.files['file'])
+        if saved:
+            flash('Thank you. Your match config has been updated.', "success")        
+        else:
+            flash('Sorry, there was an error with your config upload. Please try again.', "error")        
+    except:
+        flash('Sorry, there was an error with your config upload. Please try again.', "error")
+    return redirect(url_for('.username', username=username))
 
 
 @blueprint.route('/<username>/become/<role>', methods=['POST'])
@@ -108,28 +126,30 @@ def changerole(username,role):
             else:
                 acc.remove_role(role)
                 acc.save()
-        flash("Record updated")
-        return render_template('account/user.html', account=acc)
+        time.sleep(1)
+        flash("Record updated", "success")
+        return redirect(url_for('.username', username=username))
     else:
         abort(401)
         
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-	if request.method == 'GET':
-		return render_template('account/login.html')
-	elif request.method == 'POST':
-		password = request.values['password']
-		username = request.values['username']
-		user = models.Account.pull(username)
-		if user is None:
-			user = models.Account.pull_by_email(username)
-		if user is not None and user.check_password(password):
-			login_user(user, remember=True)
-			flash('Welcome back.', 'success')
-			return redirect(url_for('.username', username))
-		else:
-			flash('Incorrect username/password', 'error')
+    if request.method == 'GET':
+        return render_template('account/login.html')
+    elif request.method == 'POST':
+        password = request.values['password']
+        username = request.values['username']
+        user = models.Account.pull(username)
+        if user is None:
+            user = models.Account.pull_by_email(username)
+        if user is not None and user.check_password(password):
+            login_user(user, remember=True)
+            flash('Welcome back.', 'success')
+            return redirect(url_for('.username', username=username))
+        else:
+            flash('Incorrect username/password', 'error')
+            return render_template('account/login.html')
 
 
 @blueprint.route('/logout')
@@ -147,11 +167,10 @@ def register():
         return render_template('account/register.html')
     elif request.method == 'POST':
         api_key = str(uuid.uuid4())
-        account = models.Account(
-            email = request.values['email'],
-            api_key = api_key,
-            role = []
-        )
+        account = models.Account()
+        account.data['email'] = request.values['email']
+        account.data['api_key'] = api_key
+        account.data['role'] = []
         
         if request.values.get('repository_name',False):
             account.data['repository'] = {
@@ -177,8 +196,9 @@ def register():
         account.save()
         if request.values.get('publisher',False):
             account.become_publisher()
+        time.sleep(1)
         flash('Account created for ' + account.id, 'success')
         return redirect('/account')
 
-    
+
     
