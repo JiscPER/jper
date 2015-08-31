@@ -378,7 +378,8 @@ class BaseNotification(NotificationMetadata):
                 "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
                 "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
                 "url" : "<provider's splash, fulltext or machine readable page>",
-                "packaging" : "<packaging format identifier>"
+                "packaging" : "<packaging format identifier>",
+                "proxy": "<the ID of the proxy link>"
             }
         ],
 
@@ -440,7 +441,8 @@ class BaseNotification(NotificationMetadata):
                         "format" : {"coerce" :"unicode"},
                         "access" : {"coerce" :"unicode", "allowed_values" : ["router", "public"]},
                         "url" : {"coerce" :"url"},
-                        "packaging" : {"coerce" : "unicode"}
+                        "packaging" : {"coerce" : "unicode"},
+                        "proxy" : {"coerce" : "unicode"}
                     }
                 }
             }

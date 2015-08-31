@@ -177,15 +177,42 @@ class JPER(object):
         return None
 
     @classmethod
-    def get_store_url(cls, account, notification_id):
+    def get_content(cls, account, notification_id, filename=None):
         urn = models.UnroutedNotification.pull(notification_id)
         if urn is not None and account.has_role('publisher'):
-            return "http://store.router.jisc.ac.uk/1"
+            if filename is not None:
+                store_filename = filename
+            else:
+                pm = packages.PackagerFactory.incoming(urn.packaging_format)
+                store_filename = pm.zip_name()
+            sm = store.storeFactory.get()
+            return sm.get(urn.id, pm.zipname)
         else:
             rn = models.RoutedNotification.pull(notification_id)
             if rn is not None and account.has_role('publisher') or ( account.has_role('repository') and account.id in rn.repositories) or current_user.is_super:
-                return "http://store.router.jisc.ac.uk/1"
+                if filename is not None:
+                    store_filename = filename
+                else:
+                    pm = packages.PackagerFactory.incoming(rn.packaging_format)
+                    store_filename = pm.zip_name()
+                sm = store.storeFactory.get()
+                return sm.get(rn.id, pm.zipname)
+            else:
+                return None
 
+    @classmethod
+    def get_proxy_url(cls, account, notification_id, pid):
+        rn = models.RoutedNotification.pull(notification_id)
+        if rn is None:
+            return None
+        else:
+            lurl = None
+            for link in rn.links:
+                if link.get('proxy',False) == pid:
+                    lurl = link['url']
+            return lurl
+        
+            
     @classmethod
     def get_public_url(cls, account, notification_id, content_id):
         urn = models.UnroutedNotification.pull(notification_id)

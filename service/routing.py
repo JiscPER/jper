@@ -4,6 +4,8 @@ from service import packages, models
 import esprit
 from service.web import app
 from flask import url_for
+from copy import deepcopy
+import uuid
 
 class RoutingException(Exception):
     pass
@@ -298,7 +300,7 @@ def repackage(unrouted, repo_ids):
     links = []
     for d in done:
         with app.test_request_context():
-            url = app.config.get("BASE_URL") + url_for("webapi.proxy_content", notification_id=unrouted.id, content_id=d[2])
+            url = app.config.get("BASE_URL") + url_for("webapi.retrieve_content", notification_id=unrouted.id, content_id=d[2])
         links.append({
             "type": "package",
             "format" : "application/zip",
@@ -310,15 +312,19 @@ def repackage(unrouted, repo_ids):
     return links
 
 def links(routed):
-    # set the link to the full zip package provided by the publisher
-    # TODO how to check that they actually provided anything more than metadata and links?
-    routed.add_link({
-        "type": "package",
-        "format" : "application/zip",
-        "access" : "router",
-        "url" : app.config.get("BASE_URL") + url_for("webapi.retrieve_content", notification_id=routed.id),
-        "packaging" : "zip" # what is this supposed to be?
-    })
+    newlinks = []
+    for link in routed.links:
+        if link.get('access') == 'public':
+            nl = deepcopy(link)
+            nid = uuid.uuid4().hex
+            link['proxy'] = nid
+            nl['access'] = 'router'
+            with app.test_request_context():
+                nl['url'] = app.config.get("BASE_URL") + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid)
+            newlinks.append(nl)
+    for l in newlinks:
+        routed.add_link(l.get("url"), l.get("type"), l.get("format"), l.get("access"), l.get("packaging"))
+            
 
 
 ###########################################################

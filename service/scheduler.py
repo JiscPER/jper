@@ -19,7 +19,7 @@ from service import models, routing
 
 # TODO set this somewhere sensible, but note it may not be the live url because we could send it locally depending on server setup
 apikey = "" # TODO should this be the apikey of a special user that runs from the ftp, or do we do this with the api key of the user that did the ftp upload?
-apiurl = "https://pubrouter.jisc.ac.uk/api/v2/" + "notification?api_key=" + apikey
+apiurl = "https://pubrouter.jisc.ac.uk/api/v1/" + "notification?api_key=" + apikey
 tmpdirbase = "/tmp/"
 tmpbupdir = "/home/mark/ftptmp/"
 

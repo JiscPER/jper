@@ -1,5 +1,6 @@
 
 from flask import Blueprint, make_response, url_for, request, abort, redirect, current_app
+from flask import stream_with_context, Response
 import json, csv
 from octopus.core import app
 from octopus.lib import webapp, dates
@@ -179,22 +180,24 @@ def retrieve_notification(notification_id):
     return resp
 
 @blueprint.route("/notification/<notification_id>/content", methods=["GET"])
+@blueprint.route("/notification/<notification_id>/content/<filename>", methods=["GET"])
 @webapp.jsonp
-def retrieve_content(notification_id):
-    # TODO add app logging to record the getting of this content
-    store_url = JPER.get_store_url(current_user, notification_id)
-    if store_url is None:
+def retrieve_content(notification_id, filename=None):
+    app.logger.info("{x} {y} content requested".format(x=notification_id, y=filename))
+    try:
+        filestream = JPER.get_content(current_user, notification_id, filename)
+        return Response(stream_with_context(filestream))
+    except:
         return _not_found()
-    return redirect(store_url, 303)
 
-@blueprint.route("/notification/<notification_id>/content/<content_id>", methods=["GET"])
-@webapp.jsonp
-def proxy_content(notification_id, content_id):
-    # TODO add app logging to record the getting of this content
-    public_url = JPER.get_public_url(current_user, notification_id, content_id)
-    if public_url is None:
+@blueprint.route("/notification/<notification_id>/proxy/<pid>", methods=["GET"])
+def proxy_content(notification_id, pid):
+    app.logger.info("{x} {y} proxy requested".format(x=notification_id, y=pid))
+    purl = JPER.get_proxy_url(current_user, notification_id, pid)
+    if purl is not None:
+        return redirect(purl)
+    else:
         return _not_found()
-    return redirect(public_url, 303)
 
 def _list_request(repo_id=None):
     since = request.values.get("since")
