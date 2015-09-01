@@ -47,7 +47,15 @@
                     <button class="btn btn-primary" id="config_upload" type="submit" style="width:49%;">
                         Upload new match config
                     </button>
+                    <!-- the ability to retrieve from URL may be turned off for live -->
+                    <input type="text" name="url" id="url" class="form-control" style="width:50%;display:inline;" placeholder="Or retrieve config file from URL">
+                    <button class="btn btn-primary" id="config_retrieve" type="submit" style="width:49%;">
+                        Retrieve new match config
+                    </button>
                 </form>
+                {% if repoconfig %}
+                <a target="_blank" href="/api/v1/config{% if current_user.is_super() %}/{{repoconfig.id}}{% endif %}">View the current JSON config for this repository</a> 
+                {% endif %}
             </div>
             {% endif %}
 

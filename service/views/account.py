@@ -74,7 +74,11 @@ def username(username):
         flash("Record updated", "success")
         return render_template('account/user.html', account=acc)
     elif current_user.id == acc.id or current_user.is_super:
-        return render_template('account/user.html', account=acc)
+        if acc.has_role('repository'):
+            repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
+        else:
+            repoconfig = None
+        return render_template('account/user.html', account=acc, repoconfig=repoconfig)
     else:
         abort(404)
 
@@ -92,12 +96,19 @@ def apikey(username):
 
 
 @blueprint.route('/<username>/config', methods=['POST'])
-def config():
+def config(username):
     if current_user.id != username and not current_user.is_super:
         abort(401)
-    rec = models.RepositoryConfig.pull(username)
+    rec = models.RepositoryConfig.pull_by_repo(username)
+    if rec is None:
+        rec = models.RepositoryConfig()
+        rec.repository = username
     try:
-        saved = rec.set_repo_config(file=request.files['file'])
+        if 'url' in request.values:
+            fl = requests.get('url',stream=True)
+            saved = rec.set_repo_config(file=fl.raw)
+        else:
+            saved = rec.set_repo_config(file=request.files['file'])
         if saved:
             flash('Thank you. Your match config has been updated.', "success")        
         else:

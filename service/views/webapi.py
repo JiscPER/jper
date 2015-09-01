@@ -246,15 +246,15 @@ def list_repository_routed(repo_id):
 @blueprint.route("/config/<repoid>", methods=["GET","POST"])
 @webapp.jsonp
 def config(repoid=None):
+    app.logger.info(current_user.id + " " + request.method + " to config route")
     if repoid is None:
         if current_user.has_role('repository'):
             repoid = current_user.id
         elif current_user.has_role('admin'):
-            app.logger.info("Admin touched config route")
             return '' # the admin cannot do anything at /config, but gets a 200 so it is clear they are allowed
         else:
             abort(400)
-    elif not current_user.has_role('admin'): # only the superuser can actually pass a repo id
+    elif not current_user.has_role('admin'): # only the superuser can set a repo id directly
         abort(401)
     rec = models.RepositoryConfig.pull_by_repo(repoid)
     if rec is None:
@@ -264,7 +264,7 @@ def config(repoid=None):
         # get the config for the current user and return it
         # this route may not actually be needed, but is convenient during development
         # also it should be more than just the strings data once complex configs are accepted
-        resp = make_response(rec.data.get('strings',[]))
+        resp = make_response(json.dumps(rec.data))
         resp.mimetype = "application/json"
         return resp
     elif request.method == 'POST':

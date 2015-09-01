@@ -116,7 +116,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             return None        
 
     @classmethod
-    def pull_by_repo(repoid):
+    def pull_by_repo(cls,repoid):
         return cls.pull_by_key('repository',repoid)
         
     def set_repo_config(self,file=None,config=None):

@@ -237,11 +237,6 @@ class JPER(object):
 
         if page_size == 0 or page_size > app.config.get("MAX_LIST_PAGE_SIZE"):
             raise ParameterException("page size must be between 1 and {x}".format(x=app.config.get("MAX_LIST_PAGE_SIZE")))
-
-        if repository_id is not None:
-            repo = repository_id
-        else:
-            repo = account.id
             
         nl = models.NotificationList()
         nl.since = dates.format(since)
@@ -255,11 +250,6 @@ class JPER(object):
                         "bool": {
                             "must": [
                                 {
-                                    "term": {
-                                        "repositories.exact": repo
-                                    }
-                                },
-                                {
                                     "range": {
                                         "created_date": {
                                             "gte": nl.since
@@ -271,10 +261,14 @@ class JPER(object):
                     }
                 }
             },
-            "sort": [{"analysed_date":{"order":"asc"}}],
+            "sort": [{"analysis_date":{"order":"asc"}}],
             "from": (page - 1) * page_size,
             "size": page_size
         }
+        
+        if repository_id is not None:
+            qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
+
         res = models.RoutedNotification.query(q=qr)
         nl.notifications = [i['_source'] for i in res.get('hits',{}).get('hits',[])]
         nl.total = res.get('hits',{}).get('total',0)
