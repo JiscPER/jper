@@ -200,7 +200,7 @@ def register():
         account.data['api_key'] = api_key
         account.data['role'] = []
         
-        if request.values.get('repository_software',False):        if request.values.get('repository_software',False):
+        if request.values.get('repository_software',False):
             account.data['repository'] = {
                 'software': request.values['repository_software']
             }
