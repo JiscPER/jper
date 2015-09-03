@@ -49,11 +49,11 @@ def username(username):
             abort(401)
             
         if request.values.get('repository_software',False):
-            account.data['repository'] = {
+            acc.data['repository'] = {
                 'software': request.values['repository_software']
             }
-            if request.values.get('repository_url',False): account.data['repository']['url'] = request.values['repository_url']
-            if request.values.get('repository_name',False): account.data['repository']['name'] = request.values['repository_name']
+            if request.values.get('repository_url',False): acc.data['repository']['url'] = request.values['repository_url']
+            if request.values.get('repository_name',False): acc.data['repository']['name'] = request.values['repository_name']
             
         if request.values.get('sword_username',False):
             acc.data['sword'] = {
