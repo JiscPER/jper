@@ -221,7 +221,8 @@ def register():
             account.data['embargo'] = {'duration': request.values['embargo_duration']}
         
         account.set_password(request.values['password'])
-        if request.values.get('repository',False): role.push('repository')
+        if request.values.get('repository',False):
+            account.add_role('repository')
         account.save()
         if request.values.get('publisher',False):
             account.become_publisher()
