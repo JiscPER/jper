@@ -17,12 +17,6 @@ from octopus.core import app
 
 from service import models, routing
 
-# TODO set this somewhere sensible, but note it may not be the live url because we could send it locally depending on server setup
-apikey = "" # TODO should this be the apikey of a special user that runs from the ftp, or do we do this with the api key of the user that did the ftp upload?
-apiurl = "https://pubrouter.jisc.ac.uk/api/v1/" + "notification?api_key=" + apikey
-tmpdirbase = "/tmp/"
-tmpbupdir = "/home/mark/ftptmp/"
-
 
 # functions for the checkftp to unzip and move stuff up then zip again in incoming packages
 def zip(src, dst):
@@ -62,51 +56,51 @@ def flatten(destination, depth=None):
             flatten(destination, os.path.join(depth + [file_or_dir], "\\"))
 
 def checkftp():
-    try:
-        app.logger.info("Scheduled check for FTP")
+    if 1==1:
         # list all directories on /home/sftpusers (one for each publisher)
-        userdirs = os.listdir('/home/sftpusers')
+        userdir = app.config.get('USERDIR','/home/sftpusers')
+        userdirs = os.listdir(userdir)
         app.logger.info("Scheduled check for FTP found " + str(len(userdirs)) + " user directories")
         for dir in userdirs:
-            thisdir = userdirs + '/' + dir + '/xfer'
+            thisdir = userdir + '/' + dir + '/xfer'
             if os.path.isdir(thisdir):
                 if len(os.listdir(thisdir)) > 0:
+                    apiurl = app.config['API_URL']
+                    acc = models.Account().pull(dir)
+                    apiurl += '?api_key=' + acc.data['api_key']
+
                     # TODO: add a check for the folder name to see if matching user is logged in, by subprocessing the w command
                     # in which case do nothing on this iteration because the user is probably in the process of sending files
                     # if not empty and not in use, move the contents to a tmp dir
-                    tmpdir = tmpdirbase + dir
+                    tmpdir = app.config['TMP_DIR'] + dir
                     if not os.path.exists(tmpdir): os.makedirs(tmpdir)
                     for file in os.listdir(thisdir):
                         srcf = os.path.join(thisdir, file)
                         dstf = os.path.join(tmpdir, file)
                         shutil.move(srcf,dstf)
                         
-                    # assume a directory per publication - that is what they are told to provide
-                    # unzip everything then pull all docs to the top level then zip again. Should be jats file at top now
-                    app.logger.info("Scheduled check for FTP processing for " + thisdir)
-                    extract(tmpdir)
-                    flatten(tmpdir)
-                    ts = datetime.datetime.strftime(datetime.datetime.now(), '%Y_%m_%d_%H_%M_%S')
-                    pkg = tmpdir + '/' + dir + '_' + ts
-                    zip(tmpdir,pkg)
-                    pkg += '.zip'
+                        # assume a dir/zip per publication notification - that is what they are told to provide
+                        # unzip everything then pull all docs to the top level then zip again. Should be jats file at top now
+                        app.logger.info("Scheduled FTP processing " + file + " for " + thisdir)
+                        extract(tmpdir + '/' + file)
+                        flatten(tmpdir + '/' + file)
+                        ts = datetime.datetime.strftime(datetime.datetime.now(), '%Y_%m_%d_%H_%M_%S')
+                        pkg = tmpdir + '/' + file + '/' + ts + '.zip'
+                        zip(tmpdir + '/' + file, pkg)
                     
-                    # create a notification
-                    notification = {
-                        "content": "https://pubrouter.jisc.ac.uk/FilesAndJATS"
-                    }
-
-                    # send to the API to get put on the unroutednotification index
-                    files = [
-                        ("metadata", ("metadata.json", json.dumps(notification), "application/json")),
-                        ("content", ("content.zip", open(pkg, "rb"), "application/zip"))
-                    ]
-                    resp = requests.post(apiurl, files=files)
-                    # TODO check the resp and if all good remove the files, but if not what?
+                        # create a notification and send to the API to join the unroutednotification index
+                        notification = {
+                            "content": "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+                        }
+                        files = [
+                            ("metadata", ("metadata.json", json.dumps(notification), "application/json")),
+                            ("content", ("content.zip", open(pkg, "rb"), "application/zip"))
+                        ]
+                        resp = requests.post(apiurl, files=files)
                     
                     # for the moment copy original content and created zip from tmp to somewhere just in case
                     tmnow = datetime.datetime.strftime(datetime.datetime.now(), '%Y_%m_%d_%H_%M_%S')
-                    tmpbupdirnow = tmpbupdir + tmnow
+                    tmpbupdirnow = app.config['TMP_BACKUP'] + tmnow
                     if not os.path.exists(tmpbupdirnow): os.makedirs(tmpbupdirnow)
                     for file in os.listdir(tmpdir):
                         srcf = os.path.join(tmpdir, file)                        
@@ -117,10 +111,10 @@ def checkftp():
                     # empty and delete the tmp dir and the zip
                     #os.remove(pkg) commented out because currently is temporarily moved by code just above instead
                     shutil.rmtree(tmpdir)
-    except:
-        app.logger.error("FAILED scheduled check for FTP")
+    else:
+        app.logger.error("Failed scheduled check for FTP")
 
-schedule.every(10).minutes.do(checkftp)
+schedule.every(app.config.get('CHECKFTP_SCHEDULE',10)).minutes.do(checkftp)
 
 
 def checkunrouted():
@@ -128,12 +122,12 @@ def checkunrouted():
         app.logger.info("Scheduled check for unrouted notifications")
         # query the service.models.unroutednotification index
         # returns a list of unrouted notification from the last three up to four months
-        for obj in models.Unroutednotification.scroll():
+        for obj in models.UnroutedNotification.scroll():
             routing.route(obj)
     except:
         app.logger.error("FAILED scheduled check for unrouted notifications")
 
-schedule.every(10).minutes.do(checkunrouted)
+schedule.every(app.config.get('CHECKUNROUTED_SCHEDULE',10)).minutes.do(checkunrouted)
 
 
 def cheep():

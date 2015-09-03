@@ -1,5 +1,7 @@
 from octopus.lib import dataobj
 from service import dao
+from octopus.core import app
+import csv
 
 class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     """
@@ -119,49 +121,41 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def pull_by_repo(cls,repoid):
         return cls.pull_by_key('repository',repoid)
         
-    def set_repo_config(self,file=None,config=None):
-        if file is not None:
-            if file.filename.endswith('.csv'):
-                # could do some checking of the obj
-                lines = False
-                obj = []
-                inp = csv.DictReader(file)
-                # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
-                fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types']
-                for row in inp:
-                    for x in row.keys():
-                        if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant':
-                            row['grants'] = row[x]
-                            del row[x]
-                        elif x.strip().lower().replace(' ','').replace('s','') == 'postcode':
-                            row['postcodes'] = row[x]
-                            del row[x]
-                        elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant':
-                            row['name_variants'] = row[x]
-                            del row[x]
-                        elif x.strip().lower().replace(' ','').replace('s','') == 'domain':
-                            row['domains'] = row[x]
-                            del row[x]
-                        elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author':
-                            row['author_ids'] = row[x]
-                            del row[x]
-                        elif x.strip().lower().replace(' ','').replace('s','') == 'orcid':
-                            row['author_ids'] = row.get('author_ids',[]) + row[x]
-                            del row[x]
-                    obj.append(row)
-                config = {}
-                for f in fields:
-                    config[f] = [i[f] for i in obj if f in i and len(i[f]) > 1]
-                app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
-            elif file.filename.endswith('.txt'):
-                app.logger.info("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
-                config = {"strings": [line.rstrip('\n').rstrip('\r').strip() for line in file if len(line.rstrip('\n').rstrip('\r').strip()) > 1] }
-            else:
-                app.logger.info("Could not extract config from file {f} for repo: {x}".format(x=self.id,f=file.filename))
-                return False
-        if config is not None:
+    def set_repo_config(self,csvfile=None,textfile=None,jsoncontent=None):
+        # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
+        fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types','strings']
+        for f in fields:
+            if f in self.data: del self.data[f]
+        if csvfile is not None:
+            # could do some checking of the obj
+            lines = False
+            inp = csv.DictReader(csvfile)
+            for row in inp:
+                for x in row.keys():
+                    if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant':
+                        self.data['grants'] = self.data.get('grants',[]) + [row[x]]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'postcode':
+                        self.data['postcodes'] = self.data.get('postcodes',[]) + [row[x]]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant':
+                        self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x]]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'domain':
+                        self.data['domains'] = self.data.get('domains',[]) + [row[x]]
+                    elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author':
+                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x]}]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'orcid':
+                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x]}]
+            app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
+            self.save()
+            return True
+        elif textfile is not None:
+            app.logger.info("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
+            self.data['strings'] = [line.rstrip('\n').rstrip('\r').strip() for line in textfile if len(line.rstrip('\n').rstrip('\r').strip()) > 1]
+            self.save()
+            return True
+        elif jsoncontent is not None:
             # save the lines into the repo config
-            self.data = config
+            for k in jsoncontent.keys():
+                self.data[k] = jsoncontent[k]
             self.save()
             app.logger.info("Saved config for repo: {x}".format(x=self.id))
             return True

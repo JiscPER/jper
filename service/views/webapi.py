@@ -256,7 +256,7 @@ def config(repoid=None):
             abort(400)
     elif not current_user.has_role('admin'): # only the superuser can set a repo id directly
         abort(401)
-    rec = models.RepositoryConfig.pull_by_repo(repoid)
+    rec = models.RepositoryConfig().pull_by_repo(repoid)
     if rec is None:
         rec = models.RepositoryConfig()
         rec.repository = repoid
@@ -269,10 +269,13 @@ def config(repoid=None):
         return resp
     elif request.method == 'POST':
         if request.json:
-            saved = rec.set_repo_config(config=request.json)
+            saved = rec.set_repo_config(jsoncontent=request.json)
         else:
             try:
-                saved = rec.set_repo_config(file=request.files['file'])
+                if request.files['file'].filename.endswith('.csv'):
+                    saved = rec.set_repo_config(csvfile=request.files['file'])
+                elif request.files['file'].filename.endswith('.txt'):
+                    saved = rec.set_repo_config(textfile=request.files['file'])
             except:
                 saved = False
         if saved:

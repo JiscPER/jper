@@ -54,9 +54,12 @@
                     </button>
                 </form>
                 {% if repoconfig %}
-                <a target="_blank" href="/api/v1/config{% if current_user.is_super() %}/{{repoconfig.id}}{% endif %}">View the current JSON config for this repository</a> 
+                <a target="_blank" href="/api/v1/config{% if current_user.has_role('admin') %}/{{account.id}}?api_key={{current_user.data['api_key']}}{% else %}?api_key={{account.data['api_key']}}{% endif %}">View current JSON config for this repository (API)</a> 
+                <br><a target="_blank" href="/api/v1/routed/{{account.id}}?since=01/08/2015&api_key={{current_user.data['api_key']}}">View routed notifications for this repository (API)</a> 
                 {% endif %}
             </div>
+            <p style="font-size:0.8em;">https://raw.githubusercontent.com/JiscPER/jper/develop/docs/csvtemplate.csv<br>
+                https://raw.githubusercontent.com/JiscPER/jper/develop/service/tests/resources/example_repo_config.json</p>
             {% endif %}
 
             {% if account.has_role('publisher') %}

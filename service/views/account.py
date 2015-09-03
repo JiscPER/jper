@@ -1,4 +1,4 @@
-import uuid, json, time
+import uuid, json, time, requests
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
@@ -6,6 +6,10 @@ from flask.ext.login import login_user, logout_user, current_user
 
 from service import models
 
+try:
+    from cStringIO import StringIO
+except:
+    from StringIO import StringIO
 
 blueprint = Blueprint('account', __name__)
 
@@ -75,7 +79,7 @@ def username(username):
         return render_template('account/user.html', account=acc)
     elif current_user.id == acc.id or current_user.is_super:
         if acc.has_role('repository'):
-            repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
+            repoconfig = models.RepositoryConfig().pull_by_repo(acc.id)
         else:
             repoconfig = None
         return render_template('account/user.html', account=acc, repoconfig=repoconfig)
@@ -99,21 +103,33 @@ def apikey(username):
 def config(username):
     if current_user.id != username and not current_user.is_super:
         abort(401)
-    rec = models.RepositoryConfig.pull_by_repo(username)
+    rec = models.RepositoryConfig().pull_by_repo(username)
     if rec is None:
         rec = models.RepositoryConfig()
         rec.repository = username
-    try:
+    if 1==1:
         if 'url' in request.values:
-            fl = requests.get('url',stream=True)
-            saved = rec.set_repo_config(file=fl.raw)
+            url = request.values['url']
+            fn = url.split('?')[0].split('#')[0].split('/')[-1]
+            r = requests.get(url)
+            if fn.endswith('.json'):
+                saved = rec.set_repo_config(jsoncontent=r.json())
+            else:
+                strm = StringIO(r.content)
+                if fn.endswith('.csv'):
+                    saved = rec.set_repo_config(csvfile=strm)
+                elif fn.endswith('.txt'):
+                    saved = rec.set_repo_config(textfile=strm)
         else:
-            saved = rec.set_repo_config(file=request.files['file'])
+            if request.files['file'].filename.endswith('.csv'):
+                saved = rec.set_repo_config(csvfile=request.files['file'])
+            elif request.files['file'].filename.endswith('.txt'):
+                saved = rec.set_repo_config(textfile=request.files['file'])
         if saved:
             flash('Thank you. Your match config has been updated.', "success")        
         else:
             flash('Sorry, there was an error with your config upload. Please try again.', "error")        
-    except:
+    else:
         flash('Sorry, there was an error with your config upload. Please try again.', "error")
     return redirect(url_for('.username', username=username))
 
