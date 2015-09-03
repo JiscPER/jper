@@ -48,11 +48,12 @@ def username(username):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
             
-        if request.values.get('repository_name',False):
-            acc.data['repository'] = {
-                'name': request.values['repository_name']
+        if request.values.get('repository_software',False):
+            account.data['repository'] = {
+                'software': request.values['repository_software']
             }
-            if request.values.get('repository_url',False): acc.data['repository']['url'] = request.values['repository_url']
+            if request.values.get('repository_url',False): account.data['repository']['url'] = request.values['repository_url']
+            if request.values.get('repository_name',False): account.data['repository']['name'] = request.values['repository_name']
             
         if request.values.get('sword_username',False):
             acc.data['sword'] = {
@@ -199,7 +200,7 @@ def register():
         account.data['api_key'] = api_key
         account.data['role'] = []
         
-        if request.values.get('repository_software',False):
+        if request.values.get('repository_software',False):        if request.values.get('repository_software',False):
             account.data['repository'] = {
                 'software': request.values['repository_software']
             }
