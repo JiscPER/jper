@@ -126,7 +126,7 @@ class PackageManager(object):
                 out_path = tmp.path(store_id, tpm.zip_name(), must_exist=False)
                 converted = pm.convert(in_path, tf, out_path)
                 if converted:
-                    conversions.append((tf, tpm.zip_name(), tpm.url_name()))
+                    conversions.append((tf, tpm.zip_name(), tpm.zip_name()))
 
             # with the conversions completed, synchronise back to the storage system
             for tf, zn, un in conversions:

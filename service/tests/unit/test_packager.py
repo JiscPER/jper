@@ -685,7 +685,7 @@ class TestPackager(TestCase):
         assert len(conversions[0]) == 3     # it's a tuple
         assert conversions[0][0] == SIMPLE_ZIP
         assert conversions[0][1] == "SimpleZip.zip"
-        assert conversions[0][2] == "SimpleZip"
+        assert conversions[0][2] == "SimpleZip.zip"
 
         # now check that under the hood the right things happened
         tmp = store.StoreFactory.tmp()

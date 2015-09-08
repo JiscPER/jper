@@ -143,14 +143,16 @@ class TestAPI(ESTestCase):
                 api.JPER.validate(acc, {}, f)
 
     def test_05_create(self):
-        acc = models.Account()
-        acc.id = "12345"
-
         # 2 different kinds of create mechanism
+
+        # make some repository accounts that we'll be doing the test as
+        acc1 = models.Account()
+        acc1.add_role('publisher')
+        acc1.save()
 
         # 1. Creation of plain metadata-only notification (with links that aren't checked)
         notification = fixtures.APIFactory.incoming()
-        note = api.JPER.create_notification(acc, notification)
+        note = api.JPER.create_notification(acc1, notification)
         assert note is not None
         assert note.id is not None
         check = models.UnroutedNotification.pull(note.id)
@@ -163,7 +165,7 @@ class TestAPI(ESTestCase):
         del notification["links"]
         filepath = fixtures.PackageFactory.example_package_path()
         with open(filepath) as f:
-            note = api.JPER.create_notification(acc, notification, f)
+            note = api.JPER.create_notification(acc1, notification, f)
 
         self.stored_ids.append(note.id)
 
@@ -180,18 +182,20 @@ class TestAPI(ESTestCase):
         assert len(stored) == 3
 
     def test_06_create_fail(self):
-        acc = models.Account()
-        acc.id = "12345"
-
         # There are only 2 circumstances under which the notification will fail
+
+        # make some repository accounts that we'll be doing the test as
+        acc1 = models.Account()
+        acc1.add_role('publisher')
+        acc1.save()
 
         # 1. Invalid notification metadata
         with self.assertRaises(api.ValidationException):
-            note = api.JPER.create_notification(acc, {"random" : "content"})
+            note = api.JPER.create_notification(acc1, {"random" : "content"})
 
         # 2. Corrupt zip file
         notification = fixtures.APIFactory.incoming()
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
         with open(self.custom_zip_path) as f:
             with self.assertRaises(api.ValidationException):
-                api.JPER.validate(acc, notification, f)
+                api.JPER.validate(acc1, notification, f)

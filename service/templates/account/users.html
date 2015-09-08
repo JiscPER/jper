@@ -2,10 +2,9 @@
 
 {% block content %}
 
-{% if current_user.has_role(config.get("ACCOUNT_CREATE_USER_ROLE")) %}
+{% if current_user.is_super %}
 <div class="row">
     <div class="col-md-12" style="text-align: right">
-        {# FIXME: need to set the URL correctly when account.register is enabled #}
         <a class="btn btn-info" href="{{url_for('account.register')}}">Create User</a>
     </div>
 </div>

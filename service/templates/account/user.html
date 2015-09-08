@@ -47,8 +47,19 @@
                     <button class="btn btn-primary" id="config_upload" type="submit" style="width:49%;">
                         Upload new match config
                     </button>
+                    <!-- the ability to retrieve from URL may be turned off for live -->
+                    <input type="text" name="url" id="url" class="form-control" style="width:50%;display:inline;" placeholder="Or retrieve config file from URL">
+                    <button class="btn btn-primary" id="config_retrieve" type="submit" style="width:49%;">
+                        Retrieve new match config
+                    </button>
                 </form>
+                {% if repoconfig %}
+                <a target="_blank" href="/api/v1/config{% if current_user.has_role('admin') %}/{{account.id}}?api_key={{current_user.data['api_key']}}{% else %}?api_key={{account.data['api_key']}}{% endif %}">View current JSON config for this repository (API)</a> 
+                <br><a target="_blank" href="/api/v1/routed/{{account.id}}?since=01/08/2015&api_key={{current_user.data['api_key']}}">View routed notifications for this repository (API)</a> 
+                {% endif %}
             </div>
+            <p style="font-size:0.8em;">https://raw.githubusercontent.com/JiscPER/jper/develop/docs/csvtemplate.csv<br>
+                https://raw.githubusercontent.com/JiscPER/jper/develop/service/tests/resources/example_repo_config.json</p>
             {% endif %}
 
             {% if account.has_role('publisher') %}
@@ -57,7 +68,11 @@
                     For SFTP access, use the account ID above as username.<br>
                     The account API key above is the password.<br>
                     The SFTP address is sftp.pubrouter.jisc.ac.uk<br>
-                    It is on the standard SFTP port (22).
+                    It is on the standard SFTP port (22).<br><br>
+                    Send a directory for every publication notification.<br><br>
+                    To use the SWORD endpoint, use the account ID above as username.
+                    The account API key above is the password.<br>
+                    The SWORD endpoint address is https://pubrouter.jisc.ac.uk/sword
                 </p>                
             </div>
             {% endif %}
@@ -71,6 +86,7 @@
             <form method="post" action="">
 			<input type="text" name="repository_name" class="form-control" placeholder="repository name" value="{{account.data.get('repository',{}).get('name','')}}">
 			<input type="text" name="repository_url" class="form-control" placeholder="repository url" value="{{account.data.get('repository',{}).get('url','')}}">
+			<input type="text" name="repository_software" class="form-control" placeholder="repository software" value="{{account.data.get('repository',{}).get('software','')}}">
 			<input type="text" name="sword_username" class="form-control" placeholder="repository SWORD username" value="{{account.data.get('sword',{}).get('username','')}}">
 			<input type="text" name="sword_password" class="form-control" placeholder="repository SWORD password" value="{{account.data.get('sword',{}).get('password','')}}">
 			<input type="text" name="sword_collection" class="form-control" placeholder="repository SWORD collection" value="{{account.data.get('sword',{}).get('collection','')}}">

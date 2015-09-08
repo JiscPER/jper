@@ -1,0 +1,30 @@
+{
+    "domains" : ["ucl.ac.uk", "universitycollegelondon.ac.uk"],
+    "name_variants" : ["UCL", "U.C.L", "University College"],
+    "author_ids" : [
+        {
+            "id" : "Richard Jones",
+            "type" : "name"
+        },
+        {
+            "id" : "Mark MacGillivray",
+            "type" : "name"
+        },
+        {
+            "id" : "someone@sms.ucl.ac.uk",
+            "type" : "email"
+        }
+    ],
+    "postcodes" : ["SW1 0AA"],
+    "keywords" : ["science", "technology", "medicine"],
+    "grants" : ["BB/34/juwef"],
+    "content_types" : ["article"],
+    "strings" : [
+        "https://www.ed.ac.uk/",
+        "richard@EXAMPLE.com",
+        "cottage labs",
+        "AAAA-0000-1111-BBBB",
+        "eh235tz",
+        "bb/34/juwef"
+    ]
+}

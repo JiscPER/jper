@@ -1,8 +1,9 @@
 from octopus.modules.es.testindex import ESTestCase
 # from unittest import TestCase
-from octopus.core import app
+from service.web import app
 from octopus.lib import paths
 from octopus.modules.store import store
+from flask import url_for
 
 from service import routing, models, api, packages
 from service.tests import fixtures
@@ -226,11 +227,13 @@ class TestRouting(ESTestCase):
         # make some repository accounts that we'll be doing the coversion for
         acc1 = models.Account()
         acc1.add_packaging(SIMPLE_ZIP)
+        acc1.add_role('repository')
         acc1.save()
 
         acc2 = models.Account()
         acc2.add_packaging(TEST_FORMAT)
         acc2.add_packaging(SIMPLE_ZIP)
+        acc2.add_role('repository')
         acc2.save(blocking=True)
 
         # put an associated package into the store
@@ -249,9 +252,33 @@ class TestRouting(ESTestCase):
         assert links[0].get("type") == "package"
         assert links[0].get("format") == "application/zip"
         assert links[0].get("access") == "router"
-        assert links[0].get("url").endswith("SimpleZip")
+        assert links[0].get("url").endswith("SimpleZip.zip")
         assert links[0].get("packaging") == "http://purl.org/net/sword/package/SimpleZip"
 
+    def test_10_proxy_links(self):
+        # get an unrouted notification to work with
+        source = fixtures.NotificationFactory.routed_notification()
+        routed = models.RoutedNotification(source)
+        l = {
+            'url':'http://example.com',
+            'access': 'public',
+            'type': 'whatever',
+            'format': 'whatever',
+            'packaging': 'whatever'
+        }
+        routed.add_link(l.get("url"), l.get("type"), l.get("format"), l.get("access"), l.get("packaging"))
+
+        routing.links(routed)
+        nid = False
+        with app.test_request_context():
+            for link in routed.links:
+                if link['url'] == l['url']:
+                    assert link['access'] == 'public'
+                    assert link['proxy']
+                    nid = link['proxy']
+                elif nid and link['url'] == app.config.get("BASE_URL") + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid):
+                    assert link['access'] == 'router'
+        
     def test_50_match_success(self):
         # example routing metadata from a notification
         source = fixtures.NotificationFactory.routing_metadata()
@@ -379,6 +406,7 @@ class TestRouting(ESTestCase):
         # as there's no files
         acc1 = models.Account()
         acc1.add_packaging(SIMPLE_ZIP)
+        acc1.add_role('repository')
         acc1.save()
 
         # add a repository config to the index
@@ -397,11 +425,11 @@ class TestRouting(ESTestCase):
         routing.route(urn)
 
         # give the index a chance to catch up before checking the results
-        time.sleep(2)
+        time.sleep(3)
 
         # check that a match provenance was recorded
         mps = models.MatchProvenance.pull_by_notification(urn.id)
-        assert len(mps) == 1
+        assert len(mps) == 1, len(mps)
 
         # check the properties of the match provenance
         mp = mps[0]
@@ -430,6 +458,7 @@ class TestRouting(ESTestCase):
         # add an account to the index, which will take simplezip
         acc1 = models.Account()
         acc1.add_packaging(SIMPLE_ZIP)
+        acc1.add_role('publisher')
         acc1.save()
 
         # 2. Creation of metadata + zip content
@@ -438,7 +467,7 @@ class TestRouting(ESTestCase):
         del notification["metadata"]["type"]    # so that we can test later that it gets added with the metadata enhancement
         filepath = fixtures.PackageFactory.example_package_path()
         with open(filepath) as f:
-            note = api.JPER.create_notification(None, notification, f)
+            note = api.JPER.create_notification(acc1, notification, f)
 
         # add a repository config to the index
         source = fixtures.RepositoryFactory.repo_config()
@@ -484,7 +513,7 @@ class TestRouting(ESTestCase):
         # check the links to be sure that the conversion links were added
         found = False
         for l in rn.links:
-            if l.get("url").endswith("SimpleZip"):
+            if l.get("url").endswith("SimpleZip.zip"):
                 found = True
         assert found
 

@@ -3,7 +3,7 @@
 # this script also requires mkpasswd to be installed - sudo apt-get install whois will get it
 # ensure this script is executable can be run as sudo without password by the software
 # by doing visudo and adding this script to the commands that can be run without password, like:
-# mark ALL = (root) NOPASSWD:/home/mark/jper/src/jper/service/views/createFTPuser.sh
+# mark ALL = (root) NOPASSWD:/home/mark/jper/src/jper/service/models/createFTPuser.sh
 # -------------------------------------------------------------------------
 username=$1 # get from script params
 egrep "^$username" /etc/passwd >/dev/null

@@ -138,7 +138,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         # TODO / NOTE: if the service has to be scaled up to run on multiple machines, 
         # the ftp users should only be created on the machine that the ftp address points to.
         # so the create user scripts should be triggered on that machine. Alternatively the user 
-        # accounts could be created on every machine - but that leaves more security issues. 
+        # accounts could be created on every machine - but that leaves more potential security holes. 
         # Better to restrict the ftp upload to one machine that is configured to accept them. Then 
         # when it runs the schedule, it will check the ftp folder locations and send any to the API 
         # endpoints, so the heavy lifting would still be distributed across machines.

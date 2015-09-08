@@ -28,6 +28,7 @@
             <div class="rolers repository">
 			<input type="text" name="repository_name" class="form-control" placeholder="repository name">
 			<input type="text" name="repository_url" class="form-control" placeholder="repository url">
+			<input type="text" name="repository_software" class="form-control" placeholder="repository software">
 			<input type="text" name="sword_username" class="form-control" placeholder="repository SWORD username">
 			<input type="text" name="sword_password" class="form-control" placeholder="repository SWORD password">
 			<input type="text" name="sword_collection" class="form-control" placeholder="repository SWORD collection">
@@ -45,6 +46,10 @@
     </div>
 </form>
 
+{% endblock %}
+
+{% block extra_js_bottom %}
+
 <script>
 $( document ).ready(function() {
     $('.rolers').hide();
@@ -57,8 +62,7 @@ $( document ).ready(function() {
 });
 </script>
 
-
-{% endblock %}
+{% endblock extra_js_bottom %}
 
 
 
