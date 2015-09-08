@@ -18,7 +18,9 @@ class PackageFactory(object):
         formats = app.config.get("PACKAGE_HANDLERS", {})
         cname = formats.get(format)
         if cname is None:
-            raise PackageException("No handler for package format {x}".format(x=format))
+            msg = "No handler for package format {x}".format(x=format)
+            app.logger.info("Package Factory Incoming - {x}".format(x=msg))
+            raise PackageException(msg)
         klazz = plugin.load_class(cname)
         return klazz(zip_path=zip_path, metadata_files=metadata_files)
 
@@ -27,7 +29,9 @@ class PackageFactory(object):
         formats = app.config.get("PACKAGE_HANDLERS", {})
         cname = formats.get(format)
         if cname is None:
-            raise PackageException("No handler for package format {x}".format(x=format))
+            msg = "No handler for package format {x}".format(x=format)
+            app.logger.info("Package Factory Converter - {x}".format(x=msg))
+            raise PackageException(msg)
         klazz = plugin.load_class(cname)
         return klazz()
 
@@ -35,6 +39,8 @@ class PackageManager(object):
 
     @classmethod
     def ingest(cls, store_id, zip_path, format, storage_manager=None):
+        app.logger.info("Package Ingest - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
+
         # load the package manager and the storage manager
         pm = PackageFactory.incoming(format, zip_path)
         if storage_manager is None:
@@ -52,6 +58,8 @@ class PackageManager(object):
 
     @classmethod
     def extract(cls, store_id, format, storage_manager=None):
+        app.logger.info("Package Extract - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
+
         # load the storage manager
         if storage_manager is None:
             storage_manager = store.StoreFactory.get()
@@ -89,6 +97,8 @@ class PackageManager(object):
 
     @classmethod
     def convert(cls, store_id, source_format, target_formats, storage_manager=None):
+        app.logger.info("Package Convert - StoreID:{a}; SourceFormat:{b}; TargetFormats:{c}".format(a=store_id, b=source_format, c=",".join(target_formats)))
+
         # load the storage manager
         if storage_manager is None:
             storage_manager = store.StoreFactory.get()
