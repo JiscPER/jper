@@ -27,17 +27,26 @@ def get_stream_empty(*args, **kwargs):
 
 class TestAPI(ESTestCase):
     def setUp(self):
-        super(TestAPI, self).setUp()
-        self.old_get_stream = http.get_stream
-        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
+        # need to do this first, before kicking upstairs, as ESTestCase runs initialise
+        self.run_schedule = app.config.get("RUN_SCHEDULE")
+        app.config["RUN_SCHEDULE"] = False
+
         self.store_impl = app.config.get("STORE_IMPL")
         app.config["STORE_IMPL"] = "octopus.modules.store.store.TempStore"
+
+        # now call the superclass, which will init the app
+        super(TestAPI, self).setUp()
+
+        self.old_get_stream = http.get_stream
+
+        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
         self.stored_ids = []
 
     def tearDown(self):
         super(TestAPI, self).tearDown()
         http.get_stream = self.old_get_stream
         app.config["STORE_IMPL"] = self.store_impl
+        app.config["RUN_SCHEDULE"] = self.run_schedule
         if os.path.exists(self.custom_zip_path):
             os.remove(self.custom_zip_path)
         s = store.StoreFactory.get()

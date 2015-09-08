@@ -175,7 +175,7 @@ class JPER(object):
         # if we get to here there was either no package, or the package saved successfully, so we can store the
         # note
         note.save()
-        app.logger.info("Request:{z} - Create request from Account:{x} succeeded".format(z=magic, x=account.id))
+        app.logger.info("Request:{z} - Create request from Account:{x} succeeded; Notification:{y}".format(z=magic, x=account.id, y=note.id))
         return note
 
     @classmethod

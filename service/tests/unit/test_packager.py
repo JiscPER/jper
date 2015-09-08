@@ -20,7 +20,8 @@ STORE_ID = "12345"
 
 class TestPackager(TestCase):
     def setUp(self):
-        super(TestPackager, self).setUp()
+        self.run_schedule = app.config.get("RUN_SCHEDULE")
+        app.config["RUN_SCHEDULE"] = False
 
         self.old_ph = deepcopy(app.config["PACKAGE_HANDLERS"])
         app.config["PACKAGE_HANDLERS"].update({TEST_FORMAT : TEST_HANDLER})
@@ -28,12 +29,15 @@ class TestPackager(TestCase):
         self.old_store = app.config["STORE_IMPL"]
         app.config["STORE_IMPL"] = "octopus.modules.store.store.StoreLocal"
 
+        super(TestPackager, self).setUp()
+
         self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
 
     def tearDown(self):
         super(TestPackager, self).tearDown()
         app.config["PACKAGE_HANDLERS"] = self.old_ph
         app.config["STORE_IMPL"] = self.old_store
+        app.config["RUN_SCHEDULE"] = self.run_schedule
 
         if os.path.exists(self.custom_zip_path):
             os.remove(self.custom_zip_path)
