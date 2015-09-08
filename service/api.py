@@ -121,11 +121,15 @@ class JPER(object):
     def create_notification(cls, account, notification, file_handle=None):
         if not account.has_role('publisher') and not current_user.is_super:
             return False
-        
+
+        magic = uuid.uuid4().hex
+        app.logger.info("Request:{z} - Create request received from Account:{x}".format(z=magic, x=account.id))
+
         # attempt to serialise the record
         try:
             incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
+            app.logger.info("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
 
         # if successful, convert it to an unrouted notification
@@ -158,6 +162,7 @@ class JPER(object):
             except packages.PackageException as e:
                 tmp.delete(local_id)
                 remote.delete(note.id)
+                app.logger.info("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
                 raise ValidationException("Problem reading from the zip file: {x}".format(x=e.message))
 
             # remove the local copy
@@ -170,6 +175,7 @@ class JPER(object):
         # if we get to here there was either no package, or the package saved successfully, so we can store the
         # note
         note.save()
+        app.logger.info("Request:{z} - Create request from Account:{x} succeeded".format(z=magic, x=account.id))
         return note
 
     @classmethod
@@ -179,45 +185,57 @@ class JPER(object):
         except:
             accid = None
 
+        magic = uuid.uuid4().hex
+
         # notifications may either be in the unrouted or routed indices.
         # start at the routed notification (as they may appear in both)
         rn = models.RoutedNotification.pull(notification_id)
         if rn is not None:
             if accid == rn.provider_id:
+                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the routed notification".format(z=magic, x=accid, y=notification_id))
                 return rn.make_outgoing(provider=True)
             else:
+                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the routed notification".format(z=magic, x=accid, y=notification_id))
                 return rn.make_outgoing()
         if account.has_role('publisher') or current_user.is_super:
             urn = models.UnroutedNotification.pull(notification_id)
             if urn is not None:
                 if accid == urn.provider_id:
+                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the unrouted notification".format(z=magic, x=accid, y=notification_id))
                     return urn.make_outgoing(provider=True)
                 else:
+                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the unrouted notification".format(z=magic, x=accid, y=notification_id))
                     return urn.make_outgoing()
+
+        app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; no distributable notification of that id found".format(z=magic, x=accid, y=notification_id))
         return None
 
     @classmethod
     def get_content(cls, account, notification_id, filename=None):
+        magic = uuid.uuid4().hex
         urn = models.UnroutedNotification.pull(notification_id)
         if urn is not None and account.has_role('publisher'):
             if filename is not None:
                 store_filename = filename
             else:
-                pm = packages.PackagerFactory.incoming(urn.packaging_format)
+                pm = packages.PackageFactory.incoming(urn.packaging_format)
                 store_filename = pm.zip_name()
-            sm = store.storeFactory.get()
-            return sm.get(urn.id, pm.zipname)
+            sm = store.StoreFactory.get()
+            app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns unrouted notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
+            return sm.get(urn.id, store_filename)
         else:
             rn = models.RoutedNotification.pull(notification_id)
             if rn is not None and account.has_role('publisher') or ( account.has_role('repository') and account.id in rn.repositories) or current_user.is_super:
                 if filename is not None:
                     store_filename = filename
                 else:
-                    pm = packages.PackagerFactory.incoming(rn.packaging_format)
+                    pm = packages.PackageFactory.incoming(rn.packaging_format)
                     store_filename = pm.zip_name()
-                sm = store.storeFactory.get()
-                return sm.get(rn.id, pm.zipname)
+                sm = store.StoreFactory.get()
+                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns routed notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
+                return sm.get(rn.id, store_filename)
             else:
+                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; no suitable content found to return".format(z=magic, x=account.id, y=notification_id, a=filename))
                 return None
 
     @classmethod
@@ -257,7 +275,7 @@ class JPER(object):
 
         if page_size == 0 or page_size > app.config.get("MAX_LIST_PAGE_SIZE"):
             raise ParameterException("page size must be between 1 and {x}".format(x=app.config.get("MAX_LIST_PAGE_SIZE")))
-            
+
         nl = models.NotificationList()
         nl.since = dates.format(since)
         nl.page = page
