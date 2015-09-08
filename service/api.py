@@ -16,10 +16,14 @@ class JPER(object):
 
     @classmethod
     def validate(cls, account, notification, file_handle=None):
+        magic = uuid.uuid4().hex
+        app.logger.info("Request:{z} - Validate request received from Account:{x}".format(z=magic, x=account.id))
+
         # does the metadata parse as valid
         try:
             incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
+            app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
 
         # if so, convert it to an unrouted notification
@@ -28,7 +32,9 @@ class JPER(object):
         # extract the package format from the metadata
         format = note.packaging_format
         if format is None and file_handle is not None:
-            raise ValidationException("If zipped content is provided, metadata must specify packaging format")
+            msg = "If zipped content is provided, metadata must specify packaging format"
+            app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+            raise ValidationException(msg)
 
         # extract the match data from the metadata
         nma = note.match_data()
@@ -56,6 +62,7 @@ class JPER(object):
             except packages.PackageException as e:
                 s.delete(local_id)
                 s.delete(validated_id)
+                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
                 raise ValidationException("Problem reading from the zip file: {x}".format(x=e.message))
 
             # If successful, we should extract the metadata from the package, using the validated id and the
@@ -68,6 +75,7 @@ class JPER(object):
             except packages.PackageException as e:
                 s.delete(local_id)
                 s.delete(validated_id)
+                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
                 raise ValidationException("Problem extracting data from the zip file: {x}".format(x=e.message))
 
             # ensure that we don't keep copies of the files
@@ -76,25 +84,37 @@ class JPER(object):
 
         # now check that we got some kind of actionable match data from the notification or the package
         if not nma.has_data() and (ma is None or not ma.has_data()):
-            raise ValidationException("Unable to extract any actionable routing metadata from notification or associated package")
+            msg = "Unable to extract any actionable routing metadata from notification or associated package"
+            app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+            raise ValidationException(msg)
 
         # if we've been given files by reference, check that we can access them
         for l in note.links:
             url = l.get("url")
             if url is None:
-                raise ValidationException("All supplied links must include a URL")
+                msg = "All supplied links must include a URL"
+                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                raise ValidationException(msg)
 
             # just ensure that we can get the first few bytes, and that the response is the right one
             resp, content, size = http.get_stream(url, cut_off=100, chunk_size=100)
 
             if resp is None:
-                raise ValidationException("Unable to connecto to server to retrieve {x}".format(x=url))
+                msg = "Unable to connecto to server to retrieve {x}".format(x=url)
+                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                raise ValidationException(msg)
 
             if resp.status_code != 200:
-                raise ValidationException("Received unexpected status code when downloading from {x} - {y}".format(x=url, y=resp.status_code))
+                msg = "Received unexpected status code when downloading from {x} - {y}".format(x=url, y=resp.status_code)
+                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                raise ValidationException(msg)
 
             if content is None or content == "":
-                raise ValidationException("Received no content when downloading from {x}".format(x=url))
+                msg = "Received no content when downloading from {x}".format(x=url)
+                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                raise ValidationException(msg)
+
+        app.logger.info("Request:{z} - Validate request Account:{x} succeeded".format(z=magic, x=account.id))
 
     @classmethod
     def create_notification(cls, account, notification, file_handle=None):
