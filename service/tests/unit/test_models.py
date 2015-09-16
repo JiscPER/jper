@@ -1,14 +1,19 @@
 from octopus.modules.es.testindex import ESTestCase
+from octopus.core import app
 from service import models
 from service.tests import fixtures
 from octopus.lib import dataobj
 
 class TestModels(ESTestCase):
     def setUp(self):
+        self.run_schedule = app.config.get("RUN_SCHEDULE")
+        app.config["RUN_SCHEDULE"] = False
+
         super(TestModels, self).setUp()
 
     def tearDown(self):
         super(TestModels, self).tearDown()
+        app.config["RUN_SCHEDULE"] = self.run_schedule
 
     def test_01_unrouted(self):
         # just try making one from scratch

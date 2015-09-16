@@ -10,7 +10,11 @@ ESV = app.config.get("ELASTIC_SEARCH_VERSION", "1.4.2")
 
 class TestDAO(ESTestCase):
     def setUp(self):
+        self.run_schedule = app.config.get("RUN_SCHEDULE")
+        app.config["RUN_SCHEDULE"] = False
+
         super(TestDAO, self).setUp()
+
         self.unrouted_timebox = app.config["ESDAO_TIME_BOX_UNROUTED"]
         self.unrouted_lookback = app.config["ESDAO_TIME_BOX_LOOKBACK_UNROUTED"]
 
@@ -18,6 +22,7 @@ class TestDAO(ESTestCase):
         super(TestDAO, self).tearDown()
         app.config["ESDAO_TIME_BOX_UNROUTED"] = self.unrouted_timebox
         app.config["ESDAO_TIME_BOX_LOOKBACK_UNROUTED"] = self.unrouted_lookback
+        app.config["RUN_SCHEDULE"] = self.run_schedule
 
     def test_01_unrouted(self):
         # give the dao object a general workout

@@ -17,19 +17,22 @@ TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 
 class TestRouting(ESTestCase):
     def setUp(self):
-        super(TestRouting, self).setUp()
-
         self.store_impl = app.config.get("STORE_IMPL")
         app.config["STORE_IMPL"] = "octopus.modules.store.store.StoreLocal"
 
-        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
+        self.run_schedule = app.config.get("RUN_SCHEDULE")
+        app.config["RUN_SCHEDULE"] = False
 
+        super(TestRouting, self).setUp()
+
+        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
         self.stored_ids = []
 
     def tearDown(self):
         super(TestRouting, self).tearDown()
 
         app.config["STORE_IMPL"] = self.store_impl
+        app.config["RUN_SCHEDULE"] = self.run_schedule
 
         if os.path.exists(self.custom_zip_path):
             os.remove(self.custom_zip_path)

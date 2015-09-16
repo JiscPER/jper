@@ -27,17 +27,26 @@ def get_stream_empty(*args, **kwargs):
 
 class TestAPI(ESTestCase):
     def setUp(self):
-        super(TestAPI, self).setUp()
-        self.old_get_stream = http.get_stream
-        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
+        # need to do this first, before kicking upstairs, as ESTestCase runs initialise
+        self.run_schedule = app.config.get("RUN_SCHEDULE")
+        app.config["RUN_SCHEDULE"] = False
+
         self.store_impl = app.config.get("STORE_IMPL")
         app.config["STORE_IMPL"] = "octopus.modules.store.store.TempStore"
+
+        # now call the superclass, which will init the app
+        super(TestAPI, self).setUp()
+
+        self.old_get_stream = http.get_stream
+
+        self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
         self.stored_ids = []
 
     def tearDown(self):
         super(TestAPI, self).tearDown()
         http.get_stream = self.old_get_stream
         app.config["STORE_IMPL"] = self.store_impl
+        app.config["RUN_SCHEDULE"] = self.run_schedule
         if os.path.exists(self.custom_zip_path):
             os.remove(self.custom_zip_path)
         s = store.StoreFactory.get()
@@ -46,59 +55,70 @@ class TestAPI(ESTestCase):
 
     def test_01_validate(self):
         # 3 different kinds of validation required
+        acc = models.Account()
+        acc.id = "12345"
 
         # 1. Validation of plain metadata-only notification
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
-        api.JPER.validate(None, notification)
+        api.JPER.validate(acc, notification)
 
         # 2. Validation of metadata-only notification with external file links
         http.get_stream = mock_get_stream
         notification = fixtures.APIFactory.incoming()
-        api.JPER.validate(None, notification)
+        api.JPER.validate(acc, notification)
 
         # 3. Validation of metadata + zip content
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
         filepath = fixtures.PackageFactory.example_package_path()
         with open(filepath) as f:
-            api.JPER.validate(None, notification, f)
+            api.JPER.validate(acc, notification, f)
 
     def test_02_validate_md_only_fail(self):
+        acc = models.Account()
+        acc.id = "12345"
+
         # 1. JSON is invalid structure
         with self.assertRaises(api.ValidationException):
-            api.JPER.validate(None, {"random" : "content"})
+            api.JPER.validate(acc, {"random" : "content"})
 
         # 2. No match data present
         with self.assertRaises(api.ValidationException):
-            api.JPER.validate(None, {})
+            api.JPER.validate(acc, {})
 
     def test_03_validate_md_links_fail(self):
+        acc = models.Account()
+        acc.id = "12345"
+
         # 3. No url provided
         notification = fixtures.APIFactory.incoming()
         del notification["links"][0]["url"]
         with self.assertRaises(api.ValidationException):
-            api.JPER.validate(None, notification)
+            api.JPER.validate(acc, notification)
 
         # 4. HTTP connection failure
         notification = fixtures.APIFactory.incoming()
         http.get_stream = get_stream_fail
         with self.assertRaises(api.ValidationException):
-            api.JPER.validate(None, notification)
+            api.JPER.validate(acc, notification)
 
         # 5. Incorrect status code
         notification = fixtures.APIFactory.incoming()
         http.get_stream = get_stream_status
         with self.assertRaises(api.ValidationException):
-            api.JPER.validate(None, notification)
+            api.JPER.validate(acc, notification)
 
         # 6. Empty content
         notification = fixtures.APIFactory.incoming()
         http.get_stream = get_stream_empty
         with self.assertRaises(api.ValidationException):
-            api.JPER.validate(None, notification)
+            api.JPER.validate(acc, notification)
 
     def test_04_validate_md_content_fail(self):
+        acc = models.Account()
+        acc.id = "12345"
+
         # 7. No format supplied
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
@@ -106,7 +126,7 @@ class TestAPI(ESTestCase):
         path = fixtures.PackageFactory.example_package_path()
         with open(path) as f:
             with self.assertRaises(api.ValidationException):
-                api.JPER.validate(None, notification, f)
+                api.JPER.validate(acc, notification, f)
 
         # 8. Incorrect format supplied
         notification = fixtures.APIFactory.incoming()
@@ -115,7 +135,7 @@ class TestAPI(ESTestCase):
         path = fixtures.PackageFactory.example_package_path()
         with open(path) as f:
             with self.assertRaises(api.ValidationException):
-                api.JPER.validate(None, notification, f)
+                api.JPER.validate(acc, notification, f)
 
         # 9. Package invald/corrupt
         notification = fixtures.APIFactory.incoming()
@@ -123,13 +143,13 @@ class TestAPI(ESTestCase):
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
         with open(self.custom_zip_path) as f:
             with self.assertRaises(api.ValidationException):
-                api.JPER.validate(None, notification, f)
+                api.JPER.validate(acc, notification, f)
 
         # 10. No match data in either md or package
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, no_jats=True, no_epmc=True)
         with open(self.custom_zip_path) as f:
             with self.assertRaises(api.ValidationException):
-                api.JPER.validate(None, {}, f)
+                api.JPER.validate(acc, {}, f)
 
     def test_05_create(self):
         # 2 different kinds of create mechanism
