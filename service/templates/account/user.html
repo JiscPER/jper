@@ -155,7 +155,9 @@
                 {% endif %}
 
                 <br><br>
-                <a class="btn btn-danger btn-block cb" id="delete" href="#">Delete this account</a>
+                <form method="POST" action="">
+                    <input type="submit" name="submit" class="btn btn-danger btn-block cb" id="delete" value="Delete this account">
+                </form>
 
             </div>
             {% endif %}
@@ -165,8 +167,8 @@
     <script>
     $( document ).ready(function() {        
         var deleteaccount = function(event) {
-            event.preventDefault();
-            alert("This has not been made possible yet. It may depend on further UI enhancements, and decisions about how to handle account deletion.");
+            var conf = confirm("ARE YOU SURE!!!");
+            if (!conf) event.preventDefault();
         }
         $('#delete').bind('click',deleteaccount);
 

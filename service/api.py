@@ -4,7 +4,7 @@ from service import models, packages
 from octopus.lib import dates, dataobj, http
 from octopus.core import app
 from octopus.modules.store import store
-import uuid
+import uuid, json
 
 
 class ValidationException(Exception):
@@ -268,8 +268,12 @@ class JPER(object):
         
         if repository_id is not None:
             qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
+            app.logger.debug(str(repository_id) + ' list notifications for query ' + json.dumps(qr))
+        else:
+            app.logger.debug('List all notifications for query ' + json.dumps(qr))
 
         res = models.RoutedNotification.query(q=qr)
+        app.logger.debug('List all notifications query resulted ' + json.dumps(res))
         nl.notifications = [i['_source'] for i in res.get('hits',{}).get('hits',[])]
         nl.total = res.get('hits',{}).get('total',0)
         return nl
