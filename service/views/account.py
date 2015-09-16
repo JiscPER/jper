@@ -197,44 +197,45 @@ def register():
     elif request.method == 'GET':
         return render_template('account/register.html')
     elif request.method == 'POST':
-        if 'email' not in request.values:
+        vals = request.json if request.json else request.values
+        if 'email' not in vals:
             flash('You must provide an email address','error')
             return render_template('account/register.html')
-        elif models.Account.pull_by_email(request.values['email']) is not None:
+        elif models.Account.pull_by_email(vals['email']) is not None:
             flash('An account already exists for that email address')
             return render_template('account/register.html')
         else:
             api_key = str(uuid.uuid4())
             account = models.Account()
-            account.data['email'] = request.values['email']
+            account.data['email'] = vals['email']
             account.data['api_key'] = api_key
             account.data['role'] = []
 
-            if request.values.get('repository_software',False):
+            if vals.get('repository_software',False):
                 account.data['repository'] = {
-                    'software': request.values['repository_software']
+                    'software': vals['repository_software']
                 }
-                if request.values.get('repository_url',False): account.data['repository']['url'] = request.values['repository_url']
-                if request.values.get('repository_name',False): account.data['repository']['name'] = request.values['repository_name']
+                if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
+                if vals.get('repository_name',False): account.data['repository']['name'] = vals['repository_name']
 
-            if request.values.get('sword_username',False):
+            if vals.get('sword_username',False):
                 account.data['sword'] = {
-                    'username': request.values['sword_username']
+                    'username': vals['sword_username']
                 }
-                if request.values.get('sword_password',False): account.data['sword']['password'] = request.values['sword_password']
-                if request.values.get('sword_collection',False): account.data['sword']['collection'] = request.values['sword_collection']
+                if vals.get('sword_password',False): account.data['sword']['password'] = vals['sword_password']
+                if vals.get('sword_collection',False): account.data['sword']['collection'] = vals['sword_collection']
 
-            if request.values.get('packaging',False):
-                account.data['packaging'] = request.values['packaging'].split(',')
+            if vals.get('packaging',False):
+                account.data['packaging'] = vals['packaging'].split(',')
 
-            if request.values.get('embargo_duration',False):
-                account.data['embargo'] = {'duration': request.values['embargo_duration']}
+            if vals.get('embargo_duration',False):
+                account.data['embargo'] = {'duration': vals['embargo_duration']}
 
-            account.set_password(request.values['password'])
-            if request.values.get('repository',False):
+            account.set_password(vals['password'])
+            if vals.get('repository',False):
                 account.add_role('repository')
             account.save()
-            if request.values.get('publisher',False):
+            if vals.get('publisher',False):
                 account.become_publisher()
             time.sleep(1)
             flash('Account created for ' + account.id, 'success')
