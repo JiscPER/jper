@@ -257,6 +257,7 @@ class TestAPI(ESTestCase):
         assert resp2.headers["content-type"] == "application/json"
         j2 = resp2.json()
         assert j2["id"] == j["id"]
+        assert j2["provider"]["id"] == "admin"  # The default admin account owns this one
 
         # FIXME: should do additional tests for retrieving routed notifications, but this is
         # difficult to do at this stage
