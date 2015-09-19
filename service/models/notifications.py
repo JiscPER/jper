@@ -478,6 +478,10 @@ class BaseNotification(NotificationMetadata):
     def provider_id(self):
         return self._get_single("provider.id", coerce=dataobj.to_unicode())
 
+    @provider_id.setter
+    def provider_id(self, val):
+        self._set_single("provider.id", val, coerce=dataobj.to_unicode())
+
     def match_data(self):
         md = RoutingMetadata()
 
@@ -587,7 +591,8 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
             keep = []
             for link in d.get("links", []):
                 if provider:        # if you're the provider keep all the links
-                    del link["access"]
+                    if "access" in link:
+                        del link["access"]
                     keep.append(link)
                 elif link.get("access") == "router":    # otherwise, only share router links
                     del link["access"]
@@ -595,7 +600,8 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
             if len(keep) > 0:
                 d["links"] = keep
             else:
-                del d["links"]
+                if "links" in d:
+                    del d["links"]
 
         # delayed import required because of circular dependencies
         from service.models import OutgoingNotification, ProviderOutgoingNotification
@@ -625,7 +631,8 @@ class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotific
             keep = []
             for link in d.get("links", []):
                 if provider:        # if you're the provider keep all the links
-                    del link["access"]
+                    if "access" in link:
+                        del link["access"]
                     keep.append(link)
                 elif link.get("access") == "router":    # otherwise, only share router links
                     del link["access"]
@@ -633,7 +640,8 @@ class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotific
             if len(keep) > 0:
                 d["links"] = keep
             else:
-                del d["links"]
+                if "links" in d:
+                    del d["links"]
 
         # delayed import required because of circular dependencies
         from service.models import OutgoingNotification, ProviderOutgoingNotification
