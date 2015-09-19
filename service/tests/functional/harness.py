@@ -114,9 +114,9 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
         except Exception as e:
             app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
 
-def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir):
+def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir, retrieve_rate):
     tname = threading.current_thread().name
-    app.logger.info("Thread:{x} - Initialise Create; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir))
+    app.logger.info("Thread:{x} - Initialise Create; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}, retrieve_rate:{h}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir, h=retrieve_rate))
 
     mdopts = ["mdonly", "md+ct"]
     mdprobs = [mdrate, 1 - mdrate]
@@ -126,6 +126,9 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
 
     cterroropts = ["error", "ok"]
     cterrorprobs = [cterrors, 1 - cterrors]
+
+    retrieveopts = ["get", "not"]
+    retrieveprobs = [retrieve_rate, 1 - retrieve_rate]
 
     while True:
         try:
@@ -158,16 +161,38 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
             app.logger.info("Thread:{x} - Create request for Account:{y} Type:{z} MD:{a} CT:{b}".format(x=tname, y=api_key, z=hasct, a=mdtype, b=cterr))
 
             # make the create request, which may occasionally throw errors
+            id = None
             try:
                 id, loc = j.create_notification(note, file_handle)
-                app.logger.info("Thread:{x} - Create request resulted in success, Notification:{y}".format(x=tname, y=id))
+                app.logger.info("Thread:{x} - Create request for Account:{z} resulted in success, Notification:{y}".format(x=tname, y=id, z=api_key))
             except:
-                app.logger.info("Thread:{x} - Create request resulted in exception".format(x=tname))
+                app.logger.info("Thread:{x} - Create request for Account:{y} resulted in exception".format(x=tname, y=api_key))
 
             # cleanup after ourselves
             if filepath is not None:
                 file_handle.close()
                 os.remove(filepath)
+
+            # now there's a chance that we might want to check our notification has been created correctly, so we might
+            # retrieve it
+            if id is not None:
+                ret = _select_from(retrieveopts, retrieveprobs)
+                if ret == "get":
+                    # time.sleep(2)   # this gives JPER a chance to catch up
+                    app.logger.info("Thread:{x} - Following Create for Account:{y}, requesting copy of Notification:{z}".format(x=tname, y=api_key, z=id))
+                    try:
+                        n = j.get_notification(id)
+                        app.logger.info("Thread:{x} - Following Create for Account:{y}, successfully retrieved copy of Notification:{z}".format(x=tname, y=api_key, z=id))
+                        for link in n.links:
+                            if link.get("packaging") is not None:
+                                url = link.get("url")
+                                app.logger.info("Thread:{x} - Following Create for Account:{y}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=id, a=url))
+                                try:
+                                    stream, headers = j.get_content(url)
+                                except Exception as e:
+                                    app.logger.info("Thread:{x} - MAJOR ISSUE; get content failed for Content:{z} that should have existed.  This needs a fix: '{b}'".format(x=tname, z=url, b=e.message))
+                    except Exception as e:
+                        app.logger.info("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=id, b=e.message))
 
             # sleep before making the next request
             time.sleep(throttle)
@@ -204,6 +229,7 @@ if __name__ == "__main__":
     parser.add_argument("--create_mderrors", help="proportion of metadata-only create requests which will contain errors (between 0 and 1)", default=0.05, type=float)
     parser.add_argument("--create_cterrors", help="proportion of content create requests which will contain errors (between 0 and 1)", default=0.05, type=float)
     parser.add_argument("--create_maxfilesize", help="largest filesize to send in megabytes", default=100, type=int)
+    parser.add_argument("--create_retrieverate", help="chance (between 0 and 1) that after create the creator will attempt to get the created notification via the API", default=0.05, type=float)
 
     args = parser.parse_args()
 
@@ -256,7 +282,8 @@ if __name__ == "__main__":
             "mderrors" :  args.create_mderrors,
             "cterrors" :  args.create_cterrors,
             "max_file_size" : args.create_maxfilesize,
-            "tmpdir" : args.tmpdir
+            "tmpdir" : args.tmpdir,
+            "retrieve_rate" : args.create_retrieverate
         })
         t.daemon = True
         thread_pool.append(t)

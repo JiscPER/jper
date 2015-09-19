@@ -272,6 +272,10 @@ class TestAPI(ESTestCase):
         assert resp.status_code == 404
 
     def test_11_get_store_content(self):
+        """
+        FIXME: this test is no longer accurate, as the store does not redirect.  Needs updating.
+        :return:
+        """
         notification = fixtures.APIFactory.incoming()
         example_package = fixtures.APIFactory.example_package_path()
         url = self.api_base + "notification?api_key=" + API_KEY
@@ -282,7 +286,7 @@ class TestAPI(ESTestCase):
         resp = requests.post(url, files=files)
         loc = resp.headers["location"]
         resp2 = requests.get(loc + "/content?api_key=" + API_KEY, allow_redirects=False)
-        assert resp2.status_code == 303
+        assert resp2.status_code == 303, resp2.status_code
 
     def test_12_get_store_content_fail(self):
         # ways in which the content http request can fail
@@ -295,6 +299,10 @@ class TestAPI(ESTestCase):
         assert resp.status_code == 404
 
     def test_13_get_public_content(self):
+        """
+        FIXME: this test is no longer accurate.  Needs updating.
+        :return:
+        """
         notification = fixtures.APIFactory.incoming()
         url = self.api_base + "notification?api_key=" + API_KEY
         resp = requests.post(url, data=json.dumps(notification), headers={"Content-Type" : "application/json"})
