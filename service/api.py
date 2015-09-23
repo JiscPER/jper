@@ -139,6 +139,9 @@ class JPER(object):
         # when we store the associated file
         note.id = note.makeid()
 
+        # record the provider's account id against the notification
+        note.provider_id = account.id
+
         # if we've been given a file handle, save it
         if file_handle is not None:
             # get the format of the package

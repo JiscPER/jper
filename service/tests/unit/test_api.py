@@ -168,6 +168,7 @@ class TestAPI(ESTestCase):
         assert check is not None
         assert len(check.links) == 1
         assert check.links[0]["url"] == "http://example.com/pub/1/file.pdf"
+        assert check.provider_id == acc1.id
 
         # 2. Creation of metadata + zip content
         notification = fixtures.APIFactory.incoming()
@@ -185,6 +186,7 @@ class TestAPI(ESTestCase):
         assert len(check.links) == 1
         assert check.links[0]["url"].endswith("notification/" + note.id + "/content")
         assert check.links[0]["packaging"].endswith("FilesAndJATS")
+        assert check.provider_id == acc1.id
 
         s = store.StoreFactory.get()
         stored = s.list(note.id)

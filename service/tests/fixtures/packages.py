@@ -1,6 +1,7 @@
 from service.packages import PackageHandler
 from octopus.lib import paths
 from octopus.modules.store import store
+import uuid
 
 import zipfile, os, codecs
 from StringIO import StringIO
@@ -33,7 +34,7 @@ class PackageFactory(object):
         return fixtures.APIFactory.example_package_path()
 
     @classmethod
-    def make_custom_zip(cls, path, no_jats=False, no_epmc=False, invalid_jats=False, invalid_epmc=False, corrupt_zip=False):
+    def make_custom_zip(cls, path, no_jats=False, no_epmc=False, invalid_jats=False, invalid_epmc=False, corrupt_zip=False, target_size=None):
         # if we want a corrupt zip, no need to pay attention to any of the other options
         if corrupt_zip:
             with open(path, "wb") as f:
@@ -56,6 +57,11 @@ class PackageFactory(object):
                 zip.writestr("invalidepmc.xml", "akdsjiwqefiw2fuwefoiwqejhqfwe")
             else:
                 zip.write(os.path.join(RESOURCES, "valid_epmc.xml"), "validepmc.xml")
+
+        # now pad the file out with pdf files until it reaches the target size (or slightly over)
+        if target_size is not None:
+            while os.path.getsize(path) < target_size:
+                zip.write(os.path.join(RESOURCES, "download.pdf"), uuid.uuid4().hex + ".pdf")
 
         zip.close()
 
