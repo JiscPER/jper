@@ -491,7 +491,7 @@ class TestRouting(ESTestCase):
 
         # check that a match provenance was recorded
         mps = models.MatchProvenance.pull_by_notification(urn.id)
-        assert len(mps) == 1
+        assert len(mps) == 1, len(mps)
 
         # check the properties of the match provenance
         mp = mps[0]
@@ -544,4 +544,4 @@ class TestRouting(ESTestCase):
 
         # check that a routed notification was not created
         rn = models.RoutedNotification.pull(urn.id)
-        assert rn is None
+        assert rn is None, rn
