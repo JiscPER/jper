@@ -4,7 +4,7 @@
 DEBUG = True
 PORT = 5998
 SSL = False
-THREADED = True
+THREADED = False
 
 ############################################
 # important overrides for the ES module
@@ -77,10 +77,12 @@ CHECKUNROUTED_SCHEDULE = 1
 LOGLEVEL = 'debug'
 LOGFILE = '/home/mark/jperlog'
 
-#STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 #STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 
-STORE_JPER_URL = 'http://store'
+#STORE_IMPL = "octopus.modules.store.store.StoreLocal"
+STORE_IMPL = "octopus.modules.store.store.StoreJper"
+#STORE_JPER_URL = 'http://store'
+STORE_JPER_URL = 'http://localhost:5999'
 
 from octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "live")

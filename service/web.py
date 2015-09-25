@@ -1,5 +1,4 @@
 from octopus.core import app, initialise, add_configuration
-import scheduler
 
 if __name__ == "__main__":
     import argparse
@@ -86,7 +85,5 @@ def page_not_found(e):
 """
 
 if __name__ == "__main__":
-    if app.config.get('RUN_SCHEDULE',False):
-        scheduler.go()
     app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'], threaded=app.config.get("THREADED", False))
 

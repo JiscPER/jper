@@ -153,7 +153,7 @@ def processftp():
                     resp = requests.post(apiurl, files=files, verify=False)
                     app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
                                             
-            #shutil.rmtree(userdir + '/' + dir)
+            shutil.rmtree(userdir + '/' + dir)
     except:
         app.logger.error("Scheduler - failed scheduled process for FTP temp directories")
 
@@ -170,7 +170,7 @@ def checkunrouted():
         for obj in models.UnroutedNotification.scroll():
             counter += 1
             routing.route(obj)
-        app.logger.info("Scheduler - routing routed " + str(counter) + " notifications")
+        app.logger.info("Scheduler - routing sent " + str(counter) + " notifications for routing")
     except:
         app.logger.error("Scheduler - Failed scheduled check for unrouted notifications")
 

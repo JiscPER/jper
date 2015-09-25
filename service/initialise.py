@@ -1,6 +1,6 @@
 from octopus.core import app
 from werkzeug import generate_password_hash
-import uuid, requests, json, logging
+import uuid, requests, json, logging, os, scheduler
 from logging import Formatter
 from logging.handlers import RotatingFileHandler
 
@@ -35,3 +35,10 @@ def initialise():
         '[in %(pathname)s:%(lineno)d %(module)s %(funcName)s]'
     ))
     app.logger.addHandler(file_handler)
+
+    # NOTE / TODO scheduler may have to be started separately once running app in production under supervisor
+    if app.config.get('RUN_SCHEDULE',False):
+        if not app.config.get("DEBUG",False) or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+            print "starting scheduler"
+            app.logger.info("Scheduler starting up on startup of app.")
+            scheduler.go()
