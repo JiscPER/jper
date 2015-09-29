@@ -1,10 +1,11 @@
 from octopus.core import app, add_configuration
-import threading, time, os, uuid, shutil, json
+import threading, time, os, uuid, shutil, json, string
 from datetime import datetime, timedelta
 from random import randint, random, triangular
 from octopus.modules.jper import client
 from service.tests import fixtures
-from octopus.lib import dates, http
+from octopus.lib import dates, http, isolang
+from copy import deepcopy
 
 def _load_keys(path):
     with open(path) as f:
@@ -26,14 +27,189 @@ def _select_from(arr, probs=None):
                 return arr[i]
         return arr[len(arr) - 1]
 
-def _make_notification(error=False):
-    if not error:
-        base = fixtures.APIFactory.incoming()
-        # FIXME: we may want to interfere with the base later when we have more to go on
-        return base
-    else:
+def _select_n(arr, n):
+    selection = []
+
+    idx = range(0, len(arr))
+    for x in range(n):
+        if len(idx) == 0:
+            break
+        i = randint(0, len(idx) - 1)
+        selection.append(arr[idx[i]])
+        del idx[i]
+
+    return selection
+
+def _random_string(shortest, longest):
+    length = randint(shortest, longest)
+    s = ""
+    pool = string.ascii_letters + "    "    # inject a few extra spaces, to increase their prevalence
+    for i in range(length):
+        l = randint(0, len(pool) - 1)
+        s += pool[l]
+    return s
+
+def _random_url():
+    return "http://example.com/file/" + uuid.uuid4().hex
+
+def _random_datetime(since):
+    epoch = datetime.fromtimestamp(0)
+    lower_delta = since - epoch
+    lower = int(lower_delta.total_seconds())
+
+    now = datetime.now()
+    upper_delta = now - epoch
+    upper = int(upper_delta.total_seconds())
+
+    seconds = randint(lower, upper)
+    return datetime.fromtimestamp(seconds)
+
+def _random_issn():
+    first = randint(1000, 9999)
+    second = randint(100, 999)
+    return str(first) + "-" + str(second) + str(_select_from([1, 2, 3, 4, 5, 6, 7, 8, 9, "X"]))
+
+def _random_doi():
+    return "10." + _random_string(3, 4) + "/" + _random_string(5, 10)
+
+def _random_email():
+    return _random_string(10, 15) + "@" + _random_string(10, 15) + "." + _select_from(["ac.uk", "edu", "com"])
+
+def _make_notification(error=False, routable=0, repo_configs=None):
+    if error:
         return {"something" : "broken"}
 
+    # get a base notification from the test fixtures
+    note = fixtures.APIFactory.incoming()
+
+    # now overwrite everything with randomised content
+    note["event"] = _select_from(["accepted", "published"])
+    note["provider"]["agent"] = _random_string(4, 10)
+    note["provider"]["ref"] = _random_string(5, 6)
+
+    note["links"] = []
+    for i in range(randint(0, 5)):
+        link = {}
+        link["type"] = _select_from(["fulltext", "splash"])
+        link["format"] = _select_from(["application/pdf", "text/html"])
+        link["url"] = _random_url()
+        note["links"].append(link)
+
+    es = _random_datetime(datetime.fromtimestamp(0))
+    ee = _random_datetime(es)
+    note["embargo"]["start"] = es.strftime("%Y-%m-%dT%H:%M:%SZ")
+    note["embargo"]["end"] = ee.strftime("%Y-%m-%dT%H:%M:%SZ")
+    note["embargo"]["duration"] = int((ee - es).total_seconds() / (60 * 60 * 24 * 30))
+
+    note["metadata"]["title"] = _random_string(50, 200)
+    note["metadata"]["version"] = _select_from(["AO", "SMUR", "AM", "P", "VoR", "CVoR", "EVoR", "NA"])
+    note["metadata"]["publisher"] = _random_string(10, 25)
+    note["metadata"]["source"]["name"] = _random_string(30, 100)
+    note["metadata"]["source"]["identifier"] = [{"type" : "issn", "id" : _random_issn()}]
+
+    note["metadata"]["identifier"][0]["id"] = _random_doi()
+
+    note["metadata"]["author"] = []
+    for i in range(randint(1, 3)):
+        author = {}
+        author["name"] = _random_string(10, 20)
+        author["identifier"] = [{"type" : "email", "id" : _random_email()}]
+        author["affiliation"] = _random_string(10, 40)
+        note["metadata"]["author"].append(author)
+
+    note["metadata"]["language"] = _select_from(isolang.ISO_639_2)[0]
+
+    ds = _random_datetime(datetime.fromtimestamp(0))
+    da = _random_datetime(ds)
+    pd = _random_datetime(da)
+    note["metadata"]["publication_date"] = pd.strftime("%Y-%m-%dT%H:%M:%SZ")
+    note["metadata"]["date_accepted"] = da.strftime("%Y-%m-%dT%H:%M:%SZ")
+    note["metadata"]["date_submitted"] = ds.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    note["metadata"]["license_ref"] = {}
+    note["metadata"]["license_ref"]["title"] = _select_from(["CC0", "CC BY", "CC BY-SA", "CC BY-SA-ND"])
+    note["metadata"]["license_ref"]["type"] = note["metadata"]["license_ref"]["title"]
+    note["metadata"]["license_ref"]["url"] = "http://creativecommons.org/" + note["metadata"]["license_ref"]["title"].lower().replace(" ", "-")
+    note["metadata"]["license_ref"]["version"] = _select_from(["1.0", "2.0", "3.0", "4.0"])
+
+    note["metadata"]["project"] = []
+    for i in range(randint(1, 2)):
+        project = {}
+        project["name"] = _random_string(3, 6)
+        project["identifier"] = [{"type" : "ringold", "id" : _random_string(10, 16)}]
+        project["grant_number"] = _random_string(5, 7)
+        note["metadata"]["project"].append(project)
+
+    note["metadata"]["subject"] = []
+    for i in range(randint(0, 10)):
+        note["metadata"]["subject"].append(_random_string(10, 15))
+
+    # now determine if we are going to add routing metadata to this notification
+    route = _select_from([True, False], [routable, 1 - routable])
+
+    # we're not going to route it, the random content alone is sufficient
+    if not route:
+        return note
+
+    route_to = _select_n(repo_configs, randint(1, len(repo_configs)))
+
+    uber = {}
+    for cfg in route_to:
+        field = _select_from(["domains", "name_variants", "author_ids", "postcodes", "grants", "strings"])
+        idx = randint(0, len(cfg[field]) - 1)
+        if field not in uber:
+            uber[field] = []
+        uber[field].append(cfg[field][idx])
+
+    # now layer the uber match record over the randomised notification
+    for k, v in uber.iteritems():
+        if k == "domains":
+            # add an author with that domain in their email
+            for domain in v:
+                author = {}
+                author["name"] = _random_string(10, 20)
+                author["identifier"] = [{"type" : "email", "id" : _random_string(10, 12) + "@" + domain}]
+                note["metadata"]["author"].append(author)
+        elif k == "name_variants":
+            # add an author with that name variant in their affiliation
+            for nv in v:
+                author = {}
+                author["name"] = _random_string(10, 20)
+                author["affiliation"] = nv
+                note["metadata"]["author"].append(author)
+        elif k == "author_ids":
+            # add an author with these properties
+            for aid in v:
+                author = {}
+                if aid.get("type") == "name":
+                    author["name"] = aid.get("id")
+                else:
+                    author["name"] = _random_string(10, 20)
+                    author["identifier"] = [{"type" : aid.get("type"), "id" : aid.get("id")}]
+                note["metadata"]["author"].append(author)
+        elif k == "postcodes":
+            # add an author with that postcode in their affiliation
+            for postcode in v:
+                author = {}
+                author["name"] = _random_string(10, 20)
+                author["affiliation"] = postcode
+                note["metadata"]["author"].append(author)
+        elif k == "grants":
+            # add a project with that grant number
+            for grant in v:
+                project = {}
+                project["name"] = _random_string(3, 6)
+                project["grant_number"] = grant
+                note["metadata"]["project"].append(project)
+        elif k == "strings":
+            # add an author with that string in their affiliation
+            for s in v:
+                author = {}
+                author["name"] = _random_string(10, 20)
+                author["affiliation"] = s
+                note["metadata"]["author"].append(author)
+
+    return note
 
 def _get_file_path(parent_dir, max_file_size, error=False):
     # sort out a file path
@@ -119,9 +295,9 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
         except Exception as e:
             app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
 
-def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir, retrieve_rate):
+def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir, retrieve_rate, routable, repo_configs):
     tname = threading.current_thread().name
-    app.logger.info("Thread:{x} - Initialise Create; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}, retrieve_rate:{h}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir, h=retrieve_rate))
+    app.logger.info("Thread:{x} - Initialise Create; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}, retrieve_rate:{h}, routable:{i}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir, h=retrieve_rate, i=routable))
 
     mdopts = ["mdonly", "md+ct"]
     mdprobs = [mdrate, 1 - mdrate]
@@ -146,7 +322,7 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
             #print "MD: " + mdtype
 
             # generate a notification which may or may not have an error
-            note = _make_notification(error=mdtype=="error")
+            note = _make_notification(error=mdtype=="error", routable=routable, repo_configs=repo_configs)
             #print note
 
             # determine whether we're going to send some content
@@ -349,6 +525,7 @@ if __name__ == "__main__":
     parser.add_argument("--create_cterrors", help="proportion of content create requests which will contain errors (between 0 and 1)", default=0.05, type=float)
     parser.add_argument("--create_maxfilesize", help="largest filesize to send in megabytes", default=100, type=int)
     parser.add_argument("--create_retrieverate", help="chance (between 0 and 1) that after create the creator will attempt to get the created notification via the API", default=0.05, type=float)
+    parser.add_argument("--create_routable", help="chance (between 0 and 1) that the notification will contain metadata that can be used to successfully route to a repository", default=0.5, type=float)
 
     # options to control the list records/get notifications calls
     parser.add_argument("--listget_threads", help="number of threads to run for list and get notifications", default=1, type=int)
@@ -413,7 +590,9 @@ if __name__ == "__main__":
             "cterrors" :  args.create_cterrors,
             "max_file_size" : args.create_maxfilesize,
             "tmpdir" : args.tmpdir,
-            "retrieve_rate" : args.create_retrieverate
+            "retrieve_rate" : args.create_retrieverate,
+            "routable" : args.create_routable,
+            "repo_configs" : configs
         })
         t.daemon = True
         thread_pool.append(t)

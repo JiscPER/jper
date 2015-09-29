@@ -11,16 +11,17 @@ python harness.py --timeout 60 \
     --validate_mderrors 0.8 \
     --validate_cterrors 0.8 \
     --validate_maxfilesize 1 \
-    --create_threads 0 \
+    --create_threads 1 \
     --create_throttle 1 \
     --create_mdrate 0.1 \
     --create_mderrors 0.05 \
     --create_cterrors 0.05 \
     --create_maxfilesize 1 \
     --create_retrieverate 1 \
-    --listget_threads 1 \
+    --create_routable 1 \
+    --listget_threads 0 \
     --listget_throttle 1 \
     --listget_genericrate 0.05 \
     --listget_maxlookback 7776000 \
-    --listget_errorrate 0.0 \
-    --listget_getrate 1.0
+    --listget_errorrate 0.1 \
+    --listget_getrate 0.05
