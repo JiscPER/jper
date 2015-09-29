@@ -1,13 +1,18 @@
 from octopus.core import app, add_configuration
-import threading, time, os, uuid, shutil
+import threading, time, os, uuid, shutil, json
 from datetime import datetime, timedelta
 from random import randint, random, triangular
 from octopus.modules.jper import client
 from service.tests import fixtures
+from octopus.lib import dates, http
 
 def _load_keys(path):
     with open(path) as f:
         return f.read().split("\n")
+
+def _load_repo_configs(path):
+    with open(path) as f:
+        return json.loads(f.read())
 
 def _select_from(arr, probs=None):
     if probs is None:
@@ -199,6 +204,119 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
         except Exception as e:
             app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
 
+def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_configs, error_rate, get_rate):
+    tname = threading.current_thread().name
+    app.logger.info("Thread:{x} - Initialise List/Get; base_url:{a}, throttle:{b}, generic_rate:{c}, max_lookback:{d}, tmpdir:{g}, error_rate:{h}, get_rate:{i}".format(x=tname, a=base_url, b=throttle, c=generic_rate, d=max_lookback, g=tmpdir, h=error_rate, i=get_rate))
+
+    genopts = ["generic", "specific"]
+    genprobs = [generic_rate, 1 - generic_rate]
+
+    getopts = ["get", "leave"]
+    getprobs = [get_rate, 1 - get_rate]
+
+    erropts = ["err", "ok"]
+    errprobs = [error_rate, 1 - error_rate]
+
+    errtypes = ["page", "page_size", "missing_since", "malformed_since"]
+    errtypeprobs = [0.25] * 4
+
+    while True:
+        try:
+            api_key = _select_from(keys)
+            j = client.JPER(api_key, base_url)
+            #print "API " + api_key
+
+            # determine whether the metadata we're going to send will cause errors
+            reqtype = _select_from(genopts, genprobs)
+            #print "Req: " + reqtype
+
+            # use this to determine the repository id for the request
+            repository_id = None
+            if reqtype == "specific":
+                config = _select_from(repo_configs)
+                repository_id = config.get("repository")
+
+            # determine the "since" date we're going to use for the request
+            lookback = randint(0, max_lookback)
+            since = dates.format(dates.before_now(lookback))
+            # print "Since: " + since
+
+            # choose a page size
+            page_size = randint(1, 100)
+
+            # now decide, after all that, if we're going to send a malformed request
+            err = _select_from(erropts, errprobs)
+
+            # if we are to make an erroneous request, go ahead and do it
+            if err == "err":
+                # choose a kind of malformed request
+                malformed = _select_from(errtypes, errtypeprobs)
+                params = {"page" : 1, "pageSize" : page_size, "since" : since}
+                if malformed == "page":
+                    params["page"] = "one"
+                elif malformed == "page_size":
+                    params["pageSize"] = "twelvty"
+                elif malformed == "missing_since":
+                    del params["since"]
+                else:
+                    params["since"] = "a week last thursday"
+
+                # make the malformed url with the JPER client, so we know it gets there ok
+                url = j._url("routed", id=repository_id, params=params)
+                app.logger.info("Thread:{x} - List/Get sending malformed request for Account:{y} Type:{z} Error:{a} URL:{b}".format(x=tname, y=api_key, z=reqtype, a=malformed, b=url))
+
+                # make the request, and check the response
+                resp = http.get(url)
+                if resp is not None and resp.status_code == 400:
+                    app.logger.info("Thread:{x} - List/Get received correct 400 response to malformed request".format(x=tname))
+                else:
+                    if resp is None:
+                        sc = None
+                    else:
+                        sc = resp.status_code
+                    app.logger.info("Thread:{x} - MAJOR ISSUE; did not receive 400 response to malformed request, got {y}; URL:{z}".format(x=tname, y=sc, z=url))
+
+                # continue, so that we don't have to indent the code below any further
+                continue
+
+            # if we get to here, we're going to go ahead and do a normal request
+            app.logger.info("Thread:{x} - List/Get request for Account:{y} Type:{z} Since:{a}".format(x=tname, y=api_key, z=reqtype, a=since))
+
+            # iterate over the notifications, catching any errors (which would be unexpected)
+            try:
+                count = 0
+                for note in j.iterate_notifications(since, repository_id, page_size):
+                    app.logger.info("Thread:{x} - List/Get request for Account:{y} listing notifications for Repository:{z} retrieved Notification:{a}".format(x=tname, y=api_key, z=repository_id, a=note.id))
+                    count += 1
+
+                    # determine if we're going to get the notification by itself (which is technically unnecessary, of course, but who knows what people's workflows will be)
+                    reget = _select_from(getopts, getprobs)
+                    if reget == "get":
+                        try:
+                            n = j.get_notification(note.id)
+                            app.logger.info("Thread:{x} - Following List/Get for Account:{y} listing notifications for Repository:{z}, successfully retrieved copy of Notification:{a}".format(x=tname, y=api_key, z=id, a=note.id))
+                        except Exception as e:
+                            app.logger.info("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=id, b=e.message))
+
+                    # now retrieve all the links in the note
+                    for link in note.links:
+                        url = link.get("url")
+                        app.logger.info("Thread:{x} - Following List/Get for Account:{y} on Repository:{b}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=id, a=url, b=repository_id))
+                        try:
+                            stream, headers = j.get_content(url)
+                        except Exception as e:
+                            app.logger.info("Thread:{x} - MAJOR ISSUE; get content failed for Content:{z} that should have existed.  This needs a fix: '{b}'".format(x=tname, z=url, b=e.message))
+
+                app.logger.info("Thread:{x} - List/Get request completed successfully for Account:{y} listing notifications for Repository:{z} Count:{a}".format(x=tname, y=api_key, z=repository_id, a=count))
+
+            except Exception as e:
+                app.logger.info("Thread:{x} - MAJOR ISSUE; List/Get request for Account:{y} listing notifications for Repository:{z} resulted in exception '{e}'".format(x=tname, y=api_key, z=repository_id, e=e.message))
+
+            # sleep before making the next request
+            time.sleep(throttle)
+        except Exception as e:
+            app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -213,6 +331,7 @@ if __name__ == "__main__":
     parser.add_argument("--repo_keys", help="path to file containing repository api keys", default="repo_keys.txt")
     parser.add_argument("--base_url", help="base url of the JPER API")
     parser.add_argument("--tmpdir", help="local directory where temp files can be stored", default="harness_tmp")
+    parser.add_argument("--repo_configs", help="path to JSON list file containing the testing repo configs", default="repo_configs.json")
 
     # options to control the validation calls
     parser.add_argument("--validate_threads", help="number of threads to run for validation", default=1, type=int)
@@ -230,6 +349,14 @@ if __name__ == "__main__":
     parser.add_argument("--create_cterrors", help="proportion of content create requests which will contain errors (between 0 and 1)", default=0.05, type=float)
     parser.add_argument("--create_maxfilesize", help="largest filesize to send in megabytes", default=100, type=int)
     parser.add_argument("--create_retrieverate", help="chance (between 0 and 1) that after create the creator will attempt to get the created notification via the API", default=0.05, type=float)
+
+    # options to control the list records/get notifications calls
+    parser.add_argument("--listget_threads", help="number of threads to run for list and get notifications", default=1, type=int)
+    parser.add_argument("--listget_throttle", help="number of seconds for each thread to pause between requests", default=1, type=int)
+    parser.add_argument("--listget_genericrate", help="proportion of requests for the generic list rather than the repo-specific list", default=0.05, type=float)
+    parser.add_argument("--listget_maxlookback", help="maximum number of seconds in the past to issue as 'from' in requests", default=7776000, type=int)
+    parser.add_argument("--listget_errorrate", help="proportion of requests which are malformed, and therefore result in errors", default=0.1, type=float)
+    parser.add_argument("--listget_getrate", help="proportion of requests which subsequently re-get the individual notification after listing", default=0.05, type=float)
 
     args = parser.parse_args()
 
@@ -249,6 +376,9 @@ if __name__ == "__main__":
     # attempt to load the publisher and repo keys
     pubkeys = _load_keys(args.pub_keys)
     repokeys = _load_keys(args.repo_keys)
+
+    # load the repository configs
+    configs = _load_repo_configs(args.repo_configs)
 
     # check the tmp directory, and create it if necessary
     if not os.path.exists(args.tmpdir):
@@ -284,6 +414,22 @@ if __name__ == "__main__":
             "max_file_size" : args.create_maxfilesize,
             "tmpdir" : args.tmpdir,
             "retrieve_rate" : args.create_retrieverate
+        })
+        t.daemon = True
+        thread_pool.append(t)
+
+    # create thread instances for list/get requests
+    for i in range(args.listget_threads):
+        t = threading.Thread(name="listget_" + uuid.uuid4().hex, target=listget, kwargs={
+            "base_url" : args.base_url,
+            "keys" : repokeys,
+            "throttle" : args.listget_throttle,
+            "generic_rate" : args.listget_genericrate,
+            "max_lookback" :  args.listget_maxlookback,
+            "tmpdir" : args.tmpdir,
+            "repo_configs" : configs,
+            "error_rate" : args.listget_errorrate,
+            "get_rate" : args.listget_getrate
         })
         t.daemon = True
         thread_pool.append(t)
