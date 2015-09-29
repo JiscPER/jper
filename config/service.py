@@ -53,6 +53,7 @@ SECRET_KEY = "super-secret-key"
 # Service-specific config
 
 BASE_URL = "http://router2.mimas.ac.uk/"
+API_BASE_URL = BASE_URL + "api/v1/"
 
 DEFAULT_LIST_PAGE_START = 1
 DEFAULT_LIST_PAGE_SIZE = 25
