@@ -56,6 +56,7 @@ def route(unrouted):
     # write all the match provenance out to the index (could be an empty list)
     for p in match_provenance:
         p.save()
+        app.logger.info("Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
 
     # if there are matches then the routing is successful, and we want to finalise the
     # notification for the routed index and its content for download
@@ -78,6 +79,8 @@ def route(unrouted):
         app.logger.info("Routing - Notification:{y} successfully routed".format(y=unrouted.id))
     else:
         app.logger.info("Routing - Notification:{y} was not routed".format(y=unrouted.id))
+
+    # Note that we don't delete the unrouted notification here - that's for the caller to decide
 
 def match(notification_data, repository_config, provenance):
     """
@@ -290,6 +293,10 @@ def repackage(unrouted, repo_ids):
     conversions = []
     for rid in repo_ids:
         acc = models.Account.pull(rid)
+        if acc is None:
+            # realistically this shouldn't happen, but if it does just carry on
+            app.logger.warn("Repackaging - no account with id {x}; carrying on regardless".format(x=rid))
+            continue
         for pack in acc.packaging:
             # if it's already in the conversion list, job done
             if pack in conversions:

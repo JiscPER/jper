@@ -18,8 +18,8 @@ python harness.py --timeout 60 \
     --create_cterrors 0.05 \
     --create_maxfilesize 1 \
     --create_retrieverate 1 \
-    --create_routable 1 \
-    --listget_threads 0 \
+    --create_routable 0.5 \
+    --listget_threads 1 \
     --listget_throttle 1 \
     --listget_genericrate 0.05 \
     --listget_maxlookback 7776000 \

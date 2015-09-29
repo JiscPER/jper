@@ -74,6 +74,7 @@ RUN_SCHEDULE = True
 MOVEFTP_SCHEDULE = 1
 PROCESSFTP_SCHEDULE = 1
 CHECKUNROUTED_SCHEDULE = 1
+DELETE_UNROUTED = True
 
 LOGLEVEL = 'debug'
 LOGFILE = '/home/mark/jperlog'
@@ -92,3 +93,4 @@ STORE_TMP_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store",
 ############################################
 # Configuration for when the app is operated in functional testing mode
 FUNCTIONAL_TEST_MODE = False
+

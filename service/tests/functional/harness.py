@@ -283,7 +283,7 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
                 j.validate(note, file_handle)
                 app.logger.info("Thread:{x} - Validate request resulted in success".format(x=tname))
             except:
-                app.logger.info("Thread:{x} - Validate request resulted in exception".format(x=tname))
+                app.logger.info("Thread:{x} - Validate request resulted in expected exception".format(x=tname))
 
             # cleanup after ourselves
             if filepath is not None:

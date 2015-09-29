@@ -64,6 +64,9 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def clear_password(self):
         self._delete("password")
 
+    def set_api_key(self, key):
+        self._set_single("api_key", key, coerce=dataobj.to_unicode())
+
     @property
     def is_super(self):
         return self.has_role(app.config["ACCOUNT_SUPER_USER_ROLE"])
