@@ -4,7 +4,7 @@
 DEBUG = True
 PORT = 5998
 SSL = False
-THREADED = True
+THREADED = False
 
 ############################################
 # important overrides for the ES module
@@ -60,24 +60,29 @@ MAX_LIST_PAGE_SIZE = 100
 
 PACKAGE_HANDLERS = {
     "http://router.jisc.ac.uk/packages/FilesAndJATS" : "service.packages.FilesAndJATS",
+    "https://pubrouter.jisc.ac.uk/FilesAndJATS": "service.packages.FilesAndJATS",
     "http://purl.org/net/sword/package/SimpleZip" : "service.packages.SimpleZip"
 }
 
 
+USERDIR = '/home/sftpusers' # this is ASSUMED in ssh config and possibly in shell scripts. So just don't change it
+#API_URL = "https://pubrouter.jisc.ac.uk/api/v1/notification"
+API_URL = "http://test.cottagelabs.com:5998/api/v1/notification"
+TMP_DIR = "/home/mark/ftptmp"
 RUN_SCHEDULE = True
-USERDIR = '/home/sftpusers'
-API_URL = "https://pubrouter.jisc.ac.uk/api/v1/" + "notification"
-TMP_DIR = "/tmp/"
-TMP_BACKUP = "/home/mark/ftptmp/"
-CHECKFTP_SCHEDULE = 1
+MOVEFTP_SCHEDULE = 1
+PROCESSFTP_SCHEDULE = 1
 CHECKUNROUTED_SCHEDULE = 1
 
+LOGLEVEL = 'debug'
 LOGFILE = '/home/mark/jperlog'
 
-#STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 #STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 
-STORE_JPER_URL = 'http://store'
+#STORE_IMPL = "octopus.modules.store.store.StoreLocal"
+STORE_IMPL = "octopus.modules.store.store.StoreJper"
+#STORE_JPER_URL = 'http://store'
+STORE_JPER_URL = 'http://localhost:5999'
 
 from octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "live")

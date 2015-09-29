@@ -120,17 +120,28 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def can_log_in(self):
         return True
 
+    @classmethod
+    def pull_by_key(cls,key,value):
+        res = cls.query(q={"query":{"term":{key+'.exact':value}}})
+        if res.get('hits',{}).get('total',0) == 1:
+            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        else:
+            return None        
+
+    @classmethod
+    def pull_by_email(cls,email):
+        return cls.pull_by_key('email',email)
+
     def remove(self):
         if self.has_role('publisher'):
             un = self.id
             try:
                 import os, subprocess
                 fl = os.path.dirname(os.path.abspath(__file__)) + 'deleteFTPuser.sh'
-                print "subprocessing " + fl
                 subprocess.call([fl,un])
-                print "deleting FTP user for " + un
+                app.logger.info(str(self.id) + ' calling deleteFTPuser subprocess')
             except:
-                print "could not delete an FTP user for " + un
+                app.logger.info(str(self.id) + ' failed deleteFTPuser subprocess')
         self.delete()
 
     def become_publisher(self):
