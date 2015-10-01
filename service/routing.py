@@ -77,8 +77,10 @@ def route(unrouted):
         links(routed)
         routed.save()
         app.logger.info("Routing - Notification:{y} successfully routed".format(y=unrouted.id))
+        return True
     else:
         app.logger.info("Routing - Notification:{y} was not routed".format(y=unrouted.id))
+        return False
 
     # Note that we don't delete the unrouted notification here - that's for the caller to decide
 
