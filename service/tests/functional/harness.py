@@ -347,7 +347,7 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
                 id, loc = j.create_notification(note, file_handle)
                 app.logger.info("Thread:{x} - Create request for Account:{z} resulted in success, Notification:{y}".format(x=tname, y=id, z=api_key))
             except:
-                app.logger.info("Thread:{x} - Create request for Account:{y} resulted in exception".format(x=tname, y=api_key))
+                app.logger.info("Thread:{x} - Create request for Account:{y} resulted in expected exception".format(x=tname, y=api_key))
 
             # cleanup after ourselves
             if filepath is not None:

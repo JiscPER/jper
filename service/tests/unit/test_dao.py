@@ -15,13 +15,13 @@ class TestDAO(ESTestCase):
 
         super(TestDAO, self).setUp()
 
-        self.unrouted_timebox = app.config["ESDAO_TIME_BOX_UNROUTED"]
-        self.unrouted_lookback = app.config["ESDAO_TIME_BOX_LOOKBACK_UNROUTED"]
+        # self.unrouted_timebox = app.config["ESDAO_TIME_BOX_UNROUTED"]
+        # self.unrouted_lookback = app.config["ESDAO_TIME_BOX_LOOKBACK_UNROUTED"]
 
     def tearDown(self):
         super(TestDAO, self).tearDown()
-        app.config["ESDAO_TIME_BOX_UNROUTED"] = self.unrouted_timebox
-        app.config["ESDAO_TIME_BOX_LOOKBACK_UNROUTED"] = self.unrouted_lookback
+        #app.config["ESDAO_TIME_BOX_UNROUTED"] = self.unrouted_timebox
+        #app.config["ESDAO_TIME_BOX_LOOKBACK_UNROUTED"] = self.unrouted_lookback
         app.config["RUN_SCHEDULE"] = self.run_schedule
 
     def test_01_unrouted(self):
@@ -33,14 +33,20 @@ class TestDAO(ESTestCase):
 
         assert isinstance(e, dao.UnroutedNotificationDAO)
 
+        # leaving these assertions in (albeit modified), but we've backed out on time-boxing the unrouted DAO now
+
         wt = d.get_write_type()
         assert wt.startswith("unrouted")
-        assert wt.endswith(datetime.utcnow().strftime("%Y%m"))
+        # assert wt.endswith(datetime.utcnow().strftime("%Y%m"))
 
         rts = d.get_read_types()
-        assert len(rts) == 4
+        assert len(rts) == 1
         for rt in rts:
             assert rt.startswith("unrouted")
+
+    """
+    This test is no longer valid, but leaving it in for future reference.
+    Unrouted notifications are no longer stored in a time-boxed type
 
     def test_02_unrouted_timebox(self):
         # set some testable config values
@@ -89,6 +95,7 @@ class TestDAO(ESTestCase):
 
         assert d3 is not None
         assert d4 is not None
+    """
 
     def test_03_routed(self):
         # give the dao object a general workout

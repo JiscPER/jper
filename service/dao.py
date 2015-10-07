@@ -1,6 +1,6 @@
 from octopus.modules.es import dao
 
-class UnroutedNotificationDAO(dao.TimeBoxedTypeESDAO):
+class UnroutedNotificationDAO(dao.ESDAO):
     __type__ = 'unrouted'
 
     @classmethod

@@ -29,9 +29,10 @@ ELASTIC_SEARCH_EXAMPLE_DOCS = [
     "service.dao.RetrievalRecordDAO"
 ]
 
+# NOTE: this config is no longer relevant, Unrouted Notifications are no longer time-boxed
 # time box configuration for unrouted notificatons
-ESDAO_TIME_BOX_UNROUTED = "month"
-ESDAO_TIME_BOX_LOOKBACK_UNROUTED = 3
+#ESDAO_TIME_BOX_UNROUTED = "month"
+#ESDAO_TIME_BOX_LOOKBACK_UNROUTED = 3
 
 # time box configuration for routed notificatons
 ESDAO_TIME_BOX_ROUTED = "month"
