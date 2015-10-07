@@ -470,14 +470,14 @@ def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_c
                     if reget == "get":
                         try:
                             n = j.get_notification(note.id)
-                            app.logger.info("Thread:{x} - Following List/Get for Account:{y} listing notifications for Repository:{z}, successfully retrieved copy of Notification:{a}".format(x=tname, y=api_key, z=id, a=note.id))
+                            app.logger.info("Thread:{x} - Following List/Get for Account:{y} listing notifications for Repository:{z}, successfully retrieved copy of Notification:{a}".format(x=tname, y=api_key, z=repository_id, a=note.id))
                         except Exception as e:
-                            app.logger.info("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=id, b=e.message))
+                            app.logger.info("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=note.id, b=e.message))
 
                     # now retrieve all the links in the note
                     for link in note.links:
                         url = link.get("url")
-                        app.logger.info("Thread:{x} - Following List/Get for Account:{y} on Repository:{b}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=id, a=url, b=repository_id))
+                        app.logger.info("Thread:{x} - Following List/Get for Account:{y} on Repository:{b}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=note.id, a=url, b=repository_id))
                         try:
                             stream, headers = j.get_content(url)
                         except Exception as e:
