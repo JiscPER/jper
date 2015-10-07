@@ -28,11 +28,15 @@ class TestRouting(ESTestCase):
         self.custom_zip_path = paths.rel2abs(__file__, "..", "resources", "custom.zip")
         self.stored_ids = []
 
+        self.keep_failed = app.config.get("KEEP_FAILED_NOTIFICATIONS")
+        app.config["KEEP_FAILED_NOTIFICATIONS"] = True
+
     def tearDown(self):
         super(TestRouting, self).tearDown()
 
         app.config["STORE_IMPL"] = self.store_impl
         app.config["RUN_SCHEDULE"] = self.run_schedule
+        app.config["KEEP_FAILED_NOTIFICATIONS"] = self.keep_failed
 
         if os.path.exists(self.custom_zip_path):
             os.remove(self.custom_zip_path)
@@ -454,6 +458,10 @@ class TestRouting(ESTestCase):
 
         # FIXME: check for enhanced router links
 
+        # check to see that a failed notification was not recorded
+        fn = models.FailedNotification.pull(urn.id)
+        assert fn is None
+
     def test_98_routing_success_package(self):
         # start a timer so we can check the analysed date later
         now = datetime.utcnow()
@@ -545,3 +553,7 @@ class TestRouting(ESTestCase):
         # check that a routed notification was not created
         rn = models.RoutedNotification.pull(urn.id)
         assert rn is None, rn
+
+        # check that a failed notification was recorded
+        fn = models.FailedNotification.pull(urn.id)
+        assert fn is not None

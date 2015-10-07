@@ -79,7 +79,19 @@ def route(unrouted):
         app.logger.info("Routing - Notification:{y} successfully routed".format(y=unrouted.id))
         return True
     else:
+        # log the failure
         app.logger.info("Routing - Notification:{y} was not routed".format(y=unrouted.id))
+
+        # if config says so, convert the unrouted notification to a failed notification, enhance and save
+        # for later diagnosis
+        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
+            failed = unrouted.make_failed()
+            failed.analysis_date = dates.now()
+            if metadata is not None:
+                enhance(failed, metadata)
+            failed.save()
+            app.logger.info("Routing - Notification:{y} as stored as a Failed Notification")
+
         return False
 
     # Note that we don't delete the unrouted notification here - that's for the caller to decide

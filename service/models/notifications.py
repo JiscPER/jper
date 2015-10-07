@@ -576,6 +576,11 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
         routed = RoutedNotification(d)
         return routed
 
+    def make_failed(self):
+        d = deepcopy(self.data)
+        routed = FailedNotification(d)
+        return routed
+
     def make_outgoing(self, provider=False):
         d = deepcopy(self.data)
         if "last_updated" in d:
@@ -649,6 +654,10 @@ class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotific
             return OutgoingNotification(d)
         else:
             return ProviderOutgoingNotification(d)
+
+class FailedNotification(BaseNotification, RoutingInformation, dao.FailedNotificationDAO):
+    def __init__(self, raw=None):
+        super(FailedNotification, self).__init__(raw=raw)
 
 class RoutingMetadata(dataobj.DataObj):
     """

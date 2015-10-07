@@ -16,6 +16,9 @@ class RoutedNotificationDAO(dao.TimeBoxedTypeESDAO):
         from service.tests import fixtures
         return cls(fixtures.NotificationFactory.routed_notification())
 
+class FailedNotificationDAO(dao.ESDAO):
+    __type__ = "failed"
+
 class RepositoryConfigDAO(dao.ESDAO):
     __type__ = 'repo_config'
 

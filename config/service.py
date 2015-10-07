@@ -93,5 +93,7 @@ STORE_TMP_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store",
 
 ############################################
 # Configuration for when the app is operated in functional testing mode
+
 FUNCTIONAL_TEST_MODE = False
 
+KEEP_FAILED_NOTIFICATIONS = False
