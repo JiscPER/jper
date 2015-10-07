@@ -20,6 +20,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-r", "--repo_configs", help="path to file which contains configs to load", default="repo_configs.json")
     parser.add_argument("-k", "--repo_keys", help="file where you can find a list of repo keys.  Should be the same number as there are repo configs", default="repo_keys.txt")
+    parser.add_argument("-p", "--pub_keys", help="file where you can find a list of publisher keys.")
 
     args = parser.parse_args()
 
@@ -43,6 +44,11 @@ if __name__ == "__main__":
     configs = _load_repo_configs(args.repo_configs)
     keys = _load_keys(args.repo_keys)
 
+    # load the publisher keys
+    pubs = None
+    if args.pub_keys:
+        pubs = _load_keys(args.pub_keys)
+
     for i in range(len(configs)):
         config = configs[i]
         key = keys[i]
@@ -57,6 +63,13 @@ if __name__ == "__main__":
         acc.add_packaging("http://purl.org/net/sword/package/SimpleZip")
         acc.set_api_key(key)
         acc.add_role("repository")
+        acc.save()
+
+    # load the publisher accounts
+    for key in pubs:
+        acc = models.Account()
+        acc.set_api_key(key)
+        acc.add_role("publisher")
         acc.save()
 
 
