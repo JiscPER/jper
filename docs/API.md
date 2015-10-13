@@ -17,7 +17,7 @@ to retrieve a list of notifications
 
 to retrieve the full-text (if available) for a particular notification.
 
-Here <repo_id> identifies the repository and <notification_id> is the Router’s unique id assigned to a notification.
+Here "repo_id" identifies the repository and "notification_id" is the Router’s unique id assigned to a notification.
 
 All links to full-text content are provided explicitly in the notification JSON in the link.url element - see the data model
 descriptions below for more details.
