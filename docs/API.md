@@ -9,8 +9,13 @@ backwards compatibility for existing users.  e.g.
 
 Note that Retrieval of notifications + full-text for a particular repository requires at least 2 API calls:
 
-1. GET /api/v1/routed/<repo_id>[?<parameters>] to retrieve a list of notifications
-2. GET /api/v1/notification/<notification_id>/content?api_key=<api_key> to retrieve the full-text (if available) for a particular notification.
+    GET /api/v1/routed/<repo_id>[?<parameters>]
+
+to retrieve a list of notifications
+
+    GET /api/v1/notification/<notification_id>/content?api_key=<api_key>
+
+to retrieve the full-text (if available) for a particular notification.
 
 Here <repo_id> identifies the repository and <notification_id> is the Router’s unique id assigned to a notification.
 
