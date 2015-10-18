@@ -7,6 +7,21 @@ backwards compatibility for existing users.  e.g.
 
     /api/v1/...
 
+Note that Retrieval of notifications + full-text for a particular repository requires at least 2 API calls:
+
+    GET /api/v1/routed/<repo_id>[?<parameters>]
+
+to retrieve a list of notifications
+
+    GET /api/v1/notification/<notification_id>/content?api_key=<api_key>
+
+to retrieve the full-text (if available) for a particular notification.
+
+Here "repo_id" identifies the repository and "notification_id" is the Router’s unique id assigned to a notification.
+
+All links to full-text content are provided explicitly in the notification JSON in the link.url element - see the data model
+descriptions below for more details.
+
 ## Data Interchange Models
 
 The data interchange models are sub-sets of the full system data models.
@@ -345,9 +360,14 @@ Note that notifications may not immediately be available for retrieval after cre
 
 ### Retrieve router-held content associated with notifications
 
-This endpoint will return to you the original deposit package from the provider containing the fulltext content for the notification (if available)
+This endpoint will return to you the original deposit package from the provider containing the fulltext content for the notification (if available).
 
-This URL will appear in the notification JSON "link" field if it is available to use.
+Router stores full-text content for a temporary period (currently 90 days, subject to review) from the date of receipt from publisher and so it must be retrieved by a
+repository or CRIS within this timescale.
+
+The URL for the content will appear in the notification JSON's "link.url" field if it is available to use - you will not be required to
+construct it yourself, you can simply extract the URLs for the content directly from the notification, and they will all be of the form
+described here.
 
 You need to have the user role "provider" or "repository" to access this endpoint.
 
@@ -363,12 +383,7 @@ the following reasons:
 
 If the notification content is not found, you will receive a 404 (Not Found) and no response body.
 
-If the notification content is found and authentication succeeds you will receive a 303 (See Other):
-
-    HTTP/1.1 303 See Other
-    Location: <url to storage system to retrieve file>
-
-This, in turn, will result in a 200 (OK) and the binary content:
+If the notification content is found and authentication succeeds you will receive a 200 (OK) and the binary content:
 
     HTTP 1.1  200 OK
     Content-Type: application/zip
@@ -382,11 +397,16 @@ into the router (used for reporting on the router's ability to support REF compl
 
 This endpoint will redirect you to any links made publicly available by the provider (if available).
 
-These URLs will appear in the notification JSON "link" field if they are available to use.
+The URL for the content will appear in the notification JSON's "link.url" field if it is available to use - you will not be required to
+construct it yourself, you can simply extract the URLs for the content directly from the notification, and they will all be of the form
+described here.
 
 You need to have the user role "repository" to access this endpoint.
 
     GET /notification/<id>/content/<content_id>?api_key=<api_key>
+
+The <id> is the id of the notification in Router, and <content_id> is the unique ID assigned to the content by Router.  You will
+see this ID used in the URLs available in the notification JSON only.
 
 Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
 the following reasons:
