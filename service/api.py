@@ -217,7 +217,7 @@ class JPER(object):
     def get_content(cls, account, notification_id, filename=None):
         magic = uuid.uuid4().hex
         urn = models.UnroutedNotification.pull(notification_id)
-        if urn is not None and account.has_role('publisher'):
+        if urn is not None and (account.has_role('publisher') or current_user.is_super):
             if filename is not None:
                 store_filename = filename
             else:

@@ -162,6 +162,7 @@ if app.config.get('PROCESSFTP_SCHEDULE',10) != 0:
 
 
 def checkunrouted():
+    objids = []
     try:
         app.logger.info("Scheduler - check for unrouted notifications")
         # query the service.models.unroutednotification index
@@ -169,14 +170,12 @@ def checkunrouted():
         counter = 0
         for obj in models.UnroutedNotification.scroll():
             counter += 1
-            routing.route(obj)
-            # FIXME: is this really what we want to do?
-            # delete the unrouted notification, so it doesn't get processed next time
-            if app.config.get("DELETE_UNROUTED", False):
-                # FIXME: this also needs to delete associated content
-                obj.delete()
-
+            res = routing.route(obj)
+            if res: objids.append(obj.id)
         app.logger.info("Scheduler - routing sent " + str(counter) + " notifications for routing")
+        if app.config.get("DELETE_UNROUTED", False) and len(objids) > 0:
+            app.logger.info("Scheduler - routing deleting " + str(len(objids)) + " of " + str(counter) + " unrouted notifications that have been processed and routed")
+            models.UnroutedNotification.bulk_delete(objids)
     except Exception as e:
         app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: '{x}'".format(x=e.message))
 
@@ -184,6 +183,8 @@ if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
     schedule.every(app.config.get('CHECKUNROUTED_SCHEDULE',10)).minutes.do(checkunrouted)
 
 
+    
+    
 def cheep():
     app.logger.info("Scheduled cheep")
     print "Scheduled cheep"

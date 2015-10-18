@@ -132,18 +132,18 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             inp = csv.DictReader(csvfile)
             for row in inp:
                 for x in row.keys():
-                    if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant':
-                        self.data['grants'] = self.data.get('grants',[]) + [row[x]]
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'postcode':
-                        self.data['postcodes'] = self.data.get('postcodes',[]) + [row[x]]
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant':
-                        self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x]]
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'domain':
-                        self.data['domains'] = self.data.get('domains',[]) + [row[x]]
-                    elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author':
-                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x]}]
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'orcid':
-                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x]}]
+                    if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant' and len(row[x].strip()) > 1:
+                        self.data['grants'] = self.data.get('grants',[]) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'postcode' and len(row[x].strip()) > 1:
+                        self.data['postcodes'] = self.data.get('postcodes',[]) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant' and len(row[x].strip()) > 1:
+                        self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'domain' and len(row[x].strip()) > 1:
+                        self.data['domains'] = self.data.get('domains',[]) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author' and len(row[x].strip()) > 1:
+                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x].strip()}]
+                    elif x.strip().lower().replace(' ','').replace('s','') == 'orcid' and len(row[x].strip()) > 1:
+                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x].strip()}]
             app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
             self.save()
             return True

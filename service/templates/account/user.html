@@ -42,7 +42,7 @@
             
             {% if account.has_role('repository') %}
             <div class="well">
-                <form method="POST" action="{{request.path}}/config">
+                <form method="POST" action="{{request.path}}/config" enctype="multipart/form-data">
                     <input type="file" name="file" id="file" class="form-control" style="width:50%;display:inline;">
                     <button class="btn btn-primary" id="config_upload" type="submit" style="width:49%;">
                         Upload new match config

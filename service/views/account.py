@@ -111,7 +111,7 @@ def config(username):
         rec = models.RepositoryConfig()
         rec.repository = username
     if 1==1:
-        if 'url' in request.values:
+        if len(request.values.get('url','')) > 1:
             url = request.values['url']
             fn = url.split('?')[0].split('#')[0].split('/')[-1]
             r = requests.get(url)

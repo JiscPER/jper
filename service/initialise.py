@@ -40,5 +40,5 @@ def initialise():
     if app.config.get('RUN_SCHEDULE',False):
         if not app.config.get("DEBUG",False) or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
             print "starting scheduler"
-            app.logger.info("Scheduler starting up on startup of app.")
+            app.logger.info("Scheduler - starting up on startup of app.")
             scheduler.go()
