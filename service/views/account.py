@@ -116,18 +116,18 @@ def config(username):
             fn = url.split('?')[0].split('#')[0].split('/')[-1]
             r = requests.get(url)
             try:
-                saved = rec.set_repo_config(jsoncontent=r.json())
+                saved = rec.set_repo_config(jsoncontent=r.json(),repository=username)
             except:
                 strm = StringIO(r.content)
                 if fn.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=strm)
+                    saved = rec.set_repo_config(csvfile=strm,repository=username)
                 elif fn.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=strm)
+                    saved = rec.set_repo_config(textfile=strm,repository=username)
         else:
             if request.files['file'].filename.endswith('.csv'):
-                saved = rec.set_repo_config(csvfile=request.files['file'])
+                saved = rec.set_repo_config(csvfile=request.files['file'],repository=username)
             elif request.files['file'].filename.endswith('.txt'):
-                saved = rec.set_repo_config(textfile=request.files['file'])
+                saved = rec.set_repo_config(textfile=request.files['file'],repository=username)
         if saved:
             flash('Thank you. Your match config has been updated.', "success")        
         else:

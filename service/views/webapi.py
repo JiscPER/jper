@@ -269,13 +269,13 @@ def config(repoid=None):
         return resp
     elif request.method == 'POST':
         if request.json:
-            saved = rec.set_repo_config(jsoncontent=request.json)
+            saved = rec.set_repo_config(jsoncontent=request.json,repository=repoid)
         else:
             try:
                 if request.files['file'].filename.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=request.files['file'])
+                    saved = rec.set_repo_config(csvfile=request.files['file'],repository=repoid)
                 elif request.files['file'].filename.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=request.files['file'])
+                    saved = rec.set_repo_config(textfile=request.files['file'],repository=repoid)
             except:
                 saved = False
         if saved:

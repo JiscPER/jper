@@ -121,7 +121,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def pull_by_repo(cls,repoid):
         return cls.pull_by_key('repository',repoid)
         
-    def set_repo_config(self,csvfile=None,textfile=None,jsoncontent=None):
+    def set_repo_config(self,csvfile=None,textfile=None,jsoncontent=None,repository):
         # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
         fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types','strings']
         for f in fields:
@@ -145,17 +145,20 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                     elif x.strip().lower().replace(' ','').replace('s','') == 'orcid' and len(row[x].strip()) > 1:
                         self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x].strip()}]
             app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
+            self.data['repository'] = repository
             self.save()
             return True
         elif textfile is not None:
             app.logger.info("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
             self.data['strings'] = [line.rstrip('\n').rstrip('\r').strip() for line in textfile if len(line.rstrip('\n').rstrip('\r').strip()) > 1]
+            self.data['repository'] = repository
             self.save()
             return True
         elif jsoncontent is not None:
             # save the lines into the repo config
             for k in jsoncontent.keys():
                 self.data[k] = jsoncontent[k]
+            self.data['repository'] = repository
             self.save()
             app.logger.info("Saved config for repo: {x}".format(x=self.id))
             return True
