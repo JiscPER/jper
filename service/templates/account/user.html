@@ -58,8 +58,10 @@
                 <br><a target="_blank" href="/api/v1/routed/{{account.id}}?since=01/08/2015&api_key={{current_user.data['api_key']}}">View routed notifications for this repository (API)</a> 
                 {% endif %}
             </div>
+            <!--
             <p style="font-size:0.8em;">https://raw.githubusercontent.com/JiscPER/jper/develop/docs/csvtemplate.csv<br>
                 https://raw.githubusercontent.com/JiscPER/jper/develop/service/tests/resources/example_repo_config.json</p>
+            -->
             {% endif %}
 
             {% if account.has_role('publisher') %}

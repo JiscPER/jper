@@ -1,36 +1,38 @@
-<div class="container">
+<nav class="navbar navbar-default navbar-fixed-top" style="background-color:#ef7413;">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navigation">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
 
-    <div class="content" id="topstrap">
-    </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="main-navigation">
+            <a class="navbar-brand" href="/"><img src="/static/jisc.png" style="height:55px;margin-top:-20px;"></a>
+            <ul class="nav navbar-nav">
+                <li><a href="/" style="color:#333;">Publications Router</a></li>
+            </ul>
 
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navigation">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="main-navigation">
-                <ul class="nav navbar-nav">
-                    <li><a href="#"></a></li>
-                </ul>
-
-                {% if not current_user.is_anonymous() %}
-                <ul class="nav navbar-nav navbar-right">
-                    <li{% if request.path.startswith('/account') %} class="active"{% endif %}><a alt="View your account" title="View your account" href="{{ url_for('account.username', username=current_user.email) }}"><strong>{{current_user.email}}</strong></a></li>
-                    <li><a href="{{ url_for('account.index') }}">Users</a></li>
-                    <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
-                </ul>
+            <ul class="nav navbar-nav navbar-right">
+            {% if not current_user.is_anonymous() %}
+                <li{% if request.path.startswith('/account') %} class="active"{% endif %}><a alt="View your account" title="View your account" href="{{ url_for('account.username', username=current_user.id) }}"><strong>{{current_user.data['email']}}</strong></a></li>
+                <li><a href="{{ url_for('account.logout') }}" style="color:#333;">Logout</a></li>
+                {% if current_user.has_role('admin') %}
+                <li><a href="{{ url_for('account.index') }}" style="color:#333;">Admin</a></li>
                 {% endif %}
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
+            {% else %}
+                <li><a href="{{ url_for('account.login') }}" style="color:#333;">Login</a></li>
+            {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+</nav>
+
+<div class="container">
 
     <div class="content">
         <div class="row">

@@ -1,8 +1,42 @@
+{% extends "base.html" %}
 
+{% block content %}
 
-<h1>Jisc Publications Event Router</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="jumbotron" style="background-color:white;border:5px solid #ef7413;min-height:500px;">
+                <p style="text-align:center;"><img src="/static/jperlogo.png"></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="well" style="min-height:500px;">
+                <h1>
+                    More information coming soon.
+                </h1>
+                <p>
+                    If you are already in touch with us and you have a login to this system, please use it to login above.
+                    Your user account area contains more information.
+                </p>
+                <p>
+                    Problems? Interested? Contact us at <a href="mailto:someone@jisc.ac.uk">someone@jisc.ac.uk</a>
+                </p>
+                <p>
+                    Code repo: <a href="https://github.com/JiscPER/jper">https://github.com/JiscPER/jper</a><br>
+                    Sword: <a href="https://pubrouter.jisc.ac.uk/sword">https://pubrouter.jisc.ac.uk/sword</a><br>
+                    FTP: sftp.pubrouter.jisc.ac.uk
+                </p>
+                <p>
+                    <a href="https://github.com/JiscPER/jper/blob/develop/docs/API.md" class="btn btn-default btn-block">Read the API docs</a>
+                </p>
+                <p>
+                    Direct links (disable before live):<br>
+                    kibana: <a href="http://kibana.pubrouter.jisc.ac.uk">http://kibana.pubrouter.jisc.ac.uk</a><br>
+                    index: <a href="http://index.pubrouter.jisc.ac.uk">http://index.pubrouter.jisc.ac.uk</a><br>
+                    store: <a href="http://store.pubrouter.jisc.ac.uk">http://store.pubrouter.jisc.ac.uk</a><br>
+                    eprints: <a href="http://eprints2.cottagelabs.com">http://eprints2.cottagelabs.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
 
-<p>There's nothing here for you humans to look at, this is all about the machines.</p>
-
-<p>Go to <a href="https://github.com/JiscPER/jper/blob/develop/docs/API.md">the API documentation</a> to learn how to speak to me.</p>
-
+{% endblock %}

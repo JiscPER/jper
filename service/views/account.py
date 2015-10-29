@@ -110,14 +110,14 @@ def config(username):
     if rec is None:
         rec = models.RepositoryConfig()
         rec.repository = username
-    if 1==1:
+    try:
         if len(request.values.get('url','')) > 1:
             url = request.values['url']
             fn = url.split('?')[0].split('#')[0].split('/')[-1]
             r = requests.get(url)
-            if fn.endswith('.json'):
+            try:
                 saved = rec.set_repo_config(jsoncontent=r.json())
-            else:
+            except:
                 strm = StringIO(r.content)
                 if fn.endswith('.csv'):
                     saved = rec.set_repo_config(csvfile=strm)
@@ -132,7 +132,7 @@ def config(username):
             flash('Thank you. Your match config has been updated.', "success")        
         else:
             flash('Sorry, there was an error with your config upload. Please try again.', "error")        
-    else:
+    except:
         flash('Sorry, there was an error with your config upload. Please try again.', "error")
     time.sleep(1)
     return redirect(url_for('.username', username=username))
