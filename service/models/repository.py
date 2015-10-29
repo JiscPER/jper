@@ -121,7 +121,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def pull_by_repo(cls,repoid):
         return cls.pull_by_key('repository',repoid)
         
-    def set_repo_config(self,csvfile=None,textfile=None,jsoncontent=None,repository):
+    def set_repo_config(self,repository,csvfile=None,textfile=None,jsoncontent=None):
         # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
         fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types','strings']
         for f in fields:
