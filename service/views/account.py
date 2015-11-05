@@ -69,6 +69,9 @@ def username(username):
         if request.values.get('embargo_duration',False):
             acc.data['embargo'] = {'duration': request.values['embargo_duration']}
 
+        if request.values.get('email',False):
+            acc.data['email'] = request.values['email']
+
         if 'password' in request.values and not request.values['password'].startswith('sha1'):
             if len(request.values['password']) < 8:
                 flash("Sorry. Password must be at least eight characters long", "error")
@@ -177,7 +180,7 @@ def login():
         if user is not None and user.check_password(password):
             login_user(user, remember=True)
             flash('Welcome back.', 'success')
-            return redirect(url_for('.username', username=username))
+            return redirect(url_for('.username', username=user.id))
         else:
             flash('Incorrect username/password', 'error')
             return render_template('account/login.html')

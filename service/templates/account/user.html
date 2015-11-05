@@ -38,6 +38,12 @@
                         Reset account password
                     </button>
                 </form>
+                <form method="POST" action="">
+                    <input type="text" name="email" class="form-control" style="width:50%;display:inline;" placeholder="new email address">
+                    <button class="btn btn-primary" id="reset_email" type="submit" style="width:49%;">
+                        Change email address
+                    </button>
+                </form>
             </div>
             
             {% if account.has_role('repository') %}
@@ -88,13 +94,76 @@
             {% if account.has_role('repository') %}
             <div class="well">                
             <form method="post" action="">
-			<input type="text" name="repository_name" class="form-control" placeholder="repository name" value="{{account.data.get('repository',{}).get('name','')}}">
-			<input type="text" name="repository_url" class="form-control" placeholder="repository url" value="{{account.data.get('repository',{}).get('url','')}}">
-			<input type="text" name="repository_software" class="form-control" placeholder="repository software" value="{{account.data.get('repository',{}).get('software','')}}">
-			<input type="text" name="sword_username" class="form-control" placeholder="repository SWORD username" value="{{account.data.get('sword',{}).get('username','')}}">
-			<input type="text" name="sword_password" class="form-control" placeholder="repository SWORD password" value="{{account.data.get('sword',{}).get('password','')}}">
-			<input type="text" name="sword_collection" class="form-control" placeholder="repository SWORD collection" value="{{account.data.get('sword',{}).get('collection','')}}">
-			<input type="text" name="packaging" class="form-control" placeholder="packaging prefs (comma separated)" value="{{','.join(account.data.get('packaging',[]))}}">
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        Repository name
+                    </p>
+                </div>
+                <div class="col-md-8">
+        			<input type="text" name="repository_name" class="form-control" placeholder="repository name" value="{{account.data.get('repository',{}).get('name','')}}">            
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        Repository URL
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" name="repository_url" class="form-control" placeholder="repository url" value="{{account.data.get('repository',{}).get('url','')}}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        Repository software
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" name="repository_software" class="form-control" placeholder="repository software" value="{{account.data.get('repository',{}).get('software','')}}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        SWORD username
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" name="sword_username" class="form-control" placeholder="repository SWORD username" value="{{account.data.get('sword',{}).get('username','')}}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        SWORD password
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" name="sword_password" class="form-control" placeholder="repository SWORD password" value="{{account.data.get('sword',{}).get('password','')}}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        Repository collection
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" name="sword_collection" class="form-control" placeholder="repository SWORD collection" value="{{account.data.get('sword',{}).get('collection','')}}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        Packaging preferences (comma separated)
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" name="packaging" class="form-control" placeholder="packaging prefs (comma separated)" value="{{','.join(account.data.get('packaging',[]))}}">
+                </div>
+            </div>
             <button class="btn btn-primary btn-block" id="update" type="submit" style="margin-top:5px;">
                 Update details
             </button>
