@@ -1,4 +1,13 @@
-from flask import url_for
+"""
+This is the main Python API for interacting with the JPER system.
+
+If you are building a web API, or consuming information from the system as an external data consumer (i.e. you're not
+writing a core module that sits underneath this interface) then you should use this class to validate, create and
+consume notifications.
+
+Go around it at your own risk!
+"""
+
 from flask.ext.login import current_user
 from service import models, packages
 from octopus.lib import dates, dataobj, http
@@ -8,15 +17,43 @@ import uuid, json
 
 
 class ValidationException(Exception):
+    """
+    Exception which gets raised if an attempt to validate in incoming notifications fails.
+    """
     pass
 
 class ParameterException(Exception):
+    """
+    Exception which gets raised if there is a problem with the parameters passed to a method.
+
+    This would be, for example, if you don't clean up user input via the web API properly before passing it
+    here
+    """
     pass
 
 class JPER(object):
+    """
+    Main Python API for interacting with the JPER system
+
+    Each of the methods here provide you with access to one of the key API routes
+    """
 
     @classmethod
     def validate(cls, account, notification, file_handle=None):
+        """
+        Validate the incoming notification (and optional binary content) on behalf of the Account holder.
+
+        This method will carry out detailed validation of the notification and binary content in order to provide
+        feedback to the user on whether their notifications are suitable to send on to the create() method.
+
+        If the validation fails, an appropriate exception will be raised.  If the validation succeeds, the
+        method will finish silently (no return)
+
+        :param account: user Account object as which this action will be carried out
+        :param notification: raw notification dict object (e.g. as pulled from a POST to the web API)
+        :param file_handle: File handle to binary content associated with the notification
+        :return: does not return anything.  If there is a problem, though, exceptions are raised
+        """
         magic = uuid.uuid4().hex
         app.logger.info("Request:{z} - Validate request received from Account:{x}".format(z=magic, x=account.id))
 
@@ -119,6 +156,21 @@ class JPER(object):
 
     @classmethod
     def create_notification(cls, account, notification, file_handle=None):
+        """
+        Create a new notification in the system on behalf of the Account holder, based on the supplied notification
+        and optional binary content.
+
+        There will be no significant validation of the notification and file handle, although superficial inspection
+        of the notification will be done to ensure it is structurally sound.
+
+        If creation succeeds, a new notification will appear in the "unrouted" notifications list in the system, and a
+        copy of the created object will be returned.  If there is a problem, an appropriate Exception will be raised.
+
+        :param account: user Account object as which this action will be carried out
+        :param notification: raw notification dict object (e.g. as pulled from a POST to the web API)
+        :param file_handle: File handle to binary content associated with the notification
+        :return: models.UnroutedNotification object representing the successfully created notification
+        """
         if not account.has_role('publisher') and not current_user.is_super:
             return False
 
@@ -183,6 +235,14 @@ class JPER(object):
 
     @classmethod
     def get_notification(cls, account, notification_id):
+        """
+        Retrieve a copy of the notification object as identified by the supplied notification_id, on behalf
+        of the supplied Account
+
+        :param account: user Account as which this action will be carried out
+        :param notification_id: identifier of the notification to be retrieved
+        :return:
+        """
         try:
             accid = account.id
         except:
@@ -215,6 +275,17 @@ class JPER(object):
 
     @classmethod
     def get_content(cls, account, notification_id, filename=None):
+        """
+        Retrieve the content associated with the requested notification_id, on behalf of the supplied user account.
+
+        If no filename is provided, the default content (that originally provided by the creator) will be returned, otherwise
+        any file with the same name that appears in the notification will be returned.
+
+        :param account: user Account as which to carry out this request
+        :param notification_id: id of the notification whose content to retrieve
+        :param filename: filename of content to be retrieved
+        :return:
+        """
         magic = uuid.uuid4().hex
         urn = models.UnroutedNotification.pull(notification_id)
         if urn is not None and (account.has_role('publisher') or current_user.is_super):
@@ -268,6 +339,16 @@ class JPER(object):
 
     @classmethod
     def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
+        """
+        List notification which meet the criteria specified by the parameters
+
+        :param account: user Account as which to carry out this action (all users can request notifications, so this is primarily for logging purposes)
+        :param since: date string for the earliest notification date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work
+        :param page: page number in result set to return (which results appear will also depend on the page_size parameter)
+        :param page_size: number of results to return in this page of results
+        :param repository_id: the id of the repository whose notifications to return.  If no id is provided, all notifications for all repositories will be queried.
+        :return: models.NotificationList containing the parameters and results
+        """
         try:
             since = dates.parse(since)
         except ValueError as e:

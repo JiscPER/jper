@@ -64,19 +64,22 @@
 <h1 class="epydoc">Class JPER</h1><p class="nomargin-top"><span class="codelink"><a href="service.api-pysrc.html#JPER">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service_" name="uml_class_diagram_for_service_">
-<area shape="rect" id="node1_7" href="service.api.JPER-class.html#validate" title="service.api.JPER.validate" alt="" coords="17,40,539,60"/>
-<area shape="rect" id="node1_8" href="service.api.JPER-class.html#create_notification" title="service.api.JPER.create_notification" alt="" coords="17,60,539,80"/>
-<area shape="rect" id="node1_9" href="service.api.JPER-class.html#get_notification" title="service.api.JPER.get_notification" alt="" coords="17,80,539,100"/>
-<area shape="rect" id="node1_10" href="service.api.JPER-class.html#get_content" title="service.api.JPER.get_content" alt="" coords="17,100,539,120"/>
+<area shape="rect" id="node1_7" href="service.api.JPER-class.html#validate" title="Validate the incoming notification (as optional binary content) on behalf of the Account holder." alt="" coords="17,40,539,60"/>
+<area shape="rect" id="node1_8" href="service.api.JPER-class.html#create_notification" title="Create a new notification in the system on behalf of the Account holder, based on the supplied notification and optional binary content." alt="" coords="17,60,539,80"/>
+<area shape="rect" id="node1_9" href="service.api.JPER-class.html#get_notification" title="Retrieve a copy of the notification object as identified by the supplied notification_id, on behalf of the supplied Account" alt="" coords="17,80,539,100"/>
+<area shape="rect" id="node1_10" href="service.api.JPER-class.html#get_content" title="Retrieve the content associated with the requested notification_id, on behalf of the supplied user account." alt="" coords="17,100,539,120"/>
 <area shape="rect" id="node1_11" href="service.api.JPER-class.html#get_proxy_url" title="service.api.JPER.get_proxy_url" alt="" coords="17,120,539,140"/>
 <area shape="rect" id="node1_12" href="service.api.JPER-class.html#get_public_url" title="service.api.JPER.get_public_url" alt="" coords="17,140,539,160"/>
-<area shape="rect" id="node1_13" href="service.api.JPER-class.html#list_notifications" title="service.api.JPER.list_notifications" alt="" coords="17,160,539,180"/>
-<area shape="rect" id="node1" href="service.api.JPER-class.html" title="service.api.JPER" alt="" coords="5,6,550,186"/>
+<area shape="rect" id="node1_13" href="service.api.JPER-class.html#list_notifications" title="List notification which meet the criteria specified by the parameters" alt="" coords="17,160,539,180"/>
+<area shape="rect" id="node1" href="service.api.JPER-class.html" title="Main Python API for interacting with the JPER system" alt="" coords="5,6,550,186"/>
 </map>
   <img src="uml_class_diagram_for_service_.gif" alt='' usemap="#uml_class_diagram_for_service_" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
+<p>Main Python API for interacting with the JPER system</p>
+<p>Each of the methods here provide you with access to one of the key API routes</p>
+
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -137,10 +140,11 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="validate"></a><span class="summary-sig-name">validate</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#validate" class="summary-sig-name">validate</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">account</span>,
         <span class="summary-sig-arg">notification</span>,
-        <span class="summary-sig-arg">file_handle</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">file_handle</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Validate the incoming notification (as optional binary content) on behalf of the Account holder.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.api-pysrc.html#JPER.validate">source&nbsp;code</a></span>
             
@@ -156,10 +160,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="create_notification"></a><span class="summary-sig-name">create_notification</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#create_notification" class="summary-sig-name">create_notification</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">account</span>,
         <span class="summary-sig-arg">notification</span>,
-        <span class="summary-sig-arg">file_handle</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">file_handle</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new notification in the system on behalf of the Account holder, based on the supplied notification
+and optional binary content.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.api-pysrc.html#JPER.create_notification">source&nbsp;code</a></span>
             
@@ -175,9 +181,11 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="get_notification"></a><span class="summary-sig-name">get_notification</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#get_notification" class="summary-sig-name">get_notification</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">account</span>,
-        <span class="summary-sig-arg">notification_id</span>)</span></td>
+        <span class="summary-sig-arg">notification_id</span>)</span><br />
+      Retrieve a copy of the notification object as identified by the supplied notification_id, on behalf
+of the supplied Account</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.api-pysrc.html#JPER.get_notification">source&nbsp;code</a></span>
             
@@ -193,10 +201,11 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="get_content"></a><span class="summary-sig-name">get_content</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#get_content" class="summary-sig-name">get_content</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">account</span>,
         <span class="summary-sig-arg">notification_id</span>,
-        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Retrieve the content associated with the requested notification_id, on behalf of the supplied user account.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.api-pysrc.html#JPER.get_content">source&nbsp;code</a></span>
             
@@ -250,12 +259,13 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="list_notifications"></a><span class="summary-sig-name">list_notifications</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#list_notifications" class="summary-sig-name">list_notifications</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">account</span>,
         <span class="summary-sig-arg">since</span>,
         <span class="summary-sig-arg">page</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">page_size</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">repository_id</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">repository_id</span>=<span class="summary-sig-default">None</span>)</span><br />
+      List notification which meet the criteria specified by the parameters</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.api-pysrc.html#JPER.list_notifications">source&nbsp;code</a></span>
             
@@ -291,6 +301,190 @@
     </td>
   </tr>
 </table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="validate"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">validate</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">notification</span>,
+        <span class="sig-arg">file_handle</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.validate">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Validate the incoming notification (as optional binary content) on behalf of the Account holder.</p>
+<p>This method will carry out detailed validation of the notification and binary content in order to provide
+feedback to the user on whether their notifications are suitable to send on to the create() method.</p>
+<p>If the validation fails, an appropriate exception will be raised.  If the validation succeeds, the
+method will finish silently (no return)</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account object as which this action will be carried out</li>
+        <li><strong class="pname"><code>notification</code></strong> - raw notification dict object (e.g. as pulled from a POST to the web API)</li>
+        <li><strong class="pname"><code>file_handle</code></strong> - File handle to binary content associated with the notification</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>does not return anything.  If there is a problem, though, exceptions are raised</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_notification"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_notification</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">notification</span>,
+        <span class="sig-arg">file_handle</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.create_notification">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a new notification in the system on behalf of the Account holder, based on the supplied notification
+and optional binary content.</p>
+<p>There will be no significant validation of the notification and file handle, although superficial inspection
+of the notification will be done to ensure it is structurally sound.</p>
+<p>If creation succeeds, a new notification will appear in the &quot;unrouted&quot; notifications list in the system, and a
+copy of the created object will be returned.  If there is a problem, an appropriate Exception will be raised.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account object as which this action will be carried out</li>
+        <li><strong class="pname"><code>notification</code></strong> - raw notification dict object (e.g. as pulled from a POST to the web API)</li>
+        <li><strong class="pname"><code>file_handle</code></strong> - File handle to binary content associated with the notification</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>models.UnroutedNotification object representing the successfully created notification</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_notification"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_notification</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">notification_id</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.get_notification">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Retrieve a copy of the notification object as identified by the supplied notification_id, on behalf
+of the supplied Account
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which this action will be carried out</li>
+        <li><strong class="pname"><code>notification_id</code></strong> - identifier of the notification to be retrieved</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_content"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_content</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">notification_id</span>,
+        <span class="sig-arg">filename</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.get_content">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Retrieve the content associated with the requested notification_id, on behalf of the supplied user account.</p>
+<p>If no filename is provided, the default content (that originally provided by the creator) will be returned, otherwise
+any file with the same name that appears in the notification will be returned.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which to carry out this request</li>
+        <li><strong class="pname"><code>notification_id</code></strong> - id of the notification whose content to retrieve</li>
+        <li><strong class="pname"><code>filename</code></strong> - filename of content to be retrieved</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="list_notifications"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">list_notifications</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">since</span>,
+        <span class="sig-arg">page</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">page_size</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">repository_id</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.list_notifications">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  List notification which meet the criteria specified by the parameters
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which to carry out this action (all users can request notifications, so this is primarily for logging purposes)</li>
+        <li><strong class="pname"><code>since</code></strong> - date string for the earliest notification date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work</li>
+        <li><strong class="pname"><code>page</code></strong> - page number in result set to return (which results appear will also depend on the page_size parameter)</li>
+        <li><strong class="pname"><code>page_size</code></strong> - number of results to return in this page of results</li>
+        <li><strong class="pname"><code>repository_id</code></strong> - the id of the repository whose notifications to return.  If no id is provided, all notifications for all repositories will be queried.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>models.NotificationList containing the parameters and results</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -322,7 +516,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 10:36:07 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:09 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

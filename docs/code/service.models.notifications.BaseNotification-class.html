@@ -71,7 +71,7 @@
 <area shape="rect" id="node1_23" href="service.models.notifications.BaseNotification-class.html#add_link" title="service.models.notifications.BaseNotification.add_link" alt="" coords="17,459,357,479"/>
 <area shape="rect" id="node1_24" href="service.models.notifications.BaseNotification-class.html#provider_id" title="service.models.notifications.BaseNotification.provider_id" alt="" coords="17,479,357,499"/>
 <area shape="rect" id="node1_25" href="service.models.notifications.BaseNotification-class.html#match_data" title="service.models.notifications.BaseNotification.match_data" alt="" coords="17,499,357,519"/>
-<area shape="rect" id="node1" href="service.models.notifications.BaseNotification-class.html" title="{ &quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;, &quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;, &quot;last_updated&quot; : &quot;&lt;last modification time &#45; required by storage layer&gt;&quot;," alt="" coords="5,365,369,525"/>
+<area shape="rect" id="node1" href="service.models.notifications.BaseNotification-class.html" title="&quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;, &quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;, &quot;last_updated&quot; : &quot;&lt;last modification time &#45; required by storage layer&gt;&quot;," alt="" coords="5,365,369,525"/>
 <area shape="rect" id="node2_26" href="service.models.notifications.NotificationMetadata-class.html#title" title="service.models.notifications.NotificationMetadata.title" alt="" coords="83,40,293,60"/>
 <area shape="rect" id="node2_27" href="service.models.notifications.NotificationMetadata-class.html#version" title="service.models.notifications.NotificationMetadata.version" alt="" coords="83,60,293,80"/>
 <area shape="rect" id="node2_28" href="service.models.notifications.NotificationMetadata-class.html#type" title="service.models.notifications.NotificationMetadata.type" alt="" coords="83,80,293,100"/>
@@ -92,48 +92,52 @@
 </center>
 </center>
 <hr />
-<pre class="literalblock">
-
-{
-    &quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;,
-    &quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;,
-    &quot;last_updated&quot; : &quot;&lt;last modification time - required by storage layer&gt;&quot;,
-
-    &quot;event&quot; : &quot;&lt;keyword for the kind of notification: acceptance, publication, etc.&gt;&quot;,
-
-    &quot;provider&quot; : {
-        &quot;id&quot; : &quot;&lt;user account id of the provider&gt;&quot;,
-        &quot;agent&quot; : &quot;&lt;string defining the software/process which put the content here, provided by provider - is this useful?&gt;&quot;,
-        &quot;ref&quot; : &quot;&lt;provider's globally unique reference for this research object&gt;&quot;,
-        &quot;route&quot; : &quot;&lt;method by which notification was received: native api, sword, ftp&gt;&quot;
-    },
-
-    &quot;content&quot; : {
-        &quot;packaging_format&quot; : &quot;&lt;identifier for packaging format used&gt;&quot;,
-        &quot;store_id&quot; : &quot;&lt;information for retrieving the content from local store (tbc)&gt;&quot;
-    },
-
-    &quot;links&quot; : [
-        {
-            &quot;type&quot; : &quot;&lt;link type: splash|fulltext&gt;&quot;,
-            &quot;format&quot; : &quot;&lt;text/html|application/pdf|application/xml|application/zip|...&gt;&quot;,
-            &quot;access&quot; : &quot;&lt;type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)&gt;&quot;,
-            &quot;url&quot; : &quot;&lt;provider's splash, fulltext or machine readable page&gt;&quot;,
-            &quot;packaging&quot; : &quot;&lt;packaging format identifier&gt;&quot;,
-            &quot;proxy&quot;: &quot;&lt;the ID of the proxy link&gt;&quot;
-        }
-    ],
-
-    &quot;embargo&quot; : {
-        &quot;end&quot; : &quot;&lt;date embargo expires&gt;&quot;,
-        &quot;start&quot; : &quot;&lt;date embargo starts&gt;&quot;,
-        &quot;duration&quot; : &quot;&lt;number of months for embargo to run&gt;&quot;
-    },
-
-    &quot;metadata&quot; : {&lt;INHERITED from NotificationMetadata&gt;}
-}
-
-</pre>
+<dl class="rst-docutils">
+<dt>{</dt>
+<dd><p class="rst-first">&quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;,
+&quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;,
+&quot;last_updated&quot; : &quot;&lt;last modification time - required by storage layer&gt;&quot;,</p>
+<p>&quot;event&quot; : &quot;&lt;keyword for the kind of notification: acceptance, publication, etc.&gt;&quot;,</p>
+<dl class="rst-docutils">
+<dt>&quot;provider&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
+<dd>&quot;id&quot; : &quot;&lt;user account id of the provider&gt;&quot;,
+&quot;agent&quot; : &quot;&lt;string defining the software/process which put the content here, provided by provider - is this useful?&gt;&quot;,
+&quot;ref&quot; : &quot;&lt;provider's globally unique reference for this research object&gt;&quot;,
+&quot;route&quot; : &quot;&lt;method by which notification was received: native api, sword, ftp&gt;&quot;</dd>
+</dl>
+<p>},</p>
+<dl class="rst-docutils">
+<dt>&quot;content&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
+<dd>&quot;packaging_format&quot; : &quot;&lt;identifier for packaging format used&gt;&quot;,
+&quot;store_id&quot; : &quot;&lt;information for retrieving the content from local store (tbc)&gt;&quot;</dd>
+</dl>
+<p>},</p>
+<dl class="rst-docutils">
+<dt>&quot;links&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">[</span></dt>
+<dd><dl class="rst-first rst-docutils">
+<dt>{</dt>
+<dd>&quot;type&quot; : &quot;&lt;link type: splash|fulltext&gt;&quot;,
+&quot;format&quot; : &quot;&lt;text/html|application/pdf|application/xml|application/zip|...&gt;&quot;,
+&quot;access&quot; : &quot;&lt;type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)&gt;&quot;,
+&quot;url&quot; : &quot;&lt;provider's splash, fulltext or machine readable page&gt;&quot;,
+&quot;packaging&quot; : &quot;&lt;packaging format identifier&gt;&quot;,
+&quot;proxy&quot;: &quot;&lt;the ID of the proxy link&gt;&quot;</dd>
+</dl>
+<p class="rst-last">}</p>
+</dd>
+</dl>
+<p>],</p>
+<dl class="rst-docutils">
+<dt>&quot;embargo&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
+<dd>&quot;end&quot; : &quot;&lt;date embargo expires&gt;&quot;,
+&quot;start&quot; : &quot;&lt;date embargo starts&gt;&quot;,
+&quot;duration&quot; : &quot;&lt;number of months for embargo to run&gt;&quot;</dd>
+</dl>
+<p>},</p>
+<p class="rst-last">&quot;metadata&quot; : {&lt;INHERITED from NotificationMetadata&gt;}</p>
+</dd>
+</dl>
+<p>}</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -777,7 +781,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 10:36:09 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:11 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

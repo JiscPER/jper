@@ -79,7 +79,7 @@
 <area shape="rect" id="node1_26" href="service.models.account.Account-class.html#add_packaging" title="service.models.account.Account.add_packaging" alt="" coords="17,340,379,360"/>
 <area shape="rect" id="node1_27" href="service.models.account.Account-class.html#add_sword_credentials" title="service.models.account.Account.add_sword_credentials" alt="" coords="17,360,379,380"/>
 <area shape="rect" id="node1_28" href="service.models.account.Account-class.html#cease_publisher" title="service.models.account.Account.cease_publisher" alt="" coords="17,400,379,420"/>
-<area shape="rect" id="node1" href="service.models.account.Account-class.html" title="{ &quot;id&quot; : &quot;&lt;unique persistent account id&gt;&quot;, &quot;created_date&quot; : &quot;&lt;date account created&gt;&quot;, &quot;last_updated&quot; : &quot;&lt;date account last modified&gt;&quot;," alt="" coords="5,86,390,426"/>
+<area shape="rect" id="node1" href="service.models.account.Account-class.html" title="&quot;id&quot; : &quot;&lt;unique persistent account id&gt;&quot;, &quot;created_date&quot; : &quot;&lt;date account created&gt;&quot;, &quot;last_updated&quot; : &quot;&lt;date account last modified&gt;&quot;," alt="" coords="5,86,390,426"/>
 <area shape="rect" id="node2_29" href="service.dao.AccountDAO-class.html#__type__" title="service.dao.AccountDAO.__type__" alt="" coords="147,32,251,52"/>
 <area shape="rect" id="node2" href="service.dao.AccountDAO-class.html" title="service.dao.AccountDAO" alt="" coords="135,6,263,66"/>
 </map>
@@ -87,42 +87,44 @@
 </center>
 </center>
 <hr />
-<pre class="literalblock">
-
-{
-    &quot;id&quot; : &quot;&lt;unique persistent account id&gt;&quot;,
-    &quot;created_date&quot; : &quot;&lt;date account created&gt;&quot;,
-    &quot;last_updated&quot; : &quot;&lt;date account last modified&gt;&quot;,
-
-    &quot;email&quot; : &quot;&lt;account contact email&gt;&quot;,
-    &quot;contact_name&quot; : &quot;&lt;name of key contact&gt;&quot;,
-    &quot;password&quot; : &quot;&lt;hashed password for ui login&gt;&quot;,
-    &quot;api_key&quot; : &quot;&lt;api key for api auth&gt;&quot;,
-    &quot;role&quot; : [&quot;&lt;account role: repository, publisher, admin&gt;&quot;],
-
-    &quot;repository&quot; : {
-        &quot;name&quot; : &quot;&lt;name of the repository&gt;&quot;,
-        &quot;url&quot; : &quot;&lt;url for the repository&gt;&quot;,
-        &quot;software&quot; : &quot;&lt;name of the software&gt;&quot;
-    },
-
-    &quot;sword_repository&quot; : {
-        &quot;username&quot; : &quot;&lt;username for the router to authenticate with the repository&gt;&quot;,
-        &quot;password&quot; : &quot;&lt;reversibly encrypted password for the router to authenticate with the repository&gt;&quot;,
-        &quot;collection&quot; : &quot;&lt;url for deposit collection to receive content from the router&gt;&quot;
-    },
-
-    &quot;packaging&quot; : [
-        &quot;&lt;identifier - in order of preference - that should be available for this repo.  Esp. via sword interface&gt;&quot;
-    ],
-
-    &quot;embargo&quot; : {
-        &quot;duration&quot; : &quot;&lt;length of default embargo&gt;&quot;,
-        &quot;from&quot; : &quot;&lt;reference to field in data to measure embargo from&gt;&quot;
-    }
-}
-
-</pre>
+<dl class="rst-docutils">
+<dt>{</dt>
+<dd><p class="rst-first">&quot;id&quot; : &quot;&lt;unique persistent account id&gt;&quot;,
+&quot;created_date&quot; : &quot;&lt;date account created&gt;&quot;,
+&quot;last_updated&quot; : &quot;&lt;date account last modified&gt;&quot;,</p>
+<p>&quot;email&quot; : &quot;&lt;account contact email&gt;&quot;,
+&quot;contact_name&quot; : &quot;&lt;name of key contact&gt;&quot;,
+&quot;password&quot; : &quot;&lt;hashed password for ui login&gt;&quot;,
+&quot;api_key&quot; : &quot;&lt;api key for api auth&gt;&quot;,
+&quot;role&quot; : [&quot;&lt;account role: repository, publisher, admin&gt;&quot;],</p>
+<dl class="rst-docutils">
+<dt>&quot;repository&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
+<dd>&quot;name&quot; : &quot;&lt;name of the repository&gt;&quot;,
+&quot;url&quot; : &quot;&lt;url for the repository&gt;&quot;,
+&quot;software&quot; : &quot;&lt;name of the software&gt;&quot;</dd>
+</dl>
+<p>},</p>
+<dl class="rst-docutils">
+<dt>&quot;sword_repository&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
+<dd>&quot;username&quot; : &quot;&lt;username for the router to authenticate with the repository&gt;&quot;,
+&quot;password&quot; : &quot;&lt;reversibly encrypted password for the router to authenticate with the repository&gt;&quot;,
+&quot;collection&quot; : &quot;&lt;url for deposit collection to receive content from the router&gt;&quot;</dd>
+</dl>
+<p>},</p>
+<dl class="rst-docutils">
+<dt>&quot;packaging&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">[</span></dt>
+<dd>&quot;&lt;identifier - in order of preference - that should be available for this repo.  Esp. via sword interface&gt;&quot;</dd>
+</dl>
+<p>],</p>
+<dl class="rst-docutils">
+<dt>&quot;embargo&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
+<dd>&quot;duration&quot; : &quot;&lt;length of default embargo&gt;&quot;,
+&quot;from&quot; : &quot;&lt;reference to field in data to measure embargo from&gt;&quot;</dd>
+</dl>
+<p class="rst-last">}</p>
+</dd>
+</dl>
+<p>}</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -809,7 +811,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 10:36:08 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:10 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

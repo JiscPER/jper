@@ -128,8 +128,8 @@
           <td><span class="summary-sig"><a href="service.routing-module.html#match" class="summary-sig-name">match</a>(<span class="summary-sig-arg">notification_data</span>,
         <span class="summary-sig-arg">repository_config</span>,
         <span class="summary-sig-arg">provenance</span>)</span><br />
-      Match the incoming notification data, to the repository config and 
-      determine if there is a match</td>
+      Match the incoming notification data, to the repository config and determine
+if there is a match</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#match">source&nbsp;code</a></span>
             
@@ -217,7 +217,7 @@
         <tr>
           <td><span class="summary-sig"><a href="service.routing-module.html#domain_url" class="summary-sig-name">domain_url</a>(<span class="summary-sig-arg">domain</span>,
         <span class="summary-sig-arg">url</span>)</span><br />
-      normalise the domain: strip prefixes and URL paths.</td>
+      normalise the domain: strip prefixes and URL paths.  If either ends with the other, it is a match</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#domain_url">source&nbsp;code</a></span>
             
@@ -235,7 +235,7 @@
         <tr>
           <td><span class="summary-sig"><a href="service.routing-module.html#domain_email" class="summary-sig-name">domain_email</a>(<span class="summary-sig-arg">domain</span>,
         <span class="summary-sig-arg">email</span>)</span><br />
-      normalise the domain: strip prefixes an URL paths.</td>
+      normalise the domain: strip prefixes an URL paths.  Normalise the email: strip everything before &#64;.  If either ends with the other it is a match</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#domain_email">source&nbsp;code</a></span>
             
@@ -289,8 +289,10 @@
         <tr>
           <td><span class="summary-sig"><a name="postcode_match"></a><span class="summary-sig-name">postcode_match</span>(<span class="summary-sig-arg">pc1</span>,
         <span class="summary-sig-arg">pc2</span>)</span><br />
-      Normalise postcodes: strip whitespace and lowercase, then exact match
-      required :param pc1: :param pc2: :return:</td>
+      Normalise postcodes: strip whitespace and lowercase, then exact match required
+:param pc1:
+:param pc2:
+:return:</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#postcode_match">source&nbsp;code</a></span>
             
@@ -308,8 +310,10 @@
         <tr>
           <td><span class="summary-sig"><a name="exact_substring"></a><span class="summary-sig-name">exact_substring</span>(<span class="summary-sig-arg">s1</span>,
         <span class="summary-sig-arg">s2</span>)</span><br />
-      normalised s1 must be an exact substring of normalised s2 :param s1: 
-      :param s2: :return:</td>
+      normalised s1 must be an exact substring of normalised s2
+:param s1:
+:param s2:
+:return:</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#exact_substring">source&nbsp;code</a></span>
             
@@ -404,12 +408,16 @@
     </td>
   </tr></table>
   
-  <p>Match the incoming notification data, to the repository config and 
-  determine if there is a match</p>
-  <p>:param notification_data:   models.RoutingMetadata :param 
-  repository_config:   models.RepositoryConfig :return:  list of 
-  models.MatchProvenance objects, or None if no match</p>
+  Match the incoming notification data, to the repository config and determine
+if there is a match
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>notification_data</code></strong> - models.RoutingMetadata</li>
+        <li><strong class="pname"><code>repository_config</code></strong> - models.RepositoryConfig</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>list of models.MatchProvenance objects, or None if no match</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -428,9 +436,13 @@
     </td>
   </tr></table>
   
-  <p>Enhance the routed notification with the extracted metadata</p>
-  <p>:param routed: :param metadata: :return:</p>
+  Enhance the routed notification with the extracted metadata
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>routed</code></strong></li>
+        <li><strong class="pname"><code>metadata</code></strong></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -449,10 +461,13 @@
     </td>
   </tr></table>
   
-  <p>normalise the domain: strip prefixes and URL paths.  If either ends 
-  with the other, it is a match</p>
-  <p>:param domain: :param url: :return:</p>
+  normalise the domain: strip prefixes and URL paths.  If either ends with the other, it is a match
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>domain</code></strong></li>
+        <li><strong class="pname"><code>url</code></strong></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -471,11 +486,13 @@
     </td>
   </tr></table>
   
-  <p>normalise the domain: strip prefixes an URL paths.  Normalise the 
-  email: strip everything before @.  If either ends with the other it is a 
-  match</p>
-  <p>:param domain: :param email: :return:</p>
+  normalise the domain: strip prefixes an URL paths.  Normalise the email: strip everything before &#64;.  If either ends with the other it is a match
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>domain</code></strong></li>
+        <li><strong class="pname"><code>email</code></strong></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -494,9 +511,13 @@
     </td>
   </tr></table>
   
-  <p>Match two author objects against eachother</p>
-  <p>:param author_obj_1: :param author_obj_2: :return:</p>
+  Match two author objects against eachother
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>author_obj_1</code></strong></li>
+        <li><strong class="pname"><code>author_obj_2</code></strong></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -515,9 +536,13 @@
     </td>
   </tr></table>
   
-  <p>Match an arbitrary string against the id in the author object</p>
-  <p>:param author_string: :param author_obj: :return:</p>
+  Match an arbitrary string against the id in the author object
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>author_string</code></strong></li>
+        <li><strong class="pname"><code>author_obj</code></strong></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -536,9 +561,13 @@
     </td>
   </tr></table>
   
-  <p>normalised s1 must be identical to normalised s2</p>
-  <p>:param s1: :param s2: :return:</p>
+  normalised s1 must be identical to normalised s2
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>s1</code></strong></li>
+        <li><strong class="pname"><code>s2</code></strong></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -574,7 +603,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 10:36:07 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:09 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -405,6 +405,7 @@ service.models.notifications.RoutingMetadata.emails	service.models.notifications
 service.models.notifications.RoutingMetadata.__init__	service.models.notifications.RoutingMetadata-class.html#__init__
 service.models.notifications.RoutingMetadata.has_data	service.models.notifications.RoutingMetadata-class.html#has_data
 service.models.notifications.UnroutedNotification	service.models.notifications.UnroutedNotification-class.html
+service.models.notifications.UnroutedNotification.bulk_delete	service.models.notifications.UnroutedNotification-class.html#bulk_delete
 service.models.notifications.BaseNotification.provider_id	service.models.notifications.BaseNotification-class.html#provider_id
 service.models.notifications.NotificationMetadata.source_name	service.models.notifications.NotificationMetadata-class.html#source_name
 service.models.notifications.BaseNotification.links	service.models.notifications.BaseNotification-class.html#links

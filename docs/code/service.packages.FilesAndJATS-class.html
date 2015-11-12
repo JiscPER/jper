@@ -66,27 +66,27 @@
 <center>  <map id="uml_class_diagram_for_service__27" name="uml_class_diagram_for_service__27">
 <area shape="rect" id="node1_9" href="service.packages.FilesAndJATS-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="16,104,325,124"/>
 <area shape="rect" id="node1_10" href="service.packages.FilesAndJATS-class.html#zip_name" title="Get the name of the package zip file to be used in the storage layer" alt="" coords="16,124,325,144"/>
-<area shape="rect" id="node1_11" href="service.packages.FilesAndJATS-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this &#160;packager" alt="" coords="16,144,325,164"/>
+<area shape="rect" id="node1_11" href="service.packages.FilesAndJATS-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this packager" alt="" coords="16,144,325,164"/>
 <area shape="rect" id="node1_12" href="service.packages.FilesAndJATS-class.html#url_name" title="Get the name of the package as it should appear in any content urls" alt="" coords="16,164,325,184"/>
 <area shape="rect" id="node1_13" href="service.packages.FilesAndJATS-class.html#metadata_streams" title="generator, should yield" alt="" coords="16,184,325,204"/>
 <area shape="rect" id="node1_14" href="service.packages.FilesAndJATS-class.html#notification_metadata" title="service.packages.FilesAndJATS.notification_metadata" alt="" coords="16,204,325,224"/>
 <area shape="rect" id="node1_15" href="service.packages.FilesAndJATS-class.html#match_data" title="service.packages.FilesAndJATS.match_data" alt="" coords="16,224,325,244"/>
 <area shape="rect" id="node1_16" href="service.packages.FilesAndJATS-class.html#convertible" title="service.packages.FilesAndJATS.convertible" alt="" coords="16,244,325,264"/>
 <area shape="rect" id="node1_17" href="service.packages.FilesAndJATS-class.html#convert" title="service.packages.FilesAndJATS.convert" alt="" coords="16,264,325,284"/>
-<area shape="rect" id="node1" href="service.packages.FilesAndJATS-class.html" title="This is the default format that we currently prefer to get from providers." alt="" coords="4,70,337,290"/>
+<area shape="rect" id="node1" href="service.packages.FilesAndJATS-class.html" title="This is the default format that we currently prefer to get from providers. It consists of a zip of a single XML file which is the JATS fulltext, a single PDF which is the fulltext, and an arbitrary number of other files which are supporting information. It may also contain the NLM/EPMC formatted metadata as XML" alt="" coords="4,70,337,290"/>
 <area shape="rect" id="node2" href="service.packages.PackageHandler-class.html" title="Interface/Parent class for all objects wishing to provide package handling" alt="" coords="109,5,232,51"/>
 </map>
   <img src="uml_class_diagram_for_service__27.gif" alt='' usemap="#uml_class_diagram_for_service__27" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
-<p>This is the default format that we currently prefer to get from 
-  providers.  It consists of a zip of a single XML file which is the JATS 
-  fulltext, a single PDF which is the fulltext, and an arbitrary number of 
-  other files which are supporting information.  It may also contain the 
-  NLM/EPMC formatted metadata as XML</p>
-  <p>To be valid, the zip must just consist of the JATS file OR the EPMC 
-  metadata file. All other files are optional</p>
+<p>This is the default format that we currently prefer to get from
+providers.  It consists of a zip of a single XML file which is the JATS fulltext,
+a single PDF which is the fulltext, and an arbitrary number of other
+files which are supporting information.  It may also contain the NLM/EPMC
+formatted metadata as XML</p>
+<p>To be valid, the zip must just consist of the JATS file OR the EPMC metadata file.
+All other files are optional</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -148,8 +148,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.packages.FilesAndJATS-class.html#metadata_names" class="summary-sig-name">metadata_names</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Get a list of the names of metadata files extracted and stored by 
-      this packager</td>
+      Get a list of the names of metadata files extracted and stored by this packager</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS.metadata_names">source&nbsp;code</a></span>
             
@@ -540,7 +539,7 @@
     </td>
   </tr></table>
   
-  <p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+  x.__init__(...) initializes x; see help(type(x)) for signature
   <dl class="fields">
     <dt>Overrides:
         object.__init__
@@ -563,8 +562,7 @@
     </td>
   </tr></table>
   
-  <p>Get the name of the package zip file to be used in the storage 
-  layer</p>
+  Get the name of the package zip file to be used in the storage layer
   <dl class="fields">
     <dt>Overrides:
         <a href="service.packages.PackageHandler-class.html#zip_name">PackageHandler.zip_name</a>
@@ -586,8 +584,7 @@
     </td>
   </tr></table>
   
-  <p>Get a list of the names of metadata files extracted and stored by this
-  packager</p>
+  Get a list of the names of metadata files extracted and stored by this packager
   <dl class="fields">
     <dt>Overrides:
         <a href="service.packages.PackageHandler-class.html#metadata_names">PackageHandler.metadata_names</a>
@@ -609,8 +606,7 @@
     </td>
   </tr></table>
   
-  <p>Get the name of the package as it should appear in any content 
-  urls</p>
+  Get the name of the package as it should appear in any content urls
   <dl class="fields">
     <dt>Overrides:
         <a href="service.packages.PackageHandler-class.html#url_name">PackageHandler.url_name</a>
@@ -632,7 +628,7 @@
     </td>
   </tr></table>
   
-  <p>generator, should yield</p>
+  generator, should yield
   <dl class="fields">
     <dt>Overrides:
         <a href="service.packages.PackageHandler-class.html#metadata_streams">PackageHandler.metadata_streams</a>
@@ -765,7 +761,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 10:36:10 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:12 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
