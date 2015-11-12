@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.models</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        Package&nbsp;models
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.models-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="service.models-module.html">Package service.models</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">1</tt>  <tt class="py-line"><tt class="py-comment"># so that your models can all be accessed from service.models, you can import them here</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package service=service-module.html"><a title="service" class="py-name" href="#" onclick="return doclink('link-0', 'service', 'link-0');">service</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package service.models=service.models-module.html"><a title="service.models" class="py-name" href="#" onclick="return doclink('link-1', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method service.models.api.NotificationList.notifications()=service.models.api.NotificationList-class.html#notifications,Module service.models.notifications=service.models.notifications-module.html,Module service.tests.fixtures.notifications=service.tests.fixtures.notifications-module.html"><a title="service.models.api.NotificationList.notifications
+service.models.notifications
+service.tests.fixtures.notifications" class="py-name" href="#" onclick="return doclink('link-2', 'notifications', 'link-2');">notifications</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class service.models.notifications.RoutedNotification=service.models.notifications.RoutedNotification-class.html"><a title="service.models.notifications.RoutedNotification" class="py-name" href="#" onclick="return doclink('link-3', 'RoutedNotification', 'link-3');">RoutedNotification</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Class service.models.notifications.UnroutedNotification=service.models.notifications.UnroutedNotification-class.html"><a title="service.models.notifications.UnroutedNotification" class="py-name" href="#" onclick="return doclink('link-4', 'UnroutedNotification', 'link-4');">UnroutedNotification</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Class service.models.notifications.RoutingMetadata=service.models.notifications.RoutingMetadata-class.html"><a title="service.models.notifications.RoutingMetadata" class="py-name" href="#" onclick="return doclink('link-5', 'RoutingMetadata', 'link-5');">RoutingMetadata</a></tt><tt class="py-op">,</tt> <tt id="link-6" class="py-name" targets="Class service.models.notifications.NotificationMetadata=service.models.notifications.NotificationMetadata-class.html"><a title="service.models.notifications.NotificationMetadata" class="py-name" href="#" onclick="return doclink('link-6', 'NotificationMetadata', 'link-6');">NotificationMetadata</a></tt><tt class="py-op">,</tt> <tt id="link-7" class="py-name" targets="Class service.models.notifications.FailedNotification=service.models.notifications.FailedNotification-class.html"><a title="service.models.notifications.FailedNotification" class="py-name" href="#" onclick="return doclink('link-7', 'FailedNotification', 'link-7');">FailedNotification</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno">3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-8" class="py-name"><a title="service" class="py-name" href="#" onclick="return doclink('link-8', 'service', 'link-0');">service</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="service.models" class="py-name" href="#" onclick="return doclink('link-9', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Module service.models.repository=service.models.repository-module.html,Method service.models.repository.MatchProvenance.repository()=service.models.repository.MatchProvenance-class.html#repository,Method service.models.repository.RepositoryConfig.repository()=service.models.repository.RepositoryConfig-class.html#repository,Module service.tests.fixtures.repository=service.tests.fixtures.repository-module.html"><a title="service.models.repository
+service.models.repository.MatchProvenance.repository
+service.models.repository.RepositoryConfig.repository
+service.tests.fixtures.repository" class="py-name" href="#" onclick="return doclink('link-10', 'repository', 'link-10');">repository</a></tt> <tt class="py-keyword">import</tt> <tt id="link-11" class="py-name" targets="Class service.models.repository.RepositoryConfig=service.models.repository.RepositoryConfig-class.html"><a title="service.models.repository.RepositoryConfig" class="py-name" href="#" onclick="return doclink('link-11', 'RepositoryConfig', 'link-11');">RepositoryConfig</a></tt><tt class="py-op">,</tt> <tt id="link-12" class="py-name" targets="Class service.models.repository.MatchProvenance=service.models.repository.MatchProvenance-class.html"><a title="service.models.repository.MatchProvenance" class="py-name" href="#" onclick="return doclink('link-12', 'MatchProvenance', 'link-12');">MatchProvenance</a></tt><tt class="py-op">,</tt> <tt id="link-13" class="py-name" targets="Class service.models.repository.RetrievalRecord=service.models.repository.RetrievalRecord-class.html"><a title="service.models.repository.RetrievalRecord" class="py-name" href="#" onclick="return doclink('link-13', 'RetrievalRecord', 'link-13');">RetrievalRecord</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-14" class="py-name"><a title="service" class="py-name" href="#" onclick="return doclink('link-14', 'service', 'link-0');">service</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="service.models" class="py-name" href="#" onclick="return doclink('link-15', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Module service.api=service.api-module.html,Module service.models.api=service.models.api-module.html,Module service.tests.fixtures.api=service.tests.fixtures.api-module.html"><a title="service.api
+service.models.api
+service.tests.fixtures.api" class="py-name" href="#" onclick="return doclink('link-16', 'api', 'link-16');">api</a></tt> <tt class="py-keyword">import</tt> <tt id="link-17" class="py-name" targets="Class service.models.api.NotificationList=service.models.api.NotificationList-class.html"><a title="service.models.api.NotificationList" class="py-name" href="#" onclick="return doclink('link-17', 'NotificationList', 'link-17');">NotificationList</a></tt><tt class="py-op">,</tt> <tt id="link-18" class="py-name" targets="Class service.models.api.IncomingNotification=service.models.api.IncomingNotification-class.html"><a title="service.models.api.IncomingNotification" class="py-name" href="#" onclick="return doclink('link-18', 'IncomingNotification', 'link-18');">IncomingNotification</a></tt><tt class="py-op">,</tt> <tt id="link-19" class="py-name" targets="Class service.models.api.OutgoingNotification=service.models.api.OutgoingNotification-class.html"><a title="service.models.api.OutgoingNotification" class="py-name" href="#" onclick="return doclink('link-19', 'OutgoingNotification', 'link-19');">OutgoingNotification</a></tt><tt class="py-op">,</tt> <tt id="link-20" class="py-name" targets="Class service.models.api.ProviderOutgoingNotification=service.models.api.ProviderOutgoingNotification-class.html"><a title="service.models.api.ProviderOutgoingNotification" class="py-name" href="#" onclick="return doclink('link-20', 'ProviderOutgoingNotification', 'link-20');">ProviderOutgoingNotification</a></tt> </tt>
+<a name="L5"></a><tt class="py-lineno">5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-21" class="py-name"><a title="service" class="py-name" href="#" onclick="return doclink('link-21', 'service', 'link-0');">service</a></tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="service.models" class="py-name" href="#" onclick="return doclink('link-22', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Module service.models.account=service.models.account-module.html,Module service.views.account=service.views.account-module.html"><a title="service.models.account
+service.views.account" class="py-name" href="#" onclick="return doclink('link-23', 'account', 'link-23');">account</a></tt> <tt class="py-keyword">import</tt> <tt id="link-24" class="py-name" targets="Class service.models.account.Account=service.models.account.Account-class.html"><a title="service.models.account.Account" class="py-name" href="#" onclick="return doclink('link-24', 'Account', 'link-24');">Account</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">6</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Nov 12 10:36:14 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
