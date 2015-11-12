@@ -65,10 +65,10 @@
 <h1 class="epydoc">Class ProviderOutgoingNotification</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.api-pysrc.html#ProviderOutgoingNotification">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__16" name="uml_class_diagram_for_service__16">
-<area shape="rect" id="node1_16" href="service.models.api.ProviderOutgoingNotification-class.html#__init__" title="service.models.api.ProviderOutgoingNotification.__init__" alt="" coords="37,480,205,500"/>
-<area shape="rect" id="node1" href="service.models.api.ProviderOutgoingNotification-class.html" title="In addition to OutgoingNotification..." alt="" coords="25,446,217,506"/>
-<area shape="rect" id="node2_17" href="service.models.api.OutgoingNotification-class.html#links" title="service.models.api.OutgoingNotification.links" alt="" coords="61,400,181,420"/>
-<area shape="rect" id="node2" href="service.models.api.OutgoingNotification-class.html" title="&quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;, &quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;, &quot;analysis_date&quot; : &quot;&lt;date the routing analysis was carried out&gt;&quot;," alt="" coords="49,366,193,426"/>
+<area shape="rect" id="node1_16" href="service.models.api.ProviderOutgoingNotification-class.html#__init__" title="Create a new instance of the ProviderOutgoingNotification object, optionally around the raw python dictionary." alt="" coords="37,480,205,500"/>
+<area shape="rect" id="node1" href="service.models.api.ProviderOutgoingNotification-class.html" title="Class to represent a notification being sent out of the system via the API to the original provider of that notification" alt="" coords="25,446,217,506"/>
+<area shape="rect" id="node2_17" href="service.models.api.OutgoingNotification-class.html#links" title="Get a list of the links associated with the notification" alt="" coords="61,400,181,420"/>
+<area shape="rect" id="node2" href="service.models.api.OutgoingNotification-class.html" title="Class to represent a notification being sent out of the system via the API." alt="" coords="49,366,193,426"/>
 <area shape="rect" id="node3_18" href="service.models.notifications.NotificationMetadata-class.html#title" title="service.models.notifications.NotificationMetadata.title" alt="" coords="16,40,227,60"/>
 <area shape="rect" id="node3_19" href="service.models.notifications.NotificationMetadata-class.html#version" title="service.models.notifications.NotificationMetadata.version" alt="" coords="16,60,227,80"/>
 <area shape="rect" id="node3_20" href="service.models.notifications.NotificationMetadata-class.html#type" title="service.models.notifications.NotificationMetadata.type" alt="" coords="16,80,227,100"/>
@@ -89,9 +89,10 @@
 </center>
 </center>
 <hr />
-<pre class="literalblock">
-
-In addition to OutgoingNotification...
+<p>Class to represent a notification being sent out of the system via the API to the original provider of that notification</p>
+<p>It extens on the basic OutgoingNotification (which can be consumed by anyone, not only the original provider), and adds the
+following information:</p>
+<pre class="rst-literal-block">
 {
     &quot;provider&quot; : {
         &quot;id&quot; : &quot;&lt;user account id of the provider&gt;&quot;,
@@ -100,7 +101,6 @@ In addition to OutgoingNotification...
         &quot;route&quot; : &quot;&lt;method by which notification was received: native api, sword, ftp&gt;&quot;
     },
 }
-
 </pre>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
@@ -127,7 +127,9 @@ In addition to OutgoingNotification...
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.ProviderOutgoingNotification-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new instance of the ProviderOutgoingNotification object, optionally around the
+raw python dictionary.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#ProviderOutgoingNotification.__init__">source&nbsp;code</a></span>
             
@@ -146,7 +148,8 @@ In addition to OutgoingNotification...
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.models.api.OutgoingNotification-class.html#links" class="summary-sig-name">links</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.models.api.OutgoingNotification-class.html#links" class="summary-sig-name">links</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get a list of the links associated with the notification</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#OutgoingNotification.links">source&nbsp;code</a></span>
             
@@ -568,7 +571,11 @@ In addition to OutgoingNotification...
     </td>
   </tr></table>
   
-  
+  <p>Create a new instance of the ProviderOutgoingNotification object, optionally around the
+raw python dictionary.</p>
+<p>You may obtain the raw dictionary from - for example - the Unrouted or Routed notification in the index.</p>
+<p>If supplied, the raw dictionary will be validated against the allowed structure of this
+object, and an exception will be raised if it does not validate</p>
   <dl class="fields">
     <dt>Overrides:
         <a href="service.models.notifications.NotificationMetadata-class.html#__init__">notifications.NotificationMetadata.__init__</a>
@@ -608,7 +615,7 @@ In addition to OutgoingNotification...
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:11 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 12:28:20 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

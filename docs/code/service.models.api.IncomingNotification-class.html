@@ -65,9 +65,9 @@
 <h1 class="epydoc">Class IncomingNotification</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.api-pysrc.html#IncomingNotification">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__13" name="uml_class_diagram_for_service__13">
-<area shape="rect" id="node1_16" href="service.models.api.IncomingNotification-class.html#__init__" title="service.models.api.IncomingNotification.__init__" alt="" coords="47,399,196,419"/>
-<area shape="rect" id="node1_17" href="service.models.api.IncomingNotification-class.html#make_unrouted" title="service.models.api.IncomingNotification.make_unrouted" alt="" coords="47,419,196,439"/>
-<area shape="rect" id="node1" href="service.models.api.IncomingNotification-class.html" title="&quot;event&quot; : &quot;&lt;keyword for the kind of notification: acceptance, publication, etc.&gt;&quot;," alt="" coords="35,365,208,445"/>
+<area shape="rect" id="node1_16" href="service.models.api.IncomingNotification-class.html#__init__" title="Create a new instance of the IncomingNotification object, optionally around the raw python dictionary." alt="" coords="47,399,196,419"/>
+<area shape="rect" id="node1_17" href="service.models.api.IncomingNotification-class.html#make_unrouted" title="Convert this object to a models.UnroutenNotification object, which is suitable for serialisation into the index" alt="" coords="47,419,196,439"/>
+<area shape="rect" id="node1" href="service.models.api.IncomingNotification-class.html" title="Class to represent a notification delivered to the system via the API." alt="" coords="35,365,208,445"/>
 <area shape="rect" id="node2_18" href="service.models.notifications.NotificationMetadata-class.html#title" title="service.models.notifications.NotificationMetadata.title" alt="" coords="16,40,227,60"/>
 <area shape="rect" id="node2_19" href="service.models.notifications.NotificationMetadata-class.html#version" title="service.models.notifications.NotificationMetadata.version" alt="" coords="16,60,227,80"/>
 <area shape="rect" id="node2_20" href="service.models.notifications.NotificationMetadata-class.html#type" title="service.models.notifications.NotificationMetadata.type" alt="" coords="16,80,227,100"/>
@@ -88,43 +88,40 @@
 </center>
 </center>
 <hr />
-<dl class="rst-docutils">
-<dt>{</dt>
-<dd><p class="rst-first">&quot;event&quot; : &quot;&lt;keyword for the kind of notification: acceptance, publication, etc.&gt;&quot;,</p>
-<dl class="rst-docutils">
-<dt>&quot;provider&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
-<dd>&quot;agent&quot; : &quot;&lt;string defining the software/process which put the content here, provided by provider - is this useful?&gt;&quot;,
-&quot;ref&quot; : &quot;&lt;provider's globally unique reference for this research object&gt;&quot;</dd>
-</dl>
-<p>},</p>
-<dl class="rst-docutils">
-<dt>&quot;content&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
-<dd>&quot;packaging_format&quot; : &quot;&lt;identifier for packaging format used&gt;&quot;</dd>
-</dl>
-<p>},</p>
-<dl class="rst-docutils">
-<dt>&quot;links&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">[</span></dt>
-<dd><dl class="rst-first rst-docutils">
-<dt>{</dt>
-<dd>&quot;type&quot; : &quot;&lt;link type: splash|fulltext&gt;&quot;,
-&quot;format&quot; : &quot;&lt;text/html|application/pdf|application/xml|application/zip|...&gt;&quot;,
-&quot;url&quot; : &quot;&lt;provider's splash, fulltext or machine readable page&gt;&quot;</dd>
-</dl>
-<p class="rst-last">}</p>
-</dd>
-</dl>
-<p>],</p>
-<dl class="rst-docutils">
-<dt>&quot;embargo&quot; <span class="classifier-delimiter">:</span> <span class="rst-classifier">{</span></dt>
-<dd>&quot;end&quot; : &quot;&lt;date embargo expires&gt;&quot;,
-&quot;start&quot; : &quot;&lt;date embargo starts&gt;&quot;,
-&quot;duration&quot; : &quot;&lt;number of months for embargo to run&gt;&quot;</dd>
-</dl>
-<p>},</p>
-<p class="rst-last">&quot;metadata&quot; : {&quot;&lt;INHERITED from NotificationMetadata}</p>
-</dd>
-</dl>
-<p>}</p>
+<p>Class to represent a notification delivered to the system via the API.</p>
+<p>It extends the basic NotificationMetadata and adds some contextual information about the
+notification and associated content and embargoes.</p>
+<p>The structure is as follows</p>
+<pre class="rst-literal-block">
+{
+    &quot;event&quot; : &quot;&lt;keyword for the kind of notification: acceptance, publication, etc.&gt;&quot;,
+
+    &quot;provider&quot; : {
+        &quot;agent&quot; : &quot;&lt;string defining the software/process which put the content here, provided by provider - is this useful?&gt;&quot;,
+        &quot;ref&quot; : &quot;&lt;provider's globally unique reference for this research object&gt;&quot;
+    },
+
+    &quot;content&quot; : {
+        &quot;packaging_format&quot; : &quot;&lt;identifier for packaging format used&gt;&quot;
+    },
+
+    &quot;links&quot; : [
+        {
+            &quot;type&quot; : &quot;&lt;link type: splash|fulltext&gt;&quot;,
+            &quot;format&quot; : &quot;&lt;text/html|application/pdf|application/xml|application/zip|...&gt;&quot;,
+            &quot;url&quot; : &quot;&lt;provider's splash, fulltext or machine readable page&gt;&quot;
+        }
+    ],
+
+    &quot;embargo&quot; : {
+        &quot;end&quot; : &quot;&lt;date embargo expires&gt;&quot;,
+        &quot;start&quot; : &quot;&lt;date embargo starts&gt;&quot;,
+        &quot;duration&quot; : &quot;&lt;number of months for embargo to run&gt;&quot;
+    },
+
+    &quot;metadata&quot; : {&quot;&lt;INHERITED from NotificationMetadata&gt;&quot;}
+}
+</pre>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -150,7 +147,9 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.IncomingNotification-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new instance of the IncomingNotification object, optionally around the
+raw python dictionary.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#IncomingNotification.__init__">source&nbsp;code</a></span>
             
@@ -166,7 +165,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="make_unrouted"></a><span class="summary-sig-name">make_unrouted</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a name="make_unrouted"></a><span class="summary-sig-name">make_unrouted</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Convert this object to a models.UnroutenNotification object, which is
+suitable for serialisation into the index</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#IncomingNotification.make_unrouted">source&nbsp;code</a></span>
             
@@ -588,7 +589,11 @@
     </td>
   </tr></table>
   
-  
+  <p>Create a new instance of the IncomingNotification object, optionally around the
+raw python dictionary.</p>
+<p>You may obtain the raw dictionary from - for example - a POST to the web API.</p>
+<p>If supplied, the raw dictionary will be validated against the allowed structure of this
+object, and an exception will be raised if it does not validate</p>
   <dl class="fields">
     <dt>Overrides:
         <a href="service.models.notifications.NotificationMetadata-class.html#__init__">notifications.NotificationMetadata.__init__</a>
@@ -628,7 +633,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:10 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 12:28:20 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

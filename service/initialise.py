@@ -1,3 +1,9 @@
+"""
+JPER service initialise module, run at application startup.
+
+The main initialise() function is run when the app is started every time
+"""
+
 from octopus.core import app
 from werkzeug import generate_password_hash
 import uuid, requests, json, logging, os, scheduler
@@ -5,9 +11,25 @@ from logging import Formatter
 from logging.handlers import RotatingFileHandler
 
 ELASTIC_SEARCH_HOST = "http://gateway:9200"
+"""Elasticsearch hostname"""
+
 ELASTIC_SEARCH_INDEX = "jper"
+"""JPER index name in the elasticsearch instance"""
 
 def initialise():
+    """
+    Initialise the application at startup.
+
+    Ths function will be executed for you whenever you start the app.
+
+    It will do the following things:
+
+    1. create the initial admin account if it does not already exist
+    2. set up the logging
+    3. start the task scheduler
+
+    :return:
+    """
     i = app.config['ELASTIC_SEARCH_HOST'] + '/' + app.config['ELASTIC_SEARCH_INDEX'] + '/'
     un = 'admin'
     ia = i + '/account/' + un

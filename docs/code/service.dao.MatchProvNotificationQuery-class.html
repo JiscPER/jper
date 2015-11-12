@@ -64,14 +64,17 @@
 <h1 class="epydoc">Class MatchProvNotificationQuery</h1><p class="nomargin-top"><span class="codelink"><a href="service.dao-pysrc.html#MatchProvNotificationQuery">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__6" name="uml_class_diagram_for_service__6">
-<area shape="rect" id="node1_2" href="service.dao.MatchProvNotificationQuery-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="17,39,187,59"/>
-<area shape="rect" id="node1_3" href="service.dao.MatchProvNotificationQuery-class.html#query" title="service.dao.MatchProvNotificationQuery.query" alt="" coords="17,59,187,79"/>
-<area shape="rect" id="node1" href="service.dao.MatchProvNotificationQuery-class.html" title="service.dao.MatchProvNotificationQuery" alt="" coords="5,5,198,85"/>
+<area shape="rect" id="node1_2" href="service.dao.MatchProvNotificationQuery-class.html#__init__" title="Set the parameters of the query" alt="" coords="16,39,240,59"/>
+<area shape="rect" id="node1_3" href="service.dao.MatchProvNotificationQuery-class.html#query" title="generate the query as a python dictionary object" alt="" coords="16,59,240,79"/>
+<area shape="rect" id="node1" href="service.dao.MatchProvNotificationQuery-class.html" title="Query wrapper which generates an ES query for retrieving match provenance objects based on the notification to which they are attached" alt="" coords="4,5,252,85"/>
 </map>
   <img src="uml_class_diagram_for_service__6.gif" alt='' usemap="#uml_class_diagram_for_service__6" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
+Query wrapper which generates an ES query for retrieving match provenance objects
+based on the notification to which they are attached
+
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -96,8 +99,9 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.dao.MatchProvNotificationQuery-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">notification_id</span>)</span><br />
-      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+        <span class="summary-sig-arg">notification_id</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">10</span>)</span><br />
+      Set the parameters of the query</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.dao-pysrc.html#MatchProvNotificationQuery.__init__">source&nbsp;code</a></span>
             
@@ -113,7 +117,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="query"></a><span class="summary-sig-name">query</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.dao.MatchProvNotificationQuery-class.html#query" class="summary-sig-name">query</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      generate the query as a python dictionary object</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.dao-pysrc.html#MatchProvNotificationQuery.query">source&nbsp;code</a></span>
             
@@ -193,7 +198,8 @@
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">notification_id</span>)</span>
+        <span class="sig-arg">notification_id</span>,
+        <span class="sig-arg">size</span>=<span class="sig-default">10</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -201,12 +207,37 @@
     </td>
   </tr></table>
   
-  x.__init__(...) initializes x; see help(type(x)) for signature
+  Set the parameters of the query
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>notification_id</code></strong> - the id of the notification for which to retrieve match provenance</li>
+        <li><strong class="pname"><code>size</code></strong> - the maximum number to return (defaults to 10)</li>
+    </ul></dd>
     <dt>Overrides:
         object.__init__
-        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="query"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">query</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.dao-pysrc.html#MatchProvNotificationQuery.query">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  generate the query as a python dictionary object
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>a python dictionary containing the ES query, ready for JSON serialisation</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -242,7 +273,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:10 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 12:28:19 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

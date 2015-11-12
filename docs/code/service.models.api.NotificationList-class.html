@@ -65,20 +65,23 @@
 <h1 class="epydoc">Class NotificationList</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.api-pysrc.html#NotificationList">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__14" name="uml_class_diagram_for_service__14">
-<area shape="rect" id="node1_6" href="service.models.api.NotificationList-class.html#since" title="service.models.api.NotificationList.since" alt="" coords="17,39,149,59"/>
-<area shape="rect" id="node1_7" href="service.models.api.NotificationList-class.html#page" title="service.models.api.NotificationList.page" alt="" coords="17,59,149,79"/>
-<area shape="rect" id="node1_8" href="service.models.api.NotificationList-class.html#page_size" title="service.models.api.NotificationList.page_size" alt="" coords="17,79,149,99"/>
-<area shape="rect" id="node1_9" href="service.models.api.NotificationList-class.html#timestamp" title="service.models.api.NotificationList.timestamp" alt="" coords="17,99,149,119"/>
-<area shape="rect" id="node1_10" href="service.models.api.NotificationList-class.html#total" title="service.models.api.NotificationList.total" alt="" coords="17,119,149,139"/>
-<area shape="rect" id="node1_11" href="service.models.api.NotificationList-class.html#notifications" title="service.models.api.NotificationList.notifications" alt="" coords="17,139,149,159"/>
-<area shape="rect" id="node1" href="service.models.api.NotificationList-class.html" title="{..." alt="" coords="5,5,161,165"/>
+<area shape="rect" id="node1_6" href="service.models.api.NotificationList-class.html#since" title="Set the requested since date of the request" alt="" coords="17,39,149,59"/>
+<area shape="rect" id="node1_7" href="service.models.api.NotificationList-class.html#page" title="Set the requested page of the response" alt="" coords="17,59,149,79"/>
+<area shape="rect" id="node1_8" href="service.models.api.NotificationList-class.html#page_size" title="Set the requested page size" alt="" coords="17,79,149,99"/>
+<area shape="rect" id="node1_9" href="service.models.api.NotificationList-class.html#timestamp" title="Set the timestamp of the request" alt="" coords="17,99,149,119"/>
+<area shape="rect" id="node1_10" href="service.models.api.NotificationList-class.html#total" title="Set the number of available notifications" alt="" coords="17,119,149,139"/>
+<area shape="rect" id="node1_11" href="service.models.api.NotificationList-class.html#notifications" title="Set the list of notifications for this response" alt="" coords="17,139,149,159"/>
+<area shape="rect" id="node1" href="service.models.api.NotificationList-class.html" title="Class to represent a list of notifications, as a response to an API request for notifications matching a specified set of criteria." alt="" coords="5,5,161,165"/>
 </map>
   <img src="uml_class_diagram_for_service__14.gif" alt='' usemap="#uml_class_diagram_for_service__14" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
-<pre class="literalblock">
-
+<p>Class to represent a list of notifications, as a response to an API request for notifications
+matching a specified set of criteria.</p>
+<p>It reflects back the original parameters of the request, and includes a list of serialised (to dict objects)
+OutgoingNotification objects</p>
+<pre class="rst-literal-block">
 {
     &quot;since&quot; : &quot;&lt;date from which results start in the form YYYY-MM-DDThh:mm:ssZ&gt;&quot;,
     &quot;page&quot; : &quot;&lt;page number of results&gt;,
@@ -86,10 +89,9 @@
     &quot;timestamp&quot; : &quot;&lt;timestamp of this request in the form YYYY-MM-DDThh:mm:ssZ&gt;&quot;,
     &quot;total&quot; : &quot;&lt;total number of results at this time&gt;&quot;,
     &quot;notifications&quot; : [
-        &quot;&lt;ordered list of Outgoing Data Model JSON objects&gt;&quot;
+        &quot;&lt;ordered list of OutgoingNotification JSON objects&gt;&quot;
     ]
 }
-
 </pre>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
@@ -116,7 +118,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.NotificationList-class.html#since" class="summary-sig-name">since</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the requested since date of the request</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#NotificationList.since">source&nbsp;code</a></span>
             
@@ -133,7 +136,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.NotificationList-class.html#page" class="summary-sig-name">page</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the requested page of the response</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#NotificationList.page">source&nbsp;code</a></span>
             
@@ -150,7 +154,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.NotificationList-class.html#page_size" class="summary-sig-name">page_size</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the requested page size</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#NotificationList.page_size">source&nbsp;code</a></span>
             
@@ -167,7 +172,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.NotificationList-class.html#timestamp" class="summary-sig-name">timestamp</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the timestamp of the request</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#NotificationList.timestamp">source&nbsp;code</a></span>
             
@@ -184,7 +190,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.NotificationList-class.html#total" class="summary-sig-name">total</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the number of available notifications</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#NotificationList.total">source&nbsp;code</a></span>
             
@@ -201,7 +208,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.api.NotificationList-class.html#notifications" class="summary-sig-name">notifications</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the list of notifications for this response</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.api-pysrc.html#NotificationList.notifications">source&nbsp;code</a></span>
             
@@ -245,8 +253,12 @@
     </td>
   </tr></table>
   
-  
+  Set the requested since date of the request
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the requested since date of the request</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@since.setter</code></li>
@@ -269,8 +281,12 @@
     </td>
   </tr></table>
   
-  
+  Set the requested page of the response
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the requested page of the response</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@page.setter</code></li>
@@ -293,8 +309,12 @@
     </td>
   </tr></table>
   
-  
+  Set the requested page size
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the requested page size</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@page_size.setter</code></li>
@@ -317,8 +337,12 @@
     </td>
   </tr></table>
   
-  
+  Set the timestamp of the request
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the timestamp of the request in the form YYYY-MM-DDTHH:MM:SSZ</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@timestamp.setter</code></li>
@@ -341,8 +365,12 @@
     </td>
   </tr></table>
   
-  
+  Set the number of available notifications
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the number of available notifications</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@total.setter</code></li>
@@ -365,8 +393,12 @@
     </td>
   </tr></table>
   
-  
+  Set the list of notifications for this response
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the list of notifications</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@notifications.setter</code></li>
@@ -406,7 +438,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:11 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 12:28:20 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

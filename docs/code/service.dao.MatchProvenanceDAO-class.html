@@ -64,14 +64,16 @@
 <h1 class="epydoc">Class MatchProvenanceDAO</h1><p class="nomargin-top"><span class="codelink"><a href="service.dao-pysrc.html#MatchProvenanceDAO">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__7" name="uml_class_diagram_for_service__7">
-<area shape="rect" id="node1_2" href="service.dao.MatchProvenanceDAO-class.html#__type__" title="service.dao.MatchProvenanceDAO.__type__" alt="" coords="17,31,249,51"/>
-<area shape="rect" id="node1_3" href="service.dao.MatchProvenanceDAO-class.html#pull_by_notification" title="service.dao.MatchProvenanceDAO.pull_by_notification" alt="" coords="17,53,249,73"/>
-<area shape="rect" id="node1" href="service.dao.MatchProvenanceDAO-class.html" title="service.dao.MatchProvenanceDAO" alt="" coords="5,5,261,80"/>
+<area shape="rect" id="node1_2" href="service.dao.MatchProvenanceDAO-class.html#__type__" title="The index type to use to store these objects" alt="" coords="16,31,301,51"/>
+<area shape="rect" id="node1_3" href="service.dao.MatchProvenanceDAO-class.html#pull_by_notification" title="List all of the match provenance information for the requested notification" alt="" coords="16,53,301,73"/>
+<area shape="rect" id="node1" href="service.dao.MatchProvenanceDAO-class.html" title="DAO for MatchProvenance" alt="" coords="4,5,313,80"/>
 </map>
   <img src="uml_class_diagram_for_service__7.gif" alt='' usemap="#uml_class_diagram_for_service__7" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
+DAO for MatchProvenance
+
 <!-- ==================== CLASS METHODS ==================== -->
 <a name="section-ClassMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -95,8 +97,10 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="pull_by_notification"></a><span class="summary-sig-name">pull_by_notification</span>(<span class="summary-sig-arg">cls</span>,
-        <span class="summary-sig-arg">notification_id</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.dao.MatchProvenanceDAO-class.html#pull_by_notification" class="summary-sig-name">pull_by_notification</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">notification_id</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">10</span>)</span><br />
+      List all of the match provenance information for the requested notification</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.dao-pysrc.html#MatchProvenanceDAO.pull_by_notification">source&nbsp;code</a></span>
             
@@ -128,10 +132,57 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="__type__"></a><span class="summary-name">__type__</span> = <code title="&quot;match_prov&quot;">&quot;match_prov&quot;</code>
+        <a name="__type__"></a><span class="summary-name">__type__</span> = <code title="&quot;match_prov&quot;">&quot;match_prov&quot;</code><br />
+      The index type to use to store these objects
     </td>
   </tr>
 </table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="pull_by_notification"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">pull_by_notification</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">notification_id</span>,
+        <span class="sig-arg">size</span>=<span class="sig-default">10</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.dao-pysrc.html#MatchProvenanceDAO.pull_by_notification">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  List all of the match provenance information for the requested notification
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>notification_id</code></strong> - the id of the notification for which to retrieve match provenance</li>
+        <li><strong class="pname"><code>size</code></strong> - the maximum number to return (defaults to 10)</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -163,7 +214,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 11:17:10 2015
+    Generated by Epydoc 3.0.1 on Thu Nov 12 12:28:19 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
