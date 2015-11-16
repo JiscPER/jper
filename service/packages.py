@@ -864,7 +864,7 @@ class FilesAndJATS(PackageHandler):
     def _is_valid(self):
         """
         Is this package valid as FilesAndJATS?
-        
+
         :return:
         """
         # is valid if either one or both of jats/epmc is not none

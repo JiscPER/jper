@@ -61,6 +61,9 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module routing</h1><p class="nomargin-top"><span class="codelink"><a href="service.routing-pysrc.html">source&nbsp;code</a></span></p>
+Module which handles all the routing mechanics to convert UnroutedNotifications into either
+RoutedNotifications or FailedNotifications
+
 <!-- ==================== CLASSES ==================== -->
 <a name="section-Classes"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -82,7 +85,8 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="service.routing.RoutingException-class.html" class="summary-name">RoutingException</a>
+        <a href="service.routing.RoutingException-class.html" class="summary-name">RoutingException</a><br />
+      Generic exception to be raised when errors with routing are encountered
     </td>
   </tr>
 </table>
@@ -109,7 +113,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="route"></a><span class="summary-sig-name">route</span>(<span class="summary-sig-arg">unrouted</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.routing-module.html#route" class="summary-sig-name">route</a>(<span class="summary-sig-arg">unrouted</span>)</span><br />
+      Route an UnroutedNotification to the appropriate repositories</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#route">source&nbsp;code</a></span>
             
@@ -129,7 +134,7 @@
         <span class="summary-sig-arg">repository_config</span>,
         <span class="summary-sig-arg">provenance</span>)</span><br />
       Match the incoming notification data, to the repository config and determine
-if there is a match</td>
+if there is a match.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#match">source&nbsp;code</a></span>
             
@@ -163,10 +168,11 @@ if there is a match</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_merge_entities"></a><span class="summary-sig-name">_merge_entities</span>(<span class="summary-sig-arg">e1</span>,
+          <td><span class="summary-sig"><a href="service.routing-module.html#_merge_entities" class="summary-sig-name" onclick="show_private();">_merge_entities</a>(<span class="summary-sig-arg">e1</span>,
         <span class="summary-sig-arg">e2</span>,
         <span class="summary-sig-arg">primary_property</span>,
-        <span class="summary-sig-arg">other_properties</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">other_properties</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Merge dict objects e1 and e2 so that the resulting dict has the data from both.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#_merge_entities">source&nbsp;code</a></span>
             
@@ -182,8 +188,10 @@ if there is a match</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="repackage"></a><span class="summary-sig-name">repackage</span>(<span class="summary-sig-arg">unrouted</span>,
-        <span class="summary-sig-arg">repo_ids</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.routing-module.html#repackage" class="summary-sig-name">repackage</a>(<span class="summary-sig-arg">unrouted</span>,
+        <span class="summary-sig-arg">repo_ids</span>)</span><br />
+      Repackage any binary content associated with the notification for consumption by
+the repositories identified by the list of repo_ids.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#repackage">source&nbsp;code</a></span>
             
@@ -287,12 +295,9 @@ if there is a match</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="postcode_match"></a><span class="summary-sig-name">postcode_match</span>(<span class="summary-sig-arg">pc1</span>,
+          <td><span class="summary-sig"><a href="service.routing-module.html#postcode_match" class="summary-sig-name">postcode_match</a>(<span class="summary-sig-arg">pc1</span>,
         <span class="summary-sig-arg">pc2</span>)</span><br />
-      Normalise postcodes: strip whitespace and lowercase, then exact match required
-:param pc1:
-:param pc2:
-:return:</td>
+      Normalise postcodes: strip whitespace and lowercase, then exact match required</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#postcode_match">source&nbsp;code</a></span>
             
@@ -308,12 +313,9 @@ if there is a match</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="exact_substring"></a><span class="summary-sig-name">exact_substring</span>(<span class="summary-sig-arg">s1</span>,
+          <td><span class="summary-sig"><a href="service.routing-module.html#exact_substring" class="summary-sig-name">exact_substring</a>(<span class="summary-sig-arg">s1</span>,
         <span class="summary-sig-arg">s2</span>)</span><br />
-      normalised s1 must be an exact substring of normalised s2
-:param s1:
-:param s2:
-:return:</td>
+      normalised s1 must be an exact substring of normalised s2</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#exact_substring">source&nbsp;code</a></span>
             
@@ -347,7 +349,8 @@ if there is a match</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_normalise"></a><span class="summary-sig-name">_normalise</span>(<span class="summary-sig-arg">s</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.routing-module.html#_normalise" class="summary-sig-name" onclick="show_private();">_normalise</a>(<span class="summary-sig-arg">s</span>)</span><br />
+      Normalise the supplied string in the following ways:</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#_normalise">source&nbsp;code</a></span>
             
@@ -363,7 +366,8 @@ if there is a match</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="author_id_string"></a><span class="summary-sig-name">author_id_string</span>(<span class="summary-sig-arg">aob</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.routing-module.html#author_id_string" class="summary-sig-name">author_id_string</a>(<span class="summary-sig-arg">aob</span>)</span><br />
+      Produce a string representation of an author id</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.routing-pysrc.html#author_id_string">source&nbsp;code</a></span>
             
@@ -392,6 +396,40 @@ if there is a match</td>
   </td>
 </tr>
 </table>
+<a name="route"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">route</span>(<span class="sig-arg">unrouted</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.routing-pysrc.html#route">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Route an UnroutedNotification to the appropriate repositories</p>
+<p>The function will extract all the metadata and match data from any binary content associated with
+the notification, and in combination from match data taken from the notification metadata itself will
+determine if there is a RepositoryConfig whose criteria it matches.</p>
+<p>If there is a match to one or more of the criteria, MatchProvenance objects will be created for
+each matching repository, and persisted for later inspection.</p>
+<p>If one or more repositories are matched, a RoutedNotification will be created and enhanced with any
+metadata extracted from the associated package (if present), then persisted.</p>
+<p>If no repositories match, a FailedNotification will be created and enhanced with any
+metadata extracted from the associated package (if present), then persisted.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>unrouted</code></strong> - an UnroutedNotification object</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if the notification was routed to a repository, False if there were no matches</dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="match"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -408,8 +446,10 @@ if there is a match</td>
     </td>
   </tr></table>
   
-  Match the incoming notification data, to the repository config and determine
-if there is a match
+  <p>Match the incoming notification data, to the repository config and determine
+if there is a match.</p>
+<p>If there is a match, all criteria for the match will be added to the provenance
+object</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -417,7 +457,7 @@ if there is a match
         <li><strong class="pname"><code>repository_config</code></strong> - models.RepositoryConfig</li>
     </ul></dd>
     <dt>Returns:</dt>
-        <dd>list of models.MatchProvenance objects, or None if no match</dd>
+        <dd>True if there was a match, False if not</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -440,9 +480,83 @@ if there is a match
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>routed</code></strong></li>
-        <li><strong class="pname"><code>metadata</code></strong></li>
+        <li><strong class="pname"><code>routed</code></strong> - a RoutedNotification whose metadata is to be enhanced</li>
+        <li><strong class="pname"><code>metadata</code></strong> - a NotificationMetadata object</li>
     </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_merge_entities"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_merge_entities</span>(<span class="sig-arg">e1</span>,
+        <span class="sig-arg">e2</span>,
+        <span class="sig-arg">primary_property</span>,
+        <span class="sig-arg">other_properties</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.routing-pysrc.html#_merge_entities">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Merge dict objects e1 and e2 so that the resulting dict has the data from both.</p>
+<p>Entities are in-particular dicts which may contain an &quot;identifier&quot; field, such as
+used by projects and authors.</p>
+<p>The primary_property names the field in the dict which can be used to confirm that
+e1 and e2 reference the same entity, in the event that no matching identifiers are present.</p>
+<p>If no identifier is present, and the primary_property values do not match, then this merge
+will not proceed.</p>
+<p>The other_properties is an explicit list of the properties that should be merged to form
+the final output (no need to list the primary_property)</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>e1</code></strong> - first entity object</li>
+        <li><strong class="pname"><code>e2</code></strong> - second entity object</li>
+        <li><strong class="pname"><code>primary_property</code></strong> - primary way to assert two entities refer to the same thing</li>
+        <li><strong class="pname"><code>other_properties</code></strong> - explicit list of properties to merge</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="repackage"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">repackage</span>(<span class="sig-arg">unrouted</span>,
+        <span class="sig-arg">repo_ids</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.routing-pysrc.html#repackage">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Repackage any binary content associated with the notification for consumption by
+the repositories identified by the list of repo_ids.</p>
+<p>Note that this takes an unrouted notification, because of the point in the routing workflow at
+which it is invoked, although in reality you could also pass it any of the other fully fledged
+notification objects such as RoutedNotification</p>
+<p>This function will check each account associated with the repository id for the package format
+thats that they will accept for deposit.  For each format, we look for a route to convert from
+the source format that the provider gave us for the notification, and then issue a package convert
+request via the PackageManager to the best possible format for the repository.</p>
+<p>For each successful conversion the notification recieves a new link attribute containing
+identification information for the converted package.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>unrouted</code></strong> - notification object</li>
+        <li><strong class="pname"><code>repo_ids</code></strong> - list of repository account identifiers</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a list of the format conversions that were carried out</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -465,9 +579,11 @@ if there is a match
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>domain</code></strong></li>
-        <li><strong class="pname"><code>url</code></strong></li>
+        <li><strong class="pname"><code>domain</code></strong> - domain string</li>
+        <li><strong class="pname"><code>url</code></strong> - any url</li>
     </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if match, False if not</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -490,9 +606,11 @@ if there is a match
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>domain</code></strong></li>
-        <li><strong class="pname"><code>email</code></strong></li>
+        <li><strong class="pname"><code>domain</code></strong> - domain string</li>
+        <li><strong class="pname"><code>email</code></strong> - any email address</li>
     </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if match, False if not</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -515,9 +633,11 @@ if there is a match
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>author_obj_1</code></strong></li>
-        <li><strong class="pname"><code>author_obj_2</code></strong></li>
+        <li><strong class="pname"><code>author_obj_1</code></strong> - first author object</li>
+        <li><strong class="pname"><code>author_obj_2</code></strong> - second author object</li>
     </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if match, False if not</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -540,9 +660,65 @@ if there is a match
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>author_string</code></strong></li>
-        <li><strong class="pname"><code>author_obj</code></strong></li>
+        <li><strong class="pname"><code>author_string</code></strong> - an arbitrary string which may be an author id</li>
+        <li><strong class="pname"><code>author_obj</code></strong> - the author object to check against</li>
     </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if match, False if not</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="postcode_match"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">postcode_match</span>(<span class="sig-arg">pc1</span>,
+        <span class="sig-arg">pc2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.routing-pysrc.html#postcode_match">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Normalise postcodes: strip whitespace and lowercase, then exact match required
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>pc1</code></strong> - first postcode</li>
+        <li><strong class="pname"><code>pc2</code></strong> - second postcode</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if match, False if not</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="exact_substring"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">exact_substring</span>(<span class="sig-arg">s1</span>,
+        <span class="sig-arg">s2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.routing-pysrc.html#exact_substring">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  normalised s1 must be an exact substring of normalised s2
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>s1</code></strong> - first string</li>
+        <li><strong class="pname"><code>s2</code></strong> - second string</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if match, False if not</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -565,9 +741,66 @@ if there is a match
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>s1</code></strong></li>
-        <li><strong class="pname"><code>s2</code></strong></li>
+        <li><strong class="pname"><code>s1</code></strong> - first string</li>
+        <li><strong class="pname"><code>s2</code></strong> - second string</li>
     </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if match, False if not</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_normalise"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_normalise</span>(<span class="sig-arg">s</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.routing-pysrc.html#_normalise">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Normalise the supplied string in the following ways:</p>
+<ol class="rst-arabic simple">
+<li>String excess whitespace</li>
+<li>cast to lower case</li>
+<li>Normalise all internal spacing</li>
+</ol>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>s</code></strong> - string to be normalised</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>normalised string</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="author_id_string"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">author_id_string</span>(<span class="sig-arg">aob</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.routing-pysrc.html#author_id_string">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Produce a string representation of an author id
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>aob</code></strong> - author object</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>string representation of author id</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -603,7 +836,7 @@ if there is a match
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Nov 16 15:33:40 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 16 17:40:45 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
