@@ -397,7 +397,7 @@ class NotificationList(dataobj.DataObj):
     def notifications(self, val):
         """
         Set the list of notifications for this response
-        
+
         :param val: the list of notifications
         :return:
         """

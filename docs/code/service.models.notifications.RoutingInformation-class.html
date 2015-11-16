@@ -65,22 +65,24 @@
 <h1 class="epydoc">Class RoutingInformation</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__21" name="uml_class_diagram_for_service__21">
-<area shape="rect" id="node1_4" href="service.models.notifications.RoutingInformation-class.html#__init__" title="service.models.notifications.RoutingInformation.__init__" alt="" coords="17,39,169,59"/>
-<area shape="rect" id="node1_5" href="service.models.notifications.RoutingInformation-class.html#analysis_date" title="service.models.notifications.RoutingInformation.analysis_date" alt="" coords="17,59,169,79"/>
-<area shape="rect" id="node1_6" href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" title="service.models.notifications.RoutingInformation.analysis_datestamp" alt="" coords="17,79,169,99"/>
-<area shape="rect" id="node1_7" href="service.models.notifications.RoutingInformation-class.html#repositories" title="service.models.notifications.RoutingInformation.repositories" alt="" coords="17,99,169,119"/>
-<area shape="rect" id="node1" href="service.models.notifications.RoutingInformation-class.html" title="&quot;analysis_date&quot; : &quot;&lt;date the routing analysis was carried out&gt;&quot;, &quot;repositories&quot; : [&quot;&lt;ids of repository user accounts whcih match this notification&gt;&quot;]" alt="" coords="5,5,181,125"/>
+<area shape="rect" id="node1_4" href="service.models.notifications.RoutingInformation-class.html#__init__" title="Create a new instance of the RoutingInformation object, optionally around the raw python dictionary." alt="" coords="17,39,169,59"/>
+<area shape="rect" id="node1_5" href="service.models.notifications.RoutingInformation-class.html#analysis_date" title="Set the date this notification was analysed for routing, as a string of the form YYYY&#45;MM&#45;DDTHH:MM:SSZ" alt="" coords="17,59,169,79"/>
+<area shape="rect" id="node1_6" href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" title="The date this notification was analysed for routing, as a datetime object" alt="" coords="17,79,169,99"/>
+<area shape="rect" id="node1_7" href="service.models.notifications.RoutingInformation-class.html#repositories" title="Set the list of repository ids to which this notification was routed" alt="" coords="17,99,169,119"/>
+<area shape="rect" id="node1" href="service.models.notifications.RoutingInformation-class.html" title="Class which provides some additional data to any notification regarding the routing status" alt="" coords="5,5,181,125"/>
 </map>
   <img src="uml_class_diagram_for_service__21.gif" alt='' usemap="#uml_class_diagram_for_service__21" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
-<dl class="rst-docutils">
-<dt>{</dt>
-<dd>&quot;analysis_date&quot; : &quot;&lt;date the routing analysis was carried out&gt;&quot;,
-&quot;repositories&quot; : [&quot;&lt;ids of repository user accounts whcih match this notification&gt;&quot;]</dd>
-</dl>
-<p>}</p>
+<p>Class which provides some additional data to any notification regarding the routing status</p>
+<p>Any class which extends from this will get the following information added to its datastructure:</p>
+<pre class="rst-literal-block">
+{
+    &quot;analysis_date&quot; : &quot;&lt;date the routing analysis was carried out&gt;&quot;,
+    &quot;repositories&quot; : [&quot;&lt;ids of repository user accounts whcih match this notification&gt;&quot;]
+}
+</pre>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -105,8 +107,10 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new instance of the RoutingInformation object, optionally around the
+raw python dictionary.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.__init__">source&nbsp;code</a></span>
             
@@ -123,7 +127,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#analysis_date" class="summary-sig-name">analysis_date</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the date this notification was analysed for routing, as a string of the form YYYY-MM-DDTHH:MM:SSZ</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.analysis_date">source&nbsp;code</a></span>
             
@@ -139,7 +144,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" class="summary-sig-name">analysis_datestamp</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" class="summary-sig-name">analysis_datestamp</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      The date this notification was analysed for routing, as a datetime object</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.analysis_datestamp">source&nbsp;code</a></span>
             
@@ -156,7 +162,8 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#repositories" class="summary-sig-name">repositories</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">val</span>)</span></td>
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the list of repository ids to which this notification was routed</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.repositories">source&nbsp;code</a></span>
             
@@ -185,6 +192,36 @@
   </td>
 </tr>
 </table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">raw</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a new instance of the RoutingInformation object, optionally around the
+raw python dictionary.</p>
+<p>In reality, this class provides a data extension for other notification-like objects
+in this module, so you will never instantiate it directly.  See RoutedNotification instead.</p>
+<p>If supplied, the raw dictionary will be validated against the allowed structure of this
+object, and an exception will be raised if it does not validate</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>raw</code></strong> - python dict object containing the notification data</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="analysis_date"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -200,8 +237,12 @@
     </td>
   </tr></table>
   
-  
+  Set the date this notification was analysed for routing, as a string of the form YYYY-MM-DDTHH:MM:SSZ
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the analysis date</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@analysis_date.setter</code></li>
@@ -223,8 +264,10 @@
     </td>
   </tr></table>
   
-  
+  The date this notification was analysed for routing, as a datetime object
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>the analysis date</dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@property</code></li>
@@ -247,8 +290,12 @@
     </td>
   </tr></table>
   
-  
+  Set the list of repository ids to which this notification was routed
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the list of repository ids</li>
+    </ul></dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@repositories.setter</code></li>
@@ -288,7 +335,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 12:28:21 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 16 12:19:03 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

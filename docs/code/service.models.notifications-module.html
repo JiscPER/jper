@@ -62,6 +62,8 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module notifications</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.notifications-pysrc.html">source&nbsp;code</a></span></p>
+Model objects used to represent system core notification objects
+
 <!-- ==================== CLASSES ==================== -->
 <a name="section-Classes"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -84,10 +86,7 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="service.models.notifications.NotificationMetadata-class.html" class="summary-name">NotificationMetadata</a><br />
-      {
-    &quot;metadata&quot; : {
-        &quot;title&quot; : &quot;&lt;publication title&gt;&quot;,
-        &quot;version&quot; : &quot;&lt;version of the record, e.g.
+      Class to represent the standard bibliographic metadata that a notification may contain
     </td>
   </tr>
 <tr>
@@ -95,9 +94,7 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="service.models.notifications.BaseNotification-class.html" class="summary-name">BaseNotification</a><br />
-      &quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;,
-&quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;,
-&quot;last_updated&quot; : &quot;&lt;last modification time - required by storage layer&gt;&quot;,
+      Class to provide a baseline for all stored notifications (both routed and unrouted) in the core of the system
     </td>
   </tr>
 <tr>
@@ -105,29 +102,34 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="service.models.notifications.RoutingInformation-class.html" class="summary-name">RoutingInformation</a><br />
-      &quot;analysis_date&quot; : &quot;&lt;date the routing analysis was carried out&gt;&quot;,
-&quot;repositories&quot; : [&quot;&lt;ids of repository user accounts whcih match this notification&gt;&quot;]
+      Class which provides some additional data to any notification regarding the routing status
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="service.models.notifications.UnroutedNotification-class.html" class="summary-name">UnroutedNotification</a>
+        <a href="service.models.notifications.UnroutedNotification-class.html" class="summary-name">UnroutedNotification</a><br />
+      Class which represents a notification that has been received into the system successfully
+but has not yet been routed to any repository accounts.
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="service.models.notifications.RoutedNotification-class.html" class="summary-name">RoutedNotification</a>
+        <a href="service.models.notifications.RoutedNotification-class.html" class="summary-name">RoutedNotification</a><br />
+      Class which represents a notification that has been received into the system and successfully
+routed to one or more repository accounts
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="service.models.notifications.FailedNotification-class.html" class="summary-name">FailedNotification</a>
+        <a href="service.models.notifications.FailedNotification-class.html" class="summary-name">FailedNotification</a><br />
+      Class which represents a notification that has been received into the system but has not
+been able to be routed to any repository accounts
     </td>
   </tr>
 <tr>
@@ -135,14 +137,9 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="service.models.notifications.RoutingMetadata-class.html" class="summary-name">RoutingMetadata</a><br />
-      {
-    &quot;urls&quot; : [&quot;&lt;list of affiliation urls found in the data&gt;&quot;],
-    &quot;emails&quot; : [&quot;&lt;list of contact emails found in the data&gt;&quot;],
-    &quot;affiliations&quot; : [&quot;&lt;names of organisations found in the data&gt;&quot;],
-    &quot;author_ids&quot; : [
-        {
-            &quot;id&quot; : &quot;&lt;author id string&gt;&quot;,
-            &quot;type&quot; : &quot;&lt;author id type (e.g.
+      Class to represent the metadata that can be extracted from a notification (or associated
+binary content) which can be used to determine the routing to repository accounts (by comparison
+to a RepositoryConfig object).
     </td>
   </tr>
 </table>
@@ -177,7 +174,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Nov 12 12:28:19 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 16 12:19:01 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
