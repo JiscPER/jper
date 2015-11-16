@@ -1,22 +1,48 @@
+"""
+Fixtures for testing repository features
+"""
+
 from copy import deepcopy
 
-
 class RepositoryFactory(object):
+    """
+    Class for providing access to fixtures for testing repository features
+    """
 
     @classmethod
     def repo_config(cls):
+        """
+        Example repository config
+
+        :return: repository config
+        """
         return deepcopy(REPO_CONFIG)
 
     @classmethod
     def match_provenance(cls):
+        """
+        Example match provenance
+
+        :return: match provenance
+        """
         return deepcopy(MATCH_PROV)
 
     @classmethod
     def retreival_record(cls):
+        """
+        Example retrieval record
+
+        :return: retrieval record
+        """
         return deepcopy(RETRIEVAL)
 
     @classmethod
     def useless_repo_config(cls):
+        """
+        Repository config which doesn't contain any useful data (but does contain data)
+
+        :return: repo config
+        """
         return deepcopy(USELESS_REPO_CONFIG)
 
 RETRIEVAL = {
@@ -26,6 +52,7 @@ RETRIEVAL = {
     "retrieval_date" : "2015-05-04T00:00:00Z",
     "scope" : "notification"
 }
+"""Example retrieval record"""
 
 USELESS_REPO_CONFIG = {
     "repository" : "abcdefg",
@@ -36,6 +63,7 @@ USELESS_REPO_CONFIG = {
     "grants" : ["alkjsdfoiwqefwqefw"],
     "strings": []
 }
+"""repository config with no useful data"""
 
 REPO_CONFIG = {
     "repository" : "abcdefg",
@@ -68,6 +96,7 @@ REPO_CONFIG = {
         "bb/34/juwef"
     ]
 }
+"""Example repository config"""
 
 MATCH_PROV = {
     "repository" : "abcdefg",
@@ -89,3 +118,4 @@ MATCH_PROV = {
         }
     ]
 }
+"""Example match provenance"""

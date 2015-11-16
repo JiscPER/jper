@@ -1,14 +1,30 @@
+"""
+Fixtures for testing notifications
+"""
+
 from copy import deepcopy
 
-
 class NotificationFactory(object):
+    """
+    Class which provides access to the various fixtures used for testing the notifications
+    """
 
     @classmethod
     def unrouted_notification(cls):
+        """
+        A basic unrouted notification
+
+        :return: notification
+        """
         return deepcopy(BASE_NOTIFICATION)
 
     @classmethod
     def routed_notification(cls):
+        """
+        A routed notification
+
+        :return: notification
+        """
         base = deepcopy(BASE_NOTIFICATION)
         base["links"].append(deepcopy(ROUTED_LINK))
         base.update(deepcopy(ROUTING_INFO))
@@ -16,10 +32,20 @@ class NotificationFactory(object):
 
     @classmethod
     def routing_metadata(cls):
+        """
+        Routing metadata
+
+        :return: routing metadata
+        """
         return deepcopy(ROUTING_METADATA)
 
     @classmethod
     def notification_metadata(cls):
+        """
+        Notification metadata
+
+        :return: notification metadata
+        """
         return deepcopy(ALT_METADATA)
 
 ROUTING_METADATA = {
@@ -49,6 +75,7 @@ ROUTING_METADATA = {
     "grants" : ["BB/34/juwef"],
     "content_types" : ["article"]
 }
+"""Example routing metadata object"""
 
 ROUTED_LINK = {
     "type" : "fulltext",
@@ -57,6 +84,7 @@ ROUTED_LINK = {
     "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content",
     "packaging" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 }
+"""A link object that can be grafted in to notifications"""
 
 ROUTING_INFO = {
     "analysis_date" : "2015-02-02T00:00:00Z",
@@ -64,6 +92,7 @@ ROUTING_INFO = {
         "repo1", "repo2", "repo3"
     ]
 }
+"""The routing info that can be grafted into a notification to make it routed"""
 
 ALT_METADATA = {
     "metadata" : {
@@ -129,6 +158,7 @@ ALT_METADATA = {
         "subject" : ["arts", "medicine", "literature"]
     }
 }
+"""Example metadata section of a notification"""
 
 BASE_NOTIFICATION = {
     "id" : "1234567890",
@@ -226,3 +256,4 @@ BASE_NOTIFICATION = {
         "subject" : ["science", "technology", "arts", "medicine"]
     }
 }
+"""Example base notification which can be extended for other uses"""

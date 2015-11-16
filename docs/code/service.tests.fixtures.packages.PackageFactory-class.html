@@ -66,16 +66,18 @@
 <h1 class="epydoc">Class PackageFactory</h1><p class="nomargin-top"><span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__36" name="uml_class_diagram_for_service__36">
-<area shape="rect" id="node1_4" href="service.tests.fixtures.packages.PackageFactory-class.html#example_package_path" title="service.tests.fixtures.packages.PackageFactory.example_package_path" alt="" coords="17,39,840,59"/>
-<area shape="rect" id="node1_5" href="service.tests.fixtures.packages.PackageFactory-class.html#make_custom_zip" title="service.tests.fixtures.packages.PackageFactory.make_custom_zip" alt="" coords="17,59,840,79"/>
-<area shape="rect" id="node1_6" href="service.tests.fixtures.packages.PackageFactory-class.html#file_handles" title="service.tests.fixtures.packages.PackageFactory.file_handles" alt="" coords="17,79,840,99"/>
-<area shape="rect" id="node1_7" href="service.tests.fixtures.packages.PackageFactory-class.html#custom_file_handles" title="service.tests.fixtures.packages.PackageFactory.custom_file_handles" alt="" coords="17,99,840,119"/>
-<area shape="rect" id="node1" href="service.tests.fixtures.packages.PackageFactory-class.html" title="service.tests.fixtures.packages.PackageFactory" alt="" coords="5,5,851,125"/>
+<area shape="rect" id="node1_4" href="service.tests.fixtures.packages.PackageFactory-class.html#example_package_path" title="Get the path to the example package in the resources directory" alt="" coords="17,39,840,59"/>
+<area shape="rect" id="node1_5" href="service.tests.fixtures.packages.PackageFactory-class.html#make_custom_zip" title="Construct a custom zip file for testing packaging, which has the following features" alt="" coords="17,59,840,79"/>
+<area shape="rect" id="node1_6" href="service.tests.fixtures.packages.PackageFactory-class.html#file_handles" title="Create metadata file handles suitable for passing to a package handler" alt="" coords="17,79,840,99"/>
+<area shape="rect" id="node1_7" href="service.tests.fixtures.packages.PackageFactory-class.html#custom_file_handles" title="Custom metadata file handles suitable for passing to a package handler" alt="" coords="17,99,840,119"/>
+<area shape="rect" id="node1" href="service.tests.fixtures.packages.PackageFactory-class.html" title="Class which provides access to fixtures for testing packaging" alt="" coords="5,5,851,125"/>
 </map>
   <img src="uml_class_diagram_for_service__36.gif" alt='' usemap="#uml_class_diagram_for_service__36" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
+Class which provides access to fixtures for testing packaging
+
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -136,7 +138,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="example_package_path"></a><span class="summary-sig-name">example_package_path</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.tests.fixtures.packages.PackageFactory-class.html#example_package_path" class="summary-sig-name">example_package_path</a>(<span class="summary-sig-arg">cls</span>)</span><br />
+      Get the path to the example package in the resources directory</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.example_package_path">source&nbsp;code</a></span>
             
@@ -152,14 +155,15 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="make_custom_zip"></a><span class="summary-sig-name">make_custom_zip</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.tests.fixtures.packages.PackageFactory-class.html#make_custom_zip" class="summary-sig-name">make_custom_zip</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">path</span>,
         <span class="summary-sig-arg">no_jats</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">no_epmc</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">invalid_jats</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">invalid_epmc</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">corrupt_zip</span>=<span class="summary-sig-default">False</span>,
-        <span class="summary-sig-arg">target_size</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">target_size</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Construct a custom zip file for testing packaging, which has the following features</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.make_custom_zip">source&nbsp;code</a></span>
             
@@ -175,9 +179,10 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="file_handles"></a><span class="summary-sig-name">file_handles</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.tests.fixtures.packages.PackageFactory-class.html#file_handles" class="summary-sig-name">file_handles</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">elife_jats</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">epmc_jats</span>=<span class="summary-sig-default">False</span>)</span></td>
+        <span class="summary-sig-arg">epmc_jats</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Create metadata file handles suitable for passing to a package handler</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.file_handles">source&nbsp;code</a></span>
             
@@ -193,11 +198,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="custom_file_handles"></a><span class="summary-sig-name">custom_file_handles</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.tests.fixtures.packages.PackageFactory-class.html#custom_file_handles" class="summary-sig-name">custom_file_handles</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">no_jats</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">no_epmc</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">invalid_jats</span>=<span class="summary-sig-default">False</span>,
-        <span class="summary-sig-arg">invalid_epmc</span>=<span class="summary-sig-default">False</span>)</span></td>
+        <span class="summary-sig-arg">invalid_epmc</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Custom metadata file handles suitable for passing to a package handler</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.custom_file_handles">source&nbsp;code</a></span>
             
@@ -233,6 +239,144 @@
     </td>
   </tr>
 </table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="example_package_path"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">example_package_path</span>(<span class="sig-arg">cls</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.example_package_path">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the path to the example package in the resources directory
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>path</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="make_custom_zip"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">make_custom_zip</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">path</span>,
+        <span class="sig-arg">no_jats</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">no_epmc</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">invalid_jats</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">invalid_epmc</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">corrupt_zip</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">target_size</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.make_custom_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Construct a custom zip file for testing packaging, which has the following features
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>path</code></strong> - where to store it</li>
+        <li><strong class="pname"><code>no_jats</code></strong> - whether to omit the JATS XML</li>
+        <li><strong class="pname"><code>no_epmc</code></strong> - whether to omit the EPMC XML</li>
+        <li><strong class="pname"><code>invalid_jats</code></strong> - whether the included JATS is invalid</li>
+        <li><strong class="pname"><code>invalid_epmc</code></strong> - whether the included EPMC XML is invalid</li>
+        <li><strong class="pname"><code>corrupt_zip</code></strong> - should the zip file be corrupt</li>
+        <li><strong class="pname"><code>target_size</code></strong> - how large should the file be (output is approximate, not exact)</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="file_handles"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">file_handles</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">elife_jats</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">epmc_jats</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.file_handles">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Create metadata file handles suitable for passing to a package handler
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>elife_jats</code></strong> - should there be a JATS metadata file</li>
+        <li><strong class="pname"><code>epmc_jats</code></strong> - should there be an EMPC metadata file</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>list of tuples of filename/stream</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="custom_file_handles"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">custom_file_handles</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">no_jats</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">no_epmc</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">invalid_jats</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">invalid_epmc</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#PackageFactory.custom_file_handles">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Custom metadata file handles suitable for passing to a package handler
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>no_jats</code></strong> - omit JATS</li>
+        <li><strong class="pname"><code>no_epmc</code></strong> - omit EPMC</li>
+        <li><strong class="pname"><code>invalid_jats</code></strong> - should the included JATS be invalid</li>
+        <li><strong class="pname"><code>invalid_epmc</code></strong> - should the included EPMC be invalid</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -264,7 +408,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Nov 16 17:40:49 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 16 18:00:25 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

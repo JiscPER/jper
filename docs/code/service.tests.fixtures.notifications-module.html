@@ -63,6 +63,8 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module notifications</h1><p class="nomargin-top"><span class="codelink"><a href="service.tests.fixtures.notifications-pysrc.html">source&nbsp;code</a></span></p>
+Fixtures for testing notifications
+
 <!-- ==================== CLASSES ==================== -->
 <a name="section-Classes"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -84,7 +86,8 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="service.tests.fixtures.notifications.NotificationFactory-class.html" class="summary-name">NotificationFactory</a>
+        <a href="service.tests.fixtures.notifications.NotificationFactory-class.html" class="summary-name">NotificationFactory</a><br />
+      Class which provides access to the various fixtures used for testing the notifications
     </td>
   </tr>
 </table>
@@ -116,7 +119,8 @@ r_ids&quot;: [{&quot;id&quot;: &quot;Richard Jones&quot;, &quot;type&quot;: &quo
 ivray&quot;, &quot;type&quot;: &quot;name&quot;}, {&quot;id&quot;: &quot;aaaa-0000-1111-bbbb&quot;, &quot;type&quot;: &quot;orcid&quot;\
 }, {&quot;id&quot;: &quot;someone@sms.ucl.ac.uk&quot;, &quot;type&quot;: &quot;email&quot;}], &quot;postcodes&quot;: [&quot;S\
 W1 0AA&quot;, &quot;EH23 5TZ&quot;], &quot;keywords&quot;: [&quot;science&quot;, &quot;technology&quot;, &quot;arts&quot;, &quot;m\
-edicine&quot;], &quot;grants&quot;: [&quot;BB/34/juwef&quot;], &quot;content_types&quot;: [&quot;article&quot;]}">{&quot;urls&quot;: [&quot;http://www.ed.ac.uk&quot;, &quot;http://ww<code class="variable-ellipsis">...</code></code>
+edicine&quot;], &quot;grants&quot;: [&quot;BB/34/juwef&quot;], &quot;content_types&quot;: [&quot;article&quot;]}">{&quot;urls&quot;: [&quot;http://www.ed.ac.uk&quot;, &quot;http://ww<code class="variable-ellipsis">...</code></code><br />
+      Example routing metadata object
     </td>
   </tr>
 <tr>
@@ -125,7 +129,8 @@ edicine&quot;], &quot;grants&quot;: [&quot;BB/34/juwef&quot;], &quot;content_typ
     </td><td class="summary">
         <a href="service.tests.fixtures.notifications-module.html#ROUTED_LINK" class="summary-name">ROUTED_LINK</a> = <code title="{&quot;type&quot;: &quot;fulltext&quot;, &quot;format&quot;: &quot;application/zip&quot;, &quot;access&quot;: &quot;router&quot;, \
 &quot;url&quot;: &quot;http://router.jisc.ac.uk/api/v1/notification/1234567890/conten\
-t&quot;, &quot;packaging&quot;: &quot;https://pubrouter.jisc.ac.uk/FilesAndJATS&quot;}">{&quot;type&quot;: &quot;fulltext&quot;, &quot;format&quot;: &quot;application/zip&quot;<code class="variable-ellipsis">...</code></code>
+t&quot;, &quot;packaging&quot;: &quot;https://pubrouter.jisc.ac.uk/FilesAndJATS&quot;}">{&quot;type&quot;: &quot;fulltext&quot;, &quot;format&quot;: &quot;application/zip&quot;<code class="variable-ellipsis">...</code></code><br />
+      A link object that can be grafted in to notifications
     </td>
   </tr>
 <tr>
@@ -133,7 +138,8 @@ t&quot;, &quot;packaging&quot;: &quot;https://pubrouter.jisc.ac.uk/FilesAndJATS&
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="service.tests.fixtures.notifications-module.html#ROUTING_INFO" class="summary-name">ROUTING_INFO</a> = <code title="{&quot;analysis_date&quot;: &quot;2015-02-02T00:00:00Z&quot;, &quot;repositories&quot;: [&quot;repo1&quot;, &quot;r\
-epo2&quot;, &quot;repo3&quot;]}">{&quot;analysis_date&quot;: &quot;2015-02-02T00:00:00Z&quot;, &quot;repo<code class="variable-ellipsis">...</code></code>
+epo2&quot;, &quot;repo3&quot;]}">{&quot;analysis_date&quot;: &quot;2015-02-02T00:00:00Z&quot;, &quot;repo<code class="variable-ellipsis">...</code></code><br />
+      The routing info that can be grafted into a notification to make it routed
     </td>
   </tr>
 <tr>
@@ -148,7 +154,8 @@ tp://jit.com/1&quot;}], &quot;type&quot;: &quot;paper&quot;, &quot;author&quot;:
 &quot;, &quot;identifier&quot;: [{&quot;type&quot;: &quot;orcid&quot;, &quot;id&quot;: &quot;aaaa-0000-1111-bbbb&quot;}, {&quot;ty\
 pe&quot;: &quot;email&quot;, &quot;id&quot;: &quot;richard@example.com&quot;}, {&quot;type&quot;: &quot;mendeley_id&quot;, &quot;i\
 d&quot;: &quot;12345&quot;}], &quot;affiliation&quot;: &quot;Cottage Labs, HP3 9AA&quot;}, {&quot;name&quot;: &quot;Dave\
-...">{&quot;metadata&quot;: {&quot;title&quot;: &quot;Alternative Article&quot;, &quot;<code class="variable-ellipsis">...</code></code>
+...">{&quot;metadata&quot;: {&quot;title&quot;: &quot;Alternative Article&quot;, &quot;<code class="variable-ellipsis">...</code></code><br />
+      Example metadata section of a notification
     </td>
   </tr>
 <tr>
@@ -163,7 +170,8 @@ uter.jisc.ac.uk/FilesAndJATS&quot;, &quot;store_id&quot;: &quot;abc&quot;}, &quo
 ample.com/article/1&quot;}, {&quot;type&quot;: &quot;fulltext&quot;, &quot;format&quot;: &quot;application/pdf\
 &quot;, &quot;access&quot;: &quot;public&quot;, &quot;url&quot;: &quot;http://example.com/article/1/pdf&quot;}], &quot;e\
 mbargo&quot;: {&quot;end&quot;: &quot;2016-01-01T00:00:00Z&quot;, &quot;start&quot;: &quot;2015-01-01T00:00:00\
-...">{&quot;id&quot;: &quot;1234567890&quot;, &quot;created_date&quot;: &quot;2015<code class="variable-ellipsis">...</code></code>
+...">{&quot;id&quot;: &quot;1234567890&quot;, &quot;created_date&quot;: &quot;2015<code class="variable-ellipsis">...</code></code><br />
+      Example base notification which can be extended for other uses
     </td>
   </tr>
 </table>
@@ -191,7 +199,7 @@ mbargo&quot;: {&quot;end&quot;: &quot;2016-01-01T00:00:00Z&quot;, &quot;start&qu
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">ROUTING_METADATA</h3>
-  
+  Example routing metadata object
   <dl class="fields">
   </dl>
   <dl class="fields">
@@ -216,7 +224,7 @@ edicine&quot;], &quot;grants&quot;: [&quot;BB/34/juwef&quot;], &quot;content_typ
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">ROUTED_LINK</h3>
-  
+  A link object that can be grafted in to notifications
   <dl class="fields">
   </dl>
   <dl class="fields">
@@ -236,7 +244,7 @@ t&quot;, &quot;packaging&quot;: &quot;https://pubrouter.jisc.ac.uk/FilesAndJATS&
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">ROUTING_INFO</h3>
-  
+  The routing info that can be grafted into a notification to make it routed
   <dl class="fields">
   </dl>
   <dl class="fields">
@@ -255,7 +263,7 @@ epo2&quot;, &quot;repo3&quot;]}
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">ALT_METADATA</h3>
-  
+  Example metadata section of a notification
   <dl class="fields">
   </dl>
   <dl class="fields">
@@ -281,7 +289,7 @@ d&quot;: &quot;12345&quot;}], &quot;affiliation&quot;: &quot;Cottage Labs, HP3 9
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <h3 class="epydoc">BASE_NOTIFICATION</h3>
-  
+  Example base notification which can be extended for other uses
   <dl class="fields">
   </dl>
   <dl class="fields">
@@ -333,7 +341,7 @@ mbargo&quot;: {&quot;end&quot;: &quot;2016-01-01T00:00:00Z&quot;, &quot;start&qu
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Nov 16 17:40:45 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 16 18:00:20 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
