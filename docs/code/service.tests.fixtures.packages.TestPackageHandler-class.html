@@ -70,12 +70,12 @@
 <area shape="rect" id="node1_10" href="service.tests.fixtures.packages.TestPackageHandler-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this packager" alt="" coords="103,239,239,259"/>
 <area shape="rect" id="node1_11" href="service.tests.fixtures.packages.TestPackageHandler-class.html#url_name" title="Get the name of the package as it should appear in any content urls" alt="" coords="103,259,239,279"/>
 <area shape="rect" id="node1" href="service.tests.fixtures.packages.TestPackageHandler-class.html" title="service.tests.fixtures.packages.TestPackageHandler" alt="" coords="91,185,251,285"/>
-<area shape="rect" id="node2_12" href="service.packages.PackageHandler-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="16,39,325,59"/>
-<area shape="rect" id="node2_13" href="service.packages.PackageHandler-class.html#metadata_streams" title="generator, should yield" alt="" coords="16,59,325,79"/>
-<area shape="rect" id="node2_14" href="service.packages.PackageHandler-class.html#notification_metadata" title="service.packages.PackageHandler.notification_metadata" alt="" coords="16,79,325,99"/>
-<area shape="rect" id="node2_15" href="service.packages.PackageHandler-class.html#match_data" title="service.packages.PackageHandler.match_data" alt="" coords="16,99,325,119"/>
-<area shape="rect" id="node2_16" href="service.packages.PackageHandler-class.html#convertible" title="service.packages.PackageHandler.convertible" alt="" coords="16,119,325,139"/>
-<area shape="rect" id="node2_17" href="service.packages.PackageHandler-class.html#convert" title="service.packages.PackageHandler.convert" alt="" coords="16,139,325,159"/>
+<area shape="rect" id="node2_12" href="service.packages.PackageHandler-class.html#__init__" title="Construct a new PackageHandler around the zip file and/or the metadata files." alt="" coords="16,39,325,59"/>
+<area shape="rect" id="node2_13" href="service.packages.PackageHandler-class.html#metadata_streams" title="A generator which yields tuples of metadata file names and data streams" alt="" coords="16,59,325,79"/>
+<area shape="rect" id="node2_14" href="service.packages.PackageHandler-class.html#notification_metadata" title="Get the notification metadata as extracted from the package" alt="" coords="16,79,325,99"/>
+<area shape="rect" id="node2_15" href="service.packages.PackageHandler-class.html#match_data" title="Get the match data as extracted from the package" alt="" coords="16,99,325,119"/>
+<area shape="rect" id="node2_16" href="service.packages.PackageHandler-class.html#convertible" title="Can this handler convert to the specified format" alt="" coords="16,119,325,139"/>
+<area shape="rect" id="node2_17" href="service.packages.PackageHandler-class.html#convert" title="Convert the file at the specified in_path to a package file of the specified target_format at the out_path." alt="" coords="16,139,325,159"/>
 <area shape="rect" id="node2" href="service.packages.PackageHandler-class.html" title="Interface/Parent class for all objects wishing to provide package handling" alt="" coords="4,5,337,165"/>
 </map>
   <img src="uml_class_diagram_for_service__39.gif" alt='' usemap="#uml_class_diagram_for_service__39" ismap="ismap" class="graph-without-title" />
@@ -180,7 +180,7 @@
           <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">zip_path</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">metadata_files</span>=<span class="summary-sig-default">None</span>)</span><br />
-      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+      Construct a new PackageHandler around the zip file and/or the metadata files.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.__init__">source&nbsp;code</a></span>
             
@@ -196,10 +196,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="convert"></a><span class="summary-sig-name">convert</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#convert" class="summary-sig-name">convert</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">in_path</span>,
         <span class="summary-sig-arg">target_format</span>,
-        <span class="summary-sig-arg">out_path</span>)</span></td>
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      Convert the file at the specified in_path to a package file of the
+specified target_format at the out_path.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.convert">source&nbsp;code</a></span>
             
@@ -215,8 +217,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="convertible"></a><span class="summary-sig-name">convertible</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">target_format</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#convertible" class="summary-sig-name">convertible</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">target_format</span>)</span><br />
+      Can this handler convert to the specified format</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.convertible">source&nbsp;code</a></span>
             
@@ -232,7 +235,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="match_data"></a><span class="summary-sig-name">match_data</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#match_data" class="summary-sig-name">match_data</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the match data as extracted from the package</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.match_data">source&nbsp;code</a></span>
             
@@ -248,8 +252,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="metadata_streams"></a><span class="summary-sig-name">metadata_streams</span>(<span class="summary-sig-arg">self</span>)</span><br />
-      generator, should yield</td>
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#metadata_streams" class="summary-sig-name">metadata_streams</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      A generator which yields tuples of metadata file names and data streams</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.metadata_streams">source&nbsp;code</a></span>
             
@@ -265,7 +269,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="notification_metadata"></a><span class="summary-sig-name">notification_metadata</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#notification_metadata" class="summary-sig-name">notification_metadata</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the notification metadata as extracted from the package</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.notification_metadata">source&nbsp;code</a></span>
             
@@ -335,6 +340,8 @@
   
   Get the name of the package zip file to be used in the storage layer
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>the name of the zip file</dd>
     <dt>Overrides:
         <a href="service.packages.PackageHandler-class.html#zip_name">packages.PackageHandler.zip_name</a>
         <dd><em class="note">(inherited documentation)</em></dd>
@@ -358,6 +365,8 @@
   
   Get a list of the names of metadata files extracted and stored by this packager
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>the names of the metadata files</dd>
     <dt>Overrides:
         <a href="service.packages.PackageHandler-class.html#metadata_names">packages.PackageHandler.metadata_names</a>
         <dd><em class="note">(inherited documentation)</em></dd>
@@ -381,6 +390,8 @@
   
   Get the name of the package as it should appear in any content urls
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>the url name</dd>
     <dt>Overrides:
         <a href="service.packages.PackageHandler-class.html#url_name">packages.PackageHandler.url_name</a>
         <dd><em class="note">(inherited documentation)</em></dd>
@@ -420,7 +431,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Nov 16 12:19:05 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 16 15:33:45 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

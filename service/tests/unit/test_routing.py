@@ -11,7 +11,7 @@ from service.tests import fixtures
 from datetime import datetime
 import time, os
 
-PACKAGE = "http://router.jisc.ac.uk/packages/FilesAndJATS"
+PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 

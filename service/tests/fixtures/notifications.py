@@ -55,7 +55,7 @@ ROUTED_LINK = {
     "format" : "application/zip",
     "access" : "router",
     "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content",
-    "packaging" : "http://pubrouter.jisc.ac.uk/packages/FilesAndJATS"
+    "packaging" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 }
 
 ROUTING_INFO = {
@@ -144,7 +144,7 @@ BASE_NOTIFICATION = {
     },
 
     "content" : {
-        "packaging_format" : "http://router.jisc.ac.uk/packages/FilesAndJATS",
+        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS",
         "store_id" : "abc"
     },
 

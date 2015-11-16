@@ -45,7 +45,7 @@ OUTGOING = {
     "event" : "submission",
 
     "content" : {
-        "packaging_format" : "http://router.jisc.ac.uk/packages/FilesAndJATS",
+        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS",
     },
 
     "links" : [
@@ -144,7 +144,7 @@ INCOMING = {
     },
 
     "content" : {
-        "packaging_format" : "http://router.jisc.ac.uk/packages/FilesAndJATS"
+        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
     },
 
     "links" : [

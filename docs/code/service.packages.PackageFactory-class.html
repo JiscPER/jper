@@ -64,14 +64,16 @@
 <h1 class="epydoc">Class PackageFactory</h1><p class="nomargin-top"><span class="codelink"><a href="service.packages-pysrc.html#PackageFactory">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service__29" name="uml_class_diagram_for_service__29">
-<area shape="rect" id="node1_2" href="service.packages.PackageFactory-class.html#incoming" title="service.packages.PackageFactory.incoming" alt="" coords="17,39,375,59"/>
-<area shape="rect" id="node1_3" href="service.packages.PackageFactory-class.html#converter" title="service.packages.PackageFactory.converter" alt="" coords="17,59,375,79"/>
-<area shape="rect" id="node1" href="service.packages.PackageFactory-class.html" title="service.packages.PackageFactory" alt="" coords="5,5,387,85"/>
+<area shape="rect" id="node1_2" href="service.packages.PackageFactory-class.html#incoming" title="Obtain an instance of a PackageHandler for the provided format to be used to work with processing an incoming binary object." alt="" coords="17,39,375,59"/>
+<area shape="rect" id="node1_3" href="service.packages.PackageFactory-class.html#converter" title="Obtain an instance of a PackageHandler which can be used to during package conversion to read/write the supplied format" alt="" coords="17,59,375,79"/>
+<area shape="rect" id="node1" href="service.packages.PackageFactory-class.html" title="Factory which provides methods for accessing specific PackageHandler implementations" alt="" coords="5,5,387,85"/>
 </map>
   <img src="uml_class_diagram_for_service__29.gif" alt='' usemap="#uml_class_diagram_for_service__29" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
+Factory which provides methods for accessing specific PackageHandler implementations
+
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -132,10 +134,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="incoming"></a><span class="summary-sig-name">incoming</span>(<span class="summary-sig-arg">cls</span>,
+          <td><span class="summary-sig"><a href="service.packages.PackageFactory-class.html#incoming" class="summary-sig-name">incoming</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">format</span>,
         <span class="summary-sig-arg">zip_path</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">metadata_files</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">metadata_files</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Obtain an instance of a PackageHandler for the provided format to be used to work
+with processing an incoming binary object.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageFactory.incoming">source&nbsp;code</a></span>
             
@@ -151,8 +155,10 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="converter"></a><span class="summary-sig-name">converter</span>(<span class="summary-sig-arg">cls</span>,
-        <span class="summary-sig-arg">format</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.packages.PackageFactory-class.html#converter" class="summary-sig-name">converter</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">format</span>)</span><br />
+      Obtain an instance of a PackageHandler which can be used to during package conversion to read/write
+the supplied format</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageFactory.converter">source&nbsp;code</a></span>
             
@@ -188,6 +194,92 @@
     </td>
   </tr>
 </table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="incoming"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">incoming</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">format</span>,
+        <span class="sig-arg">zip_path</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">metadata_files</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#PackageFactory.incoming">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Obtain an instance of a PackageHandler for the provided format to be used to work
+with processing an incoming binary object.</p>
+<p>If the zip path is provided, the handler will be constructed around that file</p>
+<p>If only the metadata file handles are provided, the handler will be constructed around them</p>
+<p>Metadata file handles should be of the form</p>
+<pre class="rst-literal-block">
+[(&quot;filename&quot;, &lt;file handle&gt;)]
+</pre>
+<p>It is recommended that as the metadata files are likely to be highly implementation specific
+that you rely on the handler itself to provide you with the names of the files, which you may
+use to retrieve the streams from store.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>format</code></strong> - format identifier for the package handler.  As seen in the configuration.</li>
+        <li><strong class="pname"><code>zip_path</code></strong> - file path to an accessible on-disk location where the zip file is stored</li>
+        <li><strong class="pname"><code>metadata_files</code></strong> - list of tuples of filename/filehandle pairs for metadata files extracted from a package</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>an instance of a PackageHandler, constructed with the zip_path and/or metadata_files</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="converter"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">converter</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">format</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#PackageFactory.converter">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Obtain an instance of a PackageHandler which can be used to during package conversion to read/write
+the supplied format
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>format</code></strong> - format identifier for the package handler.  As seen in the configuration.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -219,7 +311,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Nov 16 12:19:04 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 16 15:33:44 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

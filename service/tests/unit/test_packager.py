@@ -12,7 +12,7 @@ from lxml import etree
 from octopus.lib import paths
 import os
 
-PACKAGE = "http://router.jisc.ac.uk/packages/FilesAndJATS"
+PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 TEST_HANDLER = "service.tests.fixtures.TestPackageHandler"

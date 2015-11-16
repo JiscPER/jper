@@ -1,3 +1,11 @@
+"""
+Provides general packaging handling infrastructure and specific implementations of known packaging formats
+
+All packaging format handlers should extend the PackageHandler class defined in this module.
+
+Packages should then be configured through the PACKAGE_HANDLERS configuration option
+"""
+
 from octopus.core import app
 from octopus.lib import plugin
 import zipfile, os, shutil
@@ -9,12 +17,41 @@ from octopus.modules.store import store
 from StringIO import StringIO
 
 class PackageException(Exception):
+    """
+    Generic exception to be thrown when there are issues working with packages
+    """
     pass
 
 class PackageFactory(object):
+    """
+    Factory which provides methods for accessing specific PackageHandler implementations
+    """
 
     @classmethod
     def incoming(cls, format, zip_path=None, metadata_files=None):
+        """
+        Obtain an instance of a PackageHandler for the provided format to be used to work
+        with processing an incoming binary object.
+
+        If the zip path is provided, the handler will be constructed around that file
+
+        If only the metadata file handles are provided, the handler will be constructed around them
+
+        Metadata file handles should be of the form
+
+        ::
+
+            [("filename", <file handle>)]
+
+        It is recommended that as the metadata files are likely to be highly implementation specific
+        that you rely on the handler itself to provide you with the names of the files, which you may
+        use to retrieve the streams from store.
+
+        :param format: format identifier for the package handler.  As seen in the configuration.
+        :param zip_path: file path to an accessible on-disk location where the zip file is stored
+        :param metadata_files: list of tuples of filename/filehandle pairs for metadata files extracted from a package
+        :return: an instance of a PackageHandler, constructed with the zip_path and/or metadata_files
+        """
         formats = app.config.get("PACKAGE_HANDLERS", {})
         cname = formats.get(format)
         if cname is None:
@@ -26,6 +63,12 @@ class PackageFactory(object):
 
     @classmethod
     def converter(cls, format):
+        """
+        Obtain an instance of a PackageHandler which can be used to during package conversion to read/write
+        the supplied format
+
+        :param format: format identifier for the package handler.  As seen in the configuration.
+        """
         formats = app.config.get("PACKAGE_HANDLERS", {})
         cname = formats.get(format)
         if cname is None:
@@ -36,9 +79,32 @@ class PackageFactory(object):
         return klazz()
 
 class PackageManager(object):
+    """
+    Class which provides an API onto the package management system
 
+    If you need to work with packages, the operation you want to do should be covered by one of the
+    methods on this class.
+    """
     @classmethod
     def ingest(cls, store_id, zip_path, format, storage_manager=None):
+        """
+        Ingest into the storage system the supplied package, of the specified format, with the specified store_id.
+
+        This will attempt to load a PackageHandler for the format around the zip_file.  Then the original
+        zip file and the metadata files extracted from the package by the PackageHandler will be written
+        to the storage system with the specified id.
+
+        If a storage_manager is provided, that will be used as the interface to the storage system,
+        otherwise a storage manager will be constructed from the StoreFactory.
+
+        Once this method completes, the file held at zip_file will be deleted, and the definitive copy
+        will be available in the store.
+
+        :param store_id: the id to use when storing the package
+        :param zip_path: locally accessible path to the source package on disk
+        :param format: format identifier for the package handler.  As seen in the configuration.
+        :param storage_manager: an instance of Store to use as the storage API
+        """
         app.logger.info("Package Ingest - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
 
         # load the package manager and the storage manager
@@ -58,6 +124,21 @@ class PackageManager(object):
 
     @classmethod
     def extract(cls, store_id, format, storage_manager=None):
+        """
+        Extract notification metadata and match data from the package in the store which has the specified format
+
+        This will look in the store for the store_id, and look for files which match the known metadata file
+        names from the PackageHandler which is referenced by the format.  Once those files are found, they are loaded
+        into the PackageHandler and the metadata and match data extracted and returned.
+
+        If a storage_manager is provided, that will be used as the interface to the storage system,
+        otherwise a storage manager will be constructed from the StoreFactory.
+
+        :param store_id: the storage id where this object can be found
+        :param format: format identifier for the package handler.  As seen in the configuration.
+        :param storage_manager: an instance of Store to use as the storage API
+        :return: a tuple of (NotificationMetadata, RoutingMetadata) representing the metadata stored in the package
+        """
         app.logger.info("Package Extract - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
 
         # load the storage manager
@@ -97,6 +178,22 @@ class PackageManager(object):
 
     @classmethod
     def convert(cls, store_id, source_format, target_formats, storage_manager=None):
+        """
+        For the package held in the store at the specified store_id, convert the package from
+        the source_format to the target_format.
+
+        This will make a local copy of the source package from the storage system, make all
+        the relevant conversions (also locally), and then synchronise back to the store.
+
+        If a storage_manager is provided, that will be used as the interface to the storage system,
+        otherwise a storage manager will be constructed from the StoreFactory.
+
+        :param store_id: the storage id where this object can be found
+        :param source_format: format identifier for the input package handler.  As seen in the configuration.
+        :param target_format: format identifier for the output package handler.  As seen in the configuration.
+        :param storage_manager: an instance of Store to use as the storage API
+        :return: a list of tuples of the conversions carried out of the form [(format, filename, url name)]
+        """
         app.logger.info("Package Convert - StoreID:{a}; SourceFormat:{b}; TargetFormats:{c}".format(a=store_id, b=source_format, c=",".join(target_formats)))
 
         # load the storage manager
@@ -157,6 +254,19 @@ class PackageHandler(object):
     Interface/Parent class for all objects wishing to provide package handling
     """
     def __init__(self, zip_path=None, metadata_files=None):
+        """
+        Construct a new PackageHandler around the zip file and/or the metadata files.
+
+        Metadata file handles should be of the form
+
+        ::
+
+            [("filename", <file handle>)]
+
+        :param zip_path:
+        :param metadata_files:
+        :return:
+        """
         self.zip_path = zip_path
         self.metadata_files = metadata_files
         self.zip = None
@@ -167,18 +277,24 @@ class PackageHandler(object):
     def zip_name(self):
         """
         Get the name of the package zip file to be used in the storage layer
+
+        :return: the name of the zip file
         """
         raise NotImplementedError()
 
     def metadata_names(self):
         """
         Get a list of the names of metadata files extracted and stored by this packager
+
+        :return: the names of the metadata files
         """
         raise NotImplementedError()
 
     def url_name(self):
         """
         Get the name of the package as it should appear in any content urls
+
+        :return: the url name
         """
         raise NotImplementedError()
 
@@ -187,26 +303,57 @@ class PackageHandler(object):
 
     def metadata_streams(self):
         """
-        generator, should yield
+        A generator which yields tuples of metadata file names and data streams
+
+        :return: generator for file names/data streams
         """
         for x in []:
             yield None, None
 
     def notification_metadata(self):
+        """
+        Get the notification metadata as extracted from the package
+
+        :return: NotificationMetadata populated
+        """
         return models.NotificationMetadata()
 
     def match_data(self):
+        """
+        Get the match data as extracted from the package
+
+        :return: RoutingMetadata populated
+        """
         return models.RoutingMetadata()
 
     def convertible(self, target_format):
+        """
+        Can this handler convert to the specified format
+
+        :param target_format: format we may want to convert to
+        :return: True/False if this handler supports that output format
+        """
         return False
 
     def convert(self, in_path, target_format, out_path):
+        """
+        Convert the file at the specified in_path to a package file of the
+        specified target_format at the out_path.
+
+        You should check first that this target_format is supported via convertible()
+
+        :param in_path: locally accessible file path to the source package
+        :param target_format: the format identifier for the format we want to convert to
+        :param out_path: locally accessible file path for the output to be written
+        :return: True/False on success/fail
+        """
         return False
 
 class SimpleZip(PackageHandler):
     """
     Very basic class for representing the SimpleZip package format
+
+    SimpeZip is identified by the format identifier http://purl.org/net/sword/package/SimpleZip
     """
 
     ################################################
@@ -215,23 +362,39 @@ class SimpleZip(PackageHandler):
     def zip_name(self):
         """
         Get the name of the package zip file to be used in the storage layer
+
+        In this case it is SimpleZip.zip
+
+        :return: filename
         """
         return "SimpleZip.zip"
 
     def metadata_names(self):
         """
         Get a list of the names of metadata files extracted and stored by this packager
+
+        In this case there are none
+
+        :return: list of names
         """
         return []
 
     def url_name(self):
         """
         Get the name of the package as it should appear in any content urls
+
+        In this case SimpleZip
+
+        :return: url name
         """
         return "SimpleZip"
 
 class FilesAndJATS(PackageHandler):
     """
+    Class for representing the FilesAndJATS format
+
+    You should use the format identifier: https://pubrouter.jisc.ac.uk/FilesAndJATS
+
     This is the default format that we currently prefer to get from
     providers.  It consists of a zip of a single XML file which is the JATS fulltext,
     a single PDF which is the fulltext, and an arbitrary number of other
@@ -242,6 +405,19 @@ class FilesAndJATS(PackageHandler):
     All other files are optional
     """
     def __init__(self, zip_path=None, metadata_files=None):
+        """
+        Construct a new PackageHandler around the zip file and/or the metadata files.
+
+        Metadata file handles should be of the form
+
+        ::
+
+            [("filename", <file handle>)]
+
+        :param zip_path: locally accessible path to zip file
+        :param metadata_files: metadata file handles tuple
+        :return:
+        """
         super(FilesAndJATS, self).__init__(zip_path=zip_path, metadata_files=metadata_files)
 
         self.jats = None
@@ -258,18 +434,30 @@ class FilesAndJATS(PackageHandler):
     def zip_name(self):
         """
         Get the name of the package zip file to be used in the storage layer
+
+        In this case FilesAndJATS.zip
+
+        :return: filname
         """
         return "FilesAndJATS.zip"
 
     def metadata_names(self):
         """
         Get a list of the names of metadata files extracted and stored by this packager
+
+        In this case ["filesandjats_jats.xml", "filesandjats_epmc.xml"]
+
+        :return: list of metadata files
         """
         return ["filesandjats_jats.xml", "filesandjats_epmc.xml"]
 
     def url_name(self):
         """
         Get the name of the package as it should appear in any content urls
+
+        In this case FilesAndJATS
+
+        :return: url name
         """
         return "FilesAndJATS"
 
@@ -277,12 +465,28 @@ class FilesAndJATS(PackageHandler):
     ## Overrids of methods for retriving data from the actual package
 
     def metadata_streams(self):
+        """
+        A generator which yields tuples of metadata file names and data streams
+
+        In this handler, this will yield up to 2 metadata streams; for "filesandjats_jats.xml" and "filesandjats_epmc.xml",
+        in that order, where there is a stream present for that file.
+
+        :return: generator for file names/data streams
+        """
         sources = [("filesandjats_jats.xml", self.jats), ("filesandjats_epmc.xml", self.epmc)]
         for n, x in sources:
             if x is not None:
                 yield n, StringIO(x.tostring())
 
     def notification_metadata(self):
+        """
+        Get the notification metadata as extracted from the package
+
+        This will extract metadata from both of the JATS XML and the EPMC XML, whichever is present
+        and merge them before responding.
+
+        :return: NotificationMetadata populated
+        """
         emd = None
         jmd = None
 
@@ -297,6 +501,14 @@ class FilesAndJATS(PackageHandler):
         return self._merge_metadata(emd, jmd)
 
     def match_data(self):
+        """
+        Get the match data as extracted from the package
+
+        This will extract match data from both of the JATS XML and the EPMC XML, whichever is present
+        and merge them before responding.
+
+        :return: RoutingMetadata populated
+        """
         match = models.RoutingMetadata()
 
         # extract all the relevant match data from epmc
@@ -310,9 +522,34 @@ class FilesAndJATS(PackageHandler):
         return match
 
     def convertible(self, target_format):
+        """
+        Checks whether this handler can do the conversion to the target format.
+
+        This handler currently supports the following conversion formats:
+
+        * http://purl.org/net/sword/package/SimpleZip
+
+        :param target_format: target format
+        :return: True if in the above list, else False
+        """
         return target_format in ["http://purl.org/net/sword/package/SimpleZip"]
 
     def convert(self, in_path, target_format, out_path):
+        """
+        Convert the file at the specified in_path to a package file of the
+        specified target_format at the out_path.
+
+        You should check first that this target_format is supported via convertible()
+
+        This handler currently supports the following conversion formats:
+
+        * http://purl.org/net/sword/package/SimpleZip
+
+        :param in_path: locally accessible file path to the source package
+        :param target_format: the format identifier for the format we want to convert to
+        :param out_path: locally accessible file path for the output to be written
+        :return: True/False on success/fail
+        """
         if target_format == "http://purl.org/net/sword/package/SimpleZip":
             self._simple_zip(in_path, out_path)
             return True
@@ -322,10 +559,24 @@ class FilesAndJATS(PackageHandler):
     ## Internal methods
 
     def _simple_zip(self, in_path, out_path):
+        """
+        convert to simple zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
         # files and jats are already basically a simple zip, so a straight copy
         shutil.copyfile(in_path, out_path)
 
     def _merge_metadata(self, emd, jmd):
+        """
+        Merge the supplied EMPC and JATS metadata records into one
+
+        :param emd:
+        :param jmd:
+        :return:
+        """
         if emd is None:
             emd = models.NotificationMetadata()
         if jmd is None:
@@ -358,6 +609,11 @@ class FilesAndJATS(PackageHandler):
         return md
 
     def _jats_metadata(self):
+        """
+        Extract metadata from the JATS file
+
+        :return:
+        """
         md = models.NotificationMetadata()
 
         md.title = self.jats.title
@@ -393,6 +649,11 @@ class FilesAndJATS(PackageHandler):
         return md
 
     def _epmc_metadata(self):
+        """
+        Extract metadata from the EPMC XML
+
+        :return:
+        """
         md = models.NotificationMetadata()
 
         md.title = self.epmc.title
@@ -436,6 +697,12 @@ class FilesAndJATS(PackageHandler):
         return md
 
     def _jats_match_data(self, match):
+        """
+        Extract match data from the JATS XML
+
+        :param match:
+        :return:
+        """
         # subject keywords
         for c in self.jats.categories:
             match.add_keyword(c)
@@ -469,6 +736,12 @@ class FilesAndJATS(PackageHandler):
             match.add_email(e)
 
     def _epmc_match_data(self, match):
+        """
+        Extract match data from the EPMC XML
+
+        :param match:
+        :return:
+        """
         # author string
         author_string = self.epmc.author_string
         if author_string is not None:
@@ -503,6 +776,11 @@ class FilesAndJATS(PackageHandler):
             match.add_keyword(k)
 
     def _load_from_metadata(self):
+        """
+        Load the properties for this handler from the file metadata
+
+        :return:
+        """
         for name, stream in self.metadata_files:
             if name == "filesandjats_jats.xml":
                 try:
@@ -521,6 +799,11 @@ class FilesAndJATS(PackageHandler):
             raise PackageException("No JATS fulltext or EPMC metadata found in metadata files")
 
     def _load_from_zip(self):
+        """
+        Load the properties for this handler from a zip file
+
+        :return:
+        """
         try:
             self.zip = zipfile.ZipFile(self.zip_path, "r", allowZip64=True)
         except zipfile.BadZipfile as e:
@@ -541,6 +824,11 @@ class FilesAndJATS(PackageHandler):
             raise PackageException("No JATS fulltext or EPMC metadata found in package")
 
     def _xml_files(self):
+        """
+        List the XML files in the zip file
+
+        :return:
+        """
         if self.zip is None:
             return []
         xmls = []
@@ -550,6 +838,12 @@ class FilesAndJATS(PackageHandler):
         return xmls
 
     def _set_epmc(self, xml):
+        """
+        set the local EMPC property on this object based on the xml document passed in
+
+        :param xml:
+        :return:
+        """
         if xml.tag == "resultList":
             res = xml.find("result")
             if res is not None:
@@ -560,8 +854,18 @@ class FilesAndJATS(PackageHandler):
             self.epmc = EPMCMetadataXML(xml=xml)
 
     def _set_jats(self, xml):
+        """
+        Set the local JATS property on this object based on the xml document passed in
+        :param xml:
+        :return:
+        """
         self.jats = JATS(xml=xml)
 
     def _is_valid(self):
+        """
+        Is this package valid as FilesAndJATS?
+        
+        :return:
+        """
         # is valid if either one or both of jats/epmc is not none
         return self.jats is not None or self.epmc is not None
