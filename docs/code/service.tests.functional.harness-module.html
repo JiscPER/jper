@@ -63,6 +63,13 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module harness</h1><p class="nomargin-top"><span class="codelink"><a href="service.tests.functional.harness-pysrc.html">source&nbsp;code</a></span></p>
+<p>Script which can be used to drive all aspects of the JPER API in order to test its behaviour at scale</p>
+<p>For full documentation on using this script, see HARNESS.md</p>
+<p>Quickstart: just execute this script with no arguments, and the defaults will be used:</p>
+<pre class="rst-literal-block">
+python harness.py
+</pre>
+
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -86,7 +93,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_load_keys"></a><span class="summary-sig-name">_load_keys</span>(<span class="summary-sig-arg">path</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_load_keys" class="summary-sig-name" onclick="show_private();">_load_keys</a>(<span class="summary-sig-arg">path</span>)</span><br />
+      Load API keys from the file at the specified path</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_load_keys">source&nbsp;code</a></span>
             
@@ -102,7 +110,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_load_repo_configs"></a><span class="summary-sig-name">_load_repo_configs</span>(<span class="summary-sig-arg">path</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_load_repo_configs" class="summary-sig-name" onclick="show_private();">_load_repo_configs</a>(<span class="summary-sig-arg">path</span>)</span><br />
+      Load repository configurations from the json file at the specified path</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_load_repo_configs">source&nbsp;code</a></span>
             
@@ -118,8 +127,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_select_from"></a><span class="summary-sig-name">_select_from</span>(<span class="summary-sig-arg">arr</span>,
-        <span class="summary-sig-arg">probs</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_select_from" class="summary-sig-name" onclick="show_private();">_select_from</a>(<span class="summary-sig-arg">arr</span>,
+        <span class="summary-sig-arg">probs</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Select an element randomly from the array.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_select_from">source&nbsp;code</a></span>
             
@@ -135,8 +145,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_select_n"></a><span class="summary-sig-name">_select_n</span>(<span class="summary-sig-arg">arr</span>,
-        <span class="summary-sig-arg">n</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_select_n" class="summary-sig-name" onclick="show_private();">_select_n</a>(<span class="summary-sig-arg">arr</span>,
+        <span class="summary-sig-arg">n</span>)</span><br />
+      Select N unique elements from the array</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_select_n">source&nbsp;code</a></span>
             
@@ -152,8 +163,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_random_string"></a><span class="summary-sig-name">_random_string</span>(<span class="summary-sig-arg">shortest</span>,
-        <span class="summary-sig-arg">longest</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_random_string" class="summary-sig-name" onclick="show_private();">_random_string</a>(<span class="summary-sig-arg">shortest</span>,
+        <span class="summary-sig-arg">longest</span>)</span><br />
+      Create a random string between the lengths of shortest and longest</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_string">source&nbsp;code</a></span>
             
@@ -169,7 +181,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_random_url"></a><span class="summary-sig-name">_random_url</span>()</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_random_url" class="summary-sig-name" onclick="show_private();">_random_url</a>()</span><br />
+      Create a random unique url</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_url">source&nbsp;code</a></span>
             
@@ -185,7 +198,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_random_datetime"></a><span class="summary-sig-name">_random_datetime</span>(<span class="summary-sig-arg">since</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_random_datetime" class="summary-sig-name" onclick="show_private();">_random_datetime</a>(<span class="summary-sig-arg">since</span>)</span><br />
+      Create a random datetime in the time period between now and since</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_datetime">source&nbsp;code</a></span>
             
@@ -201,7 +215,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_random_issn"></a><span class="summary-sig-name">_random_issn</span>()</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_random_issn" class="summary-sig-name" onclick="show_private();">_random_issn</a>()</span><br />
+      Generate a random ISSN.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_issn">source&nbsp;code</a></span>
             
@@ -217,7 +232,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_random_doi"></a><span class="summary-sig-name">_random_doi</span>()</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_random_doi" class="summary-sig-name" onclick="show_private();">_random_doi</a>()</span><br />
+      Generate a random DOI.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_doi">source&nbsp;code</a></span>
             
@@ -233,7 +249,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_random_email"></a><span class="summary-sig-name">_random_email</span>()</span></td>
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_random_email" class="summary-sig-name" onclick="show_private();">_random_email</a>()</span><br />
+      Generate a random email address</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_email">source&nbsp;code</a></span>
             
@@ -249,9 +266,10 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_make_notification"></a><span class="summary-sig-name">_make_notification</span>(<span class="summary-sig-arg">error</span>=<span class="summary-sig-default">False</span>,
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_make_notification" class="summary-sig-name" onclick="show_private();">_make_notification</a>(<span class="summary-sig-arg">error</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">routable</span>=<span class="summary-sig-default">0</span>,
-        <span class="summary-sig-arg">repo_configs</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">repo_configs</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a notification that is suitable for sending into the system for testing.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_make_notification">source&nbsp;code</a></span>
             
@@ -267,9 +285,10 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_get_file_path"></a><span class="summary-sig-name">_get_file_path</span>(<span class="summary-sig-arg">parent_dir</span>,
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#_get_file_path" class="summary-sig-name" onclick="show_private();">_get_file_path</a>(<span class="summary-sig-arg">parent_dir</span>,
         <span class="summary-sig-arg">max_file_size</span>,
-        <span class="summary-sig-arg">error</span>=<span class="summary-sig-default">False</span>)</span></td>
+        <span class="summary-sig-arg">error</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Get a path to a file which meets the criteria</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_get_file_path">source&nbsp;code</a></span>
             
@@ -285,14 +304,15 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="validate"></a><span class="summary-sig-name">validate</span>(<span class="summary-sig-arg">base_url</span>,
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#validate" class="summary-sig-name">validate</a>(<span class="summary-sig-arg">base_url</span>,
         <span class="summary-sig-arg">keys</span>,
         <span class="summary-sig-arg">throttle</span>,
         <span class="summary-sig-arg">mdrate</span>,
         <span class="summary-sig-arg">mderrors</span>,
         <span class="summary-sig-arg">cterrors</span>,
         <span class="summary-sig-arg">max_file_size</span>,
-        <span class="summary-sig-arg">tmpdir</span>)</span></td>
+        <span class="summary-sig-arg">tmpdir</span>)</span><br />
+      Thread runner which carries out requests against the validate API</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#validate">source&nbsp;code</a></span>
             
@@ -308,7 +328,7 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="create"></a><span class="summary-sig-name">create</span>(<span class="summary-sig-arg">base_url</span>,
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#create" class="summary-sig-name">create</a>(<span class="summary-sig-arg">base_url</span>,
         <span class="summary-sig-arg">keys</span>,
         <span class="summary-sig-arg">throttle</span>,
         <span class="summary-sig-arg">mdrate</span>,
@@ -318,7 +338,8 @@
         <span class="summary-sig-arg">tmpdir</span>,
         <span class="summary-sig-arg">retrieve_rate</span>,
         <span class="summary-sig-arg">routable</span>,
-        <span class="summary-sig-arg">repo_configs</span>)</span></td>
+        <span class="summary-sig-arg">repo_configs</span>)</span><br />
+      Thread runner which makes requests to the create API</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#create">source&nbsp;code</a></span>
             
@@ -334,7 +355,7 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="listget"></a><span class="summary-sig-name">listget</span>(<span class="summary-sig-arg">base_url</span>,
+          <td><span class="summary-sig"><a href="service.tests.functional.harness-module.html#listget" class="summary-sig-name">listget</a>(<span class="summary-sig-arg">base_url</span>,
         <span class="summary-sig-arg">keys</span>,
         <span class="summary-sig-arg">throttle</span>,
         <span class="summary-sig-arg">generic_rate</span>,
@@ -342,7 +363,8 @@
         <span class="summary-sig-arg">tmpdir</span>,
         <span class="summary-sig-arg">repo_configs</span>,
         <span class="summary-sig-arg">error_rate</span>,
-        <span class="summary-sig-arg">get_rate</span>)</span></td>
+        <span class="summary-sig-arg">get_rate</span>)</span><br />
+      Thread runner that issues list and get requests against the API</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.tests.functional.harness-pysrc.html#listget">source&nbsp;code</a></span>
             
@@ -353,6 +375,462 @@
     </td>
   </tr>
 </table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="_load_keys"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_load_keys</span>(<span class="sig-arg">path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_load_keys">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Load API keys from the file at the specified path
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>path</code></strong></li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a list of api keys</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_load_repo_configs"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_load_repo_configs</span>(<span class="sig-arg">path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_load_repo_configs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Load repository configurations from the json file at the specified path
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>path</code></strong></li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>list of json objects</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_select_from"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_select_from</span>(<span class="sig-arg">arr</span>,
+        <span class="sig-arg">probs</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_select_from">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Select an element randomly from the array.</p>
+<p>If the probs argument is provided, it must be an array of the same length as the source array
+and specify a probability between 0 and 1 that the element will be selected.  The sum of the
+probs array MUST equal 1.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>arr</code></strong> - list of elements to select from</li>
+        <li><strong class="pname"><code>probs</code></strong> - probability of each element being selected</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a random element from the array</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_select_n"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_select_n</span>(<span class="sig-arg">arr</span>,
+        <span class="sig-arg">n</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_select_n">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Select N unique elements from the array
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>arr</code></strong> - the array to select from</li>
+        <li><strong class="pname"><code>n</code></strong> - the number of elements to select</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a list of elements</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_random_string"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_random_string</span>(<span class="sig-arg">shortest</span>,
+        <span class="sig-arg">longest</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_string">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a random string between the lengths of shortest and longest</p>
+<p>Strings are constructed out of the ascii letters and some spaces</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>shortest</code></strong> - shortes the string should be</li>
+        <li><strong class="pname"><code>longest</code></strong> - longest the string should be</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a string</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_random_url"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_random_url</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_url">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Create a random unique url
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>url</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_random_datetime"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_random_datetime</span>(<span class="sig-arg">since</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_datetime">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Create a random datetime in the time period between now and since
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>since</code></strong> - earliest date</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a datetime object</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_random_issn"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_random_issn</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_issn">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate a random ISSN.</p>
+<p>This provides something which looks like an issn, though the checksum digit is not calculated, so they
+may not be truly valid</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>something that looks like an issn</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_random_doi"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_random_doi</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_doi">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate a random DOI.</p>
+<p>Obviously this DOI won't resolve to anything in the real world</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>something that looks like a DOI</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_random_email"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_random_email</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_random_email">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generate a random email address
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>something that looks like an email</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_make_notification"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_make_notification</span>(<span class="sig-arg">error</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">routable</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">repo_configs</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_make_notification">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a notification that is suitable for sending into the system for testing.</p>
+<p>If error is True, then this will just return a dictionary which contains some data which does not constitute
+a valid notification.</p>
+<p>Otherwise, the notification will be generated using random data generators provided in this module.</p>
+<p>If routable is set, this should be a probability between 0 and 1 that the notification will contain data
+from the supplied repo_configs, which will in turn make the notification routable by the test system.  Therefore,
+to guarantee that the notification is routable, pass in routable=1, for a 50/50 chance pass in routable=0.5</p>
+<p>The repo_configs should be a list of repository configurations as python dicts which represent the actual
+repository configs in your test system.  If routable &gt; 0 and this method decides to make the notification
+routable it will select N configurations (between 1 and all), and include some data (again at random) from
+that configuration into the test notification.  This will ensure that the notification contains some information
+from each configuration which will make it routable to the equivalent repositories.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>error</code></strong> - should the notification be erroneous</li>
+        <li><strong class="pname"><code>routable</code></strong> - chance between 0 and 1 that this notification will be routable</li>
+        <li><strong class="pname"><code>repo_configs</code></strong> - repository configs to use to generate routable notifications</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a notification object as a dict</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_get_file_path"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_get_file_path</span>(<span class="sig-arg">parent_dir</span>,
+        <span class="sig-arg">max_file_size</span>,
+        <span class="sig-arg">error</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#_get_file_path">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get a path to a file which meets the criteria</p>
+<p>This will construct a file of the suitable size and give you back the path to it</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>parent_dir</code></strong> - the directory in which files are stored</li>
+        <li><strong class="pname"><code>max_file_size</code></strong> - the maximum size of the file</li>
+        <li><strong class="pname"><code>error</code></strong> - whether the file should be erroneous</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="validate"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">validate</span>(<span class="sig-arg">base_url</span>,
+        <span class="sig-arg">keys</span>,
+        <span class="sig-arg">throttle</span>,
+        <span class="sig-arg">mdrate</span>,
+        <span class="sig-arg">mderrors</span>,
+        <span class="sig-arg">cterrors</span>,
+        <span class="sig-arg">max_file_size</span>,
+        <span class="sig-arg">tmpdir</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#validate">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Thread runner which carries out requests against the validate API</p>
+<p>This will make repeated requests to that API until it is shut-down, based on the parameters supplied</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>base_url</code></strong> - the base url for the router API</li>
+        <li><strong class="pname"><code>keys</code></strong> - the list of API keys to use for requests</li>
+        <li><strong class="pname"><code>throttle</code></strong> - time to wait in between each request</li>
+        <li><strong class="pname"><code>mdrate</code></strong> - chance between 0 and 1 that this is a metadata-only request</li>
+        <li><strong class="pname"><code>mderrors</code></strong> - chance between 0 and 1 that the metadata contains errors</li>
+        <li><strong class="pname"><code>cterrors</code></strong> - chance between 0 and 1 that the content contains errors</li>
+        <li><strong class="pname"><code>max_file_size</code></strong> - largest file size to deposit</li>
+        <li><strong class="pname"><code>tmpdir</code></strong> - directory to use for temp file storage</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="create"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create</span>(<span class="sig-arg">base_url</span>,
+        <span class="sig-arg">keys</span>,
+        <span class="sig-arg">throttle</span>,
+        <span class="sig-arg">mdrate</span>,
+        <span class="sig-arg">mderrors</span>,
+        <span class="sig-arg">cterrors</span>,
+        <span class="sig-arg">max_file_size</span>,
+        <span class="sig-arg">tmpdir</span>,
+        <span class="sig-arg">retrieve_rate</span>,
+        <span class="sig-arg">routable</span>,
+        <span class="sig-arg">repo_configs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#create">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Thread runner which makes requests to the create API</p>
+<p>This will make repeated requests to that API until it is shut-down, based on the parameters supplied</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>base_url</code></strong> - the base url of the router API</li>
+        <li><strong class="pname"><code>keys</code></strong> - API keys to use in requests</li>
+        <li><strong class="pname"><code>throttle</code></strong> - time to wait in between each request</li>
+        <li><strong class="pname"><code>mdrate</code></strong> - chance between 0 and 1 of a metadata-only request</li>
+        <li><strong class="pname"><code>mderrors</code></strong> - chance between 0 and 1 for an erroneous metadata record</li>
+        <li><strong class="pname"><code>cterrors</code></strong> - chance between 0 and 1 for an error in the content</li>
+        <li><strong class="pname"><code>max_file_size</code></strong> - largest file size to use</li>
+        <li><strong class="pname"><code>tmpdir</code></strong> - temp directory for file storage</li>
+        <li><strong class="pname"><code>retrieve_rate</code></strong> - chance between 0 and 1 of retrieving the created object immediately after</li>
+        <li><strong class="pname"><code>routable</code></strong> - chance between 0 and 1 that the created object is routable</li>
+        <li><strong class="pname"><code>repo_configs</code></strong> - repository configs to use for creating routable notifications</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="listget"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">listget</span>(<span class="sig-arg">base_url</span>,
+        <span class="sig-arg">keys</span>,
+        <span class="sig-arg">throttle</span>,
+        <span class="sig-arg">generic_rate</span>,
+        <span class="sig-arg">max_lookback</span>,
+        <span class="sig-arg">tmpdir</span>,
+        <span class="sig-arg">repo_configs</span>,
+        <span class="sig-arg">error_rate</span>,
+        <span class="sig-arg">get_rate</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.tests.functional.harness-pysrc.html#listget">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Thread runner that issues list and get requests against the API</p>
+<p>This will make repeated requests to that API until it is shut-down, based on the parameters supplied</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>base_url</code></strong> - base url of the routed api</li>
+        <li><strong class="pname"><code>keys</code></strong> - api keys to use for requests</li>
+        <li><strong class="pname"><code>throttle</code></strong> - time to wait in between requests</li>
+        <li><strong class="pname"><code>generic_rate</code></strong> - chance between 0 and 1 that this is a request to the generic routing api, rather than the repository-specific one</li>
+        <li><strong class="pname"><code>max_lookback</code></strong> - maximum time to use for &quot;since&quot; dates in requests</li>
+        <li><strong class="pname"><code>tmpdir</code></strong> - temp directory for file storage</li>
+        <li><strong class="pname"><code>repo_configs</code></strong> - repository configs to do retrievals for</li>
+        <li><strong class="pname"><code>error_rate</code></strong> - chance between 0 and 1 to issue a malformed request</li>
+        <li><strong class="pname"><code>get_rate</code></strong> - chance between 0 and 1 that after a list request each record is individually retrieved</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -384,7 +862,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Nov 16 18:00:20 2015
+    Generated by Epydoc 3.0.1 on Tue Nov 17 09:15:57 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

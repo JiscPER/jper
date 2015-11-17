@@ -1,3 +1,7 @@
+"""
+Unit tests for the routing system
+"""
+
 from octopus.modules.es.testindex import ESTestCase
 # from unittest import TestCase
 from service.web import app

@@ -1,4 +1,8 @@
 #!/bin/sh
+
+# convenience script for executing the test harness.  This specifies some reasonable default values
+# but you should take a copy of this script and modify the parameters to your particular test.
+
 python harness.py --timeout 60 \
     --base_url http://localhost:5024/api/v1 \
     --tmpdir harness_tmp \

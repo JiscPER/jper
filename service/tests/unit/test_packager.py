@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Unit tests for the packaging system
+"""
 
 # from octopus.modules.es.testindex import ESTestCase
 from unittest import TestCase

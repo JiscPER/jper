@@ -1,3 +1,15 @@
+"""
+Script which can be used to drive all aspects of the JPER API in order to test its behaviour at scale
+
+For full documentation on using this script, see HARNESS.md
+
+Quickstart: just execute this script with no arguments, and the defaults will be used:
+
+::
+
+    python harness.py
+    
+"""
 from octopus.core import app, add_configuration
 import threading, time, os, uuid, shutil, json, string
 from datetime import datetime, timedelta
@@ -8,14 +20,37 @@ from octopus.lib import dates, http, isolang
 from copy import deepcopy
 
 def _load_keys(path):
+    """
+    Load API keys from the file at the specified path
+
+    :param path:
+    :return: a list of api keys
+    """
     with open(path) as f:
         return f.read().split("\n")
 
 def _load_repo_configs(path):
+    """
+    Load repository configurations from the json file at the specified path
+
+    :param path:
+    :return: list of json objects
+    """
     with open(path) as f:
         return json.loads(f.read())
 
 def _select_from(arr, probs=None):
+    """
+    Select an element randomly from the array.
+
+    If the probs argument is provided, it must be an array of the same length as the source array
+    and specify a probability between 0 and 1 that the element will be selected.  The sum of the
+    probs array MUST equal 1.
+
+    :param arr: list of elements to select from
+    :param probs: probability of each element being selected
+    :return: a random element from the array
+    """
     if probs is None:
         return arr[randint(0, len(arr) - 1)]
     else:
@@ -28,6 +63,13 @@ def _select_from(arr, probs=None):
         return arr[len(arr) - 1]
 
 def _select_n(arr, n):
+    """
+    Select N unique elements from the array
+
+    :param arr: the array to select from
+    :param n: the number of elements to select
+    :return: a list of elements
+    """
     selection = []
 
     idx = range(0, len(arr))
@@ -41,6 +83,15 @@ def _select_n(arr, n):
     return selection
 
 def _random_string(shortest, longest):
+    """
+    Create a random string between the lengths of shortest and longest
+
+    Strings are constructed out of the ascii letters and some spaces
+
+    :param shortest: shortes the string should be
+    :param longest: longest the string should be
+    :return: a string
+    """
     length = randint(shortest, longest)
     s = ""
     pool = string.ascii_letters + "    "    # inject a few extra spaces, to increase their prevalence
@@ -50,9 +101,20 @@ def _random_string(shortest, longest):
     return s
 
 def _random_url():
+    """
+    Create a random unique url
+
+    :return: url
+    """
     return "http://example.com/file/" + uuid.uuid4().hex
 
 def _random_datetime(since):
+    """
+    Create a random datetime in the time period between now and since
+
+    :param since: earliest date
+    :return: a datetime object
+    """
     epoch = datetime.fromtimestamp(0)
     lower_delta = since - epoch
     lower = int(lower_delta.total_seconds())
@@ -65,17 +127,60 @@ def _random_datetime(since):
     return datetime.fromtimestamp(seconds)
 
 def _random_issn():
+    """
+    Generate a random ISSN.
+
+    This provides something which looks like an issn, though the checksum digit is not calculated, so they
+    may not be truly valid
+
+    :return: something that looks like an issn
+    """
     first = randint(1000, 9999)
     second = randint(100, 999)
     return str(first) + "-" + str(second) + str(_select_from([1, 2, 3, 4, 5, 6, 7, 8, 9, "X"]))
 
 def _random_doi():
+    """
+    Generate a random DOI.
+
+    Obviously this DOI won't resolve to anything in the real world
+
+    :return: something that looks like a DOI
+    """
     return "10." + _random_string(3, 4) + "/" + _random_string(5, 10)
 
 def _random_email():
+    """
+    Generate a random email address
+
+    :return: something that looks like an email
+    """
     return _random_string(10, 15) + "@" + _random_string(10, 15) + "." + _select_from(["ac.uk", "edu", "com"])
 
 def _make_notification(error=False, routable=0, repo_configs=None):
+    """
+    Create a notification that is suitable for sending into the system for testing.
+
+    If error is True, then this will just return a dictionary which contains some data which does not constitute
+    a valid notification.
+
+    Otherwise, the notification will be generated using random data generators provided in this module.
+
+    If routable is set, this should be a probability between 0 and 1 that the notification will contain data
+    from the supplied repo_configs, which will in turn make the notification routable by the test system.  Therefore,
+    to guarantee that the notification is routable, pass in routable=1, for a 50/50 chance pass in routable=0.5
+
+    The repo_configs should be a list of repository configurations as python dicts which represent the actual
+    repository configs in your test system.  If routable > 0 and this method decides to make the notification
+    routable it will select N configurations (between 1 and all), and include some data (again at random) from
+    that configuration into the test notification.  This will ensure that the notification contains some information
+    from each configuration which will make it routable to the equivalent repositories.
+
+    :param error: should the notification be erroneous
+    :param routable: chance between 0 and 1 that this notification will be routable
+    :param repo_configs: repository configs to use to generate routable notifications
+    :return: a notification object as a dict
+    """
     if error:
         return {"something" : "broken"}
 
@@ -212,6 +317,16 @@ def _make_notification(error=False, routable=0, repo_configs=None):
     return note
 
 def _get_file_path(parent_dir, max_file_size, error=False):
+    """
+    Get a path to a file which meets the criteria
+
+    This will construct a file of the suitable size and give you back the path to it
+
+    :param parent_dir: the directory in which files are stored
+    :param max_file_size: the maximum size of the file
+    :param error: whether the file should be erroneous
+    :return:
+    """
     # sort out a file path
     fn = uuid.uuid4().hex + ".zip"
     path = os.path.join(parent_dir, fn)
@@ -236,6 +351,21 @@ def _get_file_path(parent_dir, max_file_size, error=False):
     return path
 
 def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir):
+    """
+    Thread runner which carries out requests against the validate API
+
+    This will make repeated requests to that API until it is shut-down, based on the parameters supplied
+
+    :param base_url: the base url for the router API
+    :param keys: the list of API keys to use for requests
+    :param throttle: time to wait in between each request
+    :param mdrate: chance between 0 and 1 that this is a metadata-only request
+    :param mderrors: chance between 0 and 1 that the metadata contains errors
+    :param cterrors: chance between 0 and 1 that the content contains errors
+    :param max_file_size: largest file size to deposit
+    :param tmpdir: directory to use for temp file storage
+    :return:
+    """
     tname = threading.current_thread().name
     app.logger.info("Thread:{x} - Initialise Validate; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir))
 
@@ -296,6 +426,24 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
             app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
 
 def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir, retrieve_rate, routable, repo_configs):
+    """
+    Thread runner which makes requests to the create API
+
+    This will make repeated requests to that API until it is shut-down, based on the parameters supplied
+
+    :param base_url: the base url of the router API
+    :param keys: API keys to use in requests
+    :param throttle: time to wait in between each request
+    :param mdrate: chance between 0 and 1 of a metadata-only request
+    :param mderrors: chance between 0 and 1 for an erroneous metadata record
+    :param cterrors: chance between 0 and 1 for an error in the content
+    :param max_file_size: largest file size to use
+    :param tmpdir: temp directory for file storage
+    :param retrieve_rate: chance between 0 and 1 of retrieving the created object immediately after
+    :param routable: chance between 0 and 1 that the created object is routable
+    :param repo_configs: repository configs to use for creating routable notifications
+    :return:
+    """
     tname = threading.current_thread().name
     app.logger.info("Thread:{x} - Initialise Create; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}, retrieve_rate:{h}, routable:{i}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir, h=retrieve_rate, i=routable))
 
@@ -381,6 +529,22 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
             app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
 
 def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_configs, error_rate, get_rate):
+    """
+    Thread runner that issues list and get requests against the API
+
+    This will make repeated requests to that API until it is shut-down, based on the parameters supplied
+
+    :param base_url: base url of the routed api
+    :param keys: api keys to use for requests
+    :param throttle: time to wait in between requests
+    :param generic_rate: chance between 0 and 1 that this is a request to the generic routing api, rather than the repository-specific one
+    :param max_lookback: maximum time to use for "since" dates in requests
+    :param tmpdir: temp directory for file storage
+    :param repo_configs: repository configs to do retrievals for
+    :param error_rate: chance between 0 and 1 to issue a malformed request
+    :param get_rate: chance between 0 and 1 that after a list request each record is individually retrieved
+    :return:
+    """
     tname = threading.current_thread().name
     app.logger.info("Thread:{x} - Initialise List/Get; base_url:{a}, throttle:{b}, generic_rate:{c}, max_lookback:{d}, tmpdir:{g}, error_rate:{h}, get_rate:{i}".format(x=tname, a=base_url, b=throttle, c=generic_rate, d=max_lookback, g=tmpdir, h=error_rate, i=get_rate))
 

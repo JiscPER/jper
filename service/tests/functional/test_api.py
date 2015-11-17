@@ -1,3 +1,10 @@
+"""
+Functional tests for the API.
+
+This test suite will work fine against a standard JPER install on the local machine with the default accounts.
+
+If you want to run it in a different environment you will need to modify some of the constants used in this test.
+"""
 import requests, json, os
 
 from octopus.modules.es.testindex import ESTestCase
@@ -11,7 +18,10 @@ from octopus.modules.store import store
 # FIXME: at this point these don't do anything.  We'll need to create user accounts
 # in the remote system and get their api keys.
 API_KEY = "admin"   # this is the password for the account, not the api-key, so it won't work
+"""The API key for the admin account"""
+
 INVALID_API_KEY = "abcdefg"
+"""An API key which is not related to any account"""
 
 class TestAPI(ESTestCase):
     def setUp(self):

@@ -1,12 +1,34 @@
+"""
+Script which can load repository configs and user accounts into an empty test system, to prime it for the test harness
+
+For command line options run
+
+::
+
+    python load_test_data.py --help
+
+"""
 from octopus.core import app, add_configuration, initialise
 import json
 from service import models
 
 def _load_keys(path):
+    """
+    Load API keys from the specified file
+
+    :param path:
+    :return: list of api keys
+    """
     with open(path) as f:
         return f.read().split("\n")
 
 def _load_repo_configs(path):
+    """
+    load repository configs from the specified json file
+
+    :param path:
+    :return: list of json objects
+    """
     with open(path) as f:
         return json.loads(f.read())
 

@@ -1,3 +1,7 @@
+"""
+Unit tests for the JPER API class
+"""
+
 from octopus.modules.es.testindex import ESTestCase
 from octopus.lib import http, paths
 from octopus.core import app
