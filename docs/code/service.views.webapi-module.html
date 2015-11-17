@@ -14,9 +14,6 @@
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -62,6 +59,8 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module webapi</h1><p class="nomargin-top"><span class="codelink"><a href="service.views.webapi-pysrc.html">source&nbsp;code</a></span></p>
+Blueprint which provides the RESTful web API for JPER
+
 <!-- ==================== CLASSES ==================== -->
 <a name="section-Classes"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -83,7 +82,8 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="service.views.webapi.BadRequest-class.html" class="summary-name">BadRequest</a>
+        <a href="service.views.webapi.BadRequest-class.html" class="summary-name">BadRequest</a><br />
+      Generic Exception for a bad request
     </td>
   </tr>
 </table>
@@ -110,7 +110,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_not_found"></a><span class="summary-sig-name">_not_found</span>()</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#_not_found" class="summary-sig-name" onclick="show_private();">_not_found</a>()</span><br />
+      Construct a response object to represent a 404 (Not Found)</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#_not_found">source&nbsp;code</a></span>
             
@@ -126,7 +127,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_bad_request"></a><span class="summary-sig-name">_bad_request</span>(<span class="summary-sig-arg">message</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#_bad_request" class="summary-sig-name" onclick="show_private();">_bad_request</a>(<span class="summary-sig-arg">message</span>)</span><br />
+      Construct a response object to represent a 400 (Bad Request) around the supplied message</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#_bad_request">source&nbsp;code</a></span>
             
@@ -142,7 +144,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_accepted"></a><span class="summary-sig-name">_accepted</span>(<span class="summary-sig-arg">obj</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#_accepted" class="summary-sig-name" onclick="show_private();">_accepted</a>(<span class="summary-sig-arg">obj</span>)</span><br />
+      Construct a response object to represent a 202 (Accepted) for the supplied object</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#_accepted">source&nbsp;code</a></span>
             
@@ -175,9 +178,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_get_parts"></a><span class="summary-sig-name">_get_parts</span>()</span><br />
-      Used to extract metadata and content from an incoming request
-:return:</td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#_get_parts" class="summary-sig-name" onclick="show_private();">_get_parts</a>()</span><br />
+      Used to extract metadata and content from an incoming request</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#_get_parts">source&nbsp;code</a></span>
             
@@ -193,7 +195,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.views.webapi-module.html#validate" class="summary-sig-name">validate</a>()</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#validate" class="summary-sig-name">validate</a>()</span><br />
+      Receive a POST to the /validate endpoint and process it</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#validate">source&nbsp;code</a></span>
             
@@ -209,7 +212,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.views.webapi-module.html#create_notification" class="summary-sig-name">create_notification</a>()</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#create_notification" class="summary-sig-name">create_notification</a>()</span><br />
+      Receive a POST to the /notification endpoint to create a notification, and process it</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#create_notification">source&nbsp;code</a></span>
             
@@ -225,7 +229,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.views.webapi-module.html#retrieve_notification" class="summary-sig-name">retrieve_notification</a>(<span class="summary-sig-arg">notification_id</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#retrieve_notification" class="summary-sig-name">retrieve_notification</a>(<span class="summary-sig-arg">notification_id</span>)</span><br />
+      Receive a GET on a specific notification, as identified by the notification id, and return the body
+of the notification</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#retrieve_notification">source&nbsp;code</a></span>
             
@@ -242,7 +248,9 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="service.views.webapi-module.html#retrieve_content" class="summary-sig-name">retrieve_content</a>(<span class="summary-sig-arg">notification_id</span>,
-        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">filename</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Receive a GET against the default content or a specific content file in a notification and supply the binary
+in return</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#retrieve_content">source&nbsp;code</a></span>
             
@@ -275,7 +283,8 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_list_request"></a><span class="summary-sig-name">_list_request</span>(<span class="summary-sig-arg">repo_id</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#_list_request" class="summary-sig-name" onclick="show_private();">_list_request</a>(<span class="summary-sig-arg">repo_id</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Process a list request, either against the full dataset or the specific repo_id supplied</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#_list_request">source&nbsp;code</a></span>
             
@@ -291,7 +300,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.views.webapi-module.html#list_all_routed" class="summary-sig-name">list_all_routed</a>()</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#list_all_routed" class="summary-sig-name">list_all_routed</a>()</span><br />
+      List all the notifications that have been routed to any repository, limited by the parameters supplied
+in the URL.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#list_all_routed">source&nbsp;code</a></span>
             
@@ -307,7 +318,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.views.webapi-module.html#list_repository_routed" class="summary-sig-name">list_repository_routed</a>(<span class="summary-sig-arg">repo_id</span>)</span></td>
+          <td><span class="summary-sig"><a href="service.views.webapi-module.html#list_repository_routed" class="summary-sig-name">list_repository_routed</a>(<span class="summary-sig-arg">repo_id</span>)</span><br />
+      List all the notifications that have been routed to the specified repository, limited by the parameters supplied
+in the URL.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.webapi-pysrc.html#list_repository_routed">source&nbsp;code</a></span>
             
@@ -377,6 +390,73 @@
   </td>
 </tr>
 </table>
+<a name="_not_found"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_not_found</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.webapi-pysrc.html#_not_found">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Construct a response object to represent a 404 (Not Found)
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>Flask response for a 404, with an empty response body</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_bad_request"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_bad_request</span>(<span class="sig-arg">message</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.webapi-pysrc.html#_bad_request">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Construct a response object to represent a 400 (Bad Request) around the supplied message
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>Flask response for a 400 with a json response body containing the error</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_accepted"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_accepted</span>(<span class="sig-arg">obj</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.webapi-pysrc.html#_accepted">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Construct a response object to represent a 202 (Accepted) for the supplied object
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>obj</code></strong> - the object that was accepted</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Flask response for a 202 with the id of the object in the json body, and the Location header set correctly</dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="standard_authentication"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -400,6 +480,27 @@
   </dl>
 </td></tr></table>
 </div>
+<a name="_get_parts"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_get_parts</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.webapi-pysrc.html#_get_parts">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Used to extract metadata and content from an incoming request
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>a tuple containing the metadata parsed out of the incoming json, and a file-handle (read-once) for the binary content</dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="validate"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -414,8 +515,10 @@
     </td>
   </tr></table>
   
-  
+  Receive a POST to the /validate endpoint and process it
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>A 400 (Bad Request) if not valid, or a 204 if successful</dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route("/validate", methods= ["POST"])</code></li>
@@ -438,8 +541,10 @@
     </td>
   </tr></table>
   
-  
+  Receive a POST to the /notification endpoint to create a notification, and process it
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>A 400 (Bad Request) if not valid, or a 202 (Accepted) if successful</dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route("/notification", methods= ["POST"])</code></li>
@@ -462,8 +567,15 @@
     </td>
   </tr></table>
   
-  
+  Receive a GET on a specific notification, as identified by the notification id, and return the body
+of the notification
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>notification_id</code></strong> - the id of the notification to retrieve</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>404 (Not Found) if not found, else 200 (OK) and the outgoing notification as a json body</dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route("/notification/<notification_id>", methods= ["GET"])</code></li>
@@ -487,8 +599,16 @@
     </td>
   </tr></table>
   
-  
+  Receive a GET against the default content or a specific content file in a notification and supply the binary
+in return
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>notification_id</code></strong> - the notification whose content to retrieve</li>
+        <li><strong class="pname"><code>filename</code></strong> - the filename of the content file in the notification</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>404 (Not Found) if either the notification or content are not found) or 200 (OK) and the binary content</dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route("/notification/<notification_id>/content", methods= ["GET"])</code></li>
@@ -522,6 +642,33 @@
   </dl>
 </td></tr></table>
 </div>
+<a name="_list_request"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_list_request</span>(<span class="sig-arg">repo_id</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.webapi-pysrc.html#_list_request">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Process a list request, either against the full dataset or the specific repo_id supplied</p>
+<p>This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+for the parameters of these kinds of requests.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>repo_id</code></strong> - the repo id to limit the request to</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Flask response containing the list of notifications that are appropriate to the parameters</dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="list_all_routed"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -536,8 +683,12 @@
     </td>
   </tr></table>
   
-  
+  <p>List all the notifications that have been routed to any repository, limited by the parameters supplied
+in the URL.</p>
+<p>See the API documentation for more details.</p>
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>a list of notifications appropriate to the parameters</dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route("/routed", methods= ["GET"])</code></li>
@@ -560,8 +711,16 @@
     </td>
   </tr></table>
   
-  
+  <p>List all the notifications that have been routed to the specified repository, limited by the parameters supplied
+in the URL.</p>
+<p>See the API documentation for more details.</p>
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>repo_id</code></strong> - the id of the reponsitory whose notifications to retrieve</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a list of notifications appropriate to the parameters</dd>
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route("/routed/<repo_id>", methods= ["GET"])</code></li>
@@ -600,9 +759,6 @@
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -627,7 +783,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 17 09:15:57 2015
+    Generated by Epydoc 3.0.1 on Tue Nov 17 09:58:18 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

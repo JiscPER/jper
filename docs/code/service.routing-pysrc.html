@@ -14,9 +14,6 @@
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -68,10 +65,12 @@
 <a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
 <a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">dates</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">modules</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Method service.tests.fixtures.packages.StoreFailStore.store()=service.tests.fixtures.packages.StoreFailStore-class.html#store"><a title="service.tests.fixtures.packages.StoreFailStore.store" class="py-name" href="#" onclick="return doclink('link-0', 'store', 'link-0');">store</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name"><a title="service.tests.fixtures.packages.StoreFailStore.store" class="py-name" href="#" onclick="return doclink('link-1', 'store', 'link-0');">store</a></tt> </tt>
-<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Package service=service-module.html"><a title="service" class="py-name" href="#" onclick="return doclink('link-2', 'service', 'link-2');">service</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Module service.packages=service.packages-module.html,Module service.tests.fixtures.packages=service.tests.fixtures.packages-module.html"><a title="service.packages
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Module config.service=config.service-module.html,Package service=service-module.html"><a title="config.service
+service" class="py-name" href="#" onclick="return doclink('link-2', 'service', 'link-2');">service</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Module service.packages=service.packages-module.html,Module service.tests.fixtures.packages=service.tests.fixtures.packages-module.html"><a title="service.packages
 service.tests.fixtures.packages" class="py-name" href="#" onclick="return doclink('link-3', 'packages', 'link-3');">packages</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Package service.models=service.models-module.html"><a title="service.models" class="py-name" href="#" onclick="return doclink('link-4', 'models', 'link-4');">models</a></tt> </tt>
 <a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">esprit</tt> </tt>
-<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name"><a title="service" class="py-name" href="#" onclick="return doclink('link-5', 'service', 'link-2');">service</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module service.web=service.web-module.html"><a title="service.web" class="py-name" href="#" onclick="return doclink('link-6', 'web', 'link-6');">web</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">app</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name"><a title="config.service
+service" class="py-name" href="#" onclick="return doclink('link-5', 'service', 'link-2');">service</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module service.web=service.web-module.html"><a title="service.web" class="py-name" href="#" onclick="return doclink('link-6', 'web', 'link-6');">web</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">app</tt> </tt>
 <a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">url_for</tt> </tt>
 <a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">copy</tt> <tt class="py-keyword">import</tt> <tt class="py-name">deepcopy</tt> </tt>
 <a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">uuid</tt> </tt>
@@ -209,7 +208,8 @@ service.routing.links" class="py-name" href="#" onclick="return doclink('link-49
 <a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt>
 <a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-comment"># if config says so, convert the unrouted notification to a failed notification, enhance and save</tt> </tt>
 <a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-comment"># for later diagnosis</tt> </tt>
-<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name" targets="Function service.views.account.config()=service.views.account-module.html#config,Function service.views.webapi.config()=service.views.webapi-module.html#config"><a title="service.views.account.config
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name" targets="Package config=config-module.html,Function service.views.account.config()=service.views.account-module.html#config,Function service.views.webapi.config()=service.views.webapi-module.html#config"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-50', 'config', 'link-50');">config</a></tt><tt class="py-op">.</tt><tt id="link-51" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-51', 'get', 'link-41');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"KEEP_FAILED_NOTIFICATIONS"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 <a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-name">failed</tt> <tt class="py-op">=</tt> <tt class="py-name">unrouted</tt><tt class="py-op">.</tt><tt id="link-52" class="py-name" targets="Method service.models.notifications.UnroutedNotification.make_failed()=service.models.notifications.UnroutedNotification-class.html#make_failed"><a title="service.models.notifications.UnroutedNotification.make_failed" class="py-name" href="#" onclick="return doclink('link-52', 'make_failed', 'link-52');">make_failed</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 <a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">            <tt class="py-name">failed</tt><tt class="py-op">.</tt><tt id="link-53" class="py-name"><a title="service.models.notifications.RoutingInformation.analysis_date" class="py-name" href="#" onclick="return doclink('link-53', 'analysis_date', 'link-47');">analysis_date</a></tt> <tt class="py-op">=</tt> <tt class="py-name">dates</tt><tt class="py-op">.</tt><tt class="py-name">now</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
@@ -518,7 +518,8 @@ service.models.notifications.BaseNotification.links
 service.routing.links" class="py-name" href="#" onclick="return doclink('link-153', 'links', 'link-49');">links</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
 <a name="L406"></a><tt class="py-lineno">406</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">d</tt> <tt class="py-keyword">in</tt> <tt class="py-name">done</tt><tt class="py-op">:</tt> </tt>
 <a name="L407"></a><tt class="py-lineno">407</tt>  <tt class="py-line">        <tt class="py-keyword">with</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">test_request_context</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L408"></a><tt class="py-lineno">408</tt>  <tt class="py-line">            <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-154" class="py-name"><a title="service.views.account.config
+<a name="L408"></a><tt class="py-lineno">408</tt>  <tt class="py-line">            <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-154" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-154', 'config', 'link-50');">config</a></tt><tt class="py-op">.</tt><tt id="link-155" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-155', 'get', 'link-41');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"BASE_URL"</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-name">url_for</tt><tt class="py-op">(</tt><tt class="py-string">"webapi.retrieve_content"</tt><tt class="py-op">,</tt> <tt class="py-name">notification_id</tt><tt class="py-op">=</tt><tt class="py-name">unrouted</tt><tt class="py-op">.</tt><tt class="py-name">id</tt><tt class="py-op">,</tt> <tt class="py-name">content_id</tt><tt class="py-op">=</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
 <a name="L409"></a><tt class="py-lineno">409</tt>  <tt class="py-line">        <tt id="link-156" class="py-name"><a title="service.models.api.OutgoingNotification.links
 service.models.notifications.BaseNotification.links
@@ -545,7 +546,8 @@ service.routing.links" class="py-name" href="#" onclick="return doclink('link-15
 <a name="L425"></a><tt class="py-lineno">425</tt>  <tt class="py-line">            <tt class="py-name">link</tt><tt class="py-op">[</tt><tt class="py-string">'proxy'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">nid</tt> </tt>
 <a name="L426"></a><tt class="py-lineno">426</tt>  <tt class="py-line">            <tt class="py-name">nl</tt><tt class="py-op">[</tt><tt class="py-string">'access'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">'router'</tt> </tt>
 <a name="L427"></a><tt class="py-lineno">427</tt>  <tt class="py-line">            <tt class="py-keyword">with</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">test_request_context</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L428"></a><tt class="py-lineno">428</tt>  <tt class="py-line">                <tt class="py-name">nl</tt><tt class="py-op">[</tt><tt class="py-string">'url'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-160" class="py-name"><a title="service.views.account.config
+<a name="L428"></a><tt class="py-lineno">428</tt>  <tt class="py-line">                <tt class="py-name">nl</tt><tt class="py-op">[</tt><tt class="py-string">'url'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-160" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-160', 'config', 'link-50');">config</a></tt><tt class="py-op">.</tt><tt id="link-161" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-161', 'get', 'link-41');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"BASE_URL"</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-name">url_for</tt><tt class="py-op">(</tt><tt class="py-string">"webapi.proxy_content"</tt><tt class="py-op">,</tt> <tt class="py-name">notification_id</tt><tt class="py-op">=</tt><tt class="py-name">routed</tt><tt class="py-op">.</tt><tt class="py-name">id</tt><tt class="py-op">,</tt> <tt class="py-name">pid</tt><tt class="py-op">=</tt><tt class="py-name">nid</tt><tt class="py-op">)</tt> </tt>
 <a name="L429"></a><tt class="py-lineno">429</tt>  <tt class="py-line">            <tt class="py-name">newlinks</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">nl</tt><tt class="py-op">)</tt> </tt>
 <a name="L430"></a><tt class="py-lineno">430</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">l</tt> <tt class="py-keyword">in</tt> <tt class="py-name">newlinks</tt><tt class="py-op">:</tt> </tt>
@@ -763,9 +765,6 @@ expandto(location.href);
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -790,7 +789,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 17 09:15:59 2015
+    Generated by Epydoc 3.0.1 on Tue Nov 17 09:58:21 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

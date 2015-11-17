@@ -14,9 +14,6 @@
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -73,10 +70,12 @@
 <a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">logging</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Formatter</tt> </tt>
 <a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">handlers</tt> <tt class="py-keyword">import</tt> <tt class="py-name">RotatingFileHandler</tt> </tt>
 <a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"> </tt>
-<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable service.initialise.ELASTIC_SEARCH_HOST=service.initialise-module.html#ELASTIC_SEARCH_HOST"><a title="service.initialise.ELASTIC_SEARCH_HOST" class="py-name" href="#" onclick="return doclink('link-1', 'ELASTIC_SEARCH_HOST', 'link-1');">ELASTIC_SEARCH_HOST</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"http://gateway:9200"</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable config.service.ELASTIC_SEARCH_HOST=config.service-module.html#ELASTIC_SEARCH_HOST,Variable service.initialise.ELASTIC_SEARCH_HOST=service.initialise-module.html#ELASTIC_SEARCH_HOST"><a title="config.service.ELASTIC_SEARCH_HOST
+service.initialise.ELASTIC_SEARCH_HOST" class="py-name" href="#" onclick="return doclink('link-1', 'ELASTIC_SEARCH_HOST', 'link-1');">ELASTIC_SEARCH_HOST</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"http://gateway:9200"</tt> </tt>
 <a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-string">"""Elasticsearch hostname"""</tt> </tt>
 <a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"> </tt>
-<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable service.initialise.ELASTIC_SEARCH_INDEX=service.initialise-module.html#ELASTIC_SEARCH_INDEX"><a title="service.initialise.ELASTIC_SEARCH_INDEX" class="py-name" href="#" onclick="return doclink('link-2', 'ELASTIC_SEARCH_INDEX', 'link-2');">ELASTIC_SEARCH_INDEX</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"jper"</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable config.service.ELASTIC_SEARCH_INDEX=config.service-module.html#ELASTIC_SEARCH_INDEX,Variable service.initialise.ELASTIC_SEARCH_INDEX=service.initialise-module.html#ELASTIC_SEARCH_INDEX"><a title="config.service.ELASTIC_SEARCH_INDEX
+service.initialise.ELASTIC_SEARCH_INDEX" class="py-name" href="#" onclick="return doclink('link-2', 'ELASTIC_SEARCH_INDEX', 'link-2');">ELASTIC_SEARCH_INDEX</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"jper"</tt> </tt>
 <a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-string">"""JPER index name in the elasticsearch instance"""</tt> </tt>
 <a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
 <a name="initialise"></a><div id="initialise-def"><a name="L19"></a><tt class="py-lineno">19</tt> <a class="py-toggle" href="#" id="initialise-toggle" onclick="return toggle('initialise');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="service.initialise-module.html#initialise">initialise</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
@@ -93,8 +92,10 @@
 <a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-docstring">    :return:</tt> </tt>
 <a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
-<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">    <tt class="py-name">i</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Function service.views.account.config()=service.views.account-module.html#config,Function service.views.webapi.config()=service.views.webapi-module.html#config"><a title="service.views.account.config
-service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-3', 'config', 'link-3');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">'ELASTIC_SEARCH_HOST'</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'/'</tt> <tt class="py-op">+</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name"><a title="service.views.account.config
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">    <tt class="py-name">i</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Package config=config-module.html,Function service.views.account.config()=service.views.account-module.html#config,Function service.views.webapi.config()=service.views.webapi-module.html#config"><a title="config
+service.views.account.config
+service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-3', 'config', 'link-3');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">'ELASTIC_SEARCH_HOST'</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'/'</tt> <tt class="py-op">+</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-4', 'config', 'link-3');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">'ELASTIC_SEARCH_INDEX'</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'/'</tt> </tt>
 <a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">    <tt class="py-name">un</tt> <tt class="py-op">=</tt> <tt class="py-string">'admin'</tt> </tt>
 <a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">    <tt class="py-name">ia</tt> <tt class="py-op">=</tt> <tt class="py-name">i</tt> <tt class="py-op">+</tt> <tt class="py-string">'/account/'</tt> <tt class="py-op">+</tt> <tt class="py-name">un</tt> </tt>
@@ -111,12 +112,14 @@ service.views.webapi.config" class="py-name" href="#" onclick="return doclink('l
 <a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"first superuser account created for user "</tt> <tt class="py-op">+</tt> <tt class="py-name">un</tt> <tt class="py-op">+</tt> <tt class="py-string">" with password "</tt> <tt class="py-op">+</tt> <tt class="py-name">un</tt>  </tt>
 <a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"THIS FIRST SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE..."</tt> </tt>
 <a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">                 </tt>
-<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-name">file_handler</tt> <tt class="py-op">=</tt> <tt class="py-name">RotatingFileHandler</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name"><a title="service.views.account.config
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-name">file_handler</tt> <tt class="py-op">=</tt> <tt class="py-name">RotatingFileHandler</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-6', 'config', 'link-3');">config</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-7', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'LOGFILE'</tt><tt class="py-op">,</tt><tt class="py-string">'/home/mark/jperlog'</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">maxBytes</tt><tt class="py-op">=</tt><tt class="py-number">1000000000</tt><tt class="py-op">,</tt> <tt class="py-name">backupCount</tt><tt class="py-op">=</tt><tt class="py-number">5</tt><tt class="py-op">)</tt> </tt>
-<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">    <tt class="py-name">lvl</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="service.views.account.config
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">    <tt class="py-name">lvl</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-8', 'config', 'link-3');">config</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-9', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'LOGLEVEL'</tt><tt class="py-op">,</tt><tt class="py-string">'info'</tt><tt class="py-op">)</tt> </tt>
 <a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">lvl</tt> <tt class="py-op">==</tt> <tt class="py-string">'debug'</tt><tt class="py-op">:</tt> </tt>
-<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-name">file_handler</tt><tt class="py-op">.</tt><tt class="py-name">setLevel</tt><tt class="py-op">(</tt><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">DEBUG</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-name">file_handler</tt><tt class="py-op">.</tt><tt class="py-name">setLevel</tt><tt class="py-op">(</tt><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Variable config.service.DEBUG=config.service-module.html#DEBUG"><a title="config.service.DEBUG" class="py-name" href="#" onclick="return doclink('link-10', 'DEBUG', 'link-10');">DEBUG</a></tt><tt class="py-op">)</tt> </tt>
 <a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
 <a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-name">file_handler</tt><tt class="py-op">.</tt><tt class="py-name">setLevel</tt><tt class="py-op">(</tt><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">INFO</tt><tt class="py-op">)</tt> </tt>
 <a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">    <tt class="py-name">file_handler</tt><tt class="py-op">.</tt><tt class="py-name">setFormatter</tt><tt class="py-op">(</tt><tt class="py-name">Formatter</tt><tt class="py-op">(</tt> </tt>
@@ -126,13 +129,15 @@ service.views.webapi.config" class="py-name" href="#" onclick="return doclink('l
 <a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">    <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt class="py-name">addHandler</tt><tt class="py-op">(</tt><tt class="py-name">file_handler</tt><tt class="py-op">)</tt> </tt>
 <a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"> </tt>
 <a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">    <tt class="py-comment"># NOTE / TODO scheduler may have to be started separately once running app in production under supervisor</tt> </tt>
-<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="service.views.account.config
-service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-10', 'config', 'link-3');">config</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-11', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'RUN_SCHEDULE'</tt><tt class="py-op">,</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="service.views.account.config
-service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-12', 'config', 'link-3');">config</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-13', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"DEBUG"</tt><tt class="py-op">,</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">environ</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-14', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"WERKZEUG_RUN_MAIN"</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">"true"</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="config
+service.views.account.config
+service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-11', 'config', 'link-3');">config</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-12', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'RUN_SCHEDULE'</tt><tt class="py-op">,</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="config
+service.views.account.config
+service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-13', 'config', 'link-3');">config</a></tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-14', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"DEBUG"</tt><tt class="py-op">,</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">environ</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-15', 'get', 'link-5');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"WERKZEUG_RUN_MAIN"</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">"true"</tt><tt class="py-op">:</tt> </tt>
 <a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt> <tt class="py-string">"starting scheduler"</tt> </tt>
 <a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">            <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt class="py-name">info</tt><tt class="py-op">(</tt><tt class="py-string">"Scheduler - starting up on startup of app."</tt><tt class="py-op">)</tt> </tt>
-<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">            <tt id="link-15" class="py-name"><a title="service.scheduler" class="py-name" href="#" onclick="return doclink('link-15', 'scheduler', 'link-0');">scheduler</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Function service.scheduler.go()=service.scheduler-module.html#go"><a title="service.scheduler.go" class="py-name" href="#" onclick="return doclink('link-16', 'go', 'link-16');">go</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">            <tt id="link-16" class="py-name"><a title="service.scheduler" class="py-name" href="#" onclick="return doclink('link-16', 'scheduler', 'link-0');">scheduler</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Function service.scheduler.go()=service.scheduler-module.html#go"><a title="service.scheduler.go" class="py-name" href="#" onclick="return doclink('link-17', 'go', 'link-17');">go</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
@@ -144,9 +149,6 @@ expandto(location.href);
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -171,7 +173,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 17 09:16:00 2015
+    Generated by Epydoc 3.0.1 on Tue Nov 17 09:58:22 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -1,4 +1,6 @@
-
+"""
+Blueprint which provides the RESTful web API for JPER
+"""
 from flask import Blueprint, make_response, url_for, request, abort, redirect, current_app
 from flask import stream_with_context, Response
 import json, csv
@@ -11,6 +13,11 @@ from service import models
 blueprint = Blueprint('webapi', __name__)
 
 def _not_found():
+    """
+    Construct a response object to represent a 404 (Not Found)
+
+    :return: Flask response for a 404, with an empty response body
+    """
     app.logger.debug("Sending 404 Not Found")
     resp = make_response("")
     resp.mimetype = "application/json"
@@ -18,30 +25,24 @@ def _not_found():
     return resp
 
 def _bad_request(message):
+    """
+    Construct a response object to represent a 400 (Bad Request) around the supplied message
+
+    :return: Flask response for a 400 with a json response body containing the error
+    """
     app.logger.info("Sending 400 Bad Request from client: {x}".format(x=message))
     resp = make_response(json.dumps({"status" : "error", "error" : message}))
     resp.mimetype = "application/json"
     resp.status_code = 400
     return resp
 
-"""
-Not currently used, but kept around in case we want them later
-def _created(obj, container_type):
-    app.logger.info("Sending 201 Created: {x} {y}".format(x=container_type, y=obj.id))
-    url = url_for("crud.entity", container_type=container_type, type_id=obj.id)
-    resp = make_response(json.dumps({"status" : "success", "id" : obj.id, "location" : url }))
-    resp.mimetype = "application/json"
-    resp.headers["Location"] = url
-    resp.status_code = 201
-    return resp
-
-def _success():
-    app.logger.debug("Sending 200 OK")
-    resp = make_response(json.dumps({"status" : "success"}))
-    return resp
-"""
-
 def _accepted(obj):
+    """
+    Construct a response object to represent a 202 (Accepted) for the supplied object
+
+    :param obj: the object that was accepted
+    :return: Flask response for a 202 with the id of the object in the json body, and the Location header set correctly
+    """
     app.logger.info("Sending 202 Accepted: {x}".format(x=obj.id))
     root = request.url_root
     if root.endswith("/"):
@@ -95,12 +96,16 @@ def standard_authentication():
         abort(401)
 
 class BadRequest(Exception):
+    """
+    Generic Exception for a bad request
+    """
     pass
 
 def _get_parts():
     """
     Used to extract metadata and content from an incoming request
-    :return:
+
+    :return: a tuple containing the metadata parsed out of the incoming json, and a file-handle (read-once) for the binary content
     """
     md = None
     zipfile = None
@@ -139,6 +144,11 @@ def _get_parts():
 @blueprint.route("/validate", methods=["POST"])
 @webapp.jsonp
 def validate():
+    """
+    Receive a POST to the /validate endpoint and process it
+
+    :return: A 400 (Bad Request) if not valid, or a 204 if successful
+    """
     try:
         md, zipfile = _get_parts()
     except BadRequest as e:
@@ -154,6 +164,11 @@ def validate():
 @blueprint.route("/notification", methods=["POST"])
 @webapp.jsonp
 def create_notification():
+    """
+    Receive a POST to the /notification endpoint to create a notification, and process it
+
+    :return: A 400 (Bad Request) if not valid, or a 202 (Accepted) if successful
+    """
     try:
         md, zipfile = _get_parts()
     except BadRequest as e:
@@ -171,6 +186,13 @@ def create_notification():
 @blueprint.route("/notification/<notification_id>", methods=["GET"])
 @webapp.jsonp
 def retrieve_notification(notification_id):
+    """
+    Receive a GET on a specific notification, as identified by the notification id, and return the body
+    of the notification
+
+    :param notification_id: the id of the notification to retrieve
+    :return: 404 (Not Found) if not found, else 200 (OK) and the outgoing notification as a json body
+    """
     notification = JPER.get_notification(current_user, notification_id)
     if notification is None:
         return _not_found()
@@ -183,6 +205,14 @@ def retrieve_notification(notification_id):
 @blueprint.route("/notification/<notification_id>/content/<filename>", methods=["GET"])
 @webapp.jsonp
 def retrieve_content(notification_id, filename=None):
+    """
+    Receive a GET against the default content or a specific content file in a notification and supply the binary
+    in return
+
+    :param notification_id: the notification whose content to retrieve
+    :param filename: the filename of the content file in the notification
+    :return: 404 (Not Found) if either the notification or content are not found) or 200 (OK) and the binary content
+    """
     app.logger.info("{x} {y} content requested".format(x=notification_id, y=filename))
     try:
         filestream = JPER.get_content(current_user, notification_id, filename)
@@ -200,6 +230,15 @@ def proxy_content(notification_id, pid):
         return _not_found()
 
 def _list_request(repo_id=None):
+    """
+    Process a list request, either against the full dataset or the specific repo_id supplied
+
+    This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+    for the parameters of these kinds of requests.
+
+    :param repo_id: the repo id to limit the request to
+    :return: Flask response containing the list of notifications that are appropriate to the parameters
+    """
     since = request.values.get("since")
     page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
     page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
@@ -235,11 +274,28 @@ def _list_request(repo_id=None):
 @blueprint.route("/routed", methods=["GET"])
 @webapp.jsonp
 def list_all_routed():
+    """
+    List all the notifications that have been routed to any repository, limited by the parameters supplied
+    in the URL.
+
+    See the API documentation for more details.
+
+    :return: a list of notifications appropriate to the parameters
+    """
     return _list_request()
 
 @blueprint.route("/routed/<repo_id>", methods=["GET"])
 @webapp.jsonp
 def list_repository_routed(repo_id):
+    """
+    List all the notifications that have been routed to the specified repository, limited by the parameters supplied
+    in the URL.
+
+    See the API documentation for more details.
+
+    :param repo_id: the id of the reponsitory whose notifications to retrieve
+    :return: a list of notifications appropriate to the parameters
+    """
     return _list_request(repo_id)
 
 @blueprint.route("/config", methods=["GET","POST"])

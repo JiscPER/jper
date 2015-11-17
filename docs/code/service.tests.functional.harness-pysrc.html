@@ -14,9 +14,6 @@
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -80,7 +77,8 @@
 <a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">datetime</tt> <tt class="py-keyword">import</tt> <tt class="py-name">datetime</tt><tt class="py-op">,</tt> <tt class="py-name">timedelta</tt> </tt>
 <a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">random</tt> <tt class="py-keyword">import</tt> <tt class="py-name">randint</tt><tt class="py-op">,</tt> <tt class="py-name">random</tt><tt class="py-op">,</tt> <tt class="py-name">triangular</tt> </tt>
 <a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">modules</tt><tt class="py-op">.</tt><tt class="py-name">jper</tt> <tt class="py-keyword">import</tt> <tt class="py-name">client</tt> </tt>
-<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package service=service-module.html"><a title="service" class="py-name" href="#" onclick="return doclink('link-0', 'service', 'link-0');">service</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package service.tests=service.tests-module.html"><a title="service.tests" class="py-name" href="#" onclick="return doclink('link-1', 'tests', 'link-1');">tests</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Package service.tests.fixtures=service.tests.fixtures-module.html"><a title="service.tests.fixtures" class="py-name" href="#" onclick="return doclink('link-2', 'fixtures', 'link-2');">fixtures</a></tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module config.service=config.service-module.html,Package service=service-module.html"><a title="config.service
+service" class="py-name" href="#" onclick="return doclink('link-0', 'service', 'link-0');">service</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package service.tests=service.tests-module.html"><a title="service.tests" class="py-name" href="#" onclick="return doclink('link-1', 'tests', 'link-1');">tests</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Package service.tests.fixtures=service.tests.fixtures-module.html"><a title="service.tests.fixtures" class="py-name" href="#" onclick="return doclink('link-2', 'fixtures', 'link-2');">fixtures</a></tt> </tt>
 <a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">dates</tt><tt class="py-op">,</tt> <tt class="py-name">http</tt><tt class="py-op">,</tt> <tt class="py-name">isolang</tt> </tt>
 <a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">copy</tt> <tt class="py-keyword">import</tt> <tt class="py-name">deepcopy</tt> </tt>
 <a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
@@ -645,9 +643,11 @@ service.routing.links" class="py-name" href="#" onclick="return doclink('link-83
 <a name="L573"></a><tt class="py-lineno">573</tt>  <tt class="py-line">            <tt class="py-comment"># use this to determine the repository id for the request</tt> </tt>
 <a name="L574"></a><tt class="py-lineno">574</tt>  <tt class="py-line">            <tt class="py-name">repository_id</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
 <a name="L575"></a><tt class="py-lineno">575</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">reqtype</tt> <tt class="py-op">==</tt> <tt class="py-string">"specific"</tt><tt class="py-op">:</tt> </tt>
-<a name="L576"></a><tt class="py-lineno">576</tt>  <tt class="py-line">                <tt id="link-90" class="py-name" targets="Function service.views.account.config()=service.views.account-module.html#config,Function service.views.webapi.config()=service.views.webapi-module.html#config"><a title="service.views.account.config
+<a name="L576"></a><tt class="py-lineno">576</tt>  <tt class="py-line">                <tt id="link-90" class="py-name" targets="Package config=config-module.html,Function service.views.account.config()=service.views.account-module.html#config,Function service.views.webapi.config()=service.views.webapi-module.html#config"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-90', 'config', 'link-90');">config</a></tt> <tt class="py-op">=</tt> <tt id="link-91" class="py-name"><a title="service.tests.functional.harness._select_from" class="py-name" href="#" onclick="return doclink('link-91', '_select_from', 'link-4');">_select_from</a></tt><tt class="py-op">(</tt><tt class="py-name">repo_configs</tt><tt class="py-op">)</tt> </tt>
-<a name="L577"></a><tt class="py-lineno">577</tt>  <tt class="py-line">                <tt class="py-name">repository_id</tt> <tt class="py-op">=</tt> <tt id="link-92" class="py-name"><a title="service.views.account.config
+<a name="L577"></a><tt class="py-lineno">577</tt>  <tt class="py-line">                <tt class="py-name">repository_id</tt> <tt class="py-op">=</tt> <tt id="link-92" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-92', 'config', 'link-90');">config</a></tt><tt class="py-op">.</tt><tt id="link-93" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-93', 'get', 'link-48');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">"repository"</tt><tt class="py-op">)</tt> </tt>
 <a name="L578"></a><tt class="py-lineno">578</tt>  <tt class="py-line"> </tt>
 <a name="L579"></a><tt class="py-lineno">579</tt>  <tt class="py-line">            <tt class="py-comment"># determine the "since" date we're going to use for the request</tt> </tt>
@@ -777,22 +777,28 @@ service.routing.links" class="py-name" href="#" onclick="return doclink('link-10
 <a name="L701"></a><tt class="py-lineno">701</tt>  <tt class="py-line"> </tt>
 <a name="L702"></a><tt class="py-lineno">702</tt>  <tt class="py-line">    <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">parse_args</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 <a name="L703"></a><tt class="py-lineno">703</tt>  <tt class="py-line"> </tt>
-<a name="L704"></a><tt class="py-lineno">704</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-130" class="py-name"><a title="service.views.account.config
+<a name="L704"></a><tt class="py-lineno">704</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-130" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-130', 'config', 'link-90');">config</a></tt><tt class="py-op">:</tt> </tt>
-<a name="L705"></a><tt class="py-lineno">705</tt>  <tt class="py-line">        <tt class="py-name">add_configuration</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">,</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-131" class="py-name"><a title="service.views.account.config
+<a name="L705"></a><tt class="py-lineno">705</tt>  <tt class="py-line">        <tt class="py-name">add_configuration</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">,</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-131" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-131', 'config', 'link-90');">config</a></tt><tt class="py-op">)</tt> </tt>
 <a name="L706"></a><tt class="py-lineno">706</tt>  <tt class="py-line"> </tt>
-<a name="L707"></a><tt class="py-lineno">707</tt>  <tt class="py-line">    <tt class="py-name">pycharm_debug</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-132" class="py-name"><a title="service.views.account.config
+<a name="L707"></a><tt class="py-lineno">707</tt>  <tt class="py-line">    <tt class="py-name">pycharm_debug</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-132" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-132', 'config', 'link-90');">config</a></tt><tt class="py-op">.</tt><tt id="link-133" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-133', 'get', 'link-48');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'DEBUG_PYCHARM'</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
 <a name="L708"></a><tt class="py-lineno">708</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">:</tt> </tt>
 <a name="L709"></a><tt class="py-lineno">709</tt>  <tt class="py-line">        <tt class="py-name">pycharm_debug</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
 <a name="L710"></a><tt class="py-lineno">710</tt>  <tt class="py-line"> </tt>
 <a name="L711"></a><tt class="py-lineno">711</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">pycharm_debug</tt><tt class="py-op">:</tt> </tt>
-<a name="L712"></a><tt class="py-lineno">712</tt>  <tt class="py-line">        <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-134" class="py-name"><a title="service.views.account.config
+<a name="L712"></a><tt class="py-lineno">712</tt>  <tt class="py-line">        <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-134" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-134', 'config', 'link-90');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">'DEBUG'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
 <a name="L713"></a><tt class="py-lineno">713</tt>  <tt class="py-line">        <tt class="py-keyword">import</tt> <tt class="py-name">pydevd</tt> </tt>
-<a name="L714"></a><tt class="py-lineno">714</tt>  <tt class="py-line">        <tt class="py-name">pydevd</tt><tt class="py-op">.</tt><tt class="py-name">settrace</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-135" class="py-name"><a title="service.views.account.config
-service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-135', 'config', 'link-90');">config</a></tt><tt class="py-op">.</tt><tt id="link-136" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-136', 'get', 'link-48');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'DEBUG_SERVER_HOST'</tt><tt class="py-op">,</tt> <tt class="py-string">'localhost'</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">port</tt><tt class="py-op">=</tt><tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-137" class="py-name"><a title="service.views.account.config
+<a name="L714"></a><tt class="py-lineno">714</tt>  <tt class="py-line">        <tt class="py-name">pydevd</tt><tt class="py-op">.</tt><tt class="py-name">settrace</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-135" class="py-name"><a title="config
+service.views.account.config
+service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-135', 'config', 'link-90');">config</a></tt><tt class="py-op">.</tt><tt id="link-136" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-136', 'get', 'link-48');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'DEBUG_SERVER_HOST'</tt><tt class="py-op">,</tt> <tt class="py-string">'localhost'</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">port</tt><tt class="py-op">=</tt><tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-137" class="py-name"><a title="config
+service.views.account.config
 service.views.webapi.config" class="py-name" href="#" onclick="return doclink('link-137', 'config', 'link-90');">config</a></tt><tt class="py-op">.</tt><tt id="link-138" class="py-name"><a title="service.tests.fixtures.packages.StoreFailRetrieve.get" class="py-name" href="#" onclick="return doclink('link-138', 'get', 'link-48');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'DEBUG_SERVER_PORT'</tt><tt class="py-op">,</tt> <tt class="py-number">51234</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">stdoutToServer</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">stderrToServer</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
 <a name="L715"></a><tt class="py-lineno">715</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"STARTED IN REMOTE DEBUG MODE"</tt> </tt>
 <a name="L716"></a><tt class="py-lineno">716</tt>  <tt class="py-line"> </tt>
@@ -898,9 +904,6 @@ expandto(location.href);
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -925,7 +928,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 17 09:15:59 2015
+    Generated by Epydoc 3.0.1 on Tue Nov 17 09:58:21 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

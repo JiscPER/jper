@@ -4,4 +4,4 @@
 # sudo apt-get install python-epydoc
 
 rm docs/code/*
-epydoc --html -o docs/code/ --name "Jisc Publications Router" --url https://github.com/JiscPER/jper --graph all --inheritance grouped --docformat restructuredtext service
+epydoc --html -o docs/code/ --name "Jisc Publications Router" --url https://github.com/JiscPER/jper --graph all --inheritance grouped --docformat restructuredtext service config

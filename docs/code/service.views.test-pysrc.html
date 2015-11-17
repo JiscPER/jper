@@ -14,9 +14,6 @@
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -62,18 +59,32 @@
 </table>
 <h1 class="epydoc">Source Code for <a href="service.views.test-module.html">Module service.views.test</a></h1>
 <pre class="py-src">
-<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">,</tt> <tt class="py-name">send_from_directory</tt> </tt>
-<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">paths</tt> </tt>
-<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"> </tt>
-<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.views.account.blueprint=service.views.account-module.html#blueprint,Variable service.views.test.blueprint=service.views.test-module.html#blueprint,Variable service.views.webapi.blueprint=service.views.webapi-module.html#blueprint"><a title="service.views.account.blueprint
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">Blueprint for providing test endpoints for when the system is run in functional test mode.</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring">Under normal operation, this blueprint will not be in use</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">,</tt> <tt class="py-name">send_from_directory</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">paths</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.views.account.blueprint=service.views.account-module.html#blueprint,Variable service.views.test.blueprint=service.views.test-module.html#blueprint,Variable service.views.webapi.blueprint=service.views.webapi-module.html#blueprint"><a title="service.views.account.blueprint
 service.views.test.blueprint
 service.views.webapi.blueprint" class="py-name" href="#" onclick="return doclink('link-0', 'blueprint', 'link-0');">blueprint</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">(</tt><tt class="py-string">'test'</tt><tt class="py-op">,</tt> <tt class="py-name">__name__</tt><tt class="py-op">)</tt> </tt>
-<a name="download"></a><div id="download-def"><a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
-<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Function service.routing.route()=service.routing-module.html#route"><a title="service.routing.route" class="py-name" href="#" onclick="return doclink('link-1', 'route', 'link-1');">route</a></tt><tt class="py-op">(</tt><tt class="py-string">"/download/&lt;filename&gt;"</tt><tt class="py-op">,</tt> <tt class="py-name">methods</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"GET"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
-<a name="L7"></a><tt class="py-lineno"> 7</tt> <a class="py-toggle" href="#" id="download-toggle" onclick="return toggle('download');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="service.views.test-module.html#download">download</a><tt class="py-op">(</tt><tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="download-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="download-expanded"><a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">    <tt class="py-name">resources</tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"tests"</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
-<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">send_from_directory</tt><tt class="py-op">(</tt><tt class="py-name">resources</tt><tt class="py-op">,</tt> <tt class="py-string">"download.pdf"</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<a name="download"></a><div id="download-def"><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Function service.routing.route()=service.routing-module.html#route"><a title="service.routing.route" class="py-name" href="#" onclick="return doclink('link-1', 'route', 'link-1');">route</a></tt><tt class="py-op">(</tt><tt class="py-string">"/download/&lt;filename&gt;"</tt><tt class="py-op">,</tt> <tt class="py-name">methods</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"GET"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt> <a class="py-toggle" href="#" id="download-toggle" onclick="return toggle('download');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="service.views.test-module.html#download">download</a><tt class="py-op">(</tt><tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="download-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="download-expanded"><a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">    Provide a binary file to download under any filename.</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">    This allows test infrastructure to use this endpoint as a source of arbitrary external binary content</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">    for the purposes of integrating that functionality into a test</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">    :param filename:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">    :return:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt class="py-name">resources</tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"tests"</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">send_from_directory</tt><tt class="py-op">(</tt><tt class="py-name">resources</tt><tt class="py-op">,</tt> <tt class="py-string">"download.pdf"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
 // -->
@@ -84,9 +95,6 @@ expandto(location.href);
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
   <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="service-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
   <!-- Tree link -->
       <th>&nbsp;&nbsp;&nbsp;<a
@@ -111,7 +119,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 17 09:16:00 2015
+    Generated by Epydoc 3.0.1 on Tue Nov 17 09:58:22 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

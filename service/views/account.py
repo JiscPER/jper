@@ -1,3 +1,7 @@
+"""
+Blueprint for providing account management
+"""
+
 import uuid, json, time, requests
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
