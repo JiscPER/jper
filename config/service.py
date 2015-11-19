@@ -117,7 +117,8 @@ DELETE_UNROUTED = True
 LOGLEVEL = 'debug'
 LOGFILE = '/home/mark/jperlog'
 
-#STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
+STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
+"""implementation class of the temporary local filestore"""
 
 #STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 STORE_IMPL = "octopus.modules.store.store.StoreJper"
