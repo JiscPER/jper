@@ -1,3 +1,3 @@
 # JPER System Overview
 
-![System Architecture Diagram](https://github.com/JiscPER/jper/docs/system/ArchitectureOverview.png)
+![ArchitectureOverview](https://raw.githubusercontent.com/JiscPER/jper/develop/docs/system/ArchitectureOverview.png)
