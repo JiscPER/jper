@@ -1,6 +1,6 @@
 [submodule "esprit"]
 	path = esprit
-	url = https://github.com/CottageLabs/esprit.git
+	url = https://github.com/JiscPER/esprit.git
 [submodule "magnificent-octopus"]
 	path = magnificent-octopus
-	url = https://github.com/richard-jones/magnificent-octopus
+	url = https://github.com/JiscPER/magnificent-octopus
