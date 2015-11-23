@@ -3,4 +3,4 @@
 	url = https://github.com/JiscPER/esprit.git
 [submodule "magnificent-octopus"]
 	path = magnificent-octopus
-	url = https://github.com/JiscPER/magnificent-octopus
+	url = https://github.com/JiscPER/magnificent-octopus.git
