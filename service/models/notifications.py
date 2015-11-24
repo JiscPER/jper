@@ -749,7 +749,6 @@ class BaseNotification(NotificationMetadata):
                 "provider", "content", "embargo"
             ],
             "lists" : {
-                "targets" : {"contains" : "object"},
                 "links" : {"contains" : "object"}
             },
             "reqired" : [],
