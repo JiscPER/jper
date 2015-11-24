@@ -756,17 +756,13 @@ class BaseNotification(NotificationMetadata):
             "structs" : {
                 "provider" : {
                     "fields" : {
-                        "id" : {"coerce" :"unicode"},
-                        "agent" : {"coerce" :"unicode"},
-                        "ref" : {"coerce" :"unicode"},
-                        "route" : {"coerce" :"unicode"}
+                        "id" : {"coerce" :"unicode"}
                     },
                     "required" : []
                 },
                 "content" : {
                     "fields" : {
-                        "packaging_format" : {"coerce" :"unicode"},
-                        "store_id" : {"coerce" :"unicode"}
+                        "packaging_format" : {"coerce" :"unicode"}
                     },
                     "required" : []
                 },

@@ -3,18 +3,17 @@
 ```json
 {
     "content": {
-        "packaging_format": "string", 
-        "store_id": "string"
+        "packaging_format": "string"
     }, 
-    "created_date": "2015-11-24T11:41:00Z", 
+    "created_date": "2015-11-24T12:17:00Z", 
     "embargo": {
         "duration": 0, 
-        "end": "2015-11-24T11:41:00Z", 
-        "start": "2015-11-24T11:41:00Z"
+        "end": "2015-11-24T12:17:00Z", 
+        "start": "2015-11-24T12:17:00Z"
     }, 
     "event": "string", 
     "id": "string", 
-    "last_updated": "2015-11-24T11:41:00Z", 
+    "last_updated": "2015-11-24T12:17:00Z", 
     "links": [
         {
             "access": "string", 
@@ -38,8 +37,8 @@
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-11-24T11:41:00Z", 
-        "date_submitted": "2015-11-24T11:41:00Z", 
+        "date_accepted": "2015-11-24T12:17:00Z", 
+        "date_submitted": "2015-11-24T12:17:00Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -65,7 +64,7 @@
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-11-24T11:41:00Z", 
+        "publication_date": "2015-11-24T12:17:00Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
@@ -84,58 +83,51 @@
         "version": "string"
     }, 
     "provider": {
-        "agent": "string", 
-        "id": "string", 
-        "ref": "string", 
-        "route": "string"
+        "id": "string"
     }
 }
 ```
 
 | Field | Description | Datatype | Format | Allowed Values |
 | ----- | ----------- | -------- | ------ | -------------- |
-| content.packaging_format |  | unicode |  |  |
-| content.store_id |  | unicode |  |  |
-| created_date |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| embargo.duration |  | int |  |  |
-| embargo.end |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| embargo.start |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| event |  | unicode |  |  |
-| id |  | unicode |  |  |
-| last_updated |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| links.access |  | unicode |  | router, public |
-| links.format |  | unicode |  |  |
-| links.packaging |  | unicode |  |  |
-| links.proxy |  | unicode |  |  |
-| links.type |  | unicode |  |  |
-| links.url |  | unicode | URL |  |
-| metadata.author.affiliation |  | unicode |  |  |
-| metadata.author.identifier.id |  | unicode |  |  |
-| metadata.author.identifier.type |  | unicode |  |  |
-| metadata.author.name |  | unicode |  |  |
-| metadata.date_accepted |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| metadata.date_submitted |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| metadata.identifier.id |  | unicode |  |  |
-| metadata.identifier.type |  | unicode |  |  |
-| metadata.language |  | unicode | 3 letter ISO language code |  |
-| metadata.license_ref.title |  | unicode |  |  |
-| metadata.license_ref.type |  | unicode |  |  |
-| metadata.license_ref.url |  | unicode | URL |  |
-| metadata.license_ref.version |  | unicode |  |  |
-| metadata.project.grant_number |  | unicode |  |  |
-| metadata.project.identifier.id |  | unicode |  |  |
-| metadata.project.identifier.type |  | unicode |  |  |
-| metadata.project.name |  | unicode |  |  |
-| metadata.publication_date |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| metadata.publisher |  | unicode |  |  |
-| metadata.source.identifier.id |  | unicode |  |  |
-| metadata.source.identifier.type |  | unicode |  |  |
-| metadata.source.name |  | unicode |  |  |
-| metadata.subject |  | unicode |  |  |
-| metadata.title |  | unicode |  |  |
-| metadata.type |  | unicode |  |  |
-| metadata.version |  | unicode |  |  |
-| provider.agent |  | unicode |  |  |
-| provider.id |  | unicode |  |  |
-| provider.ref |  | unicode |  |  |
-| provider.route |  | unicode |  |  |
+| content.packaging_format | Package format identifier for the associated binary content | unicode |  |  |
+| created_date | Date this record was created | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| embargo.duration | Duration (in months) of the embargo | int |  |  |
+| embargo.end | End date for the embargo | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| embargo.start | Start date for the embargo | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| event | Keyword for this kind of notification - no restrictions on use in this version of the system | unicode |  |  |
+| id | opaque identifier for this record | unicode |  |  |
+| last_updated | Date this record was last modified | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| links.access | Type of access control on this link.  "router" means only to authenticated router accounts, "public" means anyone with the link | unicode |  | router, public |
+| links.format | mimetype of the resource available at the URL (e.g. text/html) | unicode |  |  |
+| links.packaging | Package format identifier for the resource available at the URL | unicode |  |  |
+| links.proxy | The ID of the proxy link this link stands for | unicode |  |  |
+| links.type | keyword for type of resource (e.g. splash, fulltext) - no restrictions on use in this version of the system | unicode |  |  |
+| links.url | URL to the associated resource | unicode | URL |  |
+| metadata.author.affiliation | Author organisational affiliation | unicode |  |  |
+| metadata.author.identifier.id | Author identifier (e.g. an ORCID) | unicode |  |  |
+| metadata.author.identifier.type | Type of author identifier (e.g. "orcid") - no vocabulary for this field in this version of the system | unicode |  |  |
+| metadata.author.name | Author's name in full | unicode |  |  |
+| metadata.date_accepted | Date publication accepted for publication | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| metadata.date_submitted | Date article submitted for publication | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| metadata.identifier.id | Identifier for the article (e.g. DOI) | unicode |  |  |
+| metadata.identifier.type | Identifier type (e.g. "doi") - no vocabulary for this field in this version of the system | unicode |  |  |
+| metadata.language | Language of the article | unicode | 3 letter ISO language code |  |
+| metadata.license_ref.title | Title or name of the licence applied to the article | unicode |  |  |
+| metadata.license_ref.type | Type of licence (most likely the same as the title) | unicode |  |  |
+| metadata.license_ref.url | URL for information on the licence | unicode | URL |  |
+| metadata.license_ref.version | Version of the licence | unicode |  |  |
+| metadata.project.grant_number | Grant number for funding source behind this article | unicode |  |  |
+| metadata.project.identifier.id | Funder identifier (e.g. Ringold ID) | unicode |  |  |
+| metadata.project.identifier.type | Funder identifier type (e.g "ringold") - no vocabulary for this field in this version of the system | unicode |  |  |
+| metadata.project.name | Funder name | unicode |  |  |
+| metadata.publication_date | Date of publication | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| metadata.publisher | Publisher of the article | unicode |  |  |
+| metadata.source.identifier.id | Identifier for the source of the publication (the journal), (e.g. the ISSN) | unicode |  |  |
+| metadata.source.identifier.type | Identifier type (e.g. "issn") - no vocabulary for this field in this version of the system | unicode |  |  |
+| metadata.source.name | Name of the source (e.g. the Journal Name) | unicode |  |  |
+| metadata.subject | Keywords | unicode |  |  |
+| metadata.title | Title of the publication | unicode |  |  |
+| metadata.type | Type of publication | unicode |  |  |
+| metadata.version | Version of publication (e.g. AAM) | unicode |  |  |
+| provider.id | Identifier for the provider of the notification (account name) | unicode |  |  |
