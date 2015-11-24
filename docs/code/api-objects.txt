@@ -21,6 +21,7 @@ config.service.MAIL_SUBJECT_PREFIX	config.service-module.html#MAIL_SUBJECT_PREFI
 config.service.ESDAO_TIME_BOX_ROUTED	config.service-module.html#ESDAO_TIME_BOX_ROUTED
 config.service.DEFAULT_LIST_PAGE_SIZE	config.service-module.html#DEFAULT_LIST_PAGE_SIZE
 config.service.PROCESSFTP_SCHEDULE	config.service-module.html#PROCESSFTP_SCHEDULE
+config.service.STORE_TMP_IMPL	config.service-module.html#STORE_TMP_IMPL
 config.service.LOGFILE	config.service-module.html#LOGFILE
 config.service.BASE_URL	config.service-module.html#BASE_URL
 config.service.STORE_JPER_URL	config.service-module.html#STORE_JPER_URL

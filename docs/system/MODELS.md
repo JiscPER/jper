@@ -11,3 +11,8 @@ Each of the model objects is defined as a JSON document which is persisted in th
 of each model object can be found under the following links:
 
 * [Unrouted Notification](https://github.com/JiscPER/jper/blob/develop/docs/system/UnroutedNotification.md)
+* [Routing Metadata](https://github.com/JiscPER/jper/blob/develop/docs/system/RoutingMetadata.md)
+* [Repository Configuration](https://github.com/JiscPER/jper/blob/develop/docs/system/RepositoryConfiguration.md)
+* [Match Provenance](https://github.com/JiscPER/jper/blob/develop/docs/system/MatchProvenance.md)
+* [Failed Notification](https://github.com/JiscPER/jper/blob/develop/docs/system/FailedNotification.md)
+* [Routed Notification](https://github.com/JiscPER/jper/blob/develop/docs/system/RoutedNotification.md)

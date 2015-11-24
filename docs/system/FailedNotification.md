@@ -1,21 +1,22 @@
-# UnroutedNotification
+# FailedNotification
 
 The JSON structure of the model is as follows:
 
 ```json
 {
+    "analysis_date": "2015-11-24T12:58:49Z", 
     "content": {
         "packaging_format": "string"
     }, 
-    "created_date": "2015-11-24T12:58:48Z", 
+    "created_date": "2015-11-24T12:58:49Z", 
     "embargo": {
         "duration": 0, 
-        "end": "2015-11-24T12:58:48Z", 
-        "start": "2015-11-24T12:58:48Z"
+        "end": "2015-11-24T12:58:49Z", 
+        "start": "2015-11-24T12:58:49Z"
     }, 
     "event": "string", 
     "id": "string", 
-    "last_updated": "2015-11-24T12:58:48Z", 
+    "last_updated": "2015-11-24T12:58:49Z", 
     "links": [
         {
             "access": "string", 
@@ -39,8 +40,8 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-11-24T12:58:48Z", 
-        "date_submitted": "2015-11-24T12:58:48Z", 
+        "date_accepted": "2015-11-24T12:58:49Z", 
+        "date_submitted": "2015-11-24T12:58:49Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -66,7 +67,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-11-24T12:58:48Z", 
+        "publication_date": "2015-11-24T12:58:49Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
@@ -86,7 +87,10 @@ The JSON structure of the model is as follows:
     }, 
     "provider": {
         "id": "string"
-    }
+    }, 
+    "repositories": [
+        "string"
+    ]
 }
 ```
 
@@ -94,6 +98,7 @@ Each of the fields is defined as laid out in the table below:
 
 | Field | Description | Datatype | Format | Allowed Values |
 | ----- | ----------- | -------- | ------ | -------------- |
+| analysis_date | Date the routing analysis took place | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | content.packaging_format | Package format identifier for the associated binary content | unicode |  |  |
 | created_date | Date this record was created | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | embargo.duration | Duration (in months) of the embargo | int |  |  |
@@ -135,3 +140,4 @@ Each of the fields is defined as laid out in the table below:
 | metadata.type | Type of publication | unicode |  |  |
 | metadata.version | Version of publication (e.g. AAM) | unicode |  |  |
 | provider.id | Identifier for the provider of the notification (account name) | unicode |  |  |
+| repositories | List of repository account ids the notification was routed to | unicode |  |  |

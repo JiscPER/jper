@@ -1,10 +1,19 @@
+affiliations: list of author affiliations to match on
+analysis_date: Date the routing analysis took place
+author_ids.id: author identifier (e.g. their email) to match on
+author_ids.type: author identifier type (e.g. "email")
+content_types: list of content types of interest - stored, but not used in this version of the system
 content.packaging_format: Package format identifier for the associated binary content
 created_date: Date this record was created
+domains: Domains operated by the institution
+emails: email addresses which appear in the match data
 embargo.duration: Duration (in months) of the embargo
 embargo.end: End date for the embargo
 embargo.start: Start date for the embargo
 event: Keyword for this kind of notification - no restrictions on use in this version of the system
+grants: grant ids that the institution may be interested in
 id: opaque identifier for this record
+keywords: freetext keywors to match on - stored, but not used in this version of the system
 last_updated: Date this record was last modified
 links.access: Type of access control on this link.  "router" means only to authenticated router accounts, "public" means anyone with the link
 links.format: mimetype of the resource available at the URL (e.g. text/html)
@@ -38,4 +47,16 @@ metadata.subject: Keywords
 metadata.title: Title of the publication
 metadata.type: Type of publication
 metadata.version: Version of publication (e.g. AAM)
+name_variants: Names by which the institution is known
+notification: id of the notification this record relates to
+postcodes: Postcodes for addresses where to match on
 provider.id: Identifier for the provider of the notification (account name)
+provenance.explanation: reason for the match
+provenance.matched: Value in the repository configuration field which matched
+provenance.notification_field: Field in the notification which matched
+provenance.source_field: Field in the repository configuration which matched
+provenance.term: term in the notification metadata which matched
+repositories: List of repository account ids the notification was routed to
+repository: the repository this record relates to
+strings: list of arbitrary match strings
+urls: Any urls found in the notification metadata - currently not populated
