@@ -174,8 +174,7 @@ BASE_NOTIFICATION = {
     },
 
     "content" : {
-        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS",
-        "store_id" : "abc"
+        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
     },
 
     "links" : [

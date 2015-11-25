@@ -756,7 +756,10 @@ class BaseNotification(NotificationMetadata):
             "structs" : {
                 "provider" : {
                     "fields" : {
-                        "id" : {"coerce" :"unicode"}
+                        "id" : {"coerce" :"unicode"},
+                        "agent" : {"coerce" : "unicode"},
+                        "ref" : {"coerce" : "unicode"},
+                        "route" :{"coerce" : "unicode"}
                     },
                     "required" : []
                 },
