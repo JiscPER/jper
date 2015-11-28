@@ -10,9 +10,23 @@
 
 <form method="post" action="{{url_for('account.register')}}" id="registration-details">
     <div class="row">
-        <div class="col-md-offset-4 col-md-4 form-horizontal wide">
-			<input type="text" name="email" class="form-control" placeholder="email">
-			<input type="password" name="password" class="form-control" placeholder="password">
+        <div class="col-md-offset-2 col-md-8 form-horizontal wide">
+						<div class="row">
+								<div class="col-md-4">
+										<p>Email address</p>
+								</div>
+								<div class="col-md-8">
+										<input type="text" name="email" class="form-control" placeholder="email">
+								</div>
+						</div>
+						<div class="row" style="padding-top:3px;">
+								<div class="col-md-4">
+										<p>Password</p>
+								</div>
+								<div class="col-md-8">
+										<input type="password" name="password" class="form-control" placeholder="password">
+								</div>
+						</div>
             
             <div class="checkbox">
                 <label>
@@ -25,18 +39,74 @@
                 </label>
             </div>
 
-            <div class="rolers repository">
-			<input type="text" name="repository_name" class="form-control" placeholder="repository name">
-			<input type="text" name="repository_url" class="form-control" placeholder="repository url">
-			<input type="text" name="repository_software" class="form-control" placeholder="repository software">
-			<input type="text" name="sword_username" class="form-control" placeholder="repository SWORD username">
-			<input type="text" name="sword_password" class="form-control" placeholder="repository SWORD password">
-			<input type="text" name="sword_collection" class="form-control" placeholder="repository SWORD collection">
-			<input type="text" name="packaging" class="form-control" placeholder="packaging prefs (comma separated)">
+            <div class="rolers repository" style="margin-top:10px;">
+								<div class="row">
+										<div class="col-md-4">
+												<p>Repository name</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="repository_name" class="form-control" placeholder="repository name">            
+										</div>
+								</div>
+								<div class="row" style="padding-top:3px;">
+										<div class="col-md-4">
+												<p>Repository URL</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="repository_url" class="form-control" placeholder="repository URL">            
+										</div>
+								</div>
+								<div class="row" style="padding-top:3px;">
+										<div class="col-md-4">
+												<p>Repository software</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="repository_software" class="form-control" placeholder="repository software">            
+										</div>
+								</div>
+								<div class="row" style="padding-top:3px;">
+										<div class="col-md-4">
+												<p>SWORD username</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="sword_username" class="form-control" placeholder="SWORD username">            
+										</div>
+								</div>
+								<div class="row" style="padding-top:3px;">
+										<div class="col-md-4">
+												<p>SWORD password</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="sword_password" class="form-control" placeholder="SWORD password">            
+										</div>
+								</div>
+								<div class="row" style="padding-top:3px;">
+										<div class="col-md-4">
+												<p>SWORD collection</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="sword_collection" class="form-control" placeholder="SWORD collection">            
+										</div>
+								</div>
+								<div class="row" style="padding-top:3px;">
+										<div class="col-md-4">
+												<p>Packaging prefs (comma separated)</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="packaging" class="form-control" placeholder="packaging prefs (comma separated)">            
+										</div>
+								</div>
             </div>
             
-            <div class="rolers publisher">
-			<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration months (number)">
+            <div class="rolers publisher" style="margin-top:10px;">
+								<div class="row">
+										<div class="col-md-4">
+												<p>Embargo duration (months) (number)</p>
+										</div>
+										<div class="col-md-8">
+											<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration (months) (number)">            
+										</div>
+								</div>
             </div>
             
             <button class="btn btn-primary btn-block" id="register" type="submit" style="margin-top:5px;">
@@ -54,9 +124,12 @@
 $( document ).ready(function() {
     $('.rolers').hide();
     var roler = function() {
-        $('.rolers').hide();
         var cls = '.' + $(this).attr('name');
-        $(cls).show();
+			  if ( $(cls).is(':visible') ) {
+					  $(cls).hide();
+				} else {
+				    $(cls).show();
+				}
     }
     $('.roler').bind('change',roler);
 });

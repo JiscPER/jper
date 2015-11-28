@@ -8,9 +8,10 @@
 # -------------------------------------------------------------------------
 username=$1 # get from script params
 newowner=$2
-sftpdir=$3
-tmpdir=$4
+tmpdir=$3
+uniqueid=$4
 uniquedir=$5
+thefile=$6
 egrep "^$username" /etc/passwd >/dev/null
 # only do if the username exists (just to check)
 if [ $? -eq 0 ]; then
@@ -20,13 +21,13 @@ if [ $? -eq 0 ]; then
 
 # for time being copy everything to an ftp archive for this user first
 # so there is an original copy of everything received before processing by the system
-mkdir -p /home/mark/tmparchive/$username
-cp $sftpdir/$username/xfer/* /home/mark/tmparchive/$username
+mkdir -p /home/mark/tmparchive/$username/$uniqueid
+cp -R $thefile /home/mark/tmparchive/$username/$uniqueid
 
 # check that the tmp processing dir for this user and for this unique move process exists
 mkdir -p $uniquedir
-# move everything in the jail to the temp processing directory
-mv $sftpdir/$username/xfer/* $uniquedir
+# move the specified file in the jail to the temp processing directory
+mv $thefile $uniquedir
 # set ownership from the user tmpdir down
 chown -R $newowner:$newowner $tmpdir
 fi

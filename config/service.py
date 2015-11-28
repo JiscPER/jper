@@ -68,13 +68,14 @@ PACKAGE_HANDLERS = {
 
 
 USERDIR = '/home/sftpusers' # this is ASSUMED in ssh config and possibly in shell scripts. So just don't change it
-#API_URL = "https://pubrouter.jisc.ac.uk/api/v1/notification"
-API_URL = "http://test.cottagelabs.com:5998/api/v1/notification"
+API_URL = "https://pubrouter.jisc.ac.uk/api/v1/notification"
+#API_URL = "http://test.cottagelabs.com:5998/api/v1/notification"
 TMP_DIR = "/home/mark/ftptmp"
 RUN_SCHEDULE = True
-MOVEFTP_SCHEDULE = 1
-PROCESSFTP_SCHEDULE = 1
-CHECKUNROUTED_SCHEDULE = 1
+MOVEFTP_SCHEDULE = 10
+PROCESSFTP_SCHEDULE = 10
+CHECKUNROUTED_SCHEDULE = 10
+DELETE_ROUTED = True
 DELETE_UNROUTED = True
 
 LOGLEVEL = 'debug'
@@ -84,8 +85,8 @@ LOGFILE = '/home/mark/jperlog'
 
 #STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 STORE_IMPL = "octopus.modules.store.store.StoreJper"
-#STORE_JPER_URL = 'http://store'
-STORE_JPER_URL = 'http://localhost:5999'
+STORE_JPER_URL = 'http://store'
+#STORE_JPER_URL = 'http://localhost:5999'
 
 from octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "live")

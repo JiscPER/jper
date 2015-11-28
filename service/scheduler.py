@@ -95,14 +95,17 @@ def moveftp():
         app.logger.info("Scheduler - from FTP folders found " + str(len(userdirs)) + " user directories")
         for dir in userdirs:
             if len(os.listdir(userdir + '/' + dir + '/xfer')):
-                app.logger.info('Scheduler - moving files for Account:' + dir)
-                fl = os.path.dirname(os.path.abspath(__file__)) + '/models/moveFTPfiles.sh'
-                try:
-                    newowner = getpass.getuser()
-                except:
-                    newowner = 'mark'
-                uniquedir = tmpdir + '/' + dir + '/' + uuid.uuid4().hex
-                subprocess.call( [ 'sudo', fl, dir, newowner, userdir, tmpdir, uniquedir ] )
+                for thisitem in os.listdir(userdir + '/' + dir + '/xfer'):
+                  app.logger.info('Scheduler - moving file ' + thisitem + ' for Account:' + dir)
+                  fl = os.path.dirname(os.path.abspath(__file__)) + '/models/moveFTPfiles.sh'
+                  try:
+                      newowner = getpass.getuser()
+                  except:
+                      newowner = 'mark'
+                  uniqueid = uuid.uuid4().hex
+                  uniquedir = tmpdir + '/' + dir + '/' + uniqueid
+                  moveitem = userdir + '/' + dir + '/xfer/' + thisitem
+                  subprocess.call( [ 'sudo', fl, dir, newowner, tmpdir, uniqueid, uniquedir, moveitem ] )
             else:
                 app.logger.info('Scheduler - found nothing to move for Account:' + dir)
     except:
@@ -151,7 +154,10 @@ def processftp():
                     ]
                     app.logger.debug('Scheduler - processing POSTing ' + pkg + ' ' + json.dumps(notification))
                     resp = requests.post(apiurl, files=files, verify=False)
-                    app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
+                    if str(resp.status_code).startswith('4') or str(resp.status_code).startswith('5'):
+                        app.logger.info('Scheduler - processing completed with POST failure to ' + apiurl + ' - ' + str(resp.status_code) + ' - ' + resp.text)
+                    else:
+                        app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
                                             
             shutil.rmtree(userdir + '/' + dir)
     except:
@@ -162,7 +168,8 @@ if app.config.get('PROCESSFTP_SCHEDULE',10) != 0:
 
 
 def checkunrouted():
-    objids = []
+    urobjids = []
+    robjids = []
     try:
         app.logger.info("Scheduler - check for unrouted notifications")
         # query the service.models.unroutednotification index
@@ -171,11 +178,17 @@ def checkunrouted():
         for obj in models.UnroutedNotification.scroll():
             counter += 1
             res = routing.route(obj)
-            if res: objids.append(obj.id)
+            if res:
+                robjids.append(obj.id)
+            else:
+                urobjids.append(obj.id)
         app.logger.info("Scheduler - routing sent " + str(counter) + " notifications for routing")
-        if app.config.get("DELETE_UNROUTED", False) and len(objids) > 0:
-            app.logger.info("Scheduler - routing deleting " + str(len(objids)) + " of " + str(counter) + " unrouted notifications that have been processed and routed")
-            models.UnroutedNotification.bulk_delete(objids)
+        if app.config.get("DELETE_ROUTED", False) and len(robjids) > 0:
+            app.logger.info("Scheduler - routing deleting " + str(len(robjids)) + " of " + str(counter) + " unrouted notifications that have been processed and routed")
+            models.UnroutedNotification.bulk_delete(robjids)
+        if app.config.get("DELETE_UNROUTED", False) and len(urobjids) > 0:
+            app.logger.info("Scheduler - routing deleting " + str(len(urobjids)) + " of " + str(counter) + " unrouted notifications that have been processed and were unrouted")
+            models.UnroutedNotification.bulk_delete(urobjids)
     except Exception as e:
         app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: '{x}'".format(x=e.message))
 

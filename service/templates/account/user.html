@@ -174,7 +174,17 @@
             {% if account.has_role('publisher') %}
             <div class="well">
             <form method="post" action="">
-			<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration months (number)" value="{{account.data.get('embargo',{}).get('duration','')}}">
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        Embargo duration (months)
+                    </p>
+                </div>
+                <div class="col-md-8">
+										<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration months (number)" value="{{account.data.get('embargo',{}).get('duration','')}}">
+                </div>
+            </div>
+
             <button class="btn btn-primary btn-block" id="update" type="submit" style="margin-top:5px;">
                 Update details
             </button>
@@ -237,6 +247,10 @@
         </div>
     </div>
 
+
+{% endblock %}
+
+{% block extra_js_bottom %}
     <script>
     $( document ).ready(function() {        
         var deleteaccount = function(event) {
@@ -247,8 +261,6 @@
 
     });
     </script>
-
-
-{% endblock %}
+{% endblock extra_js_bottom %}
 
 

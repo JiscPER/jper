@@ -1,5 +1,8 @@
 from octopus.modules.es import dao
 
+class ContentLogDAO(dao.ESDAO):
+    __type__ = 'contentlog'
+
 class UnroutedNotificationDAO(dao.ESDAO):
     __type__ = 'unrouted'
 

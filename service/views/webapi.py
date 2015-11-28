@@ -184,19 +184,31 @@ def retrieve_notification(notification_id):
 @webapp.jsonp
 def retrieve_content(notification_id, filename=None):
     app.logger.info("{x} {y} content requested".format(x=notification_id, y=filename))
+    if filename is None:
+        fn = "none"
+    else:
+        fn = filename
     try:
         filestream = JPER.get_content(current_user, notification_id, filename)
+        nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"store"})
         return Response(stream_with_context(filestream))
     except:
+        nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"notfound"})
         return _not_found()
+    finally:
+        nt.save()
 
 @blueprint.route("/notification/<notification_id>/proxy/<pid>", methods=["GET"])
 def proxy_content(notification_id, pid):
     app.logger.info("{x} {y} proxy requested".format(x=notification_id, y=pid))
     purl = JPER.get_proxy_url(current_user, notification_id, pid)
     if purl is not None:
+        nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":pid,"delivered_from":"proxy"})
+        nt.save()
         return redirect(purl)
     else:
+        nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":pid,"delivered_from":"notfound"})
+        nt.save()
         return _not_found()
 
 def _list_request(repo_id=None):
