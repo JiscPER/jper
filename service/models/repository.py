@@ -1,3 +1,7 @@
+"""
+Model objects used to represent interactions with repositories
+"""
+
 from octopus.lib import dataobj
 from service import dao
 from octopus.core import app
@@ -5,29 +9,45 @@ import csv
 
 class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     """
-    {
-        "id" : "<opaque id for repository config record>",
-        "created_date" : "<date this notification was received>",
-        "last_updated" : "<last modification time - required by storage layer>",
+    Class to represent the configuration information that repositories provide to the system
+    to enable routing based on RoutingMetadata extracted from notifications
 
-        "repository" : "<account id of repository that owns this configuration>",
-        "domains" : ["<list of all domains that match this repository's institution>"],
-        "name_variants" : ["<The names by which this repository's institution is known>"],
-        "author_ids" : [
-            {
-                "id" : "<author id string>",
-                "type" : "<author id type (e.g. orcid, or name)>"
-            }
-        ],
-        "postcodes" : ["<list of postcodes that appear in the repository's institution's addresses>"],
-        "keywords" : ["<keywords and subject classifications>"],
-        "grants" : ["<grant names or numbers>"],
-		"strings": ["<list of strings>"],
-        "content_types" : ["<list of content types the repository is interested in>"]
-    }
+    The structure is as follows
+
+    ::
+
+        {
+            "id" : "<opaque id for repository config record>",
+            "created_date" : "<date this notification was received>",
+            "last_updated" : "<last modification time - required by storage layer>",
+
+            "repository" : "<account id of repository that owns this configuration>",
+            "domains" : ["<list of all domains that match this repository's institution>"],
+            "name_variants" : ["<The names by which this repository's institution is known>"],
+            "author_ids" : [
+                {
+                    "id" : "<author id string>",
+                    "type" : "<author id type (e.g. orcid, or name)>"
+                }
+            ],
+            "postcodes" : ["<list of postcodes that appear in the repository's institution's addresses>"],
+            "keywords" : ["<keywords and subject classifications>"],
+            "grants" : ["<grant names or numbers>"],
+            "strings": ["<list of strings>"],
+            "content_types" : ["<list of content types the repository is interested in>"]
+        }
     """
 
     def __init__(self, raw=None):
+        """
+        Create a new instance of the RepositoryConfig object, optionally around the
+        raw python dictionary.
+
+        If supplied, the raw dictionary will be validated against the allowed structure of this
+        object, and an exception will be raised if it does not validate
+
+        :param raw: python dict object containing the data
+        """
         struct = {
             "fields" : {
                 "id" : {"coerce" : "unicode"},
@@ -59,30 +79,74 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
 
     @property
     def repository(self):
+        """
+        Get the id of the repository this config represents
+
+        :return: repository id
+        """
         return self._get_single("repository", coerce=dataobj.to_unicode())
 
     @repository.setter
     def repository(self, val):
+        """
+        Set the id of the repository this config represents
+
+        :param val: the repository id
+        """
         self._set_single("repository", val, coerce=dataobj.to_unicode())
 
     @property
     def domains(self):
+        """
+        List of domains that this repository is associated with
+
+        :return: list of domains
+        """
         return self._get_list("domains", coerce=dataobj.to_unicode())
 
     @property
     def name_variants(self):
+        """
+        List of name variants this repository/institution is known by
+
+        :return: list of name variants
+        """
         return self._get_list("name_variants", coerce=dataobj.to_unicode())
 
     @property
     def author_ids(self):
+        """
+        List of author id objects associated with this repository
+
+        Author id objects are of the form:
+
+        ::
+
+            {
+                "id" : "<author id string>",
+                "type" : "<author id type (e.g. orcid, or name)>"
+            }
+        """
         return self._get_list("author_ids")
 
     @property
     def author_emails(self):
+        """
+        Get a list of email addresses for authors associated with the repository
+
+        Short cut for self.get_author_ids("email")
+
+        :return: list of email addresses
+        """
         # special function just to return the email type from the author ids
         return self.get_author_ids("email")
 
     def get_author_ids(self, type):
+        """
+        List of author identifiers of the specified type
+
+        :return: list of author identifiers as plain strings
+        """
         aids = []
         for aid in self.author_ids:
             if aid.get("type") == type:
@@ -91,22 +155,47 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
 
     @property
     def postcodes(self):
+        """
+        List of postcodes associated with this repository/institution
+
+        :return: postcodes
+        """
         return self._get_list("postcodes", coerce=dataobj.to_unicode())
 
     @property
     def keywords(self):
+        """
+        List of keywords associated with this repository
+
+        :return: keywords
+        """
         return self._get_list("keywords", coerce=dataobj.to_unicode())
 
     @property
     def grants(self):
+        """
+        List of grant codes associated with this repository/institution
+
+        :return: grant codes
+        """
         return self._get_list("grants", coerce=dataobj.to_unicode())
 
     @property
     def content_types(self):
+        """
+        List of content types associated with this repository
+
+        :return: content types
+        """
         return self._get_list("content_types", coerce=dataobj.to_unicode())
 
     @property
     def strings(self):
+        """
+        List of arbitrary strings which may be used to match against this repository
+
+        :return: list of match strings
+        """
         return self._get_list("strings", coerce=dataobj.to_unicode())
 
     @classmethod
@@ -170,26 +259,41 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
 
 class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
     """
-    {
-        "id" : "<opaque id for repository config record>",
-        "created_date" : "<date this notification was received>",
-        "last_updated" : "<last modification time - required by storage layer>",
+    Class to represent a record of a match between a RepositoryConfig and a RoutingMetadata object
 
-        "repository" : "<account id of repository to which the match pertains>",
-        "notification" : "<id of the notification to which the match pertains>",
-        "provenance" : [
-            {
-                "source_field" : "<field from the configuration that matched>",
-                "term" : "<term from the configuration that matched>",
-                "notification_field" : "<field from the notification that matched>"
-                "matched" : "<text from the notification routing metadata that matched>",
-                "explanation" : "<any additional explanatory text to go with this match (e.g. description of levenstein criteria)>"
-            }
-        ]
-    }
+    The structure is as follows
+
+    ::
+
+        {
+            "id" : "<opaque id for repository config record>",
+            "created_date" : "<date this notification was received>",
+            "last_updated" : "<last modification time - required by storage layer>",
+
+            "repository" : "<account id of repository to which the match pertains>",
+            "notification" : "<id of the notification to which the match pertains>",
+            "provenance" : [
+                {
+                    "source_field" : "<field from the configuration that matched>",
+                    "term" : "<term from the configuration that matched>",
+                    "notification_field" : "<field from the notification that matched>"
+                    "matched" : "<text from the notification routing metadata that matched>",
+                    "explanation" : "<any additional explanatory text to go with this match (e.g. description of levenstein criteria)>"
+                }
+            ]
+        }
     """
 
     def __init__(self, raw=None):
+        """
+        Create a new instance of the MatchProvenance object, optionally around the
+        raw python dictionary.
+
+        If supplied, the raw dictionary will be validated against the allowed structure of this
+        object, and an exception will be raised if it does not validate
+
+        :param raw: python dict object containing the metadata
+        """
         struct = {
             "fields" : {
                 "id" : {"coerce" : "unicode"},
@@ -219,25 +323,72 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
 
     @property
     def repository(self):
+        """
+        Repository id to which the match pertains
+
+        :return: repository id
+        """
         return self._get_single("repository", coerce=dataobj.to_unicode())
 
     @repository.setter
     def repository(self, val):
+        """
+        Set the repository id to which the match pertains
+
+        :param val: repository id
+        """
         self._set_single("repository", val, coerce=dataobj.to_unicode())
 
     @property
     def notification(self):
+        """
+        Notification id to which the match pertains
+
+        :return: notification id
+        """
         return self._get_single("notification", coerce=dataobj.to_unicode())
 
     @notification.setter
     def notification(self, val):
+        """
+        Set the notification id to which the match pertains
+
+        :param val: notification id
+        """
         self._set_single("notification", val, coerce=dataobj.to_unicode())
 
     @property
     def provenance(self):
+        """
+        List of match provenance events for the combination of the repository id and notification id
+        represented by this object
+
+        Provenance records are of the following structure:
+
+        ::
+
+            {
+                "source_field" : "<field from the configuration that matched>",
+                "term" : "<term from the configuration that matched>",
+                "notification_field" : "<field from the notification that matched>"
+                "matched" : "<text from the notification routing metadata that matched>",
+                "explanation" : "<any additional explanatory text to go with this match (e.g. description of levenstein criteria)>"
+            }
+
+        :return: list of provenance objects
+        """
         return self._get_list("provenance")
 
     def add_provenance(self, source_field, term, notification_field, matched, explanation):
+        """
+        add a provenance record to the existing list of provenances
+
+        :param source_field: the field from the repository configuration from which a match was drawn
+        :param term: the text from the repository configuration which matched
+        :param notification_field: the field from the notification that matched
+        :param matched: the text from the notification that matched
+        :param explanation: human readable description of the nature of the match
+        """
         uc = dataobj.to_unicode()
         obj = {
             "source_field" : self._coerce(source_field, uc),
@@ -250,17 +401,26 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
 
 class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
     """
-    {
-        "id" : "<opaque id for repository config record>",
-        "created_date" : "<date this notification was received>",
-        "last_updated" : "<last modification time - required by storage layer>",
+    Class to allow us to record a retrieval of a file for the purposes of later reporting
 
-        "repository" : "<user id of repository doing the retrieval>",
-        "notification" : "<id of the notification retrieved>",
-        "content" : "<the url or internal identifier of the content retrieved>",
-        "retrieval_date" : "<date the repository retrieved the record>",
-        "scope" : "<what the repository actually retrieved: notification, fulltext>"
-    }
+    DO NOT USE.
+
+    This class is not currently in use in the system, but may be activated later.  In the mean time,
+    you should ignore it!
+
+    ::
+
+        {
+            "id" : "<opaque id for repository config record>",
+            "created_date" : "<date this notification was received>",
+            "last_updated" : "<last modification time - required by storage layer>",
+
+            "repository" : "<user id of repository doing the retrieval>",
+            "notification" : "<id of the notification retrieved>",
+            "content" : "<the url or internal identifier of the content retrieved>",
+            "retrieval_date" : "<date the repository retrieved the record>",
+            "scope" : "<what the repository actually retrieved: notification, fulltext>"
+        }
     """
     def __init__(self, raw=None):
         struct = {

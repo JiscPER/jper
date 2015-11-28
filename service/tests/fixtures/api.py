@@ -1,23 +1,46 @@
+"""
+Fixtures for testing the API
+"""
+
 from copy import deepcopy
 from octopus.lib import paths
 import os
 
 RESOURCES = paths.rel2abs(__file__, "..", "resources")
-
+"""Path to the test resources directory, calculated relative to this file"""
 
 
 class APIFactory(object):
+    """
+    Class which provides access to the various fixtures used for testing the API
+    """
 
     @classmethod
     def incoming(cls):
+        """
+        A dict representing a notification that may come in via the API
+
+        :return: notification object
+        """
         return deepcopy(INCOMING)
 
     @classmethod
     def example_package_path(cls):
+        """
+        The path to the example package in the resources directory
+
+        :return: path
+        """
         return os.path.join(RESOURCES, "example.zip")
 
     @classmethod
     def outgoing(cls, provider=False):
+        """
+        A dict representing an outgoing notification (provider or not) that may go out via the API
+
+        :param provider: whether to use the provider version or not
+        :return: notification object
+        """
         if provider:
             return deepcopy(PROVIDER_OUTGOING)
         else:
@@ -25,6 +48,11 @@ class APIFactory(object):
 
     @classmethod
     def notification_list_set_get(cls):
+        """
+        An example notification list
+
+        :return: notification list
+        """
         return deepcopy(NOTIFICATION_LIST_GET_SET)
 
 NOTIFICATION_LIST_GET_SET = {
@@ -35,6 +63,7 @@ NOTIFICATION_LIST_GET_SET = {
     "total" : 3000,
     "notifications" : ["not a notification"]
 }
+"""example notification list"""
 
 OUTGOING = {
 
@@ -45,7 +74,7 @@ OUTGOING = {
     "event" : "submission",
 
     "content" : {
-        "packaging_format" : "http://router.jisc.ac.uk/packages/FilesAndJATS",
+        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS",
     },
 
     "links" : [
@@ -124,8 +153,11 @@ OUTGOING = {
         "subject" : ["science", "technology", "arts", "medicine"]
     }
 }
+"""Example outgoing notification"""
 
 PROVIDER_OUTGOING = deepcopy(OUTGOING)
+""" Example outgoing notification (provider)"""
+
 PROVIDER_OUTGOING.update({
     "provider" : {
         "id" : "pub1",
@@ -144,7 +176,7 @@ INCOMING = {
     },
 
     "content" : {
-        "packaging_format" : "http://router.jisc.ac.uk/packages/FilesAndJATS"
+        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
     },
 
     "links" : [
@@ -218,3 +250,4 @@ INCOMING = {
         "subject" : ["science", "technology", "arts", "medicine"]
     }
 }
+"""Example incoming notification"""

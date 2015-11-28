@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.models.repository.MatchProvenance</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        <a href="service.models-module.html">Package&nbsp;models</a> ::
+        <a href="service.models.repository-module.html">Module&nbsp;repository</a> ::
+        Class&nbsp;MatchProvenance
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.models.repository.MatchProvenance-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class MatchProvenance</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_service__24" name="uml_class_diagram_for_service__24">
+<area shape="rect" id="node1_7" href="service.models.repository.MatchProvenance-class.html#__init__" title="Create a new instance of the MatchProvenance object, optionally around the raw python dictionary." alt="" coords="17,133,495,153"/>
+<area shape="rect" id="node1_8" href="service.models.repository.MatchProvenance-class.html#repository" title="Set the repository id to which the match pertains" alt="" coords="17,153,495,173"/>
+<area shape="rect" id="node1_9" href="service.models.repository.MatchProvenance-class.html#notification" title="Set the notification id to which the match pertains" alt="" coords="17,173,495,193"/>
+<area shape="rect" id="node1_10" href="service.models.repository.MatchProvenance-class.html#provenance" title="List of match provenance events for the combination of the repository id and notification id represented by this object" alt="" coords="17,193,495,213"/>
+<area shape="rect" id="node1_11" href="service.models.repository.MatchProvenance-class.html#add_provenance" title="add a provenance record to the existing list of provenances" alt="" coords="17,213,495,233"/>
+<area shape="rect" id="node1" href="service.models.repository.MatchProvenance-class.html" title="Class to represent a record of a match between a RepositoryConfig and a RoutingMetadata object" alt="" coords="5,99,507,239"/>
+<area shape="rect" id="node2_12" href="service.dao.MatchProvenanceDAO-class.html#__type__" title="The index type to use to store these objects" alt="" coords="113,31,399,51"/>
+<area shape="rect" id="node2_13" href="service.dao.MatchProvenanceDAO-class.html#pull_by_notification" title="List all of the match provenance information for the requested notification" alt="" coords="113,53,399,73"/>
+<area shape="rect" id="node2" href="service.dao.MatchProvenanceDAO-class.html" title="DAO for MatchProvenance" alt="" coords="101,5,411,80"/>
+</map>
+  <img src="uml_class_diagram_for_service__24.gif" alt='' usemap="#uml_class_diagram_for_service__24" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Class to represent a record of a match between a RepositoryConfig and a RoutingMetadata object</p>
+<p>The structure is as follows</p>
+<pre class="rst-literal-block">
+{
+    &quot;id&quot; : &quot;&lt;opaque id for repository config record&gt;&quot;,
+    &quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;,
+    &quot;last_updated&quot; : &quot;&lt;last modification time - required by storage layer&gt;&quot;,
+
+    &quot;repository&quot; : &quot;&lt;account id of repository to which the match pertains&gt;&quot;,
+    &quot;notification&quot; : &quot;&lt;id of the notification to which the match pertains&gt;&quot;,
+    &quot;provenance&quot; : [
+        {
+            &quot;source_field&quot; : &quot;&lt;field from the configuration that matched&gt;&quot;,
+            &quot;term&quot; : &quot;&lt;term from the configuration that matched&gt;&quot;,
+            &quot;notification_field&quot; : &quot;&lt;field from the notification that matched&gt;&quot;
+            &quot;matched&quot; : &quot;&lt;text from the notification routing metadata that matched&gt;&quot;,
+            &quot;explanation&quot; : &quot;&lt;any additional explanatory text to go with this match (e.g. description of levenstein criteria)&gt;&quot;
+        }
+    ]
+}
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new instance of the MatchProvenance object, optionally around the
+raw python dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#repository" class="summary-sig-name">repository</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the repository id to which the match pertains</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.repository">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#notification" class="summary-sig-name">notification</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the notification id to which the match pertains</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.notification">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#provenance" class="summary-sig-name">provenance</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      List of match provenance events for the combination of the repository id and notification id
+represented by this object</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.provenance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#add_provenance" class="summary-sig-name">add_provenance</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">source_field</span>,
+        <span class="summary-sig-arg">term</span>,
+        <span class="summary-sig-arg">notification_field</span>,
+        <span class="summary-sig-arg">matched</span>,
+        <span class="summary-sig-arg">explanation</span>)</span><br />
+      add a provenance record to the existing list of provenances</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.add_provenance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS METHODS ==================== -->
+<a name="section-ClassMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.dao.MatchProvenanceDAO-class.html">dao.MatchProvenanceDAO</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.dao.MatchProvenanceDAO-class.html#pull_by_notification" class="summary-sig-name">pull_by_notification</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">notification_id</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">10</span>)</span><br />
+      List all of the match provenance information for the requested notification</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.dao-pysrc.html#MatchProvenanceDAO.pull_by_notification">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.dao.MatchProvenanceDAO-class.html">dao.MatchProvenanceDAO</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__type__"></a><span class="summary-name">__type__</span> = <code title="&quot;match_prov&quot;">&quot;match_prov&quot;</code><br />
+      The index type to use to store these objects
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">raw</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a new instance of the MatchProvenance object, optionally around the
+raw python dictionary.</p>
+<p>If supplied, the raw dictionary will be validated against the allowed structure of this
+object, and an exception will be raised if it does not validate</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>raw</code></strong> - python dict object containing the metadata</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="repository"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">repository</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.repository">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the repository id to which the match pertains
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - repository id</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@repository.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="notification"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">notification</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.notification">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the notification id to which the match pertains
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - notification id</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@notification.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="provenance"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">provenance</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.provenance">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>List of match provenance events for the combination of the repository id and notification id
+represented by this object</p>
+<p>Provenance records are of the following structure:</p>
+<pre class="rst-literal-block">
+{
+    &quot;source_field&quot; : &quot;&lt;field from the configuration that matched&gt;&quot;,
+    &quot;term&quot; : &quot;&lt;term from the configuration that matched&gt;&quot;,
+    &quot;notification_field&quot; : &quot;&lt;field from the notification that matched&gt;&quot;
+    &quot;matched&quot; : &quot;&lt;text from the notification routing metadata that matched&gt;&quot;,
+    &quot;explanation&quot; : &quot;&lt;any additional explanatory text to go with this match (e.g. description of levenstein criteria)&gt;&quot;
+}
+</pre>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>list of provenance objects</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_provenance"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_provenance</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">source_field</span>,
+        <span class="sig-arg">term</span>,
+        <span class="sig-arg">notification_field</span>,
+        <span class="sig-arg">matched</span>,
+        <span class="sig-arg">explanation</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.add_provenance">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  add a provenance record to the existing list of provenances
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>source_field</code></strong> - the field from the repository configuration from which a match was drawn</li>
+        <li><strong class="pname"><code>term</code></strong> - the text from the repository configuration which matched</li>
+        <li><strong class="pname"><code>notification_field</code></strong> - the field from the notification that matched</li>
+        <li><strong class="pname"><code>matched</code></strong> - the text from the notification that matched</li>
+        <li><strong class="pname"><code>explanation</code></strong> - human readable description of the nature of the match</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Nov 24 12:58:46 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

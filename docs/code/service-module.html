@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;service
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PACKAGE DESCRIPTION ==================== -->
+<h1 class="epydoc">Package service</h1><p class="nomargin-top"><span class="codelink"><a href="service-pysrc.html">source&nbsp;code</a></span></p>
+<p>The root module for the entire application.</p>
+<p>Everything outside this module can be considered a static dependency</p>
+
+<!-- ==================== SUBMODULES ==================== -->
+<a name="section-Submodules"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Submodules</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Submodules"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr><td class="summary">
+  <ul class="nomargin">
+    <li> <strong class="uidlink"><a href="service.api-module.html">service.api</a></strong>: <em class="summary">This is the main Python API for interacting with the JPER system.</em>    </li>
+    <li> <strong class="uidlink"><a href="service.dao-module.html">service.dao</a></strong>: <em class="summary">This module contains all the Data Access Objects for models which are persisted to Elasticsearch
+at some point in their lifecycle.</em>    </li>
+    <li> <strong class="uidlink"><a href="service.initialise-module.html">service.initialise</a></strong>: <em class="summary">JPER service initialise module, run at application startup.</em>    </li>
+    <li> <strong class="uidlink"><a href="service.models-module.html">service.models</a></strong>: <em class="summary">This module contains all the model objects used by the system core.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="service.models.account-module.html">service.models.account</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="service.models.api-module.html">service.models.api</a></strong>: <em class="summary">Model objects which are used in providing the Python API to JPER</em>    </li>
+    <li> <strong class="uidlink"><a href="service.models.notifications-module.html">service.models.notifications</a></strong>: <em class="summary">Model objects used to represent system core notification objects</em>    </li>
+    <li> <strong class="uidlink"><a href="service.models.repository-module.html">service.models.repository</a></strong>: <em class="summary">Model objects used to represent interactions with repositories</em>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="service.packages-module.html">service.packages</a></strong>: <em class="summary">Provides general packaging handling infrastructure and specific implementations of known packaging formats</em>    </li>
+    <li> <strong class="uidlink"><a href="service.routing-module.html">service.routing</a></strong>: <em class="summary">Module which handles all the routing mechanics to convert UnroutedNotifications into either
+RoutedNotifications or FailedNotifications</em>    </li>
+    <li> <strong class="uidlink"><a href="service.scheduler-module.html">service.scheduler</a></strong>: <em class="summary">This is the application scheduler.
+It defines scheduled tasks and runs them as per their defined schedule.</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests-module.html">service.tests</a></strong>: <em class="summary">This module contains all of the system tests and associated fixtures</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="service.tests.fixtures-module.html">service.tests.fixtures</a></strong>: <em class="summary">This module contains all of the fixtures that are used throughout the testing.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="service.tests.fixtures.api-module.html">service.tests.fixtures.api</a></strong>: <em class="summary">Fixtures for testing the API</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.fixtures.notifications-module.html">service.tests.fixtures.notifications</a></strong>: <em class="summary">Fixtures for testing notifications</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.fixtures.packages-module.html">service.tests.fixtures.packages</a></strong>: <em class="summary">Fixtures for testing packages</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.fixtures.repository-module.html">service.tests.fixtures.repository</a></strong>: <em class="summary">Fixtures for testing repository features</em>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="service.tests.functional-module.html">service.tests.functional</a></strong>: <em class="summary">Module which contains tests and scripts for functional system testing</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="service.tests.functional.harness-module.html">service.tests.functional.harness</a></strong>: <em class="summary">Script which can be used to drive all aspects of the JPER API in order to test its behaviour at scale</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.functional.load_test_data-module.html">service.tests.functional.load_test_data</a></strong>: <em class="summary">Script which can load repository configs and user accounts into an empty test system, to prime it for the test harness</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.functional.test_api-module.html">service.tests.functional.test_api</a></strong>: <em class="summary">Functional tests for the API.</em>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="service.tests.unit-module.html">service.tests.unit</a></strong>: <em class="summary">System unit tests</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="service.tests.unit.test_api-module.html">service.tests.unit.test_api</a></strong>: <em class="summary">Unit tests for the JPER API class</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.unit.test_dao-module.html">service.tests.unit.test_dao</a></strong>: <em class="summary">Unit tests for the Data Access Objects</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.unit.test_models-module.html">service.tests.unit.test_models</a></strong>: <em class="summary">Unit tests for the core system objects</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.unit.test_packager-module.html">service.tests.unit.test_packager</a></strong>: <em class="summary">Unit tests for the packaging system</em>    </li>
+    <li> <strong class="uidlink"><a href="service.tests.unit.test_routing-module.html">service.tests.unit.test_routing</a></strong>: <em class="summary">Unit tests for the routing system</em>    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="service.views-module.html">service.views</a></strong>: <em class="summary">This module contains all the blueprints that are loaded by the application to provide the web interface</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="service.views.account-module.html">service.views.account</a></strong>: <em class="summary">Blueprint for providing account management</em>    </li>
+    <li> <strong class="uidlink"><a href="service.views.test-module.html">service.views.test</a></strong>: <em class="summary">Blueprint for providing test endpoints for when the system is run in functional test mode.</em>    </li>
+    <li> <strong class="uidlink"><a href="service.views.webapi-module.html">service.views.webapi</a></strong>: <em class="summary">Blueprint which provides the RESTful web API for JPER</em>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="service.web-module.html">service.web</a></strong>: <em class="summary">Main module from which the application is started and the web interface mounted</em>    </li>
+  </ul></td></tr>
+</table>
+
+<br />
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Nov 24 12:58:44 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,3 +1,10 @@
+"""
+Functional tests for the API.
+
+This test suite will work fine against a standard JPER install on the local machine with the default accounts.
+
+If you want to run it in a different environment you will need to modify some of the constants used in this test.
+"""
 import requests, json, os
 
 from octopus.modules.es.testindex import ESTestCase
@@ -11,7 +18,10 @@ from octopus.modules.store import store
 # FIXME: at this point these don't do anything.  We'll need to create user accounts
 # in the remote system and get their api keys.
 API_KEY = "admin"   # this is the password for the account, not the api-key, so it won't work
+"""The API key for the admin account"""
+
 INVALID_API_KEY = "abcdefg"
+"""An API key which is not related to any account"""
 
 class TestAPI(ESTestCase):
     def setUp(self):
@@ -272,6 +282,7 @@ class TestAPI(ESTestCase):
         resp = requests.get(url)
         assert resp.status_code == 404
 
+    '''
     def test_11_get_store_content(self):
         """
         FIXME: this test is no longer accurate, as the store does not redirect.  Needs updating.
@@ -288,6 +299,7 @@ class TestAPI(ESTestCase):
         loc = resp.headers["location"]
         resp2 = requests.get(loc + "/content?api_key=" + API_KEY, allow_redirects=False)
         assert resp2.status_code == 303, resp2.status_code
+    '''
 
     def test_12_get_store_content_fail(self):
         # ways in which the content http request can fail
@@ -299,6 +311,7 @@ class TestAPI(ESTestCase):
         resp = requests.get(url)
         assert resp.status_code == 404
 
+    '''
     def test_13_get_public_content(self):
         """
         FIXME: this test is no longer accurate.  Needs updating.
@@ -310,6 +323,7 @@ class TestAPI(ESTestCase):
         loc = resp.headers["location"]
         resp2 = requests.get(loc + "/content/1?api_key=" + API_KEY, allow_redirects=False)
         assert resp2.status_code == 303
+    '''
 
     def test_14_get_public_content_fail(self):
         # ways in which the content http request can fail

@@ -1,3 +1,7 @@
+"""
+Unit tests for the core system objects
+"""
+
 from octopus.modules.es.testindex import ESTestCase
 from octopus.core import app
 from service import models

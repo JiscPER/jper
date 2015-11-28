@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.tests.unit.test_routing.TestRouting</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        <a href="service.tests-module.html">Package&nbsp;tests</a> ::
+        <a href="service.tests.unit-module.html">Package&nbsp;unit</a> ::
+        <a href="service.tests.unit.test_routing-module.html">Module&nbsp;test_routing</a> ::
+        Class&nbsp;TestRouting
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.tests.unit.test_routing.TestRouting-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class TestRouting</h1><p class="nomargin-top"><span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_service__47" name="uml_class_diagram_for_service__47">
+<area shape="rect" id="node1_14" href="service.tests.unit.test_routing.TestRouting-class.html#setUp" title="service.tests.unit.test_routing.TestRouting.setUp" alt="" coords="17,40,221,60"/>
+<area shape="rect" id="node1_15" href="service.tests.unit.test_routing.TestRouting-class.html#tearDown" title="service.tests.unit.test_routing.TestRouting.tearDown" alt="" coords="17,60,221,80"/>
+<area shape="rect" id="node1_16" href="service.tests.unit.test_routing.TestRouting-class.html#test_01_domain_url" title="service.tests.unit.test_routing.TestRouting.test_01_domain_url" alt="" coords="17,80,221,100"/>
+<area shape="rect" id="node1_17" href="service.tests.unit.test_routing.TestRouting-class.html#test_02_domain_email" title="service.tests.unit.test_routing.TestRouting.test_02_domain_email" alt="" coords="17,100,221,120"/>
+<area shape="rect" id="node1_18" href="service.tests.unit.test_routing.TestRouting-class.html#test_03_exact_substring" title="service.tests.unit.test_routing.TestRouting.test_03_exact_substring" alt="" coords="17,120,221,140"/>
+<area shape="rect" id="node1_19" href="service.tests.unit.test_routing.TestRouting-class.html#test_04_exact" title="service.tests.unit.test_routing.TestRouting.test_04_exact" alt="" coords="17,140,221,160"/>
+<area shape="rect" id="node1_20" href="service.tests.unit.test_routing.TestRouting-class.html#test_05_author_match" title="service.tests.unit.test_routing.TestRouting.test_05_author_match" alt="" coords="17,160,221,180"/>
+<area shape="rect" id="node1_21" href="service.tests.unit.test_routing.TestRouting-class.html#test_06_author_string_match" title="service.tests.unit.test_routing.TestRouting.test_06_author_string_match" alt="" coords="17,180,221,200"/>
+<area shape="rect" id="node1_22" href="service.tests.unit.test_routing.TestRouting-class.html#test_07_postcode_match" title="service.tests.unit.test_routing.TestRouting.test_07_postcode_match" alt="" coords="17,200,221,220"/>
+<area shape="rect" id="node1_23" href="service.tests.unit.test_routing.TestRouting-class.html#test_08_enhance" title="service.tests.unit.test_routing.TestRouting.test_08_enhance" alt="" coords="17,220,221,240"/>
+<area shape="rect" id="node1_24" href="service.tests.unit.test_routing.TestRouting-class.html#test_09_repackage" title="service.tests.unit.test_routing.TestRouting.test_09_repackage" alt="" coords="17,240,221,260"/>
+<area shape="rect" id="node1_25" href="service.tests.unit.test_routing.TestRouting-class.html#test_10_proxy_links" title="service.tests.unit.test_routing.TestRouting.test_10_proxy_links" alt="" coords="17,260,221,280"/>
+<area shape="rect" id="node1_26" href="service.tests.unit.test_routing.TestRouting-class.html#test_50_match_success" title="service.tests.unit.test_routing.TestRouting.test_50_match_success" alt="" coords="17,280,221,300"/>
+<area shape="rect" id="node1_27" href="service.tests.unit.test_routing.TestRouting-class.html#test_99_routing_fail" title="service.tests.unit.test_routing.TestRouting.test_99_routing_fail" alt="" coords="17,320,221,340"/>
+<area shape="rect" id="node1" href="service.tests.unit.test_routing.TestRouting-class.html" title="service.tests.unit.test_routing.TestRouting" alt="" coords="5,6,233,346"/>
+</map>
+  <img src="uml_class_diagram_for_service__47.gif" alt='' usemap="#uml_class_diagram_for_service__47" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setUp"></a><span class="summary-sig-name">setUp</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.setUp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="tearDown"></a><span class="summary-sig-name">tearDown</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.tearDown">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_01_domain_url"></a><span class="summary-sig-name">test_01_domain_url</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_01_domain_url">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_02_domain_email"></a><span class="summary-sig-name">test_02_domain_email</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_02_domain_email">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_03_exact_substring"></a><span class="summary-sig-name">test_03_exact_substring</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_03_exact_substring">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_04_exact"></a><span class="summary-sig-name">test_04_exact</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_04_exact">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_05_author_match"></a><span class="summary-sig-name">test_05_author_match</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_05_author_match">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_06_author_string_match"></a><span class="summary-sig-name">test_06_author_string_match</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_06_author_string_match">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_07_postcode_match"></a><span class="summary-sig-name">test_07_postcode_match</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_07_postcode_match">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_08_enhance"></a><span class="summary-sig-name">test_08_enhance</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_08_enhance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_09_repackage"></a><span class="summary-sig-name">test_09_repackage</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_09_repackage">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_10_proxy_links"></a><span class="summary-sig-name">test_10_proxy_links</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_10_proxy_links">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_50_match_success"></a><span class="summary-sig-name">test_50_match_success</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_50_match_success">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_51_match_fail"></a><span class="summary-sig-name">test_51_match_fail</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_51_match_fail">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_97_routing_success_metadata"></a><span class="summary-sig-name">test_97_routing_success_metadata</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_97_routing_success_metadata">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_98_routing_success_package"></a><span class="summary-sig-name">test_98_routing_success_package</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_98_routing_success_package">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="test_99_routing_fail"></a><span class="summary-sig-name">test_99_routing_fail</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.tests.unit.test_routing-pysrc.html#TestRouting.test_99_routing_fail">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Nov 24 12:58:47 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,3 +1,7 @@
+"""
+Unit tests for the Data Access Objects
+"""
+
 from octopus.modules.es.testindex import ESTestCase
 from service import dao
 from service.tests import fixtures

@@ -1,3 +1,8 @@
+"""
+Module which handles all the routing mechanics to convert UnroutedNotifications into either
+RoutedNotifications or FailedNotifications
+"""
+
 from octopus.lib import dates
 from octopus.modules.store import store
 from service import packages, models
@@ -8,9 +13,31 @@ from copy import deepcopy
 import uuid
 
 class RoutingException(Exception):
+    """
+    Generic exception to be raised when errors with routing are encountered
+    """
     pass
 
 def route(unrouted):
+    """
+    Route an UnroutedNotification to the appropriate repositories
+
+    The function will extract all the metadata and match data from any binary content associated with
+    the notification, and in combination from match data taken from the notification metadata itself will
+    determine if there is a RepositoryConfig whose criteria it matches.
+
+    If there is a match to one or more of the criteria, MatchProvenance objects will be created for
+    each matching repository, and persisted for later inspection.
+
+    If one or more repositories are matched, a RoutedNotification will be created and enhanced with any
+    metadata extracted from the associated package (if present), then persisted.
+
+    If no repositories match, a FailedNotification will be created and enhanced with any
+    metadata extracted from the associated package (if present), then persisted.
+
+    :param unrouted: an UnroutedNotification object
+    :return: True if the notification was routed to a repository, False if there were no matches
+    """
     app.logger.info("Routing - Notification:{y}".format(y=unrouted.id))
 
     # first get the packaging system to load and retrieve all the metadata
@@ -99,11 +126,14 @@ def route(unrouted):
 def match(notification_data, repository_config, provenance):
     """
     Match the incoming notification data, to the repository config and determine
-    if there is a match
+    if there is a match.
+
+    If there is a match, all criteria for the match will be added to the provenance
+    object
 
     :param notification_data:   models.RoutingMetadata
     :param repository_config:   models.RepositoryConfig
-    :return:  list of models.MatchProvenance objects, or None if no match
+    :return:  True if there was a match, False if not
     """
     # just to give us a short-hand without compromising the useful names in the method sig
     md = notification_data
@@ -200,8 +230,8 @@ def enhance(routed, metadata):
     """
     Enhance the routed notification with the extracted metadata
 
-    :param routed:
-    :param metadata:
+    :param routed: a RoutedNotification whose metadata is to be enhanced
+    :param metadata: a NotificationMetadata object
     :return:
     """
     # some of the fields are easy - we just want to accept the existing
@@ -253,6 +283,27 @@ def enhance(routed, metadata):
 
 
 def _merge_entities(e1, e2, primary_property, other_properties=None):
+    """
+    Merge dict objects e1 and e2 so that the resulting dict has the data from both.
+
+    Entities are in-particular dicts which may contain an "identifier" field, such as
+    used by projects and authors.
+
+    The primary_property names the field in the dict which can be used to confirm that
+    e1 and e2 reference the same entity, in the event that no matching identifiers are present.
+
+    If no identifier is present, and the primary_property values do not match, then this merge
+    will not proceed.
+
+    The other_properties is an explicit list of the properties that should be merged to form
+    the final output (no need to list the primary_property)
+
+    :param e1: first entity object
+    :param e2: second entity object
+    :param primary_property: primary way to assert two entities refer to the same thing
+    :param other_properties: explicit list of properties to merge
+    :return:
+    """
     if other_properties is None:
         other_properties = []
 
@@ -299,6 +350,26 @@ def _merge_entities(e1, e2, primary_property, other_properties=None):
 
 
 def repackage(unrouted, repo_ids):
+    """
+    Repackage any binary content associated with the notification for consumption by
+    the repositories identified by the list of repo_ids.
+
+    Note that this takes an unrouted notification, because of the point in the routing workflow at
+    which it is invoked, although in reality you could also pass it any of the other fully fledged
+    notification objects such as RoutedNotification
+
+    This function will check each account associated with the repository id for the package format
+    thats that they will accept for deposit.  For each format, we look for a route to convert from
+    the source format that the provider gave us for the notification, and then issue a package convert
+    request via the PackageManager to the best possible format for the repository.
+
+    For each successful conversion the notification recieves a new link attribute containing
+    identification information for the converted package.
+
+    :param unrouted: notification object
+    :param repo_ids: list of repository account identifiers
+    :return: a list of the format conversions that were carried out
+    """
     # if there's no package format, there's no repackaging to be done
     if unrouted.packaging_format is None:
         return []
@@ -368,9 +439,9 @@ def domain_url(domain, url):
     """
     normalise the domain: strip prefixes and URL paths.  If either ends with the other, it is a match
 
-    :param domain:
-    :param url:
-    :return:
+    :param domain: domain string
+    :param url: any url
+    :return: True if match, False if not
     """
     # keep a copy of these for the provenance reporting
     od = domain
@@ -401,9 +472,9 @@ def domain_email(domain, email):
     """
     normalise the domain: strip prefixes an URL paths.  Normalise the email: strip everything before @.  If either ends with the other it is a match
 
-    :param domain:
-    :param email:
-    :return:
+    :param domain: domain string
+    :param email: any email address
+    :return: True if match, False if not
     """
     # keep a copy of these for the provenance reporting
     od = domain
@@ -436,9 +507,9 @@ def author_match(author_obj_1, author_obj_2):
     """
     Match two author objects against eachother
 
-    :param author_obj_1:
-    :param author_obj_2:
-    :return:
+    :param author_obj_1: first author object
+    :param author_obj_2: second author object
+    :return: True if match, False if not
     """
     t1 = author_obj_1.get("type", "")
     i1 = _normalise(author_obj_1.get("id", ""))
@@ -455,9 +526,9 @@ def author_string_match(author_string, author_obj):
     """
     Match an arbitrary string against the id in the author object
 
-    :param author_string:
-    :param author_obj:
-    :return:
+    :param author_string: an arbitrary string which may be an author id
+    :param author_obj: the author object to check against
+    :return: True if match, False if not
     """
     ns = _normalise(author_string)
     nid = _normalise(author_obj.get("id", ""))
@@ -470,9 +541,10 @@ def author_string_match(author_string, author_obj):
 def postcode_match(pc1, pc2):
     """
     Normalise postcodes: strip whitespace and lowercase, then exact match required
-    :param pc1:
-    :param pc2:
-    :return:
+
+    :param pc1: first postcode
+    :param pc2: second postcode
+    :return: True if match, False if not
     """
     # first do the usual normalisation
     npc1 = _normalise(pc1)
@@ -490,9 +562,10 @@ def postcode_match(pc1, pc2):
 def exact_substring(s1, s2):
     """
     normalised s1 must be an exact substring of normalised s2
-    :param s1:
-    :param s2:
-    :return:
+
+    :param s1: first string
+    :param s2: second string
+    :return: True if match, False if not
     """
     # keep a copy of these for the provenance reporting
     os1 = s1
@@ -511,9 +584,9 @@ def exact(s1, s2):
     """
     normalised s1 must be identical to normalised s2
 
-    :param s1:
-    :param s2:
-    :return:
+    :param s1: first string
+    :param s2: second string
+    :return: True if match, False if not
     """
     # keep a copy of these for the provenance reporting
     os1 = s1
@@ -529,6 +602,16 @@ def exact(s1, s2):
     return False
 
 def _normalise(s):
+    """
+    Normalise the supplied string in the following ways:
+
+    1. String excess whitespace
+    2. cast to lower case
+    3. Normalise all internal spacing
+
+    :param s: string to be normalised
+    :return: normalised string
+    """
     if s is None:
         return ""
     s = s.strip().lower()
@@ -541,4 +624,10 @@ def _normalise(s):
 # Functions for turning objects into their string representations
 
 def author_id_string(aob):
+    """
+    Produce a string representation of an author id
+
+    :param aob: author object
+    :return: string representation of author id
+    """
     return "{x}: {y}".format(x=aob.get("type"), y=aob.get("id"))

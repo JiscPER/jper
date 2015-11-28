@@ -1,3 +1,7 @@
+"""
+Unit tests for the routing system
+"""
+
 from octopus.modules.es.testindex import ESTestCase
 # from unittest import TestCase
 from service.web import app
@@ -11,7 +15,7 @@ from service.tests import fixtures
 from datetime import datetime
 import time, os
 
-PACKAGE = "http://router.jisc.ac.uk/packages/FilesAndJATS"
+PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 

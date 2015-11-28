@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.models.notifications.BaseNotification</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        <a href="service.models-module.html">Package&nbsp;models</a> ::
+        <a href="service.models.notifications-module.html">Module&nbsp;notifications</a> ::
+        Class&nbsp;BaseNotification
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.models.notifications.BaseNotification-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class BaseNotification</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_service__17" name="uml_class_diagram_for_service__17">
+<area shape="rect" id="node1_20" href="service.models.notifications.BaseNotification-class.html#__init__" title="Create a new instance of the BaseNotification object, optionally around the raw python dictionary." alt="" coords="17,399,357,419"/>
+<area shape="rect" id="node1_21" href="service.models.notifications.BaseNotification-class.html#packaging_format" title="Get the packaging format identifier of the associated binary content" alt="" coords="17,419,357,439"/>
+<area shape="rect" id="node1_22" href="service.models.notifications.BaseNotification-class.html#links" title="Get the list of link objects associated with this notification" alt="" coords="17,439,357,459"/>
+<area shape="rect" id="node1_23" href="service.models.notifications.BaseNotification-class.html#add_link" title="Add a link object to the current list of links" alt="" coords="17,459,357,479"/>
+<area shape="rect" id="node1_24" href="service.models.notifications.BaseNotification-class.html#provider_id" title="Set the id of the provider of this notification, which should be their account name" alt="" coords="17,479,357,499"/>
+<area shape="rect" id="node1_25" href="service.models.notifications.BaseNotification-class.html#match_data" title="Get the match data object which corresponds to the metadata held in this notification" alt="" coords="17,499,357,519"/>
+<area shape="rect" id="node1" href="service.models.notifications.BaseNotification-class.html" title="Class to provide a baseline for all stored notifications (both routed and unrouted) in the core of the system" alt="" coords="5,365,369,525"/>
+<area shape="rect" id="node2_26" href="service.models.notifications.NotificationMetadata-class.html#title" title="Set the title of the work represented by this metadata" alt="" coords="83,40,293,60"/>
+<area shape="rect" id="node2_27" href="service.models.notifications.NotificationMetadata-class.html#version" title="Set the version of the work represented by this metadata" alt="" coords="83,60,293,80"/>
+<area shape="rect" id="node2_28" href="service.models.notifications.NotificationMetadata-class.html#type" title="Set the publication type of the work represented by this metadata" alt="" coords="83,80,293,100"/>
+<area shape="rect" id="node2_29" href="service.models.notifications.NotificationMetadata-class.html#publisher" title="Set the publisher of the work represented by this metadata" alt="" coords="83,100,293,120"/>
+<area shape="rect" id="node2_30" href="service.models.notifications.NotificationMetadata-class.html#language" title="Set the title of the work represented by this metadata. &#160;This method will attempt to coerce the language to the appropriate ISO language code, but if it fails it will accept the value anyway." alt="" coords="83,120,293,140"/>
+<area shape="rect" id="node2_31" href="service.models.notifications.NotificationMetadata-class.html#publication_date" title="Set the publication of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="83,140,293,160"/>
+<area shape="rect" id="node2_32" href="service.models.notifications.NotificationMetadata-class.html#date_accepted" title="Set the accepted&#45;for&#45;publication date of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="83,160,293,180"/>
+<area shape="rect" id="node2_33" href="service.models.notifications.NotificationMetadata-class.html#date_submitted" title="Set the submitted&#45;for&#45;publication date of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="83,180,293,200"/>
+<area shape="rect" id="node2_34" href="service.models.notifications.NotificationMetadata-class.html#identifiers" title="The list of identifier objects for the work represented by this metadata. &#160;The returned objects look like:" alt="" coords="83,200,293,220"/>
+<area shape="rect" id="node2_35" href="service.models.notifications.NotificationMetadata-class.html#get_identifiers" title="The list of identifiers for the work represented by this metadata, as filtered by type." alt="" coords="83,220,293,240"/>
+<area shape="rect" id="node2_36" href="service.models.notifications.NotificationMetadata-class.html#add_identifier" title="Add an identifier for the work, with the given id and type" alt="" coords="83,240,293,260"/>
+<area shape="rect" id="node2_37" href="service.models.notifications.NotificationMetadata-class.html#authors" title="Set the supplied list of author objects as the authors for this work." alt="" coords="83,260,293,280"/>
+<area shape="rect" id="node2_38" href="service.models.notifications.NotificationMetadata-class.html#add_author" title="Add a single author object to the existing list of author objects." alt="" coords="83,280,293,300"/>
+<area shape="rect" id="node2_39" href="service.models.notifications.NotificationMetadata-class.html#add_source_identifier" title="Add an identifier for the source (e.g. an ISSN for a journal)" alt="" coords="83,320,293,340"/>
+<area shape="rect" id="node2" href="service.models.notifications.NotificationMetadata-class.html" title="Class to represent the standard bibliographic metadata that a notification may contain" alt="" coords="71,6,305,346"/>
+</map>
+  <img src="uml_class_diagram_for_service__17.gif" alt='' usemap="#uml_class_diagram_for_service__17" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Class to provide a baseline for all stored notifications (both routed and unrouted) in the core of the system</p>
+<p>In addition to the properties that it gets from the NotificationMetadata, it also adds meta-information
+regarding the notification itself, such as related links, embargo information, provider information, etc</p>
+<p>The structure is as follows:</p>
+<pre class="rst-literal-block">
+{
+    &quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;,
+    &quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;,
+    &quot;last_updated&quot; : &quot;&lt;last modification time - required by storage layer&gt;&quot;,
+
+    &quot;event&quot; : &quot;&lt;keyword for the kind of notification: acceptance, publication, etc.&gt;&quot;,
+
+    &quot;provider&quot; : {
+        &quot;id&quot; : &quot;&lt;user account id of the provider&gt;&quot;,
+        &quot;agent&quot; : &quot;&lt;string defining the software/process which put the content here, provided by provider - is this useful?&gt;&quot;,
+        &quot;ref&quot; : &quot;&lt;provider's globally unique reference for this research object&gt;&quot;,
+        &quot;route&quot; : &quot;&lt;method by which notification was received: native api, sword, ftp&gt;&quot;
+    },
+
+    &quot;content&quot; : {
+        &quot;packaging_format&quot; : &quot;&lt;identifier for packaging format used&gt;&quot;,
+        &quot;store_id&quot; : &quot;&lt;information for retrieving the content from local store (tbc)&gt;&quot;
+    },
+
+    &quot;links&quot; : [
+        {
+            &quot;type&quot; : &quot;&lt;link type: splash|fulltext&gt;&quot;,
+            &quot;format&quot; : &quot;&lt;text/html|application/pdf|application/xml|application/zip|...&gt;&quot;,
+            &quot;access&quot; : &quot;&lt;type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)&gt;&quot;,
+            &quot;url&quot; : &quot;&lt;provider's splash, fulltext or machine readable page&gt;&quot;,
+            &quot;packaging&quot; : &quot;&lt;packaging format identifier&gt;&quot;,
+            &quot;proxy&quot;: &quot;&lt;the ID of the proxy link&gt;&quot;
+        }
+    ],
+
+    &quot;embargo&quot; : {
+        &quot;end&quot; : &quot;&lt;date embargo expires&gt;&quot;,
+        &quot;start&quot; : &quot;&lt;date embargo starts&gt;&quot;,
+        &quot;duration&quot; : &quot;&lt;number of months for embargo to run&gt;&quot;
+    },
+
+    &quot;metadata&quot; : {&lt;INHERITED from NotificationMetadata&gt;}
+}
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.BaseNotification-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new instance of the BaseNotification object, optionally around the
+raw python dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.BaseNotification-class.html#packaging_format" class="summary-sig-name">packaging_format</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the packaging format identifier of the associated binary content</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.packaging_format">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.BaseNotification-class.html#links" class="summary-sig-name">links</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the list of link objects associated with this notification</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.links">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.BaseNotification-class.html#add_link" class="summary-sig-name">add_link</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">url</span>,
+        <span class="summary-sig-arg">type</span>,
+        <span class="summary-sig-arg">format</span>,
+        <span class="summary-sig-arg">access</span>,
+        <span class="summary-sig-arg">packaging</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Add a link object to the current list of links</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.add_link">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.BaseNotification-class.html#provider_id" class="summary-sig-name">provider_id</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the id of the provider of this notification, which should be their account name</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.provider_id">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.BaseNotification-class.html#match_data" class="summary-sig-name">match_data</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the match data object which corresponds to the metadata held in this notification</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.match_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.models.notifications.NotificationMetadata-class.html">NotificationMetadata</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#add_author" class="summary-sig-name">add_author</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">author_object</span>)</span><br />
+      Add a single author object to the existing list of author objects.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.add_author">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#add_identifier" class="summary-sig-name">add_identifier</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">id</span>,
+        <span class="summary-sig-arg">type</span>)</span><br />
+      Add an identifier for the work, with the given id and type</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.add_identifier">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#add_project" class="summary-sig-name">add_project</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">project_obj</span>)</span><br />
+      Add a single project object to the existing list of project objects.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.add_project">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#add_source_identifier" class="summary-sig-name">add_source_identifier</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">type</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Add an identifier for the source (e.g. an ISSN for a journal)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.add_source_identifier">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#add_subject" class="summary-sig-name">add_subject</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">kw</span>)</span><br />
+      Add a subject keyword to the list of subject keywords</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.add_subject">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#authors" class="summary-sig-name">authors</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">objlist</span>)</span><br />
+      Set the supplied list of author objects as the authors for this work.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.authors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#date_accepted" class="summary-sig-name">date_accepted</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the accepted-for-publication date of the work represented by this metadata, as a string.  It will attempt to coerce to the correct ISO form
+(YYYY-MM-DDTHH:MM:SSZ) but will accept the value even if the coerce fails.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.date_accepted">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#date_submitted" class="summary-sig-name">date_submitted</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the submitted-for-publication date of the work represented by this metadata, as a string.  It will attempt to coerce to the correct ISO form
+(YYYY-MM-DDTHH:MM:SSZ) but will accept the value even if the coerce fails.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.date_submitted">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#get_identifiers" class="summary-sig-name">get_identifiers</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">type</span>)</span><br />
+      The list of identifiers for the work represented by this metadata, as filtered by type.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.get_identifiers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#identifiers" class="summary-sig-name">identifiers</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      The list of identifier objects for the work represented by this metadata.  The returned objects look like:</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.identifiers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#language" class="summary-sig-name">language</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the title of the work represented by this metadata.  This method will attempt to coerce the language to
+the appropriate ISO language code, but if it fails it will accept the value anyway.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.language">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#license" class="summary-sig-name">license</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">obj</span>)</span><br />
+      Set the licence object</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.license">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#projects" class="summary-sig-name">projects</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">objlist</span>)</span><br />
+      Set the supplied list of project/funder objects as the authors for this work.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.projects">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#publication_date" class="summary-sig-name">publication_date</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the publication of the work represented by this metadata, as a string.  It will attempt to coerce to the correct ISO form
+(YYYY-MM-DDTHH:MM:SSZ) but will accept the value even if the coerce fails.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.publication_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#publisher" class="summary-sig-name">publisher</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the publisher of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.publisher">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#set_license" class="summary-sig-name">set_license</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">type</span>,
+        <span class="summary-sig-arg">url</span>)</span><br />
+      Set the licene with the supplied type or url.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.set_license">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#source_identifiers" class="summary-sig-name">source_identifiers</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      The list of identifier objects for the source (e.g. journal) work represented by this metadata.  The returned objects look like:</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.source_identifiers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#source_name" class="summary-sig-name">source_name</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the name of the source (e.g. journal name) of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.source_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#subjects" class="summary-sig-name">subjects</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      The list of subject strings of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.subjects">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#title" class="summary-sig-name">title</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the title of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.title">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#type" class="summary-sig-name">type</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the publication type of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.type">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#version" class="summary-sig-name">version</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the version of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.version">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">raw</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a new instance of the BaseNotification object, optionally around the
+raw python dictionary.</p>
+<p>In reality, this class provides a base-class for all other notification-like objects
+in this module, so you will never instantiate it directly.  See UnroutedNotification
+or RoutedNotification instead.</p>
+<p>If supplied, the raw dictionary will be validated against the allowed structure of this
+object, and an exception will be raised if it does not validate</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>raw</code></strong> - python dict object containing the base notification data</li>
+    </ul></dd>
+    <dt>Overrides:
+        <a href="service.models.notifications.NotificationMetadata-class.html#__init__">NotificationMetadata.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="packaging_format"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">packaging_format</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.packaging_format">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the packaging format identifier of the associated binary content
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>the packaging format identifier</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="links"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">links</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.links">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the list of link objects associated with this notification</p>
+<p>Link objects are of the form</p>
+<pre class="rst-literal-block">
+{
+    &quot;type&quot; : &quot;&lt;link type: splash|fulltext&gt;&quot;,
+    &quot;format&quot; : &quot;&lt;text/html|application/pdf|application/xml|application/zip|...&gt;&quot;,
+    &quot;access&quot; : &quot;&lt;type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)&gt;&quot;,
+    &quot;url&quot; : &quot;&lt;provider's splash, fulltext or machine readable page&gt;&quot;,
+    &quot;packaging&quot; : &quot;&lt;packaging format identifier&gt;&quot;,
+    &quot;proxy&quot;: &quot;&lt;the ID of the proxy link&gt;&quot;
+}
+</pre>
+<p>For more information about links, see the overall system documentation</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>list of link objects</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_link"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_link</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">url</span>,
+        <span class="sig-arg">type</span>,
+        <span class="sig-arg">format</span>,
+        <span class="sig-arg">access</span>,
+        <span class="sig-arg">packaging</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.add_link">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Add a link object to the current list of links
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>url</code></strong> - The url for the resource the link points to</li>
+        <li><strong class="pname"><code>type</code></strong> - The type of resource to be retrieved</li>
+        <li><strong class="pname"><code>format</code></strong> - The format/mimetype of the resource to be retreived</li>
+        <li><strong class="pname"><code>access</code></strong> - The access level of this link: router or public</li>
+        <li><strong class="pname"><code>packaging</code></strong> - The packaging format identifier for this resource if required</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="provider_id"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">provider_id</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.provider_id">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the id of the provider of this notification, which should be their account name
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the provider id/account name</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@provider_id.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="match_data"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">match_data</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.match_data">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the match data object which corresponds to the metadata held in this notification
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>a RoutingMetadata object which contains all the extracted metadata from this notification</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Nov 24 12:58:45 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
