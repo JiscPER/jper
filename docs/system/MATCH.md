@@ -13,6 +13,9 @@ The following fields may be extracted from the incoming metadata
 * Author Identifiers
 * Postcodes
 * Grants
+
+The following fields are available in the data model, but are not currently used:
+
 * Keywords
 * Content Types
 
@@ -25,9 +28,12 @@ The repository configuration may contain the following fields
 * Author Identifiers
 * Postcodes
 * Grants
+* Arbitrary Strings
+
+The following fields are available in the data model, but are not currently used:
+
 * Keywords
 * Content Types
-* Arbitrary Strings
 
 ## Paired fields and analysis required
 
@@ -42,9 +48,7 @@ Note that here "exact match" means that the lowercased, whitespace-trimmed strin
 * Author Identifier <-> Email - exact match required
 * Author Identifier <-> Author Identifier - exact match required
 * Postcode <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
-* Keyword <-> Keyword - exact match required
 * Grant <-> Grant - exact match required
-* Content Type <-> Content Type - exact match required
 * Arbitrary String <-> URL - Normalise the String and the URL: strip prefixes and URL paths.  If either ends with the other, it is a match
 * Arbitrary String <-> email - exact match required
 * Arbitrary String <-> Affiliation - normalised string must be an exact substring of normalised affiliation
@@ -52,12 +56,8 @@ Note that here "exact match" means that the lowercased, whitespace-trimmed strin
 * Arbitrary String <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
 * Arbitrary String <-> Grant - exact match requried
 
-## Defining sub-categories to be matched
+The following mappings are also proposed, but are not currently implemented, due to the variable quality of the data
+in these fields:
 
-A repository may specify both keywords and content types to ingest.  If the repository configuration specifies any
-keywords or any subject types, then any publications matched by the process described in the previous section will
-also need to match one or more keyword and one or more content type.
-
-NOTE: at the moment, the data in the keyword and content type fields are highly variable, so it is strongly advised
-that repository configurations DO NOT set these fields.  We should consider their part in the routing more carefully
-in the future.
+* Keyword <-> Keyword - exact match required
+* Content Type <-> Content Type - exact match required
