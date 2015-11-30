@@ -27,7 +27,7 @@ def _load_keys(path):
     :return: a list of api keys
     """
     with open(path) as f:
-        return f.read().split("\n")
+        return [x for x in f.read().split("\n") if x is not None and x != ""]
 
 def _load_repo_configs(path):
     """
@@ -260,7 +260,14 @@ def _make_notification(error=False, routable=0, repo_configs=None):
 
     uber = {}
     for cfg in route_to:
-        field = _select_from(["domains", "name_variants", "author_ids", "postcodes", "grants", "strings"])
+        # the config may not be fully populated, so only allow us to choose from a field which has data in it
+        routable_fields = []
+        for f, l in cfg.iteritems():
+            if l is not None and len(l) > 0:
+                routable_fields.append(f)
+
+        # field = _select_from(["domains", "name_variants", "author_ids", "postcodes", "grants", "strings"])
+        field = _select_from(routable_fields)
         idx = randint(0, len(cfg[field]) - 1)
         if field not in uber:
             uber[field] = []
@@ -423,7 +430,7 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
             # sleep before making the next request
             time.sleep(throttle)
         except Exception as e:
-            app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
+            app.logger.info("Thread:{x} - MAJOR ISSUE - Fatal exception '{y}'".format(x=tname, y=e.message))
 
 def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir, retrieve_rate, routable, repo_configs):
     """
