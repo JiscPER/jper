@@ -405,7 +405,7 @@ def repackage(unrouted, repo_ids):
     links = []
     for d in done:
         with app.test_request_context():
-            url = app.config.get("BASE_URL") + url_for("webapi.retrieve_content", notification_id=unrouted.id, content_id=d[2])
+            url = app.config.get("BASE_URL") + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
         links.append({
             "type": "package",
             "format" : "application/zip",
