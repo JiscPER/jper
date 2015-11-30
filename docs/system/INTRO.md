@@ -27,13 +27,8 @@ The documentation in this directory contain information about the following core
 * The Data Models: There are core system model objects which represent user accounts, notifications, metadata and repository 
 configurations.  They are stored and managed primarily as JSON structures.
 
-* Packaged Content: Alongside the notifications that are provided, publishers may provide binary packaged content to the system
-in well-specified formats.
-
 * Data Workflows: As data enters and moves around the core it goes through various transformations and analyses, such as initial
-ingest, routing to repositories, and retrieval.
-
-* The API: All system functions for publisers and repositories are provided via a RESTful web API which communicates in JSON.
+ingest, routing/matching to repositories, and retrieval.
 
 For information on how each of the external modules which consume the API work (SWORDv2, OAI-PMH) you should see their
 respective code repositories and documentation.
