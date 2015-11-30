@@ -61,7 +61,7 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class BaseNotification</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification">source&nbsp;code</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_service__17" name="uml_class_diagram_for_service__17">
+<center>  <map id="uml_class_diagram_for_service__19" name="uml_class_diagram_for_service__19">
 <area shape="rect" id="node1_20" href="service.models.notifications.BaseNotification-class.html#__init__" title="Create a new instance of the BaseNotification object, optionally around the raw python dictionary." alt="" coords="17,399,357,419"/>
 <area shape="rect" id="node1_21" href="service.models.notifications.BaseNotification-class.html#packaging_format" title="Get the packaging format identifier of the associated binary content" alt="" coords="17,419,357,439"/>
 <area shape="rect" id="node1_22" href="service.models.notifications.BaseNotification-class.html#links" title="Get the list of link objects associated with this notification" alt="" coords="17,439,357,459"/>
@@ -85,54 +85,15 @@
 <area shape="rect" id="node2_39" href="service.models.notifications.NotificationMetadata-class.html#add_source_identifier" title="Add an identifier for the source (e.g. an ISSN for a journal)" alt="" coords="83,320,293,340"/>
 <area shape="rect" id="node2" href="service.models.notifications.NotificationMetadata-class.html" title="Class to represent the standard bibliographic metadata that a notification may contain" alt="" coords="71,6,305,346"/>
 </map>
-  <img src="uml_class_diagram_for_service__17.gif" alt='' usemap="#uml_class_diagram_for_service__17" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_service__19.gif" alt='' usemap="#uml_class_diagram_for_service__19" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
 <p>Class to provide a baseline for all stored notifications (both routed and unrouted) in the core of the system</p>
 <p>In addition to the properties that it gets from the NotificationMetadata, it also adds meta-information
 regarding the notification itself, such as related links, embargo information, provider information, etc</p>
-<p>The structure is as follows:</p>
-<pre class="rst-literal-block">
-{
-    &quot;id&quot; : &quot;&lt;opaque identifier for this notification&gt;&quot;,
-    &quot;created_date&quot; : &quot;&lt;date this notification was received&gt;&quot;,
-    &quot;last_updated&quot; : &quot;&lt;last modification time - required by storage layer&gt;&quot;,
-
-    &quot;event&quot; : &quot;&lt;keyword for the kind of notification: acceptance, publication, etc.&gt;&quot;,
-
-    &quot;provider&quot; : {
-        &quot;id&quot; : &quot;&lt;user account id of the provider&gt;&quot;,
-        &quot;agent&quot; : &quot;&lt;string defining the software/process which put the content here, provided by provider - is this useful?&gt;&quot;,
-        &quot;ref&quot; : &quot;&lt;provider's globally unique reference for this research object&gt;&quot;,
-        &quot;route&quot; : &quot;&lt;method by which notification was received: native api, sword, ftp&gt;&quot;
-    },
-
-    &quot;content&quot; : {
-        &quot;packaging_format&quot; : &quot;&lt;identifier for packaging format used&gt;&quot;,
-        &quot;store_id&quot; : &quot;&lt;information for retrieving the content from local store (tbc)&gt;&quot;
-    },
-
-    &quot;links&quot; : [
-        {
-            &quot;type&quot; : &quot;&lt;link type: splash|fulltext&gt;&quot;,
-            &quot;format&quot; : &quot;&lt;text/html|application/pdf|application/xml|application/zip|...&gt;&quot;,
-            &quot;access&quot; : &quot;&lt;type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)&gt;&quot;,
-            &quot;url&quot; : &quot;&lt;provider's splash, fulltext or machine readable page&gt;&quot;,
-            &quot;packaging&quot; : &quot;&lt;packaging format identifier&gt;&quot;,
-            &quot;proxy&quot;: &quot;&lt;the ID of the proxy link&gt;&quot;
-        }
-    ],
-
-    &quot;embargo&quot; : {
-        &quot;end&quot; : &quot;&lt;date embargo expires&gt;&quot;,
-        &quot;start&quot; : &quot;&lt;date embargo starts&gt;&quot;,
-        &quot;duration&quot; : &quot;&lt;number of months for embargo to run&gt;&quot;
-    },
-
-    &quot;metadata&quot; : {&lt;INHERITED from NotificationMetadata&gt;}
-}
-</pre>
+<p>See the core system model documentation for details on the JSON structure used by this model.
+It provides the basis for all Notification objects that extend from this one.</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -889,7 +850,7 @@ object, and an exception will be raised if it does not validate</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 24 12:58:45 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 30 10:03:17 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

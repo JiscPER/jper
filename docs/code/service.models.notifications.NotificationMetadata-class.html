@@ -61,7 +61,7 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class NotificationMetadata</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata">source&nbsp;code</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_service__19" name="uml_class_diagram_for_service__19">
+<center>  <map id="uml_class_diagram_for_service__21" name="uml_class_diagram_for_service__21">
 <area shape="rect" id="node1_14" href="service.models.notifications.NotificationMetadata-class.html#__init__" title="Create a new instance of the NotificationMetadata object, optionally around the raw python dictionary." alt="" coords="16,40,227,60"/>
 <area shape="rect" id="node1_15" href="service.models.notifications.NotificationMetadata-class.html#title" title="Set the title of the work represented by this metadata" alt="" coords="16,60,227,80"/>
 <area shape="rect" id="node1_16" href="service.models.notifications.NotificationMetadata-class.html#version" title="Set the version of the work represented by this metadata" alt="" coords="16,80,227,100"/>
@@ -78,64 +78,13 @@
 <area shape="rect" id="node1_27" href="service.models.notifications.NotificationMetadata-class.html#add_source_identifier" title="Add an identifier for the source (e.g. an ISSN for a journal)" alt="" coords="16,320,227,340"/>
 <area shape="rect" id="node1" href="service.models.notifications.NotificationMetadata-class.html" title="Class to represent the standard bibliographic metadata that a notification may contain" alt="" coords="4,6,239,346"/>
 </map>
-  <img src="uml_class_diagram_for_service__19.gif" alt='' usemap="#uml_class_diagram_for_service__19" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_service__21.gif" alt='' usemap="#uml_class_diagram_for_service__21" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
 <p>Class to represent the standard bibliographic metadata that a notification may contain</p>
-<p>The structure is as follows</p>
-<pre class="rst-literal-block">
-{
-    &quot;metadata&quot; : {
-        &quot;title&quot; : &quot;&lt;publication title&gt;&quot;,
-        &quot;version&quot; : &quot;&lt;version of the record, e.g. AAM&gt;&quot;,
-        &quot;publisher&quot; : &quot;&lt;publisher of the content&gt;&quot;,
-        &quot;source&quot; : {
-            &quot;name&quot; : &quot;&lt;name of the journal or other source (e.g. book)&gt;&quot;,
-            &quot;identifier&quot; : [
-                {&quot;type&quot; : &quot;issn&quot;, &quot;id&quot; : &quot;&lt;issn of the journal (could be print or electronic)&gt;&quot; },
-                {&quot;type&quot; : &quot;eissn&quot;, &quot;id&quot; : &quot;&lt;electronic issn of the journal&gt;&quot; },
-                {&quot;type&quot; : &quot;pissn&quot;, &quot;id&quot; : &quot;&lt;print issn of the journal&gt;&quot; },
-                {&quot;type&quot; : &quot;doi&quot;, &quot;id&quot; : &quot;&lt;doi for the journal or series&gt;&quot; }
-            ]
-        },
-        &quot;identifier&quot; : [
-            {&quot;type&quot; : &quot;doi&quot;, &quot;id&quot; : &quot;&lt;doi for the record&gt;&quot; }
-        ],
-        &quot;type&quot; : &quot;publication/content type&quot;,
-        &quot;author&quot; : [
-            {
-                &quot;name&quot; : &quot;&lt;author name&gt;&quot;,
-                &quot;identifier&quot; : [
-                    {&quot;type&quot; : &quot;orcid&quot;, &quot;id&quot; : &quot;&lt;author's orcid&gt;&quot;},
-                    {&quot;type&quot; : &quot;email&quot;, &quot;id&quot; : &quot;&lt;author's email address&gt;&quot;},
-                ],
-                &quot;affiliation&quot; : &quot;&lt;author affiliation&gt;&quot;
-            }
-        ],
-        &quot;language&quot; : &quot;&lt;iso language code&gt;&quot;,
-        &quot;publication_date&quot; : &quot;&lt;publication date&gt;&quot;,
-        &quot;date_accepted&quot; : &quot;&lt;date accepted for publication&gt;&quot;,
-        &quot;date_submitted&quot; : &quot;&lt;date submitted for publication&gt;&quot;,
-        &quot;license_ref&quot; : {
-            &quot;title&quot; : &quot;&lt;name of licence&gt;&quot;,
-            &quot;type&quot; : &quot;&lt;type&gt;&quot;,
-            &quot;url&quot; : &quot;&lt;url&gt;&quot;,
-            &quot;version&quot; : &quot;&lt;version&gt;&quot;,
-        },
-        &quot;project&quot; : [
-            {
-                &quot;name&quot; : &quot;&lt;name of funder&gt;&quot;,
-                &quot;identifier&quot; : [
-                    {&quot;type&quot; : &quot;&lt;identifier type&gt;&quot;, &quot;id&quot; : &quot;&lt;funder identifier&gt;&quot;}
-                ],
-                &quot;grant_number&quot; : &quot;&lt;funder's grant number&gt;&quot;
-            }
-        ],
-        &quot;subject&quot; : [&quot;&lt;subject keywords/classifications&gt;&quot;]
-    }
-}
-</pre>
+<p>See the core system model documentation for details on the JSON structure used by this model.
+It provides the &quot;metadata&quot; portion of all Notification objects that extend from this one.</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -1303,7 +1252,7 @@ the appropriate ISO language code, but if it fails it will accept the value anyw
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 24 12:58:45 2015
+    Generated by Epydoc 3.0.1 on Mon Nov 30 10:03:17 2015
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

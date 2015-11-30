@@ -2,6 +2,7 @@ config	config-module.html
 config.__package__	config-module.html#__package__
 config.service	config.service-module.html
 config.service.TMP_DIR	config.service-module.html#TMP_DIR
+config.service.DELETE_ROUTED	config.service-module.html#DELETE_ROUTED
 config.service.ELASTIC_SEARCH_EXAMPLE_DOCS	config.service-module.html#ELASTIC_SEARCH_EXAMPLE_DOCS
 config.service.DEFAULT_LIST_PAGE_START	config.service-module.html#DEFAULT_LIST_PAGE_START
 config.service.STORE_TMP_DIR	config.service-module.html#STORE_TMP_DIR
@@ -50,6 +51,7 @@ service.initialise.ELASTIC_SEARCH_INDEX	service.initialise-module.html#ELASTIC_S
 service.models	service.models-module.html
 service.models.account	service.models.account-module.html
 service.models.api	service.models.api-module.html
+service.models.contentlog	service.models.contentlog-module.html
 service.models.notifications	service.models.notifications-module.html
 service.models.repository	service.models.repository-module.html
 service.packages	service.packages-module.html
@@ -193,6 +195,8 @@ service.api.ParameterException	service.api.ParameterException-class.html
 service.api.ValidationException	service.api.ValidationException-class.html
 service.dao.AccountDAO	service.dao.AccountDAO-class.html
 service.dao.AccountDAO.__type__	service.dao.AccountDAO-class.html#__type__
+service.dao.ContentLogDAO	service.dao.ContentLogDAO-class.html
+service.dao.ContentLogDAO.__type__	service.dao.ContentLogDAO-class.html#__type__
 service.dao.FailedNotificationDAO	service.dao.FailedNotificationDAO-class.html
 service.dao.FailedNotificationDAO.__type__	service.dao.FailedNotificationDAO-class.html#__type__
 service.dao.MatchProvNotificationQuery	service.dao.MatchProvNotificationQuery-class.html
@@ -318,6 +322,12 @@ service.models.notifications.NotificationMetadata.date_accepted	service.models.n
 service.models.notifications.NotificationMetadata.identifiers	service.models.notifications.NotificationMetadata-class.html#identifiers
 service.models.notifications.NotificationMetadata.add_author	service.models.notifications.NotificationMetadata-class.html#add_author
 service.models.notifications.NotificationMetadata.add_identifier	service.models.notifications.NotificationMetadata-class.html#add_identifier
+service.models.contentlog.ContentLog	service.models.contentlog.ContentLog-class.html
+service.models.contentlog.ContentLog.delivered_from	service.models.contentlog.ContentLog-class.html#delivered_from
+service.models.contentlog.ContentLog.notification	service.models.contentlog.ContentLog-class.html#notification
+service.dao.ContentLogDAO.__type__	service.dao.ContentLogDAO-class.html#__type__
+service.models.contentlog.ContentLog.user	service.models.contentlog.ContentLog-class.html#user
+service.models.contentlog.ContentLog.filename	service.models.contentlog.ContentLog-class.html#filename
 service.models.notifications.BaseNotification	service.models.notifications.BaseNotification-class.html
 service.models.notifications.BaseNotification.provider_id	service.models.notifications.BaseNotification-class.html#provider_id
 service.models.notifications.NotificationMetadata.source_name	service.models.notifications.NotificationMetadata-class.html#source_name
@@ -617,17 +627,15 @@ service.tests.functional.test_api.TestAPI	service.tests.functional.test_api.Test
 service.tests.functional.test_api.TestAPI.test_04_validation_multipart_fail	service.tests.functional.test_api.TestAPI-class.html#test_04_validation_multipart_fail
 service.tests.functional.test_api.TestAPI.test_06_notification_singlepart_fail	service.tests.functional.test_api.TestAPI-class.html#test_06_notification_singlepart_fail
 service.tests.functional.test_api.TestAPI.test_12_get_store_content_fail	service.tests.functional.test_api.TestAPI-class.html#test_12_get_store_content_fail
-service.tests.functional.test_api.TestAPI.test_17_list_repository	service.tests.functional.test_api.TestAPI-class.html#test_17_list_repository
 service.tests.functional.test_api.TestAPI.test_08_notification_multipart_fail	service.tests.functional.test_api.TestAPI-class.html#test_08_notification_multipart_fail
 service.tests.functional.test_api.TestAPI.test_15_list_all	service.tests.functional.test_api.TestAPI-class.html#test_15_list_all
 service.tests.functional.test_api.TestAPI.tearDown	service.tests.functional.test_api.TestAPI-class.html#tearDown
 service.tests.functional.test_api.TestAPI.test_07_notification_multipart	service.tests.functional.test_api.TestAPI-class.html#test_07_notification_multipart
 service.tests.functional.test_api.TestAPI.setUp	service.tests.functional.test_api.TestAPI-class.html#setUp
 service.tests.functional.test_api.TestAPI.test_03_validation_multipart	service.tests.functional.test_api.TestAPI-class.html#test_03_validation_multipart
-service.tests.functional.test_api.TestAPI.test_11_get_store_content	service.tests.functional.test_api.TestAPI-class.html#test_11_get_store_content
 service.tests.functional.test_api.TestAPI.test_10_get_notification_fail	service.tests.functional.test_api.TestAPI-class.html#test_10_get_notification_fail
 service.tests.functional.test_api.TestAPI.test_18_list_repository_fail	service.tests.functional.test_api.TestAPI-class.html#test_18_list_repository_fail
-service.tests.functional.test_api.TestAPI.test_13_get_public_content	service.tests.functional.test_api.TestAPI-class.html#test_13_get_public_content
+service.tests.functional.test_api.TestAPI.test_17_list_repository	service.tests.functional.test_api.TestAPI-class.html#test_17_list_repository
 service.tests.functional.test_api.TestAPI.test_09_get_notification	service.tests.functional.test_api.TestAPI-class.html#test_09_get_notification
 service.tests.functional.test_api.TestAPI.test_01_validation_singlepart	service.tests.functional.test_api.TestAPI-class.html#test_01_validation_singlepart
 service.tests.functional.test_api.TestAPI.test_14_get_public_content_fail	service.tests.functional.test_api.TestAPI-class.html#test_14_get_public_content_fail

@@ -4,19 +4,19 @@ The JSON structure of the model is as follows:
 
 ```json
 {
-    "analysis_date": "2015-11-24T12:58:49Z", 
+    "analysis_date": "2015-11-30T10:03:21Z", 
     "content": {
         "packaging_format": "string"
     }, 
-    "created_date": "2015-11-24T12:58:49Z", 
+    "created_date": "2015-11-30T10:03:21Z", 
     "embargo": {
         "duration": 0, 
-        "end": "2015-11-24T12:58:49Z", 
-        "start": "2015-11-24T12:58:49Z"
+        "end": "2015-11-30T10:03:21Z", 
+        "start": "2015-11-30T10:03:21Z"
     }, 
     "event": "string", 
     "id": "string", 
-    "last_updated": "2015-11-24T12:58:49Z", 
+    "last_updated": "2015-11-30T10:03:21Z", 
     "links": [
         {
             "access": "string", 
@@ -40,8 +40,8 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-11-24T12:58:49Z", 
-        "date_submitted": "2015-11-24T12:58:49Z", 
+        "date_accepted": "2015-11-30T10:03:21Z", 
+        "date_submitted": "2015-11-30T10:03:21Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -67,7 +67,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-11-24T12:58:49Z", 
+        "publication_date": "2015-11-30T10:03:21Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
@@ -86,7 +86,10 @@ The JSON structure of the model is as follows:
         "version": "string"
     }, 
     "provider": {
-        "id": "string"
+        "agent": "string", 
+        "id": "string", 
+        "ref": "string", 
+        "route": "string"
     }, 
     "repositories": [
         "string"
@@ -139,5 +142,8 @@ Each of the fields is defined as laid out in the table below:
 | metadata.title | Title of the publication | unicode |  |  |
 | metadata.type | Type of publication | unicode |  |  |
 | metadata.version | Version of publication (e.g. AAM) | unicode |  |  |
+| provider.agent |  | unicode |  |  |
 | provider.id | Identifier for the provider of the notification (account name) | unicode |  |  |
+| provider.ref |  | unicode |  |  |
+| provider.route |  | unicode |  |  |
 | repositories | List of repository account ids the notification was routed to | unicode |  |  |

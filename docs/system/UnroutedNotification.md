@@ -7,15 +7,15 @@ The JSON structure of the model is as follows:
     "content": {
         "packaging_format": "string"
     }, 
-    "created_date": "2015-11-24T12:58:48Z", 
+    "created_date": "2015-11-30T10:03:20Z", 
     "embargo": {
         "duration": 0, 
-        "end": "2015-11-24T12:58:48Z", 
-        "start": "2015-11-24T12:58:48Z"
+        "end": "2015-11-30T10:03:20Z", 
+        "start": "2015-11-30T10:03:20Z"
     }, 
     "event": "string", 
     "id": "string", 
-    "last_updated": "2015-11-24T12:58:48Z", 
+    "last_updated": "2015-11-30T10:03:20Z", 
     "links": [
         {
             "access": "string", 
@@ -39,8 +39,8 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-11-24T12:58:48Z", 
-        "date_submitted": "2015-11-24T12:58:48Z", 
+        "date_accepted": "2015-11-30T10:03:20Z", 
+        "date_submitted": "2015-11-30T10:03:20Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -66,7 +66,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-11-24T12:58:48Z", 
+        "publication_date": "2015-11-30T10:03:20Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
@@ -85,7 +85,10 @@ The JSON structure of the model is as follows:
         "version": "string"
     }, 
     "provider": {
-        "id": "string"
+        "agent": "string", 
+        "id": "string", 
+        "ref": "string", 
+        "route": "string"
     }
 }
 ```
@@ -134,4 +137,7 @@ Each of the fields is defined as laid out in the table below:
 | metadata.title | Title of the publication | unicode |  |  |
 | metadata.type | Type of publication | unicode |  |  |
 | metadata.version | Version of publication (e.g. AAM) | unicode |  |  |
+| provider.agent |  | unicode |  |  |
 | provider.id | Identifier for the provider of the notification (account name) | unicode |  |  |
+| provider.ref |  | unicode |  |  |
+| provider.route |  | unicode |  |  |

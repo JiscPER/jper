@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.models.contentlog</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        <a href="service.models-module.html">Package&nbsp;models</a> ::
+        Module&nbsp;contentlog
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.models.contentlog-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="service.models.contentlog-module.html">Module service.models.contentlog</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">core</tt> <tt class="py-keyword">import</tt> <tt class="py-name">app</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module config.service=config.service-module.html,Package service=service-module.html"><a title="config.service
+service" class="py-name" href="#" onclick="return doclink('link-0', 'service', 'link-0');">service</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Module service.dao=service.dao-module.html"><a title="service.dao" class="py-name" href="#" onclick="return doclink('link-1', 'dao', 'link-1');">dao</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">dataobj</tt> </tt>
+<a name="ContentLog"></a><div id="ContentLog-def"><a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt> <a class="py-toggle" href="#" id="ContentLog-toggle" onclick="return toggle('ContentLog');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html">ContentLog</a><tt class="py-op">(</tt><tt class="py-base-class">dataobj</tt><tt class="py-op">.</tt><tt class="py-base-class">DataObj</tt><tt class="py-op">,</tt> <tt class="py-base-class">dao</tt><tt class="py-op">.</tt><tt class="py-base-class">ContentLogDAO</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="ContentLog-expanded"><a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-docstring">    {</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-docstring">        "id" : "&lt;unique persistent account id&gt;",</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring">        "created_date" : "&lt;date account created&gt;",</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">        "last_updated" : "&lt;date account last modified&gt;",</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">        "user" : "&lt;user that requested the content&gt;",</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">        "notification": "&lt;the notification the requested content is from&gt;",</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">        "filename": "&gt;the requested filename if any",</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">        "delivered_from" : "&lt;one of store, proxy, notfound&gt;",</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">    }</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ContentLog.user"></a><div id="ContentLog.user-def"><a name="L21"></a><tt class="py-lineno">21</tt> <a class="py-toggle" href="#" id="ContentLog.user-toggle" onclick="return toggle('ContentLog.user');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#user">user</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.user-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.user-expanded"><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_single</tt><tt class="py-op">(</tt><tt class="py-string">"user"</tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">user</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="ContentLog.user"></a><div id="ContentLog.user-def"><a name="L25"></a><tt class="py-lineno">25</tt> <a class="py-toggle" href="#" id="ContentLog.user-toggle" onclick="return toggle('ContentLog.user');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#user">user</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">user</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.user-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.user-expanded"><a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_set_single</tt><tt class="py-op">(</tt><tt class="py-string">"user"</tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Method service.models.contentlog.ContentLog.user()=service.models.contentlog.ContentLog-class.html#user"><a title="service.models.contentlog.ContentLog.user" class="py-name" href="#" onclick="return doclink('link-2', 'user', 'link-2');">user</a></tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ContentLog.notification"></a><div id="ContentLog.notification-def"><a name="L29"></a><tt class="py-lineno">29</tt> <a class="py-toggle" href="#" id="ContentLog.notification-toggle" onclick="return toggle('ContentLog.notification');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#notification">notification</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.notification-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.notification-expanded"><a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_single</tt><tt class="py-op">(</tt><tt class="py-string">"notification"</tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">user</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="ContentLog.notification"></a><div id="ContentLog.notification-def"><a name="L33"></a><tt class="py-lineno">33</tt> <a class="py-toggle" href="#" id="ContentLog.notification-toggle" onclick="return toggle('ContentLog.notification');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#notification">notification</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">notification</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.notification-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.notification-expanded"><a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_set_single</tt><tt class="py-op">(</tt><tt class="py-string">"notification"</tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Method service.models.contentlog.ContentLog.notification()=service.models.contentlog.ContentLog-class.html#notification,Method service.models.repository.MatchProvenance.notification()=service.models.repository.MatchProvenance-class.html#notification"><a title="service.models.contentlog.ContentLog.notification
+service.models.repository.MatchProvenance.notification" class="py-name" href="#" onclick="return doclink('link-3', 'notification', 'link-3');">notification</a></tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ContentLog.filename"></a><div id="ContentLog.filename-def"><a name="L37"></a><tt class="py-lineno">37</tt> <a class="py-toggle" href="#" id="ContentLog.filename-toggle" onclick="return toggle('ContentLog.filename');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#filename">filename</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.filename-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.filename-expanded"><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_single</tt><tt class="py-op">(</tt><tt class="py-string">"filename"</tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">user</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="ContentLog.filename"></a><div id="ContentLog.filename-def"><a name="L41"></a><tt class="py-lineno">41</tt> <a class="py-toggle" href="#" id="ContentLog.filename-toggle" onclick="return toggle('ContentLog.filename');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#filename">filename</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.filename-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.filename-expanded"><a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_set_single</tt><tt class="py-op">(</tt><tt class="py-string">"filename"</tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Method service.models.contentlog.ContentLog.filename()=service.models.contentlog.ContentLog-class.html#filename"><a title="service.models.contentlog.ContentLog.filename" class="py-name" href="#" onclick="return doclink('link-4', 'filename', 'link-4');">filename</a></tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="ContentLog.delivered_from"></a><div id="ContentLog.delivered_from-def"><a name="L45"></a><tt class="py-lineno">45</tt> <a class="py-toggle" href="#" id="ContentLog.delivered_from-toggle" onclick="return toggle('ContentLog.delivered_from');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#delivered_from">delivered_from</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.delivered_from-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.delivered_from-expanded"><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_get_single</tt><tt class="py-op">(</tt><tt class="py-string">"delivered_from"</tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">user</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="ContentLog.delivered_from"></a><div id="ContentLog.delivered_from-def"><a name="L49"></a><tt class="py-lineno">49</tt> <a class="py-toggle" href="#" id="ContentLog.delivered_from-toggle" onclick="return toggle('ContentLog.delivered_from');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.models.contentlog.ContentLog-class.html#delivered_from">delivered_from</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">delivered_from</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ContentLog.delivered_from-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ContentLog.delivered_from-expanded"><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_set_single</tt><tt class="py-op">(</tt><tt class="py-string">"delivered_from"</tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Method service.models.contentlog.ContentLog.delivered_from()=service.models.contentlog.ContentLog-class.html#delivered_from"><a title="service.models.contentlog.ContentLog.delivered_from" class="py-name" href="#" onclick="return doclink('link-5', 'delivered_from', 'link-5');">delivered_from</a></tt><tt class="py-op">,</tt> <tt class="py-name">coerce</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_utf8_unicode</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Nov 30 10:03:20 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -13,60 +13,8 @@ class NotificationMetadata(dataobj.DataObj):
     """
     Class to represent the standard bibliographic metadata that a notification may contain
 
-    The structure is as follows
-
-    ::
-
-        {
-            "metadata" : {
-                "title" : "<publication title>",
-                "version" : "<version of the record, e.g. AAM>",
-                "publisher" : "<publisher of the content>",
-                "source" : {
-                    "name" : "<name of the journal or other source (e.g. book)>",
-                    "identifier" : [
-                        {"type" : "issn", "id" : "<issn of the journal (could be print or electronic)>" },
-                        {"type" : "eissn", "id" : "<electronic issn of the journal>" },
-                        {"type" : "pissn", "id" : "<print issn of the journal>" },
-                        {"type" : "doi", "id" : "<doi for the journal or series>" }
-                    ]
-                },
-                "identifier" : [
-                    {"type" : "doi", "id" : "<doi for the record>" }
-                ],
-                "type" : "publication/content type",
-                "author" : [
-                    {
-                        "name" : "<author name>",
-                        "identifier" : [
-                            {"type" : "orcid", "id" : "<author's orcid>"},
-                            {"type" : "email", "id" : "<author's email address>"},
-                        ],
-                        "affiliation" : "<author affiliation>"
-                    }
-                ],
-                "language" : "<iso language code>",
-                "publication_date" : "<publication date>",
-                "date_accepted" : "<date accepted for publication>",
-                "date_submitted" : "<date submitted for publication>",
-                "license_ref" : {
-                    "title" : "<name of licence>",
-                    "type" : "<type>",
-                    "url" : "<url>",
-                    "version" : "<version>",
-                },
-                "project" : [
-                    {
-                        "name" : "<name of funder>",
-                        "identifier" : [
-                            {"type" : "<identifier type>", "id" : "<funder identifier>"}
-                        ],
-                        "grant_number" : "<funder's grant number>"
-                    }
-                ],
-                "subject" : ["<subject keywords/classifications>"]
-            }
-        }
+    See the core system model documentation for details on the JSON structure used by this model.
+    It provides the "metadata" portion of all Notification objects that extend from this one.
     """
     def __init__(self, raw=None):
         """
@@ -679,49 +627,8 @@ class BaseNotification(NotificationMetadata):
     In addition to the properties that it gets from the NotificationMetadata, it also adds meta-information
     regarding the notification itself, such as related links, embargo information, provider information, etc
 
-    The structure is as follows:
-
-    ::
-
-        {
-            "id" : "<opaque identifier for this notification>",
-            "created_date" : "<date this notification was received>",
-            "last_updated" : "<last modification time - required by storage layer>",
-
-            "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
-
-            "provider" : {
-                "id" : "<user account id of the provider>",
-                "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
-                "ref" : "<provider's globally unique reference for this research object>",
-                "route" : "<method by which notification was received: native api, sword, ftp>"
-            },
-
-            "content" : {
-                "packaging_format" : "<identifier for packaging format used>",
-                "store_id" : "<information for retrieving the content from local store (tbc)>"
-            },
-
-            "links" : [
-                {
-                    "type" : "<link type: splash|fulltext>",
-                    "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
-                    "access" : "<type of access control on the resource: 'router' (reuqires router auth) or 'public' (no auth)>",
-                    "url" : "<provider's splash, fulltext or machine readable page>",
-                    "packaging" : "<packaging format identifier>",
-                    "proxy": "<the ID of the proxy link>"
-                }
-            ],
-
-            "embargo" : {
-                "end" : "<date embargo expires>",
-                "start" : "<date embargo starts>",
-                "duration" : "<number of months for embargo to run>"
-            },
-
-            "metadata" : {<INHERITED from NotificationMetadata>}
-        }
-
+    See the core system model documentation for details on the JSON structure used by this model.
+    It provides the basis for all Notification objects that extend from this one.
     """
 
     def __init__(self, raw=None):
@@ -1201,23 +1108,7 @@ class RoutingMetadata(dataobj.DataObj):
     binary content) which can be used to determine the routing to repository accounts (by comparison
     to a RepositoryConfig object).
 
-    ::
-
-        {
-            "urls" : ["<list of affiliation urls found in the data>"],
-            "emails" : ["<list of contact emails found in the data>"],
-            "affiliations" : ["<names of organisations found in the data>"],
-            "author_ids" : [
-                {
-                    "id" : "<author id string>",
-                    "type" : "<author id type (e.g. orcid, or name)>"
-                }
-            ],
-            "postcodes" : ["<organisation addresses found in the data>"],
-            "keywords" : ["<keywords and subject classifications found in the data>"],
-            "grants" : ["<grant names or numbers found in the data>"],
-            "content_types" : ["<list of content types of the object (probably just one)>"]
-        }
+    See the core system model documentation for details on the JSON structure used by this model.
     """
 
     def __init__(self, raw=None):

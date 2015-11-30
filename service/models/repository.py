@@ -12,30 +12,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     Class to represent the configuration information that repositories provide to the system
     to enable routing based on RoutingMetadata extracted from notifications
 
-    The structure is as follows
-
-    ::
-
-        {
-            "id" : "<opaque id for repository config record>",
-            "created_date" : "<date this notification was received>",
-            "last_updated" : "<last modification time - required by storage layer>",
-
-            "repository" : "<account id of repository that owns this configuration>",
-            "domains" : ["<list of all domains that match this repository's institution>"],
-            "name_variants" : ["<The names by which this repository's institution is known>"],
-            "author_ids" : [
-                {
-                    "id" : "<author id string>",
-                    "type" : "<author id type (e.g. orcid, or name)>"
-                }
-            ],
-            "postcodes" : ["<list of postcodes that appear in the repository's institution's addresses>"],
-            "keywords" : ["<keywords and subject classifications>"],
-            "grants" : ["<grant names or numbers>"],
-            "strings": ["<list of strings>"],
-            "content_types" : ["<list of content types the repository is interested in>"]
-        }
+    See the core system model documentation for details on the JSON structure used by this model.
     """
 
     def __init__(self, raw=None):
@@ -261,27 +238,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
     """
     Class to represent a record of a match between a RepositoryConfig and a RoutingMetadata object
 
-    The structure is as follows
-
-    ::
-
-        {
-            "id" : "<opaque id for repository config record>",
-            "created_date" : "<date this notification was received>",
-            "last_updated" : "<last modification time - required by storage layer>",
-
-            "repository" : "<account id of repository to which the match pertains>",
-            "notification" : "<id of the notification to which the match pertains>",
-            "provenance" : [
-                {
-                    "source_field" : "<field from the configuration that matched>",
-                    "term" : "<term from the configuration that matched>",
-                    "notification_field" : "<field from the notification that matched>"
-                    "matched" : "<text from the notification routing metadata that matched>",
-                    "explanation" : "<any additional explanatory text to go with this match (e.g. description of levenstein criteria)>"
-                }
-            ]
-        }
+    See the core system model documentation for details on the JSON structure used by this model.
     """
 
     def __init__(self, raw=None):
@@ -407,20 +364,6 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
 
     This class is not currently in use in the system, but may be activated later.  In the mean time,
     you should ignore it!
-
-    ::
-
-        {
-            "id" : "<opaque id for repository config record>",
-            "created_date" : "<date this notification was received>",
-            "last_updated" : "<last modification time - required by storage layer>",
-
-            "repository" : "<user id of repository doing the retrieval>",
-            "notification" : "<id of the notification retrieved>",
-            "content" : "<the url or internal identifier of the content retrieved>",
-            "retrieval_date" : "<date the repository retrieved the record>",
-            "scope" : "<what the repository actually retrieved: notification, fulltext>"
-        }
     """
     def __init__(self, raw=None):
         struct = {
