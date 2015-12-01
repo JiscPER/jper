@@ -9,7 +9,8 @@ interpret the content they are being given.
 ## Identification of packages
 
 Each format has a URI which unambiguously identifies it, and we use this identifier to allow us to interpret the content
-that appears in the zip.
+that appears in the zip.  (Note that the URI does not need to resolve to a resource on the web, so any links presented
+here may not actuall go to a web page).
 
 Router works with the following package formats
 
@@ -71,7 +72,7 @@ repository (you must ensure your repository account in the Router specifies the 
 
 This is Router's native package format.  It conforms to the following specification:
 
-1. Only contains files in a flat structure, does not contain folderes
+1. Only contains files in a flat structure, does not contain folders
 2. Contains at least one JATS XML file (no naming convention, but must end with ".xml")
 3. May contain one EPMC-style XML metadata file (no naming convention, but must end with ".xml")
 4. May contain an arbitrary number of other binary files (e.g. pdfs, images, etc)
@@ -96,7 +97,7 @@ xpath expressions:
 
 This is [SWORDv2](http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html#iris)'s native package format.  It confirms to the following specification:
 
-1. Only contains files in a flat structure, does not contain folderes
+1. Only contains files in a flat structure, does not contain folders
 2. May contain an arbitrary number of files of any format
 
 That is, it is the simplest possible packaging format, and it is left to the consumer to decide what to do with the content.
