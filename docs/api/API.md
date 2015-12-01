@@ -99,11 +99,9 @@ To do this, send the bare-minimum JSON notification, with only the format identi
 
 #### Possible Responses
 
-* On authentication failure (e.g. invalid api_key, incorrect user role) the API will respond with a 401 (Unauthorised) and no response body.
+On authentication failure (e.g. invalid api_key, incorrect user role) the API will respond with a 401 (Unauthorised) and no response body.
 
-* On validation failure the system will respond with the following:
-
- 
+On validation failure the system will respond with the following:
 
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
@@ -112,7 +110,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
         "error" : "<human readable error message>"
     }
 
-* On validation success, the system will respond with 204 (No Content) and no response body.
+On validation success, the system will respond with 204 (No Content) and no response body.
 
 ### Notification Endpoint
 
@@ -190,10 +188,9 @@ To do this, send the bare-minimum JSON notification, with only the format identi
 
 #### Possible Responses
 
-* On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
+On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
 
-* In the event of a malformed HTTP request, the system will respond with a 400 (Bad Request) and the response body:
-
+In the event of a malformed HTTP request, the system will respond with a 400 (Bad Request) and the response body:
 
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
@@ -202,8 +199,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
         "error" : "<human readable error message>"
     }
 
-* On successful completion of the request, the system will respond with 202 (Accepted) and the following response body
-
+On successful completion of the request, the system will respond with 202 (Accepted) and the following response body
 
     HTTP 1.1  202 Accepted
     Content-Type: application/json
@@ -272,9 +268,8 @@ You will not be able to tell from this endpoint which repositories have been ide
 
 #### Possible Responses
 
-* If any of the required parameters are missing, or fall outside the allowed range, you will receive a 400 (Bad Request) and an error
+If any of the required parameters are missing, or fall outside the allowed range, you will receive a 400 (Bad Request) and an error
 message in the body:
-
 
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
@@ -284,7 +279,7 @@ message in the body:
     }
 
 
-* On successful request, the response will be a 200 OK, with the following body
+On successful request, the response will be a 200 OK, with the following body
 
     HTTP 1.1  200 OK
     Content-Type: application/json
@@ -317,13 +312,12 @@ The JSON metadata associated with a notification is publicly accessible, so anyo
 Here **notification_id** is the system's identifier for an individual notification.  You may get this identifier from,
 for example, the **Notification List Feed**.
 
-* If the notification does not exist, you will receive a 404 (Not Found), and no response body.
+If the notification does not exist, you will receive a 404 (Not Found), and no response body.
 
-* If the you are not authenticated as the original publisher of the notification, and the notification has not yet been routed, 
+If the you are not authenticated as the original publisher of the notification, and the notification has not yet been routed, 
 you will also receive a 404 (Not Found) and no response body.
 
-* If the notification is found and has been routed, you will receive a 200 (OK) and the following response body:
-
+If the notification is found and has been routed, you will receive a 200 (OK) and the following response body:
 
     HTTP 1.1  200 OK
     Content-Type: application/json
@@ -373,17 +367,16 @@ image files) as a single zip file.  To request it, you will also need to provide
 
     GET <package url>?api_key=<api_key>
 
-* Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
+Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
 the following reasons:
-    * api_key is invalid
-    * You do not have the user role "provider" or "repository"
-    * You have the role "provider" and you were not the original creator of this notification
-    * You have the role "repository" and this notification has not yet been routed
+* api_key is invalid
+* You do not have the user role "provider" or "repository"
+* You have the role "provider" and you were not the original creator of this notification
+* You have the role "repository" and this notification has not yet been routed
 
-* If the notification content is not found, you will receive a 404 (Not Found) and no response body.
+If the notification content is not found, you will receive a 404 (Not Found) and no response body.
 
-* If the notification content is found and authentication succeeds you will receive a 200 (OK) and the binary content:
-
+If the notification content is found and authentication succeeds you will receive a 200 (OK) and the binary content:
 
     HTTP 1.1  200 OK
     Content-Type: application/zip
