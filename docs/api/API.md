@@ -12,7 +12,7 @@ In many cases you will need an API key to access the API, and this can be obtain
 
 ## For Publishers
 
-If you are a publisher, providing content to the router, you have access to 2 endpoints:
+If you are a publisher (also referred to here as a "provider"), providing content to the router, you have access to 2 endpoints:
 
 1. The validation endpoint
 2. The notification endpoint
@@ -70,7 +70,10 @@ If you are sending binary content as well as the metadata, the request must take
     
     --FulltextBoundary--
 
-It is possible to send a request which has limited JSON metadata, and relies entirely on any metadata embedded in the Package
+If you are carrying out this request you MUST include the **content.packaging_format** field in the notification metadata, 
+and include the identifier to the appropriate format identifier as per the [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md) documentation.
+
+It is also possible to send a request which has limited/no JSON metadata, and relies entirely on any metadata embedded in the Package.
 
 To do this, send the bare-minimum JSON notification, with only the format identifier of the package included.  For example:
 
@@ -159,7 +162,10 @@ If you are sending binary content, the request must take the form:
     
     --FulltextBoundary--
 
-It is possible to send a request which has limited JSON metadata, and relies entirely on any metadata embedded in the Package
+If you are carrying out this request you MUST include the **content.packaging_format** field in the notification metadata, 
+and include the identifier to the appropriate format identifier as per the [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md) documentation.
+
+It is also possible to send a request which has limited/no JSON metadata, and relies entirely on any metadata embedded in the Package.
 
 To do this, send the bare-minimum JSON notification, with only the format identifier of the package included.  For example:
 

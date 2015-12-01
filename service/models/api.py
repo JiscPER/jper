@@ -12,40 +12,6 @@ class IncomingNotification(NotificationMetadata):
 
     It extends the basic NotificationMetadata and adds some contextual information about the
     notification and associated content and embargoes.
-
-    The structure is as follows
-
-    ::
-
-        {
-            "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
-
-            "provider" : {
-                "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
-                "ref" : "<provider's globally unique reference for this research object>"
-            },
-
-            "content" : {
-                "packaging_format" : "<identifier for packaging format used>"
-            },
-
-            "links" : [
-                {
-                    "type" : "<link type: splash|fulltext>",
-                    "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
-                    "url" : "<provider's splash, fulltext or machine readable page>"
-                }
-            ],
-
-            "embargo" : {
-                "end" : "<date embargo expires>",
-                "start" : "<date embargo starts>",
-                "duration" : "<number of months for embargo to run>"
-            },
-
-            "metadata" : {"<INHERITED from NotificationMetadata>"}
-        }
-
     """
 
     def __init__(self, raw=None):
@@ -125,39 +91,6 @@ class OutgoingNotification(NotificationMetadata):
     1. It contains the created_date and (if available) the analysis_date
     2. It does not contain the provider information (as the person retrieving the notification may not be the original provider)
     3. Links may contain the "packaging" element
-
-    The structure is as follows
-
-    ::
-
-        {
-            "id" : "<opaque identifier for this notification>",
-            "created_date" : "<date this notification was received>",
-            "analysis_date" : "<date the routing analysis was carried out>",
-
-            "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
-
-            "content" : {
-                "packaging_format" : "<identifier for packaging format used>",
-            },
-
-            "links" : [
-                {
-                    "type" : "<link type: splash|fulltext>",
-                    "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
-                    "url" : "<provider's splash, fulltext or machine readable page>",
-                    "packaging" : "<package format identifier, if required>"
-                }
-            ],
-
-            "embargo" : {
-                "end" : "<date embargo expires>",
-                "start" : "<date embargo starts>",
-                "duration" : "<number of months for embargo to run>"
-            },
-
-            "metadata" : {"<INHERITED from NotificationMetadata>"}
-        }
     """
     def __init__(self, raw=None):
         """
