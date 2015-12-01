@@ -32,6 +32,25 @@ plus a zipped binary package containing content in a supported [Packaging Format
 
 The following sections describe the HTTP methods, headers, body content and expected responses for each of the above endpoints and content.
 
+### Important information about metadata
+
+If you are providing metadata, you should include as much bibliographic and author identifying metadata as possible, to give
+us the best chance of routing the content to a suitable repository.  For example, the following fields would be key:
+
+| Field | Content |
+|-------|---------|
+| metadata.author.affiliation | The author's affiliation as a string.  Multiple affiliations can be included, but all condensed into a single string |
+| metadata.author.identifier.id | An identifier for the author (e.g. their ORCID or email).  Ideally also populate metadata.author.identifier.type for each identifier |
+| metadata.author.name | The author's name |
+| metadata.project.grant_number | The grant number associated with the project from which the publication arises |
+| metadata.title | The title of the article |
+| metadata.source.identifier.id | The identifier of the journal for the publication, such as the ISSN.  Ideally also populate metadata.source.identifier.type for each identifier |
+| metadata.identifier.id | An identifier for the article, such as the DOI.  Ideally also populate the metadata.identifier.type field for each identifier |
+
+If you are applying an embargo to the content, you should ideally use **embargo.end**.  If this is provided, then **embargo.start** and **embargo.duration** 
+would be considered secondary information not to be acted upon.
+
+
 ### Validation Endpoint
 
 The Validation API allows you to test that your data feed to the system will be successful.

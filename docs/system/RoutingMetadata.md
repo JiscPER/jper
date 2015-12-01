@@ -34,7 +34,7 @@ The JSON structure of the model is as follows:
 }
 ```
 
-Each of the fields is defined as laid out in the table below:
+Each of the fields is defined as laid out in the table below.  All fields are optional unless otherwise specified:
 
 | Field | Description | Datatype | Format | Allowed Values |
 | ----- | ----------- | -------- | ------ | -------------- |

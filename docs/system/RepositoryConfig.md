@@ -38,7 +38,7 @@ The JSON structure of the model is as follows:
 }
 ```
 
-Each of the fields is defined as laid out in the table below:
+Each of the fields is defined as laid out in the table below.  All fields are optional unless otherwise specified:
 
 | Field | Description | Datatype | Format | Allowed Values |
 | ----- | ----------- | -------- | ------ | -------------- |
@@ -48,7 +48,7 @@ Each of the fields is defined as laid out in the table below:
 | created_date | Date this record was created | unicode |  |  |
 | domains | Domains operated by the institution | unicode |  |  |
 | grants | grant ids that the institution may be interested in | unicode |  |  |
-| id | opaque identifier for this record | unicode |  |  |
+| id | opaque, persistent system identifier for this record | unicode |  |  |
 | keywords | freetext keywors to match on - stored, but not used in this version of the system | unicode |  |  |
 | last_updated | Date this record was last modified | unicode |  |  |
 | name_variants | Names by which the institution is known | unicode |  |  |
