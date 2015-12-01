@@ -51,6 +51,8 @@ name_variants: Names by which the institution is known
 notification: id of the notification this record relates to
 postcodes: Postcodes for addresses where to match on
 provider.id: Identifier for the provider of the notification (account name)
+provider.agent: Free-text field for identifying the API client used to create the notification
+provider.ref: Publisher's own identifier for the notification
 provenance.explanation: reason for the match
 provenance.matched: Value in the repository configuration field which matched
 provenance.notification_field: Field in the notification which matched

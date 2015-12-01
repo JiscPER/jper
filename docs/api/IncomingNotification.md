@@ -9,8 +9,8 @@ The JSON structure of the model is as follows:
     }, 
     "embargo": {
         "duration": 0, 
-        "end": "2015-12-01T13:40:22Z", 
-        "start": "2015-12-01T13:40:22Z"
+        "end": "2015-12-01T14:57:34Z", 
+        "start": "2015-12-01T14:57:34Z"
     }, 
     "event": "string", 
     "links": [
@@ -33,8 +33,8 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-12-01T13:40:22Z", 
-        "date_submitted": "2015-12-01T13:40:22Z", 
+        "date_accepted": "2015-12-01T14:57:34Z", 
+        "date_submitted": "2015-12-01T14:57:34Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -60,7 +60,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-12-01T13:40:22Z", 
+        "publication_date": "2015-12-01T14:57:34Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
@@ -123,5 +123,5 @@ Each of the fields is defined as laid out in the table below:
 | metadata.title | Title of the publication | unicode |  |  |
 | metadata.type | Type of publication | unicode |  |  |
 | metadata.version | Version of publication (e.g. AAM) | unicode |  |  |
-| provider.agent |  | unicode |  |  |
-| provider.ref |  | unicode |  |  |
+| provider.agent | Free-text field for identifying the API client used to create the notification | unicode |  |  |
+| provider.ref | Publisher's own identifier for the notification | unicode |  |  |

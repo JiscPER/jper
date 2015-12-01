@@ -34,18 +34,18 @@ The following sections describe the HTTP methods, headers, body content and expe
 
 ### Validation Endpoint
 
-The Validation API allows you to test that their data feed to the system will be successful.
+The Validation API allows you to test that your data feed to the system will be successful.
 
 You must have the user role "provider" to access this endpoint - if you do not have this role, please contact the Router administrator.
 
 #### Metadata-only request
 
-If you are sending only the JSON notification, the request must take the form:
+If you are sending only the notification JSON, the request must take the form:
 
     POST /validate?api_key=<api_key>
     Content-Type: application/json
     
-    [Incoming Data Model JSON]
+    [Incoming Notification JSON]
 
 #### Metadata + Package request
 
@@ -103,6 +103,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
 
 * On validation failure the system will respond with the following:
 
+
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
     
@@ -121,7 +122,7 @@ be in the response body.
 You must have the user role "provider" to access this endpoint - if you do not have this role, please contact the Router administrator.
 
 The system will not attempt to aggressively validate the request, but the
-request must still be well-formed in order to succeed.
+request must still be well-formed in order to succeed, so you may still receive a validation error.
 
 On a successful call to this endpoint, your notification will be accepted into the router, but note that acceptance of a 
 notification is not the same as the notification having been entered into the system for routing - at this point it has 
@@ -129,7 +130,7 @@ only been accepted for processing.  Routing to the relevant repositories will ha
 
 #### Metadata-only request
 
-If you are sending only the JSON notification, the request must take the form:
+If you are sending only the notification JSON, the request must take the form:
 
     POST /notification?api_key=<api_key>
     Content-Type: application/json
@@ -192,6 +193,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
 
 * In the event of a malformed HTTP request, the system will respond with a 400 (Bad Request) and the response body:
 
+
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
     
@@ -200,6 +202,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
     }
 
 * On successful completion of the request, the system will respond with 202 (Accepted) and the following response body
+
 
     HTTP 1.1  202 Accepted
     Content-Type: application/json
@@ -233,12 +236,12 @@ The following sections describe the HTTP methods, headers, body content and expe
 
 ### Notification List Feed
 
-Thes endpoint lists routed notifications in "analysed_date" (the date we analysed the content to determine its routing to your repository) order, oldest first.
+This endpoint lists routed notifications in "analysed_date" order (the date we analysed the content to determine its routing to your repository), oldest first.
 
 You may list the notifications routed to your repository, or all notifications that were routed to any repository.
 
-Note that as notifications are never updated (only created), this sorted list is guaranteed to be complete and return the same results
-each time for the same request.  This is the reason for sorting by analysed_date rather than created_date, as the rate
+Note that as notifications are never updated (only created), this sorted list is guaranteed to be complete and include the same notifications 
+each time for the same request (and any extra notifications created in the time period).  This is the reason for sorting by "analysed_dat"e rather than "created_date", as the rate
 at which items pass through the analysis may vary.
 
 Allowed parameters for each request are:
@@ -250,9 +253,9 @@ Allowed parameters for each request are:
 
 #### Repository routed notifications
 
-The endpoint lists all routed notifications for your repository.
+This endpoint lists all notifications routed to your repository.
 
-You will not be able to tell from this endpoint which other repositories have been identified for this notification.
+You will not be able to tell from this endpoint which other repositories have been identified as targets for this notification.
 
     GET /routed/<repo_id>[?<params>]
 
@@ -260,9 +263,9 @@ Here, **repo_id** is your Router account id, which can be obtained from your acc
 
 #### All routed notifications
 
-The endpoint lists all routed notifications, without restricting them to the repositories they have been routed to.
+This endpoint lists all routed notifications (i.e. not notifications which were not matched to any repository), without restricting them to the repositories they have been routed to.
 
-You will not be able to tell from this endpoint which repositories have been identified for this notification.
+You will not be able to tell from this endpoint which repositories have been identified as targets for this notification.
 
     GET /routed[?<params>]
 
@@ -270,6 +273,7 @@ You will not be able to tell from this endpoint which repositories have been ide
 
 * If any of the required parameters are missing, or fall outside the allowed range, you will receive a 400 (Bad Request) and an error
 message in the body:
+
 
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
@@ -319,6 +323,7 @@ you will also receive a 404 (Not Found) and no response body.
 
 * If the notification is found and has been routed, you will receive a 200 (OK) and the following response body:
 
+
     HTTP 1.1  200 OK
     Content-Type: application/json
     
@@ -338,7 +343,7 @@ repository within this timescale.
 
 You need to have the user role "provider" or "repository" to access this endpoint - if you do not have the required role, please contact the Router administrator.
 
-For example, it may contain a section like:
+The notification JSON may contain a section like:
 
     "links" : [
         {
@@ -369,15 +374,15 @@ image files) as a single zip file.  To request it, you will also need to provide
 
 * Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
 the following reasons:
-
-1. api_key is invalid
-2. You do not have the user role "provider" or "repository"
-3. You have the role "provider" and you were not the original creator of this notification
-4. You have the role "repository" and this notification has not yet been routed
+    * api_key is invalid
+    * You do not have the user role "provider" or "repository"
+    * You have the role "provider" and you were not the original creator of this notification
+    * You have the role "repository" and this notification has not yet been routed
 
 * If the notification content is not found, you will receive a 404 (Not Found) and no response body.
 
 * If the notification content is found and authentication succeeds you will receive a 200 (OK) and the binary content:
+
 
     HTTP 1.1  200 OK
     Content-Type: application/zip

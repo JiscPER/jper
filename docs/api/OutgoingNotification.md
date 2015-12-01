@@ -4,15 +4,15 @@ The JSON structure of the model is as follows:
 
 ```json
 {
-    "analysis_date": "2015-12-01T13:40:22Z", 
+    "analysis_date": "2015-12-01T14:57:35Z", 
     "content": {
         "packaging_format": "string"
     }, 
-    "created_date": "2015-12-01T13:40:22Z", 
+    "created_date": "2015-12-01T14:57:35Z", 
     "embargo": {
         "duration": 0, 
-        "end": "2015-12-01T13:40:22Z", 
-        "start": "2015-12-01T13:40:22Z"
+        "end": "2015-12-01T14:57:35Z", 
+        "start": "2015-12-01T14:57:35Z"
     }, 
     "event": "string", 
     "id": "string", 
@@ -37,8 +37,8 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-12-01T13:40:22Z", 
-        "date_submitted": "2015-12-01T13:40:22Z", 
+        "date_accepted": "2015-12-01T14:57:35Z", 
+        "date_submitted": "2015-12-01T14:57:35Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -64,7 +64,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-12-01T13:40:22Z", 
+        "publication_date": "2015-12-01T14:57:35Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
