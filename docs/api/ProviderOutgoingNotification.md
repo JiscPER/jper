@@ -1,4 +1,4 @@
-# FailedNotification
+# ProviderOutgoingNotification
 
 The JSON structure of the model is as follows:
 
@@ -16,13 +16,10 @@ The JSON structure of the model is as follows:
     }, 
     "event": "string", 
     "id": "string", 
-    "last_updated": "2015-12-01T13:40:22Z", 
     "links": [
         {
-            "access": "string", 
             "format": "string", 
             "packaging": "string", 
-            "proxy": "string", 
             "type": "string", 
             "url": "string"
         }
@@ -90,10 +87,7 @@ The JSON structure of the model is as follows:
         "id": "string", 
         "ref": "string", 
         "route": "string"
-    }, 
-    "repositories": [
-        "string"
-    ]
+    }
 }
 ```
 
@@ -109,11 +103,8 @@ Each of the fields is defined as laid out in the table below:
 | embargo.start | Start date for the embargo | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | event | Keyword for this kind of notification - no restrictions on use in this version of the system | unicode |  |  |
 | id | opaque identifier for this record | unicode |  |  |
-| last_updated | Date this record was last modified | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| links.access | Type of access control on this link.  "router" means only to authenticated router accounts, "public" means anyone with the link | unicode |  | router, public |
 | links.format | mimetype of the resource available at the URL (e.g. text/html) | unicode |  |  |
 | links.packaging | Package format identifier for the resource available at the URL | unicode |  |  |
-| links.proxy | The ID of the proxy link this link stands for | unicode |  |  |
 | links.type | keyword for type of resource (e.g. splash, fulltext) - no restrictions on use in this version of the system | unicode |  |  |
 | links.url | URL to the associated resource | unicode | URL |  |
 | metadata.author.affiliation | Author organisational affiliation | unicode |  |  |
@@ -146,4 +137,3 @@ Each of the fields is defined as laid out in the table below:
 | provider.id | Identifier for the provider of the notification (account name) | unicode |  |  |
 | provider.ref |  | unicode |  |  |
 | provider.route |  | unicode |  |  |
-| repositories | List of repository account ids the notification was routed to | unicode |  |  |

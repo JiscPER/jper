@@ -1,227 +1,55 @@
-# JPER: API Specification
+# JPER API
 
-This document specifies the interface and data formats to be used by the JPER API.
+This document specifies the interface and data formats to be used by the JPER REST API.
 
-The API will be mounted at a versioned endpoint, so that future releases of the API can be made without breaking
-backwards compatibility for existing users.  e.g.
+The current version of the API is v1, and it can be accessed at
 
-    /api/v1/...
+    https://pubrouter.jisc.ac.uk/api/v1
 
-Note that Retrieval of notifications + full-text for a particular repository requires at least 2 API calls:
+All URL paths provided in this document will extend from this base url.
 
-    GET /api/v1/routed/<repo_id>[?<parameters>]
+In many cases you will need an API key to access the API, and this can be obtained from your Router account page.
 
-to retrieve a list of notifications
+## For Publishers
 
-    GET /api/v1/notification/<notification_id>/content?api_key=<api_key>
+If you are a publisher, providing content to the router, you have access to 2 endpoints:
 
-to retrieve the full-text (if available) for a particular notification.
+1. The validation endpoint
+2. The notification endpoint
 
-Here "repo_id" identifies the repository and "notification_id" is the Router’s unique id assigned to a notification.
+The first allows you, during initial set-up of your API client, to check that the content you are sending is going to
+work with the Router, and the second is the way to send us a real notification to be routed.
 
-All links to full-text content are provided explicitly in the notification JSON in the link.url element - see the data model
-descriptions below for more details.
+You can create content in 2 ways in the router:
 
-## Data Interchange Models
+1. As a metadata-only notification
+2. As a metadata + binary package notification
 
-The data interchange models are sub-sets of the full system data models.
+The first allows you to provide publication information which complies with our native JSON format as an [Incoming Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md).
 
-There are two separate models: one which is the data format the notifications are provided in (the **Incoming Data Model**),
-and the other which is the format the repositories will receive the data in (the **Outgoing Data Model**)
+The second allows you to give us a multi-part request containing the publication information which complies with our native JSON format as an [Incoming Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md)
+plus a zipped binary package containing content in a supported [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md).
 
-### Incoming Data Model
+The following sections describe the HTTP methods, headers, body content and expected responses for each of the above endpoints and content.
 
-Any notifications coming from the provider should meet the following specification:
+### Validation Endpoint
 
-```json
-{
-    "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
+The Validation API allows you to test that their data feed to the system will be successful.
+
+You must have the user role "provider" to access this endpoint - if you do not have this role, please contact the Router administrator.
+
+#### Metadata-only request
+
+If you are sending only the JSON notification, the request must take the form:
+
+    POST /validate?api_key=<api_key>
+    Content-Type: application/json
     
-    "provider" : {
-        "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
-        "ref" : "<provider's globally unique reference for this research object>"
-    },
-    
-    "targets" : [
-        {
-            "repository" : "<identifying string for repository - base URL, user account>",
-            "requirement" : "<must|should>"
-        }
-    ],
-    
-    "content" : {
-        "packaging_format" : "<identifier for packaging format used>"
-    },
-    
-    "links" : [
-        {
-            "type" : "<link type: splash|fulltext>",
-            "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
-            "url" : "<provider's splash, fulltext or machine readable page>"
-        }
-    ],
-    
-    "embargo" : {
-        "end" : "<date embargo expires>",
-        "start" : "<date embargo starts>",
-        "duration" : "<number of months for embargo to run>"
-    },
-    
-    "metadata" : {
-        "title" : "<publication title>",
-        "version" : "<version of the record, e.g. AAM>",
-        "publisher" : "<publisher of the content>",
-        "source" : {
-            "name" : "<name of the journal or other source (e.g. book)>",
-            "identifier" : [
-                {"type" : "issn", "id" : "<issn of the journal (could be print or electronic)>" },
-                {"type" : "eissn", "id" : "<electronic issn of the journal>" },
-                {"type" : "pissn", "id" : "<print issn of the journal>" },
-                {"type" : "doi", "id" : "<doi for the journal or series>" }
-            ]
-        },
-        "identifier" : [
-            {"type" : "doi", "id" : "<doi for the record>" }
-        ],
-        "type" : "publication/content type",
-        "author" : [
-            {
-                "name" : "<author name>",
-                "identifier" : [
-                    {"type" : "orcid", "id" : "<author's orcid>"},
-                    {"type" : "email", "id" : "<author's email address>"},
-                ],
-                "affiliation" : "<author affiliation>"
-            }
-        ],
-        "language" : "<iso language code>",
-        "publication_date" : "<publication date>",
-        "date_accepted" : "<date accepted for publication>",
-        "date_submitted" : "<date submitted for publication>",
-        "license_ref" : {
-            "title" : "<name of licence>",
-            "type" : "<type>", 
-            "url" : "<url>", 
-            "version" : "<version>",
-        },
-        "project" : [
-            {
-                "name" : "<name of funder>", 
-                "identifier" : [
-                    {"type" : "<identifier type>", "id" : "<funder identifier>"}
-                ],
-                "grant_number" : "<funder's grant number>"
-            }
-        ],
-        "subject" : ["<subject keywords/classifications>"]
-    }
-}
-```
+    [Incoming Data Model JSON]
 
-Some important things to observe:
+#### Metadata + Package request
 
-* The "links" field must only contain links to content which is publicly accessible.
-
-TODO: enumerate the differences between this and the core model
-
-* The "links" field does not contain the "access" element - all incoming links must be public
-
-Note also that in this version of the system the "targets" field will not be implemented.
-
-### Outgoing Data Model
-
-Any request for a routed notification (except from the provider who created it) will meet the following specification:
-
-```json
-{
-    "id" : "<opaque identifier for this notification>",
-    "created_date" : "<date this notification was received>",
-    "analysis_date" : "<date the routing analysis was carried out>",
-    
-    "event" : "<keyword for the kind of notification: acceptance, publication, etc.>",
-    
-    "content" : {
-        "packaging_format" : "<identifier for packaging format used>",
-    },
-    
-    "links" : [
-        {
-            "type" : "<link type: splash|fulltext>",
-            "format" : "<text/html|application/pdf|application/xml|application/zip|...>",
-            "url" : "<provider's splash, fulltext or machine readable page>",
-            "packaging" : "<package format identifier, if required>"
-        }
-    ],
-    
-    "embargo" : {
-        "end" : "<date embargo expires>",
-        "start" : "<date embargo starts>",
-        "duration" : "<number of months for embargo to run>"
-    },
-    
-    "metadata" : {
-        "title" : "<publication title>",
-        "version" : "<version of the record, e.g. AAM>",
-        "publisher" : "<publisher of the content>",
-        "source" : {
-            "name" : "<name of the journal or other source (e.g. book)>",
-            "identifier" : [
-                {"type" : "issn", "id" : "<issn of the journal (could be print or electronic)>" },
-                {"type" : "eissn", "id" : "<electronic issn of the journal>" },
-                {"type" : "pissn", "id" : "<print issn of the journal>" },
-                {"type" : "doi", "id" : "<doi for the journal or series>" }
-            ]
-        },
-        "identifier" : [
-            {"type" : "doi", "id" : "<doi for the record>" }
-        ],
-        "type" : "publication/content type",
-        "author" : [
-            {
-                "name" : "<author name>",
-                "identifier" : [
-                    {"type" : "orcid", "id" : "<author's orcid>"},
-                    {"type" : "email", "id" : "<author's email address>"},
-                ],
-                "affiliation" : "<author affiliation>"
-            }
-        ],
-        "language" : "<iso language code>",
-        "publication_date" : "<publication date>",
-        "date_accepted" : "<date accepted for publication>",
-        "date_submitted" : "<date submitted for publication>",
-        "license_ref" : {
-            "title" : "<name of licence>",
-            "type" : "<type>", 
-            "url" : "<url>", 
-            "version" : "<version>",
-        },
-        "project" : [
-            {
-                "name" : "<name of funder>", 
-                "identifier" : [
-                    {"type" : "<identifier type>", "id" : "<funder identifier>"}
-                ],
-                "grant_number" : "<funder's grant number>"
-            }
-        ],
-        "subject" : ["<subject keywords/classifications>"]
-    }
-}
-```
-
-Note that "links" provided via this model will be restricted only to URLs controlled by the router.  This means that
-public links from the publisher will not be shared, instead replaced with proxy URLs which are redirected by the router
-on request.  This is to enable tracking of content delivery to repositories - requests for content will result in a
-record that the authenticated repository has received the content.
-
-## Validation API
-
-The Validation API allows providers to test that their data feed to the system will be successful.
-
-You must have the user role "provider" to access this endpoint.
-
-If you are sending binary content, the request must take the form:
+If you are sending binary content as well as the metadata, the request must take the form:
 
     POST /validate?api_key=<api_key>
     Content-Type: multipart/form-data; boundary=FulltextBoundary
@@ -231,27 +59,49 @@ If you are sending binary content, the request must take the form:
     Content-Disposition: form-data; name="metadata"
     Content-Type: application/json
     
-    [Incoming Data Model JSON]
+    [Incoming Notification JSON]
     
     --FulltextBoundary
     
     Content-Disposition: form-data; name="content"
     Content-Type: application/zip
     
-    [binary content]
+    [Package]
     
     --FulltextBoundary--
 
-If you are sending only the JSON notification, the request must take the form:
+It is possible to send a request which has limited JSON metadata, and relies entirely on any metadata embedded in the Package
+
+To do this, send the bare-minimum JSON notification, with only the format identifier of the package included.  For example:
 
     POST /validate?api_key=<api_key>
+    Content-Type: multipart/form-data; boundary=FulltextBoundary
+    
+    --FulltextBoundary
+    
+    Content-Disposition: form-data; name="metadata"
     Content-Type: application/json
     
-    [Incoming Data Model JSON]
+    {
+        "content" : {
+            "packaging_format" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+        },
+    }
+    
+    --FulltextBoundary
+    
+    Content-Disposition: form-data; name="content"
+    Content-Type: application/zip
+    
+    [Package]
+    
+    --FulltextBoundary--
 
-On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
+#### Possible Responses
 
-On validation failure the system will respond with the following
+* On authentication failure (e.g. invalid api_key, incorrect user role) the API will respond with a 401 (Unauthorised) and no response body.
+
+* On validation failure the system will respond with the following:
 
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
@@ -260,19 +110,33 @@ On validation failure the system will respond with the following
         "error" : "<human readable error message>"
     }
 
-On validation success, the system will respond with 204 (No Content) and no response body.
+* On validation success, the system will respond with 204 (No Content) and no response body.
 
-## Notification API
+### Notification Endpoint
 
-### Create new notifications
-
-The Notification API takes an identical request to the Validation API, so that providers can develop
+The Notification API takes an identical request to the Validation API, so that you can develop
 against the Validation API and then switch seamlessly over to live notifications.  The only difference will
 be in the response body.
 
-You must have the user role "provider" to access this endpoint.
+You must have the user role "provider" to access this endpoint - if you do not have this role, please contact the Router administrator.
 
-**NOTE: should we consider making the response to the Validation API the same as the Notification API too?**
+The system will not attempt to aggressively validate the request, but the
+request must still be well-formed in order to succeed.
+
+On a successful call to this endpoint, your notification will be accepted into the router, but note that acceptance of a 
+notification is not the same as the notification having been entered into the system for routing - at this point it has 
+only been accepted for processing.  Routing to the relevant repositories will happen later, asynchronously to the request.
+
+#### Metadata-only request
+
+If you are sending only the JSON notification, the request must take the form:
+
+    POST /notification?api_key=<api_key>
+    Content-Type: application/json
+    
+    [Incoming Notification JSON]
+
+#### Metadata + Package request
 
 If you are sending binary content, the request must take the form:
 
@@ -284,29 +148,49 @@ If you are sending binary content, the request must take the form:
     Content-Disposition: form-data; name="metadata"
     Content-Type: application/json
     
-    [Incoming Data Model JSON]
+    [Incoming Notification JSON]
     
     --FulltextBoundary
     
     Content-Disposition: form-data; name="content"
     Content-Type: application/zip
     
-    [binary content]
+    [Package]
     
     --FulltextBoundary--
 
-If you are sending only the JSON notification, the request must take the form:
+It is possible to send a request which has limited JSON metadata, and relies entirely on any metadata embedded in the Package
 
-    POST /notification?api_key=<api_key>
+To do this, send the bare-minimum JSON notification, with only the format identifier of the package included.  For example:
+
+    POST /validate?api_key=<api_key>
+    Content-Type: multipart/form-data; boundary=FulltextBoundary
+    
+    --FulltextBoundary
+    
+    Content-Disposition: form-data; name="metadata"
     Content-Type: application/json
     
-    [Incoming Data Model JSON]
+    {
+        "content" : {
+            "packaging_format" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+        },
+    }
+    
+    --FulltextBoundary
+    
+    Content-Disposition: form-data; name="content"
+    Content-Type: application/zip
+    
+    [Package]
+    
+    --FulltextBoundary--
 
-On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
+#### Possible Responses
 
-The system will not attempt to aggressively validate the request (this is what the **Validation API** is for), but the
-request must still be well-formed in order to succeed.  In the event of a malformed HTTP request, the system will respond
-with a 400 (Bad Request) and the response body:
+* On authentication failure (e.g. invalid api_key, incorrect user role) the system will respond with a 401 (Unauthorised) and no response body.
+
+* In the event of a malformed HTTP request, the system will respond with a 400 (Bad Request) and the response body:
 
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
@@ -315,7 +199,7 @@ with a 400 (Bad Request) and the response body:
         "error" : "<human readable error message>"
     }
 
-On successful completion of the request, the system will respond with 202 (Accepted) and the following response body
+* On successful completion of the request, the system will respond with 202 (Accepted) and the following response body
 
     HTTP 1.1  202 Accepted
     Content-Type: application/json
@@ -324,114 +208,34 @@ On successful completion of the request, the system will respond with 202 (Accep
     {
         "status" : "accepted",
         "id" : "<unique identifier for the notification>",
-        "location" : "<url for api endpoint for newly created notification>"
+        "location" : "<url path for api endpoint for newly created notification>"
     }
 
-Note that acceptance of a notification is not the same as the notification having been entered into the system
-for routing - at this point it has only been accepted for processing, which will happen asynchronously to the request.
 
-### Retrieve created notifications
+## For Repositories
 
-This endpoint will return to you the JSON record for the notifications.
+If you are a repository, consuming notifications from the router, you have access to 2 endpoints:
 
-Anyone can access this endpoint.
+1. The notification list feed
+2. The notification endpoint
 
-    GET /notification/<id>[?api_key=<api_key>]
+The first allows you to list all routed notifications to your repository, and to page through the list in date order.
 
-If the notification does not exist, you will receive a 404 (Not Found), and no response body.
+The second allows you to retrieve individual notifications and the binary/packaged content asscoiated with it.
 
-If the requester is not authenticated as the provider of the notification, and the notification has not yet been routed, 
-you will also receive a 404 (Not Found) and no response body.
+Notifications are represented in our native JSON format as an [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md)
+(or a [Provider's Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/ProviderOutgoingNotification.md) if you happend to also be the publisher
+who created it).
 
-If the notification is found and has been routed, you will receive a 200 (OK) and the following response body:
+Packaged content is available as a zipped file whose contents conform to a supported [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md).
 
-    HTTP 1.1  200 OK
-    Content-Type: application/json
-    
-    [Incoming/Outgoing Data Model JSON]
+The following sections describe the HTTP methods, headers, body content and expected responses for each of the above endpoints and content.
 
-If you are the provider of the notification, you will receive back the Incoming Data Model, augumented with any
-data from the Outgoing Data Model that is not already present (e.g. analysed_date).
+### Notification List Feed
 
-All other requesters will receive the Outgoing Data Model.
+Thes endpoint lists routed notifications in "analysed_date" (the date we analysed the content to determine its routing to your repository) order, oldest first.
 
-Note that notifications may not immediately be available for retrieval after creation.
-
-
-### Retrieve router-held content associated with notifications
-
-This endpoint will return to you the original deposit package from the provider containing the fulltext content for the notification (if available).
-
-Router stores full-text content for a temporary period (currently 90 days, subject to review) from the date of receipt from publisher and so it must be retrieved by a
-repository or CRIS within this timescale.
-
-The URL for the content will appear in the notification JSON's "link.url" field if it is available to use - you will not be required to
-construct it yourself, you can simply extract the URLs for the content directly from the notification, and they will all be of the form
-described here.
-
-You need to have the user role "provider" or "repository" to access this endpoint.
-
-    GET /notification/<id>/content?api_key=<api_key>
-    
-Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
-the following reasons:
-
-* api_key is invalid
-* You do not have the user role "provider" or "repository"
-* You have the role "provider" and you were not the original creator of this notification
-* You have the role "repository" and this notification has not yet been routed
-
-If the notification content is not found, you will receive a 404 (Not Found) and no response body.
-
-If the notification content is found and authentication succeeds you will receive a 200 (OK) and the binary content:
-
-    HTTP 1.1  200 OK
-    Content-Type: application/zip
-    
-    [Binary Content]
-
-Note that a successful access by a user with the role "repository" will log a successful delivery of content notification
-into the router (used for reporting on the router's ability to support REF compliance).
-
-### Retrieve router-proxied content associated with notifications
-
-This endpoint will redirect you to any links made publicly available by the provider (if available).
-
-The URL for the content will appear in the notification JSON's "link.url" field if it is available to use - you will not be required to
-construct it yourself, you can simply extract the URLs for the content directly from the notification, and they will all be of the form
-described here.
-
-You need to have the user role "repository" to access this endpoint.
-
-    GET /notification/<id>/content/<content_id>?api_key=<api_key>
-
-The <id> is the id of the notification in Router, and <content_id> is the unique ID assigned to the content by Router.  You will
-see this ID used in the URLs available in the notification JSON only.
-
-Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
-the following reasons:
-
-* api_key is invalid
-* You do not have the user role "repository"
-* You have the role "repository" and this notification has not yet been routed
-
-If the requested link from the notification is not found, you will receive a 404 (Not Found) and no response body.
-
-If the requested link from the notification is found and authentication succeeds you will receive a 303 (See Other):
-
-    HTTP/1.1 303 See Other
-    Location: <url to provider site to retrieve file>
-
-At this point the caller will be directed to a URL outside of the domain of the router, so behaviour will be dependent
-on the provider's service.  The requirements placed on the provider by the router under these circumstances are that
-the content be publicly accessible to a GET request.
-
-Note that a successful access will log a successful delivery of content notification
-into the router (used for reporting on the router's ability to support REF compliance).
-
-## Routing API
-
-These endpoints lists routed notifications in "analysed_date" order, oldest first.
+You may list the notifications routed to your repository, or all notifications that were routed to any repository.
 
 Note that as notifications are never updated (only created), this sorted list is guaranteed to be complete and return the same results
 each time for the same request.  This is the reason for sorting by analysed_date rather than created_date, as the rate
@@ -439,13 +243,32 @@ at which items pass through the analysis may vary.
 
 Allowed parameters for each request are:
 
-* api_key - Optional.  May be used for tracking API usage, but no authentication is required for this endpoint.
-* since - Required.  Timestamp from which to provide notifications, of the form YYYY-MM-DD or YYYY-MM-DDThh:mm:ssZ (in UTC timezone)
-    * YYYY-MM-DD will be considered equivalent to YYYY-MM-DDT00:00:00Z
-* page - Optional; defaults to 1.  Page number of results to return.
-* pageSize - Optional; defaults to 25, maximum 100.  Number of results per page to return.
+* **api_key** - Optional.  May be used for tracking API usage, but no authentication is required for this endpoint.
+* **since** - Required.  Timestamp from which to provide notifications, of the form YYYY-MM-DD or YYYY-MM-DDThh:mm:ssZ (in UTC timezone); YYYY-MM-DD is considered equivalent to YYYY-MM-DDT00:00:00Z
+* **page** - Optional; defaults to 1.  Page number of results to return.
+* **pageSize** - Optional; defaults to 25, maximum 100.  Number of results per page to return.
 
-If any of the required parameters are missing, or fall outside the allowed range, you will receive a 400 (Bad Request) and an error
+#### Repository routed notifications
+
+The endpoint lists all routed notifications for your repository.
+
+You will not be able to tell from this endpoint which other repositories have been identified for this notification.
+
+    GET /routed/<repo_id>[?<params>]
+
+Here, **repo_id** is your Router account id, which can be obtained from your account page.
+
+#### All routed notifications
+
+The endpoint lists all routed notifications, without restricting them to the repositories they have been routed to.
+
+You will not be able to tell from this endpoint which repositories have been identified for this notification.
+
+    GET /routed[?<params>]
+
+#### Possible Responses
+
+* If any of the required parameters are missing, or fall outside the allowed range, you will receive a 400 (Bad Request) and an error
 message in the body:
 
     HTTP 1.1  400 Bad Request
@@ -456,7 +279,7 @@ message in the body:
     }
 
 
-The response will be a 200 OK, with the following body
+* On successful request, the response will be a 200 OK, with the following body
 
     HTTP 1.1  200 OK
     Content-Type: application/json
@@ -468,49 +291,98 @@ The response will be a 200 OK, with the following body
         "timestamp" : "<timestamp of this request in the form YYYY-MM-DDThh:mm:ssZ>",
         "total" : "<total number of results at this time>",
         "notifications" : [
-            "<ordered list of Outgoing Data Model JSON objects>"
+            "<ordered list of 'Outgoing Notification' JSON objects>"
         ]
     }
 
 Note that the "total" may increase between requests, as new notifications are added to the end of the list.
 
+See the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) data model for more info.
 
-### All routed notifications
+### Notification Endpoint
 
-The endpoint lists all routed notifications, without restricting them to the repositories they have been routed to.
+This endpoint will return to you the JSON record for an individual notification, or the packaged content associated with it.
 
-You will not be able to tell from this endpoint which repositories have been identified for this notification.
+#### Individual Notification
 
-    GET /routed[?<params>]
+The JSON metadata associated with a notification is publicly accessible, so anyone can access this endpoint.
 
-params and response are as specified above.
+    GET /notification/<notification_id>
 
-### Repository routed notifications
+Here **notification_id** is the system's identifier for an individual notification.  You may get this identifier from,
+for example, the **Notification List Feed**.
 
-The endpoint lists all routed notifications for a given repository.
+* If the notification does not exist, you will receive a 404 (Not Found), and no response body.
 
-You will not be able to tell from this endpoint which other repositories have been identified for this notification.
+* If the you are not authenticated as the original publisher of the notification, and the notification has not yet been routed, 
+you will also receive a 404 (Not Found) and no response body.
 
-    GET /routed/<repo_id>[?<params>]
+* If the notification is found and has been routed, you will receive a 200 (OK) and the following response body:
 
-params and response are as specified above.
+    HTTP 1.1  200 OK
+    Content-Type: application/json
+    
+    [Outgoing Notification JSON]
 
-## Receipt API
+See the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) data model for more info.
 
-**NOTE: this will not be implemented at this stage, but it will be required if we ever start exposing public links**
 
-In order to support reporting around router's support for REF compliance, it is important for the router to record when content has been
-successfully delivered to a repository.
+#### Packaged Content
 
-When a repository retrieves content from the "/notification/[id]/content" endpoint a log of the retrieval will
-automatically be created.
+Some notifications may have binary content associated with them.  If this is the case, you will see one or more **link** elements
+appearing in the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) JSON that
+you retrieve via either the **Notification List Feed** or the **Individual Notification**.
 
-In other cases - such as when the repository retrieves the content directly from a publicly accessible publisher link - this
-event cannot be recorded, so this API call should be used to record that retrieval.
+Router stores full-text content for a temporary period (currently 90 days, subject to review) from the date of receipt from publisher and so it must be retrieved by a
+repository within this timescale.
 
-    POST /notification/<notification id>/<repository id>?api_key=<api_key>
+You need to have the user role "provider" or "repository" to access this endpoint - if you do not have the required role, please contact the Router administrator.
 
-If authentication fails you will receive a 401 (Unauthorised) and no response body
+For example, it may contain a section like:
 
-If successful you will receive a 204 (No Content) and no response body
+    "links" : [
+        {
+            "type" : "package",
+            "format" : "application/zip",
+            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content",
+            "packaging" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+        },
+        {
+            "type" : "package",
+            "format" : "application/zip",
+            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content/SimpleZip",
+            "packaging" : "http://purl.org/net/sword/package/SimpleZip"
+        }
+    ]
 
+In this case there are 2 packages available (both representing the same content).  One is in the "FilesAndJATS" format
+that the publisher originally provided to the router, and the other is in the "SimpleZip" format to which the router has
+converted the incoming package.
+
+See the documentation on [Packaging Formats](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md) to understand
+what each of the formats looks like.
+
+You may then choose one of these links to download to receive all of the content (e.g. publisher's PDF, JATS XML, additional
+image files) as a single zip file.  To request it, you will also need to provide your API key:
+
+    GET <package url>?api_key=<api_key>
+
+* Authentication failure will result in a 401 (Unauthorised), and no response body.  Authentication failure can happen for
+the following reasons:
+
+1. api_key is invalid
+2. You do not have the user role "provider" or "repository"
+3. You have the role "provider" and you were not the original creator of this notification
+4. You have the role "repository" and this notification has not yet been routed
+
+* If the notification content is not found, you will receive a 404 (Not Found) and no response body.
+
+* If the notification content is found and authentication succeeds you will receive a 200 (OK) and the binary content:
+
+    HTTP 1.1  200 OK
+    Content-Type: application/zip
+    
+    [Package]
+
+Note that a successful access by a user with the role "repository" will log a successful delivery of content notification
+into the router (used for reporting on the router's ability to support REF compliance).

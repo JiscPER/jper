@@ -7,15 +7,15 @@ The JSON structure of the model is as follows:
     "content": {
         "packaging_format": "string"
     }, 
-    "created_date": "2015-11-30T10:03:20Z", 
+    "created_date": "2015-12-01T13:40:21Z", 
     "embargo": {
         "duration": 0, 
-        "end": "2015-11-30T10:03:20Z", 
-        "start": "2015-11-30T10:03:20Z"
+        "end": "2015-12-01T13:40:21Z", 
+        "start": "2015-12-01T13:40:21Z"
     }, 
     "event": "string", 
     "id": "string", 
-    "last_updated": "2015-11-30T10:03:20Z", 
+    "last_updated": "2015-12-01T13:40:21Z", 
     "links": [
         {
             "access": "string", 
@@ -39,8 +39,8 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-11-30T10:03:20Z", 
-        "date_submitted": "2015-11-30T10:03:20Z", 
+        "date_accepted": "2015-12-01T13:40:21Z", 
+        "date_submitted": "2015-12-01T13:40:21Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -66,7 +66,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-11-30T10:03:20Z", 
+        "publication_date": "2015-12-01T13:40:21Z", 
         "publisher": "string", 
         "source": {
             "identifier": [

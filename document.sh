@@ -14,3 +14,7 @@ python magnificent-octopus/octopus/lib/modeldoc.py -k service.models.RepositoryC
 python magnificent-octopus/octopus/lib/modeldoc.py -k service.models.MatchProvenance -o docs/system/MatchProvenance.md -f docs/system/field_descriptions.txt
 python magnificent-octopus/octopus/lib/modeldoc.py -k service.models.FailedNotification -o docs/system/FailedNotification.md -f docs/system/field_descriptions.txt
 python magnificent-octopus/octopus/lib/modeldoc.py -k service.models.RoutedNotification -o docs/system/RoutedNotification.md -f docs/system/field_descriptions.txt
+
+python magnificent-octopus/octopus/lib/modeldoc.py -k service.models.IncomingNotification -o docs/api/IncomingNotification.md -f docs/system/field_descriptions.txt
+python magnificent-octopus/octopus/lib/modeldoc.py -k service.models.OutgoingNotification -o docs/api/OutgoingNotification.md -f docs/system/field_descriptions.txt
+python magnificent-octopus/octopus/lib/modeldoc.py -k service.models.ProviderOutgoingNotification -o docs/api/ProviderOutgoingNotification.md -f docs/system/field_descriptions.txt
