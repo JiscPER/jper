@@ -32,7 +32,7 @@ plus a zipped binary package containing content in a supported [Packaging Format
 
 The following sections describe the HTTP methods, headers, body content and expected responses for each of the above endpoints and content.
 
-### Important information about metadata
+### Important information about notification metadata
 
 If you are providing metadata, you should include as much bibliographic and author identifying metadata as possible, to give
 us the best chance of routing the content to a suitable repository.  For example, the following fields would be key:
@@ -50,6 +50,26 @@ us the best chance of routing the content to a suitable repository.  For example
 If you are applying an embargo to the content, you should ideally use **embargo.end**.  If this is provided, then **embargo.start** and **embargo.duration** 
 would be considered secondary information not to be acted upon.
 
+If you have publicly hosted content (e.g. splash pages, full-text web pages, or PDFs) that you want to share with the router, so that repositories can
+download the content directly, please place these in a **links** element.  For example:
+
+    "links" : [
+        {
+            "type" : "splash",
+            "format" : "text/html",
+            "url" : "http://example.com/article1/index.html",
+        },
+        {
+            "type" : "fulltext",
+            "format" : "text/html",
+            "url" : "http://example.com/article1/fulltext.html",
+        },
+        {
+            "type" : "fulltext",
+            "format" : "application/pdf",
+            "url" : "http://example.com/article1/fulltext.pdf",
+        }
+    ]
 
 ### Validation Endpoint
 
@@ -351,10 +371,39 @@ If the notification is found and has been routed, you will receive a 200 (OK) an
 
 See the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) data model for more info.
 
+Some notifications may contain one or more **links** elements.  In this event, this means that there is binary content
+associated with the notification available for download.  Each of the links could be one of two kinds:
+
+1. Packaged binary content held by the router on behalf of the publisher (see the next section)
+2. A proxy-URL (proxying through the Router) for public content hosted on the web by the publisher
+
+In either case you can issue a GET request on the URL, and receie the content.
+
+In order to tell the difference between (1) and (2), compare the following two links:
+
+    "links" : [
+        {
+            "type" : "package",
+            "format" : "application/zip",
+            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content",
+            "packaging" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+        },
+        {
+            "type" : "fulltext",
+            "format" : "application/pdf",
+            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content/publisherpdf",
+        }
+    ]
+
+The first link has type "package" and also has an element **packaging** which tells you this is of the format "https://pubsrouter.jisc.ac.uk/FilesAndJATS".
+
+The second link does not contain a **packaging** element at all, and does not have "package" as its type.
+
+This means the first link is a link to package held by the router, and the second is a proxy for a URL hosted by the publisher.
 
 #### Packaged Content
 
-Some notifications may have binary content associated with them.  If this is the case, you will see one or more **link** elements
+Some notifications may have binary content associated with them.  If this is the case, you will see one or more **links** elements
 appearing in the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) JSON that
 you retrieve via either the **Notification List Feed** or the **Individual Notification**.
 
