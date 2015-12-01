@@ -103,6 +103,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
 
 * On validation failure the system will respond with the following:
 
+ 
 
     HTTP 1.1  400 Bad Request
     Content-Type: application/json
