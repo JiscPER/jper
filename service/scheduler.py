@@ -3,6 +3,7 @@ This is the application scheduler.
 It defines scheduled tasks and runs them as per their defined schedule.
 
 This scheduler is started and stopped when the app is started and stopped. 
+Unless RUN_SCHEDULE is set to False in the config. In which case it must be started manually / managed by supervisor.
 It is presumed to run on one machine at present.
 
 If scaling later requires having multiple machines, then this scheduler should only run on the machine that has access to 
@@ -214,3 +215,7 @@ def go():
     thread.start()
     
 
+if __name__ == "__main__":
+    print "starting scheduler"
+    app.logger.info("Scheduler - starting up directly in own process.")
+    go()

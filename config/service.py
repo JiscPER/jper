@@ -7,7 +7,7 @@ On deployment, desired configuration can be overridden by the provision of a loc
 ##################################################
 # overrides for the webapp deployment
 
-DEBUG = True
+DEBUG = False
 """is the web server in debug mode"""
 
 PORT = 5998
@@ -16,7 +16,7 @@ PORT = 5998
 SSL = False
 """support SSL requests"""
 
-THREADED = False
+THREADED = True
 """is the web server in threaded mode"""
 
 ############################################
@@ -108,7 +108,7 @@ USERDIR = '/home/sftpusers' # this is ASSUMED in ssh config and possibly in shel
 API_URL = "https://pubrouter.jisc.ac.uk/api/v1/notification"
 #API_URL = "http://test.cottagelabs.com:5998/api/v1/notification"
 TMP_DIR = "/home/mark/ftptmp"
-RUN_SCHEDULE = True
+RUN_SCHEDULE = False
 MOVEFTP_SCHEDULE = 10
 PROCESSFTP_SCHEDULE = 10
 CHECKUNROUTED_SCHEDULE = 10

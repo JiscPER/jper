@@ -26,7 +26,7 @@ def initialise():
 
     1. create the initial admin account if it does not already exist
     2. set up the logging
-    3. start the task scheduler
+    3. start the task scheduler (if RUN_SCHEDULE is True, otherwise scheduler should be started manually)
 
     :return:
     """

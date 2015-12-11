@@ -12,6 +12,11 @@ upstream store {
     server 10.0.94.164;
 }
 
+# THE MACHINE THAT RUN SWORD
+upstream sword {
+    server 10.0.94.164;
+}
+
 # THE MACHINES ON WHICH ELASTICSEARCH CLUSTER IS ACCEPTING INPUT
 # APPS THAT CALL IT "DIRECTLY" SHOULD CALL THIS GATEWAY MACHINE AND THEN THIS ROUTES TO THE INDEX
 upstream index {
@@ -19,6 +24,7 @@ upstream index {
     server 10.0.85.58:9200;
 }
 
+# LISTEN TO REQUESTS FOR GATEWAY AND STORE FROM LOCAL MACHINES
 server {
     listen	    9200;
     server_name     gateway;
@@ -37,6 +43,7 @@ server {
     }
 }
 
+# ROUTE CALLS TO STORE TO THE STORE UPSTREAM GROUP
 server {
     listen	    80;
     server_name     store;
@@ -55,26 +62,40 @@ server {
     }
 }
 
-# THESE GIVE DIRECT ROUTES FROM EXTERNAL TO THE INDEX, APPS, AND STORE
-# SO BE SURE TO TURN OFF OR SECURE BEFORE LIVE
+# THE SECURE ROUTE FOR PUBROUTER (AND A REDIRECT)
 server {
     listen          80;
-    server_name     router2.mimas.ac.uk;
+    server_name     pubrouter.jisc.ac.uk;
+    return          301 https://$server_name$request_uri;
+}
+server {
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    listen          443 ssl;
+    server_name     pubrouter.jisc.ac.uk;
+
+    client_max_body_size 1024M;
 
     keepalive_timeout 70;
 
-    location / {
-        proxy_pass http://index;
+    ssl_certificate /etc/nginx/CERTS/pubrouter_jisc_ac_uk.crt;
+    ssl_certificate_key /etc/nginx/CERTS/server.key;
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+    ssl_prefer_server_ciphers on;
+
+    location /sword {
+        proxy_pass http://sword;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Authorization "";
         # proxy_buffering off;
     }
 
-    location /api {
-		rewrite ^/api(.*) /$1 break;
+    location / {
         proxy_pass http://apps;
         proxy_redirect off;
         proxy_set_header Host $host;
@@ -83,10 +104,17 @@ server {
         proxy_set_header Authorization "";
         # proxy_buffering off;
     }
+}
 
-    location /store {
-		rewrite ^/store(.*) /$1 break;
-        proxy_pass http://store;
+# ROUTE FOR KIBANA UI WHEN IT IS RUNNING
+server {
+    listen          80;
+    server_name     kibana.pubrouter.jisc.ac.uk;
+
+    keepalive_timeout 70;
+
+    location / {
+        proxy_pass http://localhost:5601;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -94,8 +122,4 @@ server {
         proxy_set_header Authorization "";
         # proxy_buffering off;
     }
-
 }
-
-
-
