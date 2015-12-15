@@ -57,33 +57,72 @@ sudo pip install --upgrade virtualenv
 sudo pip install gunicorn
 sudo pip install requests
 
+Finally, there are useful scripts in the jper code repository in which this document is originally located,so clone the git repo onto the machines.
+At time of writing these documents, which at said time are available in the repo itself, the repo can be retrieved into your user directory - and into 
+a virtualenv just to keep it neat if running it - as such:
 
-## GATEWAY MACHINE(S)
+cd ~
+virtualenv -p python2.7 jper --no-site-packages
+cd jper
+mkdir src
+cd src
+git clone http://github.com/jiscper/jper
+
+(some of the following installation/configuration/administration may assume that things are in the home directory of the user account that 
+originally configured the system, which was called "mark". If desired, all such commands could be substituted with a different username.)
+
+
+## GATEWAY MACHINE
 
 The main fucntion of the gateway machine is to route and load balance requests to all other machines in the cluster. It can 
 also handle secondary tasks such as logging and running the test harness, although this could also be done from any other machine. 
 
+
 ### nginx
 
-CONFIGURE NGINX TO also to answer to gateway:9200 with proxy pass to the upstream index machines
-SSL
+nginx is already installed on the gateway server, if following this documenation so far. If not, just "sudo apt-get install nginx". Then, copy 
+(or symlink) the file from the jper repo (which should also already be on the server, otherwise see above) into the sites-enabled directory of 
+nginx and then restart it to get it going
+
+cd /etc/nginx/sites-enabled
+sudo ln -s ~/jper/src/jper/deployment/jper_nginx .
+
+TODO: ADD SSL CONFIGURATION INFO HERE
+
+sudo /etc/init.d/nginx restart
+
+TODO: it is necessary to configure nginx to serve the /admin route of jper to ONLY the first jper machine, where the sftp user accounts are 
+capable of being created, otherwise user accounts for publishers may fail to create sftp accounts if the requests go to the wrong machine. 
+So don't send that route to the processing pool but direct to the first machine.
+
 
 ### logging
 
-setup kibana on router2.mimas.ac.uk
+Logging is handled by the jper app itself, and it is configured to write to a file called "logfile". However, logstash and kibana have also 
+been installed to allow easier exploration of logs. This need not run at all times, but can be useful. This need not be on the gateway machine, 
+but for now it is.
+
+First, get the kibana software:
 
 wget https://download.elastic.co/kibana/kibana/kibana-4.0.3-linux-x64.tar.gz
 tar -xzvf kibana-4.0.3-linux-x64.tar.gz
 rm kibana-4.0.3-linux-x64.tar.gz
 mv kibana-4.0.3-linux-x64 kibana4
 
-then to run do the following command (can just go in a screen because logging is not critical to the app)
+And it is simple to run, with the following command:
+
 ./kibana4/bin/kibana
 
-and configure nginx to display it
+This could also be run using supervisor, but as kibana is not critical to the running of the app, supervisor has not been configured for it. 
+Instead, to leave it running long term, just use the "screen" command to start a new terminal screen and run the above command there.
 
-setup logstash server on the gateway router2.mimas.ac.uk (pubrouter.jisc.ac.uk)
+The nignx configuration already installed will by default serve kibana from the gateway server.
+
+In order to feed kibana with useful information from the logs, the logstash server must also be installed. There are useful instructions here:
+
 https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-4-on-ubuntu-14-04
+
+And the commands actually used to install it are as follows:
 
 wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
 echo 'deb http://packages.elasticsearch.org/logstash/1.5/debian stable main' | sudo tee /etc/apt/sources.list.d/logstash.list
@@ -92,15 +131,28 @@ sudo apt-get install logstash
 sudo mkdir -p /etc/pki/tls/certs
 sudo mkdir /etc/pki/tls/private
 
-# edit the openssl config and find section v3_ca and add this:
+Then open the openssl config file for editing
+
 sudo vim /etc/ssl/openssl.cnf
+
+And find section v3_ca and add the following:
+
 subjectAltName = IP: 10.0.38.122
+
+Then save and close the file.
+
+(NOTE: the IP above is correct at time of writing these documents - but check for later installs.)
+
+Now run openssl to make a key
 
 cd /etc/pki/tls
 sudo openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
 
-# now write the logstash config file:
+Now write the logstash config file:
+
 sudo vim /etc/logstash/conf.d/01-lumberjack-input.conf
+
+And put this in it
 
 input { 
   lumberjack { 
@@ -111,10 +163,12 @@ input {
   } 
 }
 
-# and configure for syslog
+And now write the syslog config file:
+
 sudo vim /etc/logstash/conf.d/10-syslog.conf
 
-TODO maybe add a match to get multiple item id and type from info, something like (but could be a space in there after the colon):
+And put this in it:
+
 %{WORD:item_type}:%{WORD:item_id}
 
 filter {
@@ -126,7 +180,7 @@ filter {
   }
 }
 
-and add a patterns folder and file and put the following content in it:
+Then add a patterns folder and file and put the following content in it:
 
 sudo vim /etc/logstash/conf.d/30-lumberjack-output.conf
 
@@ -138,20 +192,36 @@ output {
   stdout { codec => rubydebug } 
 }
 
-The above sets logstash to communicate directly to one of the index machines because it talks on 9300, not on the 9200 that is routed by nginx for the queries
+TODO: check these logstash configs are up to date.
+
+NOTE: The above sets logstash to communicate directly to one of the index machines because it talks on 9300, not on the 9200 that is routed by nginx for the queries
 This would cause a problem on machine failure as it does not go through the clustering server setup, but as it is just for logging it is not critical anyway
 It does put more indexing load on this machine in the cluster, but that is fine - if the cluster needed more overhead, assigning more machines to it should be 
 for the purpose of improving service to end users anyway - not worrying about logging niceties. Unless so much logging happens that it starts to push that one machine over - but that should not happen on this scale
-# now restart logstash to make config take effect
+
+Now restart logstash to make the configs take effect
+
 sudo service logstash restart
+
+ADMIN: Logstash and kibana will create daily indexes in the elasticsearch cluster. Once they are of no further use, they should be deleted.
+Otherwise the cluster will get far larger than necessary.
+
+The command to delete an index is:
+
+curl -X DELETE http://gateway:9200/kibana/<NAME_OF_INDEX_YOU_WANT_TO_REMOVE>
+
+TODO: check the above index route.
+
+Of course, BE CAREFUL WITH DELETE COMMANDS.
+
+See the elasticsearch documentation for more information.
 
 
 ## JPER APPLICATION MACHINE(S)
 
-added supervisord.conf script to jper repo too
-https://raw.githubusercontent.com/CottageLabs/sysadmin/master/config/supervisor/supervisord.conf
+Firstly, install supervisor which keeps apps up and running. There are configurations in the jper repo, which can be copied into place 
+as demonstrated below along with the install commands:
 
-# get latest version of supervisor via pip
 pip install supervisor
 curl -s https://raw.githubusercontent.com/Supervisor/initscripts/eb55c1a15d186b6c356ca29b6e08c9de0fe16a7e/ubuntu > ~/supervisord
 sudo mv ~/supervisord /etc/init.d/supervisord
@@ -161,46 +231,120 @@ sudo update-rc.d supervisord defaults
 sudo mkdir /var/log/supervisor
 sudo mkdir /etc/supervisor/
 sudo mkdir /etc/supervisor/conf.d
-sudo cp /home/mark/jper/src/jper/supervisord.conf /etc/supervisor/supervisord.conf
+sudo cp /home/mark/jper/src/jper/deployment/supervisord.conf /etc/supervisor/supervisord.conf
 sudo ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf
 sudo ln -s /usr/local/bin/supervisord /usr/bin/supervisord
 sudo /usr/sbin/service supervisord start
 cd /etc/supervisor/conf.d
-sudo ln -s /home/mark/jper/src/jper/jper.conf .
+sudo ln -s /home/mark/jper/src/jper/deployment/jper.conf .
 sudo supervisorctl reread
 sudo supervisorctl update
 
-go into virtualenv of jper and pip install gunicorn
+Now start up the virtualenv for the jper software and install gunicorn
 
-NEED LXML ON JPER APP MACHINE
-apt-get install libxml2-dev libxslt1-dev python-dev zlib1g-devc
+cd ~/jper/src/jper
+source ../../bin/activate
+pip install gunicorn
 
-and make a virtualenv then git clone and submodule init update then pip install -r requirements.txt
+And lxml is also needed on the jper app machine, so run these commands to install it:
 
-added a supervisor file to the jper repo and ln it into the supervisor conf location on app1
+sudo apt-get install libxml2-dev libxslt1-dev python-dev zlib1g-devc
 
-added user mark to sudoers for supervisor restart - this was for codeship but seem to have ssh issues there anyway so ignore for now
-mark ALL = (root) NOPASSWD:/usr/bin/supervisorctl restart jper
+mkpasswd is also required by user management scripts in the jper codebase, so run the following command to install it on the machine:
 
-edited /etc/hosts on app1 to route gateway to the current gateway machine at 10.0.38.122
-and also routed store to the gateway from the app machine running jper, so that it can find the store at http://store from its store config
+sudo apt-get install whois
 
-### Running the scheduler
+To actually use the jper software, we must also install it. Check the README from the repo for software install instructions, but 
+it should conform to the following:
 
-Disk location configurations - make sure enough space for ftptmp and tmparchive
+cd ~/jper/src/jper
+source ../../bin/activate
+git submodule init
+git submodule update
+pip install -r requirements.txt
+
+TODO: need to give su perms to the user that will be running the code, to run the scripts to create, delete users, and move user files.
+See sudoers. This only needs to happen on the first jper machine, as it is assumed to coincide with the machine where sftp access is also configured.
+note the changes required via visudo to the createFTPuser.sh and delete scripts, the scripts themselves document the change required
+
+
+Now, configure the hosts on the machine so that requests to the gateway machine go to the correct place (IP correct at time of writing this document)
+Also, put in a route for the server that will be running the document store software too, so that it can be found by the software.
+
+sudo vim /etc/hosts
+
+TODO: lookup the hosts file for the current routes to gateway and store
+
+When ready, the app can be started as follows:
+
+sudo supervisorctl start jper
+
+Stopping and status can be performed as expected, with the following commands, when necessary:
+
+sudo supervisorctl stop jper
+sudo supervisorctl restart jper
+sudo supervisorctl status
+
+ADMIN: check that the jper app is always running, eitehr manually with the supervisor command, or by installing your preferred application 
+monitoring and alerting tools.
+
+
+### Running the jper app scheduler
+
+The jper app includes a scheduler, which in simple configuration can be run by the app itself. This however requires restricting the app to 
+one worker and one thread. So in production, the app runs on multiple workers (via the supervisor config) and multithreaded (via the app config).
+So the scheduler, which must run to check the SFTP deposits by publishers, and to check unrouted notifications and route them to matched institutions, 
+happen on a regular basis.
+
+TODO: Disk location configurations - make sure enough space for ftptmp and tmparchive
 Turn off tmparchive when not needed
 
-### Setting up SFTP on a JPER machine
+TODO: scheduler config options from jper app settings (delete_routed etc)
 
-configured app1.router2.mimas.ac.uk to receive sftp requests.
-create a group called sftpusers
+Running the scheduler is straightforward. Start a new terminal screen and enter the following command:
+
+screen
+cd ~/jper/src/jper
+python scheduler.py
+
+TODO: check the scheduler starting command
+
+NOTE: the scheduler scripts make some assumptions about how the SFTP accounts are configured and used by publishers. In particular, 
+the scheduler will expect them to be on the same machine, and in a certain location. See below for configuring SFTP, and keep this in 
+mind when scaling up - whilst the jper app code can be easily scaled to run the service on multiple machines, the scheduler will need to 
+be only on the machine that has the sftp accesses configured. Whilst other scheduled operations could run on mutliple machines, there is no 
+handling in place to ensure notifications do not then end up being processed on multiple machines - so, keep the scheduler running only on 
+one machine. When the scheduler processes notifications, those would be POSTed into the pool of machines running the app anyway, so the actual 
+work of dealing with them after they are processed out of the SFTP directories will be spread across the pool.
+
+ADMIN: check regularly that the scheduler is running, or no incoming notifications will be processed (although they also will not be lost). 
+This can be monitored using your preferred app monitoring tools, or manually.
+
+ADMIN: check that any local copies of processed files being held in ftptmp are being removed - they should only be there temporarily during processing.
+Also, any files in the sftpusers directories should be getting processed and removed if the scheduler is running properly, so check there too.
+
+ADMIN: if the tmparchive option is being used to make sure an exact copy of files as recevied from publishers is being kept, keep an eye on how much 
+storage is being used.
+
+
+### Setting up SFTP on a JPER app machine
+
+SFTP is configured on the first jper app machine, to ensure secure access for publishers to deposit articles via FTP. The publisher accounts 
+are created and managed via the jper software, so the machine just needs to be configured to give those user accounts SFTP rights.
+
+First, create a group called sftpusers
+
 sudo groupadd sftpusers
 
-created a directory for sftpusers that must be owned by root
+Then created a directory for sftpusers that must be owned by root
 sudo mkdir /home/sftpusers
 
-edited the /etc/ssh/sshd_config to put this at the end
-commented out the main PasswordAuthentication param so it could be added to the following matches
+Edit the /etc/ssh/sshd_config
+
+sudo vim /etc/ssh/sshd_config
+
+Comment out the default PasswordAuthentication parameter in the file, then put this at the end:
+
 Match Group !sftpusers
     PasswordAuthentication no
     
@@ -211,23 +355,19 @@ Match Group sftpusers
     X11Forwarding no
     ForceCommand internal-sftp
 
-then restarted the server to get these changes to take effect.
-manually created a test user called testing with password admin, using the commands from the script. Successfully logs in to sftp
-
-need mkpasswd to be installed for the createftpuser.sh so get it along with whois by sudo apt-get install whois
-
-note the changes required via visudo to the createFTPuser.sh and delete scripts, the scripts themselves document the change required
+Then restart the server to get these changes to take effect.
 
 
-### Setting up log forwarding on the JPER machine(s)
+### Setting up log forwarding on the JPER app machine(s)
 
 Now setup logstash on app1 to send the jper log to the logstash server running on gateway
 
-First from gateway scp the cert to the app1 machine
+First, login (ssh) to the gateway machine where the logstash server was installed (or whichever machine it was installed to) and copy the 
+certificate that was generated previously onto the app machine, for example with the below command:
 
 scp /etc/pki/tls/certs/logstash-forwarder.crt app1.router2.mimas.ac.uk:/tmp
 
-Then ssh into app1 machine and install logstash client
+Then login (ssh) to the app machine and install logstash client
 
 echo 'deb http://packages.elasticsearch.org/logstashforwarder/debian stable main' | sudo tee /etc/apt/sources.list.d/logstashforwarder.list
 wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
@@ -259,13 +399,17 @@ and this in the files section (top object is just for testing with sys logs, com
       "fields": { "type": "jperlog" }
     }
 
-then save and close the file and restart logstash forwarder
+then save and close the file and restart logstash forwarder:
 
 sudo service logstash-forwarder restart
 
+Repeat this process on any machine that you want to submit logs to the logstash server.
+
+NOTE: the IPs and logfile names shown in the above configs are correct at time of writing this documentation. However, 
+of course, they can be augmented as necessary to suit any future installations.
 
 
-## STORE APPLICATION MACHINE(S)
+## STORE APPLICATION MACHINE
 
 clone store and put its supervisor script in place, then run it.
 
@@ -276,50 +420,100 @@ ADMIN - ensure the store app is running. Supervisor brings it up on machine rest
 ADMIN - keep an eye on the disk usage. Expand it when necessary, and/or remove old unnecessary files.
 
 
-## SWORD-IN / SWORD-OUT APPLICATION MACHINE(S)
+## SWORD-IN / SWORD-OUT APPLICATION MACHINE
 
-Currently same machine as store machine. But does not have to be.
 
-deploying sword-in onto app2
-it should not take much resource
-and can be deployed on other machines, I will setup a cluster for sword from the gateway to point to it
+SWORD-IN
 
+The initial installation placed the sword-in and sword-out software on the same machine as the store software, but they do not have to be on the same machine.
+
+Login (ssh) to the machine on which sword is to be installed, and perform the following:
+
+cd ~
+virtualenv -p python2.7 jper-sword-in --no-site-packages
+cd jper-sword-in
+mkdir src
+cd src
 git clone https://github.com/JiscPER/jper-sword-in.git
 
-follow the install instructions - do lxml
-also need to install -e . Simple-sword-server
-can also run pip install requirements.txt which does it all
+Then follow the sword-in software package installation instructions. In particular, ensure lxml is installed, and that the simple-sword-server and other dependencies are installed.
+The following commands show what is likely needed, but the sword-in installation documentation should be considered the most up to date:
 
-create a local.cfg and put something like this in:
+sudo apt-get install libxml2-dev libxslt1-dev python-dev zlib1g-devc
+source ../../bin/activate
+pip install -r requirements.txt
+
+The create a local.cfg file in the sword-in software repository directory and put the following config settings in it (which can be augmented as necessary for future changes):
+
 PORT = 5001
 JPER_BASE_URL = "https://pubrouter.jisc.ac.uk/api/v1"
 JPER_API_KEY = "admin"
 SWORD2_SERVER_CONFIG['base_url'] = "https://pubrouter.jisc.ac.uk/sword"
 
-configured the store nginx conf to send /sword to the sword app
-also added a sword.conf and gconf.py to the jper-sword-in repo folder (TODO but have not pushed these to the repo yet)
-and then:
-cd /home/mark/jper-sword-in/src/jper-sword-in
-source ../../bin/activate
+Because the sword apps are configured by default on the same machine as the store app, the nginx config file available with the store app 
+also contains the configuration necessary to send the /sword route to the sword app. However, this could be separated out should the sword apps
+be moved to a separate machine.
+
+TODO also added a sword.conf and gconf.py to the jper-sword-in repo folder (TODO but have not pushed these to the repo yet)
+
+And then perform the following commands to run the sword-in app under supervisor:
+
 pip install gunicorn
 cd /etc/supervisor/conf.d
 sudo ln -s /home/mark/jper-sword-in/src/jper-sword-in/store.conf .
 sudo supervisorctl reread
 sudo supervisorctl update
 
-NOTE: at this point sword is running but front page throws an error, because the template seems to fail. Should not matter, but get RJ to check
+NOTE: at this point the sword endpoint will be running, but viewing the URL in a web browser will show an error. This does not strictly matter, 
+as the sword server is not a web server; it will still operate as intended.
+
+ADMIN: The sword-in app should be checked regularly to ensure it is still running, otherwise sword input to the jper app will fail. 
+Running it under supervisor should take care of this, but install your own monitoring and alerting software of preference if necessary.
 
 
-## ELASTICSEARCH INDEX MACHINES
+SWORD-OUT
 
-INSTALL ES ON INDEX MACHINES - follow our usual setup.py instructions and then configure as per infrastructure for specific sync by IP 
-and install plugins
+TODO: add the sword-out install instructions here
+
+
+## ELASTICSEARCH INDEX MACHINE(S)
+
+TODO: copy over instructions from our usual ES install process and from the infrastructure setup
+
+Make sure the index machines have sufficient disk space attached, and that the elasticsearch software is configured to store indexes in its data directory 
+to somewhere on the large disks.
+
+Install the necessary plugins:
+
 bin/plugin -install mobz/elasticsearch-head
 bin/plugin install elasticsearch/elasticsearch-mapper-attachments/2.4.3
 
-installed on index1 then tarred the whole dir and copied to index2
-and put the forwarder to the init script in place
-and installed java again
+After installation on the first index machine, archive and copy the entire elasticsearch directory onto the next machine to be configured to join the elasticsearch cluster.
+
+And put the symbolic link to the init script in place
+
+TODO: put in the symlink command
+
+The elasticsearch indexes are technically transient data, and everything in them could be replicated if the incoming files from publishers are stored. However, any metadata 
+coming directly into the jper app native API will exist only the index, and could potentially not have any locally available stored article metadata from which to rebuild. Despite this, the function of the jper app is such that it is supposed to process notifications and route them to institutions if possible, and NOT to do historical routing. So, technically, it is not critical to perform backups of the indexes. But, it may still be a good idea and would certainly be convenient in the event of a disaster.
+
+ADMIN: ensure regular backups of the elasticsearch cluster data are successfully made, if deemed necessary. Elasticsearch has multiple backup options, both built-in and external. 
+For maximum recoverability, backups should be encrypted and stored in an entirely different system and site from that which runs the cluster.
+
+ADMIN: When introducing new machines to the cluster, update the gateway nginx config so that it knows about the additional machines to which queries can be routed. 
+Also, be aware that the logstash server communicates directly to the first elasticsearch index via port 9300 rather than over the 9200 interface, so if the first 
+machine is ever decommissioned or has its IP changed, be sure to alter the gateway nginx config to point to the new IP.
+
+ADMIN: make sure there is always enough spare disk space to accommodate the indexes on each machine in the elasticsearch cluster.
+
+ADMIN: make sure there is sufficient memory on the elasticsearch machines to run smoothly. In particular, look out for java pid file dumps appearing in the 
+elasticsearch directories - these indicate queries filling all available RAM and causing a java memory dump.
+
+ADMIN: it would be a good idea to install your preferred system monitoring and alerting software, and configuring it to monitor disk and memory usage in particular. CPU usage 
+may be useful to track too, but is less likely to be a problem.
+
+ADMIN: managing elasticsearch indexing cluster is an administrative task all to itself. Review the elasticsearch documentation and online resources for further information.
+
 
 
 
