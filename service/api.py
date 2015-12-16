@@ -260,7 +260,7 @@ class JPER(object):
             else:
                 app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the routed notification".format(z=magic, x=accid, y=notification_id))
                 return rn.make_outgoing()
-        if account.has_role('publisher') or current_user.is_super:
+        if accid is not None and (account.has_role('publisher') or current_user.is_super):
             urn = models.UnroutedNotification.pull(notification_id)
             if urn is not None:
                 if accid == urn.provider_id:
