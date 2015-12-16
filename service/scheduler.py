@@ -22,7 +22,7 @@ running the schedule would need access to any relevant directories.
 
 import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json
 from threading import Thread
-from octopus.core import app
+from octopus.core import app, initialise
 
 import models, routing
 
@@ -217,6 +217,7 @@ def go():
     
 
 if __name__ == "__main__":
+    initialise()
     print "starting scheduler"
     app.logger.info("Scheduler - starting up directly in own process.")
     run()
