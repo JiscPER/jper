@@ -91,6 +91,8 @@ def standard_authentication():
         else:
             abort(401)
     else:
+        if (request.path.startswith("/api/v1/notification") and "/content" not in request.path) or request.path.startswith("/api/v1/routed"):
+            return
         print "aborting, no user"
         app.logger.info("Standard authentication failed")
         abort(401)
