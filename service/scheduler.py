@@ -26,7 +26,6 @@ from octopus.core import app
 
 import models, routing
 
-
 # functions for the checkftp to unzip and move stuff up then zip again in incoming packages
 def zip(src, dst):
     zf = zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED)
@@ -37,6 +36,7 @@ def zip(src, dst):
             arcname = absname[len(abs_src) + 1:]
             zf.write(absname, arcname)
     zf.close()
+
 def extract(fl,path):
     app.logger.debug('Extracting ' + fl)
     try:
@@ -64,6 +64,7 @@ def extract(fl,path):
         except:
             app.logger.debug('Extraction could not be done for ' + fl)
             return False
+
 def flatten(destination, depth=None):
     if depth is None:
         depth = destination
@@ -218,4 +219,5 @@ def go():
 if __name__ == "__main__":
     print "starting scheduler"
     app.logger.info("Scheduler - starting up directly in own process.")
-    go()
+    run()
+    

@@ -305,9 +305,13 @@ Running the scheduler is straightforward. Start a new terminal screen and enter 
 
 screen
 cd ~/jper/src/jper
-python scheduler.py
+source ../../bin/activate
+python service/scheduler.py
 
-TODO: check the scheduler starting command
+To kill the scheduler, if ctrl-c in the screen window fails, find the pid of the running process and kill it:
+
+ps -ef | grep scheduler
+kill -9 &lt;pid&gt;
 
 NOTE: the scheduler scripts make some assumptions about how the SFTP accounts are configured and used by publishers. In particular, 
 the scheduler will expect them to be on the same machine, and in a certain location. See below for configuring SFTP, and keep this in 
