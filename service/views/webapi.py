@@ -91,6 +91,7 @@ def standard_authentication():
         else:
             abort(401)
     else:
+        # FIXME: this is not ideal, as it requires knowing where the blueprint is mounted
         if (request.path.startswith("/api/v1/notification") and "/content" not in request.path) or request.path.startswith("/api/v1/routed"):
             return
         print "aborting, no user"
@@ -220,6 +221,8 @@ def retrieve_content(notification_id, filename=None):
         fn = "none"
     else:
         fn = filename
+
+    nt = None
     try:
         filestream = JPER.get_content(current_user, notification_id, filename)
         nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"store"})
@@ -228,7 +231,8 @@ def retrieve_content(notification_id, filename=None):
         nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"notfound"})
         return _not_found()
     finally:
-        nt.save()
+        if nt is not None:
+            nt.save()
 
 @blueprint.route("/notification/<notification_id>/proxy/<pid>", methods=["GET"])
 def proxy_content(notification_id, pid):

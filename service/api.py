@@ -396,7 +396,7 @@ class JPER(object):
 
         res = models.RoutedNotification.query(q=qr)
         app.logger.debug('List all notifications query resulted ' + json.dumps(res))
-        nl.notifications = [i['_source'] for i in res.get('hits',{}).get('hits',[])]
+        nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
         nl.total = res.get('hits',{}).get('total',0)
         return nl
 
