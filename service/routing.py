@@ -419,6 +419,11 @@ def repackage(unrouted, repo_ids):
 def links(routed):
     newlinks = []
     for link in routed.links:
+        # treat a missing access annotation as a "public" link
+        if "access" not in link:
+            link["access"] = "public"
+
+        # for all public links, create the router proxy
         if link.get('access') == 'public':
             nl = deepcopy(link)
             nid = uuid.uuid4().hex
