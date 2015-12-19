@@ -50,8 +50,10 @@ def initialise():
     lvl = app.config.get('LOGLEVEL','info')
     if lvl == 'debug':
         file_handler.setLevel(logging.DEBUG)
+        app.logger.setLevel(logging.DEBUG)
     else:
         file_handler.setLevel(logging.INFO)
+        app.logger.setLevel(logging.INFO)
     file_handler.setFormatter(Formatter(
         '%(asctime)s %(levelname)s: %(message)s '
         '[in %(pathname)s:%(lineno)d %(module)s %(funcName)s]'
