@@ -7,7 +7,7 @@ import json, csv
 from octopus.core import app
 from octopus.lib import webapp, dates
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from service.api import JPER, ValidationException, ParameterException
+from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
 from service import models
 
 blueprint = Blueprint('webapi', __name__)
@@ -22,6 +22,17 @@ def _not_found():
     resp = make_response("")
     resp.mimetype = "application/json"
     resp.status_code = 404
+    return resp
+
+def _unauthorised():
+    """
+    Construct a response object to represent a 404 (Not Found)
+
+    :return: Flask response for a 404, with an empty response body
+    """
+    app.logger.debug("Sending 401 Unauthorised")
+    resp = make_response("")
+    resp.status_code = 401
     return resp
 
 def _bad_request(message):
@@ -91,6 +102,7 @@ def standard_authentication():
         else:
             abort(401)
     else:
+        # FIXME: this is not ideal, as it requires knowing where the blueprint is mounted
         if (request.path.startswith("/api/v1/notification") and "/content" not in request.path) or request.path.startswith("/api/v1/routed"):
             return
         print "aborting, no user"
@@ -220,15 +232,21 @@ def retrieve_content(notification_id, filename=None):
         fn = "none"
     else:
         fn = filename
+
+    nt = None
     try:
         filestream = JPER.get_content(current_user, notification_id, filename)
         nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"store"})
         return Response(stream_with_context(filestream))
-    except:
+    except UnauthorisedException as e:
+        nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"unauthorised"})
+        return _unauthorised()
+    except Exception as e:
         nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"notfound"})
         return _not_found()
     finally:
-        nt.save()
+        if nt is not None:
+            nt.save()
 
 @blueprint.route("/notification/<notification_id>/proxy/<pid>", methods=["GET"])
 def proxy_content(notification_id, pid):

@@ -17,7 +17,6 @@ from random import randint, random, triangular
 from octopus.modules.jper import client
 from service.tests import fixtures
 from octopus.lib import dates, http, isolang
-from copy import deepcopy
 
 def _load_keys(path):
     """
@@ -651,6 +650,9 @@ def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_c
                         app.logger.info("Thread:{x} - Following List/Get for Account:{y} on Repository:{b}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=note.id, a=url, b=repository_id))
                         try:
                             stream, headers = j.get_content(url)
+                        except client.JPERAuthException as e:
+                            # we got a 401 back from the service, that is acceptable, since we may not be authorised to access it
+                            app.logger.info(("Thread:{x} - get content unauthorised (401) for Content:{z} - this can happen, so is not necessarily unexpected".format(x=tname, z=url)))
                         except Exception as e:
                             app.logger.info("Thread:{x} - MAJOR ISSUE; get content failed for Content:{z} that should have existed.  This needs a fix: '{b}'".format(x=tname, z=url, b=e.message))
 

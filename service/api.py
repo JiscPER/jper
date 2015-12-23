@@ -31,6 +31,16 @@ class ParameterException(Exception):
     """
     pass
 
+class UnauthorisedException(Exception):
+    """
+    Exception which gets raised if there is an authorisation problem which we need to distinguish from
+    a request which failed for another reason.
+
+    For example, during content retrieve, if there is no content, nothing is returned, but if there is content
+    but the user is unauthorised, this exception can be raised.
+    """
+    pass
+
 class JPER(object):
     """
     Main Python API for interacting with the JPER system
@@ -296,18 +306,24 @@ class JPER(object):
                 store_filename = pm.zip_name()
             sm = store.StoreFactory.get()
             app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns unrouted notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
-            return sm.get(urn.id, store_filename)
+            return sm.get(urn.id, store_filename) # returns None if not found
         else:
             rn = models.RoutedNotification.pull(notification_id)
-            if rn is not None and account.has_role('publisher') or ( account.has_role('repository') and account.id in rn.repositories) or current_user.is_super:
-                if filename is not None:
-                    store_filename = filename
+            if rn is not None:
+                if ((account.has_role("publisher") and rn.provider_id == account.id) or
+                        (account.has_role("repository") and account.id in rn.repositories) or
+                        current_user.is_super):
+                    if filename is not None:
+                        store_filename = filename
+                    else:
+                        pm = packages.PackageFactory.incoming(rn.packaging_format)
+                        store_filename = pm.zip_name()
+                    sm = store.StoreFactory.get()
+                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns routed notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
+                    return sm.get(rn.id, store_filename)
                 else:
-                    pm = packages.PackageFactory.incoming(rn.packaging_format)
-                    store_filename = pm.zip_name()
-                sm = store.StoreFactory.get()
-                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns routed notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
-                return sm.get(rn.id, store_filename)
+                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; not authorised to receive this content".format(z=magic, x=account.id, y=notification_id, a=filename))
+                    raise UnauthorisedException()
             else:
                 app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; no suitable content found to return".format(z=magic, x=account.id, y=notification_id, a=filename))
                 return None
@@ -396,7 +412,7 @@ class JPER(object):
 
         res = models.RoutedNotification.query(q=qr)
         app.logger.debug('List all notifications query resulted ' + json.dumps(res))
-        nl.notifications = [i['_source'] for i in res.get('hits',{}).get('hits',[])]
+        nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
         nl.total = res.get('hits',{}).get('total',0)
         return nl
 
