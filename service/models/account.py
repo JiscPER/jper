@@ -125,7 +125,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
 
     @classmethod
     def pull_by_key(cls,key,value):
-        res = cls.query(q={"query":{"term":{key+'.exact':value}}})
+        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
         if res.get('hits',{}).get('total',0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )
         else:
