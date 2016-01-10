@@ -20,7 +20,7 @@ all machines but some synchronisation would have to be added to that tasks were 
 running the schedule would need access to any relevant directories.
 '''
 
-import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json
+import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json, sys
 from threading import Thread
 from octopus.core import app, initialise
 
@@ -163,7 +163,8 @@ def processftp():
                                             
             shutil.rmtree(userdir + '/' + dir)
     except:
-        app.logger.error("Scheduler - failed scheduled process for FTP temp directories")
+        e = sys.exc_info()[0]
+        app.logger.error("Scheduler - failed scheduled process for FTP temp directories: " + e)
 
 if app.config.get('PROCESSFTP_SCHEDULE',10) != 0:
     schedule.every(app.config.get('PROCESSFTP_SCHEDULE',10)).minutes.do(processftp)
