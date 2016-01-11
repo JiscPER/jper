@@ -115,6 +115,10 @@ CHECKUNROUTED_SCHEDULE = 10
 DELETE_ROUTED = True
 DELETE_UNROUTED = True
 
+# Scheduler can also do necessary reporting jobs
+REPORTSDIR = '/home/mark/jper_reports'
+SCHEDULE_MONTHLY_REPORTING = False
+
 LOGLEVEL = 'debug'
 LOGFILE = '/home/mark/jperlog'
 

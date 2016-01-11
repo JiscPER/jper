@@ -20,7 +20,7 @@ all machines but some synchronisation would have to be added to that tasks were 
 running the schedule would need access to any relevant directories.
 '''
 
-import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json, sys
+import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json
 from threading import Thread
 from octopus.core import app, initialise
 
@@ -162,9 +162,8 @@ def processftp():
                         app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
                                             
             shutil.rmtree(userdir + '/' + dir)
-    except:
-        e = sys.exc_info()[0]
-        app.logger.error("Scheduler - failed scheduled process for FTP temp directories: " + e)
+    except Exception as e:
+        app.logger.error("Scheduler - failed scheduled process for FTP temp directories: '{x}'".format(x=e.message))
 
 if app.config.get('PROCESSFTP_SCHEDULE',10) != 0:
     schedule.every(app.config.get('PROCESSFTP_SCHEDULE',10)).minutes.do(processftp)
@@ -199,8 +198,76 @@ if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
     schedule.every(app.config.get('CHECKUNROUTED_SCHEDULE',10)).minutes.do(checkunrouted)
 
 
-    
-    
+
+def monthly_reporting():
+    # python schedule does not actually handle months, so this will run every day and check whether the current month has rolled over or not
+    try:
+        app.logger.info('Scheduler - Running reporting')
+        app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
+        
+        # create / update a monthly deliveries by institution report
+        # it should have the columns HEI, Jan, Feb...
+        # and rows are HEI names then count for each month
+        # finally ends with sum total (total of all numbers above) 
+        # and unique total (total unique objects accessed - some unis may have accessed the same one)
+        # query the retrieval index to see which institutions have retrieved content from the router in the last month
+        month = 'jan' # work this out properly
+        year = '2016' # work this out properly
+        monthtracker = app.config.get['REPORTSDIR','/home/mark/jper_reports'] + '/monthtracker'
+        lm = open(monthtracker,'r')
+        lastmonth = lm.read().strip('\n')
+        lm.close()
+        if lastmonth != month:
+            lmm = open(monthtracker,'w')
+            lmm.write(month)
+            lmm.close()
+        
+            out = {}
+            total = 0
+            uniques = []
+            res = {} # query for all retrievals in lastmonth
+            for ht in res:
+                total += 1
+                if ht['institution'] not in out.keys(): out[ht['institution']] = {}
+                if month not in out[ht['institution']].keys():
+                    out[ht['institution']][month] = 1
+                else:
+                    out[ht['institution']][month] = int(out[ht['institution']][month]) + 1
+                if ht['object'] not in uniques: uniques.append(ht['object'])
+            out['uniques'][month] = len(uniques)
+            out['total'][month] = total
+
+            # check for the report csv and read it in if it exists or else create something to start from
+            reportfile = app.config.get['REPORTSDIR','/home/mark/jper_reports'] + '/monthly_notifications_to_institutions_' + year + '.csv'
+            if os.path.exists(reportfile):
+                sofar = csv.DictReader(reportfile)
+                for row in sofar:
+                    if row['HEI'] not in out.keys(): out[row['HEI']] = {}
+                    for mth in row.keys():
+                        if mth != 'HEI':
+                            out[row['HEI']][mth] = row[mth]
+            # sort out by keys so institutions are alphabetical, and then total and uniques are at the end
+
+            outfile = open(reportfile,'w')
+            headers = ['HEI','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+            outfile.write(",".join(headers))
+            for hei in out:
+                ln = ''
+                for hr in headers: ln += hei.get(hr,'') + ','
+                outfile.write(ln.strip(','))
+            outfile.close()
+
+            # necessary tasks for other monthly reporting could be defined here
+            # reporting that has to run more regularly could be defined as different reporting methods altogether
+            # and controlled with different settings in the config
+            
+    except:
+        app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
+  
+if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
+    schedule.every().day.at("06:00").do(monthly_reporting)
+
+
 def cheep():
     app.logger.info("Scheduled cheep")
     print "Scheduled cheep"
