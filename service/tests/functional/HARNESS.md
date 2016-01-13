@@ -49,6 +49,30 @@ NOTE: the default list in pub_keys.txt is the default admin account created when
 if you plan to import that file, so that it does not include that admin account, otherwise it will create a second account with the same
 API key, and errors will ensue.
 
+If you want to create and then load random test data, you can first do:
+
+    python random_repos.py
+    
+This will produce 2 files, which contain 70 api keys and repository configs respectively:
+
+* gen_repo_keys.txt
+* gen_repo_configs.json
+
+You can then load these into the index using a similar command as to above:
+
+    python load_test_data.py --repo_configs gen_repo_configs.json --repo_keys gen_repo_keys.txt --pub_keys pub_keys.txt
+    
+If you want the accounts also to be able to deposit into a repository, you can specify a random chance that they will]
+have a repository config
+
+    python load_test_data.py --repo_configs gen_repo_configs.json --repo_keys gen_repo_keys.txt --pub_keys pub_keys.txt \
+                    --sword 0.2 \
+                    --to "http://eprints.jisc.ac.uk/id/content" \
+                    --username test \
+                    --login test \
+                    
+This will give 20% of the accounts a sword deposit configuration to deposit to http://eprints.jisc.ac.uk/id/content with username/password test/test
+
 ## Quickstart
 
 The harness comes with a convenience script to allow you to execute the test with some sensible default parameters

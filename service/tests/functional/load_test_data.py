@@ -11,6 +11,7 @@ For command line options run
 from octopus.core import app, add_configuration, initialise
 import json
 from service import models
+from random import random
 
 def _load_keys(path):
     """
@@ -43,6 +44,10 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--repo_configs", help="path to file which contains configs to load", default="repo_configs.json")
     parser.add_argument("-k", "--repo_keys", help="file where you can find a list of repo keys.  Should be the same number as there are repo configs", default="repo_keys.txt")
     parser.add_argument("-p", "--pub_keys", help="file where you can find a list of publisher keys.")
+    parser.add_argument("-s", "--sword", help="proportion accounts that will be created with a sword endpoint - will be done at random", default=0.0)
+    parser.add_argument("-t", "--to", help="url of sword collection to deposit to")
+    parser.add_argument("-u", "--username", help="username of sword account in repository")
+    parser.add_argument("-l", "--login", help="login password of sword account in repository")
 
     args = parser.parse_args()
 
@@ -85,14 +90,20 @@ if __name__ == "__main__":
         acc.add_packaging("http://purl.org/net/sword/package/SimpleZip")
         acc.set_api_key(key)
         acc.add_role("repository")
+
+        # should it do sword deposit
+        if random() < float(args.sword):
+            acc.add_sword_credentials(args.username, args.login, args.to)
+
         acc.save()
 
     # load the publisher accounts
-    for key in pubs:
-        acc = models.Account()
-        acc.set_api_key(key)
-        acc.add_role("publisher")
-        acc.save()
+    if pubs is not None:
+        for key in pubs:
+            acc = models.Account()
+            acc.set_api_key(key)
+            acc.add_role("publisher")
+            acc.save()
 
 
 
