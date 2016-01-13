@@ -449,13 +449,13 @@ There is a file called "storage" in the code repo, which provides an nginx confi
 symlinked into the nginx sites-enabled folder, and then nginx should be restarted:
 
     cd /etc/nginx/sites-enabled
-    sudo ln -s ~/store/src/store/storage .
+    sudo ln -s ~/store/src/store/deployment/storage .
     sudo /etc/init.d/nginx restart
     
 There is also a supervisor config file for the store, called "store.conf". Put it in place too:
 
     cd /etc/supervisor/conf.d
-    sudo ln -s ~/sword/src/sword/store.conf .
+    sudo ln -s ~/sword/src/sword/deployment/store.conf .
     sudo supervisorctl reread
     sudo supervisorctl update
 
@@ -510,7 +510,9 @@ And then perform the following commands to run the sword-in app under supervisor
     sudo supervisorctl update
 
 NOTE: at this point the sword endpoint will be running, but viewing the URL in a web browser will show an error. This does not strictly matter, 
-as the sword server is not a web server; it will still operate as intended.
+as the sword server is not a web server; it will still operate as intended. The storage service above contained an nginx configuration that also routes 
+requests from the gateway machine to the sword-in code, so that will already be in place. If you have to scale up the services by moving sword-in 
+onto a different machine from store, then abstract out the necessary parts of the nginx config too.
 
 ADMIN: The sword-in app should be checked regularly to ensure it is still running, otherwise sword input to the jper app will fail. 
 Running it under supervisor should take care of this, but install your own monitoring and alerting software of preference if necessary.
@@ -557,6 +559,11 @@ The pattern should be familiar by now, these supporting apps run pretty much the
     sudo ln -s /home/mark/jper-oaipmh/src/jper-oaipmh/deployment/oaipmh.conf .
     sudo supervisorctl reread
     sudo supervisorctl update
+
+NOTE:  The storage service above contained an nginx configuration that also routes 
+requests forwarded from the gateway machine to the oaipmh code, so that will already be in place. 
+If you have to scale up the services by moving oaipmh
+onto a different machine from store, then abstract out the necessary parts of the nginx config too.
 
 ADMIN: The oaipmh app should be checked regularly because if it is not running then oaipmh queries to the system will fail.
 
