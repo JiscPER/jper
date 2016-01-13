@@ -80,13 +80,16 @@ if __name__ == "__main__":
         config = configs[i]
         key = keys[i]
 
+        # delete any existing repo config
+        models.RepositoryConfig.delete_by_query({"query" : {"term" : {"repository.exact" : config["repository"]}}})
+
         # make the repository config
         rc = models.RepositoryConfig(config)
         rc.save()
 
         # make the user account
         acc = models.Account()
-        acc.id = rc.id
+        acc.id = rc.repository
         acc.add_packaging("http://purl.org/net/sword/package/SimpleZip")
         acc.set_api_key(key)
         acc.add_role("repository")
