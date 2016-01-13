@@ -66,6 +66,12 @@ app.register_blueprint(webapi, url_prefix="/api/v1")
 from service.views.account import blueprint as account
 app.register_blueprint(account, url_prefix="/account")
 
+from service.views.reports import blueprint as reports
+app.register_blueprint(reports, url_prefix="/reports")
+
+from service.views.query import blueprint as query
+app.register_blueprint(query, url_prefix="/query")
+
 if app.config.get("FUNCTIONAL_TEST_MODE", False):
     from service.views.test import blueprint as test
     app.register_blueprint(test, url_prefix="/test")

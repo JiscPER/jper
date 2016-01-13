@@ -23,6 +23,7 @@
                 <li><a href="{{ url_for('account.logout') }}" style="color:#333;">Logout</a></li>
                 {% if current_user.has_role('admin') %}
                 <li><a href="{{ url_for('account.index') }}" style="color:#333;">Admin</a></li>
+                <li><a href="{{ url_for('reports.index') }}" style="color:#333;">Reports</a></li>
                 {% endif %}
             {% else %}
                 <li><a href="{{ url_for('account.login') }}" style="color:#333;">Login</a></li>

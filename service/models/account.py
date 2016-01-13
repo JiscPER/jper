@@ -82,7 +82,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         self._add_to_list("role", role, coerce=self._utf8_unicode())
 
     def remove_role(self, role):
-        self.role = self.role.remove(role)
+        self._delete_from_list("role", role)
 
     @role.setter
     def role(self, role):

@@ -62,7 +62,8 @@
                 {% if repoconfig %}
                 <a target="_blank" href="/api/v1/config{% if current_user.has_role('admin') %}/{{account.id}}?api_key={{current_user.data['api_key']}}{% else %}?api_key={{account.data['api_key']}}{% endif %}">View current JSON config for this repository (API)</a> 
                 <br><a target="_blank" href="/api/v1/routed/{{account.id}}?since=01/08/2015&api_key={{current_user.data['api_key']}}">View routed notifications for this repository (API)</a> 
-                {% endif %}
+                <br>(Review how your match config matched to notifications - if any - below.)
+								{% endif %}
             </div>
             <!--
             <p style="font-size:0.8em;">https://raw.githubusercontent.com/JiscPER/jper/develop/docs/csvtemplate.csv<br>
@@ -230,7 +231,7 @@
                     </button>
                 </form>
                 {% else %}
-                <form method="POST" action="{{request.path}}/cease/admin">
+                <form method="POST" action="{{request.path}}/become/admin">
                     <button class="btn btn-warning btn-block" type="submit" style="margin-bottom:3px;">
                         Make this account an admin account
                     </button>
@@ -247,6 +248,28 @@
         </div>
     </div>
 
+    {% if account.has_role('repository') %}
+		<div class="row">
+				<div class="col-md-12">
+						<div id="matchholder">
+                <div class="panel panel-default holder holder-ui">
+                    <div class="panel-heading" style="background-color:white;padding:0px;">
+                        <div class="input-group" style="margin-left:-1px;margin-top:-1px;margin-bottom:-6px;margin-right:-2px;">
+                            <div class="input-group-btn">
+                                <a href="#" class="btn btn-default holder holder-function" holder-function="prev" alt="previous" title="previous" style="height:50px;"><h2 style="margin-top:0px;">&lt;</h2></a>
+                            </div>
+                            <input type="text" class="form-control holder holder-search holder-function" holder-function="add" placeholder="search..." style="font-size:1.6em;height:50px;">
+                            <div class="input-group-btn">
+                                <a href="#" class="btn btn-default holder holder-function" holder-function="next" alt="next" title="next" style="height:50px;"><h2 style="margin-top:0px;">&gt;</h2></a>
+                            </div>
+                        </div>
+                        <div class="holder holder-filters" style="margin-top:5px;"></div>
+                    </div>
+								</div>
+						</div>
+				</div>	
+		</div>
+		{% endif %}
 
 {% endblock %}
 
@@ -258,7 +281,66 @@
             if (!conf) event.preventDefault();
         }
         $('#delete').bind('click',deleteaccount);
-
+			
+		    {% if account.has_role('repository') %}
+				
+				var results = function(data) {
+						var disp = '<table class="table table-striped table-bordered">';
+						for ( var r in data.hits.hits ) {
+							  var rec = data.hits.hits[r]._source;
+							  disp += '<p>' + rec.provenance.explanation + '</p>';
+                disp += '<p>' + searchify({class: 'holder', val: rec.provenance.source_field, attrs: {function: 'add', filter: 'provenance.source_field.exact', value: rec.provenance.source_field} });
+                disp += ': ' + searchify({class: 'holder', val: rec.provenance.term, attrs: {function: 'add', filter: 'provenance.term.exact', value: rec.provenance.term} });
+                disp += ' matched ' + searchify({class: 'holder', val: rec.provenance.notification_field, attrs: {function: 'add', filter: 'provenance.notification_field.exact', value: rec.provenance.notification_field} });
+                disp += ': ' + searchify({class: 'holder', val: rec.provenance.matched, attrs: {function: 'add', filter: 'provenance.matched.exact', value: rec.provenance.matched} });
+								disp += '</p>';
+								disp += '<p>Notification <a href="/api/v1/notification/' + rec.notification + '">' + rec.notification + '</a></p>'
+						}
+						disp += '</table>';
+						$('.holder.holder-results').html(disp);
+				}
+				
+				var qr = {
+						'query': {
+								'filtered': {
+										'query': {
+												'bool': {
+													  'must': [
+														]
+												}
+										},
+										'filter': {
+												'bool': {
+														'must': [
+																{
+																		'term': {
+																				'repository.exact': '{{account.id}}'
+																		}
+																}
+														]
+												}
+										}
+								}
+						}
+				}
+				
+				$('#matchholder').holder({
+						what: "Matches review",
+						url: "/query/match_prov/_search",
+					  datatype: 'JSON',
+						pushstate: false,
+					  defaultquery: qr,
+						results: {
+								default: results
+						},
+					  after: {
+							  render: function() {
+										$('.holder.holder-filters').children("[holder-remove='options.query.query.filtered.filter.bool.must.0']").first().hide();
+							  }
+						},
+						size: 20
+				});
+				{% endif %}
     });
     </script>
 {% endblock extra_js_bottom %}

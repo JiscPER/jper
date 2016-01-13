@@ -209,7 +209,7 @@ def register():
             flash('You must provide an email address','error')
             return render_template('account/register.html')
         elif models.Account.pull_by_email(vals['email']) is not None:
-            flash('An account already exists for that email address')
+            flash('An account already exists for that email address', 'error')
             return render_template('account/register.html')
         else:
             api_key = str(uuid.uuid4())

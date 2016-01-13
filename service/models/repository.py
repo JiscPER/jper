@@ -200,7 +200,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 for x in row.keys():
                     if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant' and len(row[x].strip()) > 1:
                         self.data['grants'] = self.data.get('grants',[]) + [row[x].strip()]
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'postcode' and len(row[x].strip()) > 1:
+                    elif x.strip().lower().replace(' ','').strip('s') == 'postcode' and len(row[x].strip()) > 1:
                         self.data['postcodes'] = self.data.get('postcodes',[]) + [row[x].strip()]
                     elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant' and len(row[x].strip()) > 1:
                         self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x].strip()]

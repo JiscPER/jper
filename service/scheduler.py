@@ -71,21 +71,21 @@ def flatten(destination, depth=None):
     app.logger.debug('Flatten depth set ' + destination + ' ' + depth)
     for fl in os.listdir(depth):
         app.logger.debug('Flatten at ' + fl)
-        if os.path.isfile(depth + '/' + fl):
-            app.logger.debug('Flatten ' + fl + ' is file')
+        if '.zip' in fl or '.tar' in fl:
+            app.logger.debug('Flatten ' + fl + ' is an archive')
             extracted = extract(depth + '/' + fl, depth)
             if extracted:
                 app.logger.debug('Flatten ' + fl + ' is extracted')
                 os.remove(depth + '/' + fl)
                 flatten(destination,depth)
-            else:
-                try:
-                    shutil.move(depth + '/' + fl, destination)
-                except:
-                    pass
-        else:
+        elif os.path.isdir(depth + '/' + fl):
             app.logger.debug('Flatten ' + fl + ' is not a file, flattening')
             flatten(destination, depth + '/' + fl)
+        else:
+            try:
+                shutil.move(depth + '/' + fl, destination)
+            except:
+                pass
 
 
 def moveftp():
@@ -98,20 +98,20 @@ def moveftp():
         for dir in userdirs:
             if len(os.listdir(userdir + '/' + dir + '/xfer')):
                 for thisitem in os.listdir(userdir + '/' + dir + '/xfer'):
-                  app.logger.info('Scheduler - moving file ' + thisitem + ' for Account:' + dir)
-                  fl = os.path.dirname(os.path.abspath(__file__)) + '/models/moveFTPfiles.sh'
-                  try:
-                      newowner = getpass.getuser()
-                  except:
-                      newowner = 'mark'
-                  uniqueid = uuid.uuid4().hex
-                  uniquedir = tmpdir + '/' + dir + '/' + uniqueid
-                  moveitem = userdir + '/' + dir + '/xfer/' + thisitem
-                  subprocess.call( [ 'sudo', fl, dir, newowner, tmpdir, uniqueid, uniquedir, moveitem ] )
+                    app.logger.info('Scheduler - moving file ' + thisitem + ' for Account:' + dir)
+                    fl = os.path.dirname(os.path.abspath(__file__)) + '/models/moveFTPfiles.sh'
+                    try:
+                        newowner = getpass.getuser()
+                    except:
+                        newowner = 'mark'
+                    uniqueid = uuid.uuid4().hex
+                    uniquedir = tmpdir + '/' + dir + '/' + uniqueid
+                    moveitem = userdir + '/' + dir + '/xfer/' + thisitem
+                    subprocess.call( [ 'sudo', fl, dir, newowner, tmpdir, uniqueid, uniquedir, moveitem ] )
             else:
                 app.logger.info('Scheduler - found nothing to move for Account:' + dir)
     except:
-        app.logger.info("Scheduler - for move from FTP failed")
+        app.logger.info("Scheduler - move from FTP failed")
         
 if app.config.get('MOVEFTP_SCHEDULE',10) != 0:
     schedule.every(app.config.get('MOVEFTP_SCHEDULE',10)).minutes.do(moveftp)
@@ -128,19 +128,25 @@ def processftp():
             apiurl = app.config['API_URL']
             acc = models.Account().pull(dir)
             apiurl += '?api_key=' + acc.data['api_key']
-            # there is a uuid dir of everything moved in a given operation from the user jail
+            # there is a uuid dir for each item moved in a given operation from the user jail
             for udir in os.listdir(userdir + '/' + dir):
                 thisdir = userdir + '/' + dir + '/' + udir
                 app.logger.info('Scheduler - processing ' + thisdir + ' for Account:' + dir)
                 for pub in os.listdir(thisdir):
                     # should be a dir per publication notification - that is what they are told to provide
-                    # so if not, dump whatever this is into a directory
+                    # and at this point there should just be one pub in here, whether it be a file or directory or archive
+                    # if just a file, even an archive, dump it into a directory so it can be zipped easily
                     if os.path.isfile(thisdir + '/' + pub):
                         nf = uuid.uuid4().hex
                         os.makedirs(thisdir + '/' + nf)
                         shutil.move(thisdir + '/' + pub, thisdir + '/' + nf + '/')
                         pub = nf
+                    
+                    # by now this should look like this:
+                    # /Incoming/ftptmp/<useruuid>/<transactionuuid>/<uploadeddirORuuiddir>/<thingthatwasuploaded>
 
+                    # they should provide a directory of files or a zip, but it could just be one file
+                    # but we don't know the hierarchy of the content, so we have to unpack and flatten it all
                     # unzip and pull all docs to the top level then zip again. Should be jats file at top now
                     flatten(thisdir + '/' + pub)
                     pkg = thisdir + '/' + pub + '.zip'
@@ -161,7 +167,7 @@ def processftp():
                     else:
                         app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
                                             
-            shutil.rmtree(userdir + '/' + dir)
+                shutil.rmtree(userdir + '/' + dir + '/' + udir)
     except Exception as e:
         app.logger.error("Scheduler - failed scheduled process for FTP temp directories: '{x}'".format(x=e.message))
 
@@ -202,8 +208,7 @@ if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
 def monthly_reporting():
     # python schedule does not actually handle months, so this will run every day and check whether the current month has rolled over or not
     try:
-        app.logger.info('Scheduler - Running reporting')
-        app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
+        app.logger.info('Scheduler - Running monthly reporting')
         
         # create / update a monthly deliveries by institution report
         # it should have the columns HEI, Jan, Feb...
@@ -211,34 +216,77 @@ def monthly_reporting():
         # finally ends with sum total (total of all numbers above) 
         # and unique total (total unique objects accessed - some unis may have accessed the same one)
         # query the retrieval index to see which institutions have retrieved content from the router in the last month
-        month = 'jan' # work this out properly
-        year = '2016' # work this out properly
-        monthtracker = app.config.get['REPORTSDIR','/home/mark/jper_reports'] + '/monthtracker'
-        lm = open(monthtracker,'r')
-        lastmonth = lm.read().strip('\n')
-        lm.close()
+        
+        month = datetime.datetime.now().strftime("%B")[0:3]
+        year = str(datetime.datetime.now().year)
+        app.logger.info('Scheduler - checking monthly reporting for ' + month + ' ' + year)
+        reportsdir = app.config.get['REPORTSDIR','/home/mark/jper_reports']
+        if not os.path.exists(reportsdir): os.makedirs(reportsdir)
+        monthtracker = reportsdir + '/monthtracker.cfg'
+        try:
+            lm = open(monthtracker,'r')
+            lastmonth = lm.read().strip('\n')
+            lm.close()
+        except:
+            lastmonth = ''
+            
         if lastmonth != month:
+            app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
             lmm = open(monthtracker,'w')
             lmm.write(month)
             lmm.close()
         
             out = {}
-            total = 0
             uniques = []
-            res = {} # query for all retrievals in lastmonth
-            for ht in res:
-                total += 1
-                if ht['institution'] not in out.keys(): out[ht['institution']] = {}
-                if month not in out[ht['institution']].keys():
-                    out[ht['institution']][month] = 1
-                else:
-                    out[ht['institution']][month] = int(out[ht['institution']][month]) + 1
-                if ht['object'] not in uniques: uniques.append(ht['object'])
+            size = 1000
+            loop = 0
+            tmth = datetime.datetime.now().month - 1
+            if tmth == 0: 
+                tmth = 12
+                lastyear = int(year) - 1
+                frm = lastyear + "-" + str(tmth) + "-01T00:00:00Z"
+            else:
+                frm = year + "-" + str(tmth) + "-01T00:00:00Z"
+            q = {
+                'query': {
+                    "filtered": {
+                        "query": {
+                            "query_string": {
+                                "query": "NOT delivered_from:notfound"
+                            }
+                        },
+                        "filter": {
+                            "range": {
+                                "created_date": {
+                                    "from": frm
+                                }
+                            }
+                        }
+                    }
+                },
+                'size': size,
+                'from': loop
+            }
+            res = models.ContentLog.query(q=q) # query for all retrievals in lastmonth
+            total = res.get('hits',{}).get('total',0)
+            while loop < loops:
+                for ht in res.get('hits',{}).get('hits',[]):
+                    inst = models.Account.pull(ht['user']).data.get('repository',{}).get('url',ht['user'])
+                    if inst not in out.keys(): out[inst] = {}
+                    if month not in out[inst].keys():
+                        out[inst][month] = 1
+                    else:
+                        out[inst][month] = int(out[inst][month]) + 1
+                    fn = ht['notification'] + '/' + ht.get('filename','')
+                    if fn not in uniques: uniques.append(fn)
+                loop += size
+                q['from'] = loop
+                res = models.ContentLog.query(q=q)
             out['uniques'][month] = len(uniques)
             out['total'][month] = total
 
             # check for the report csv and read it in if it exists or else create something to start from
-            reportfile = app.config.get['REPORTSDIR','/home/mark/jper_reports'] + '/monthly_notifications_to_institutions_' + year + '.csv'
+            reportfile = reportsdir + '/monthly_notifications_to_institutions_' + year + '.csv'
             if os.path.exists(reportfile):
                 sofar = csv.DictReader(reportfile)
                 for row in sofar:
@@ -246,12 +294,13 @@ def monthly_reporting():
                     for mth in row.keys():
                         if mth != 'HEI':
                             out[row['HEI']][mth] = row[mth]
-            # sort out by keys so institutions are alphabetical, and then total and uniques are at the end
 
+            orderedkeys = sort(out.keys()).remove('uniques').remove('total').append('total').append('uniques')
             outfile = open(reportfile,'w')
             headers = ['HEI','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
             outfile.write(",".join(headers))
-            for hei in out:
+            for hk in orderedkeys:
+                hei = out[hk]
                 ln = ''
                 for hr in headers: ln += hei.get(hr,'') + ','
                 outfile.write(ln.strip(','))
@@ -265,7 +314,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("06:00").do(monthly_reporting)
+    schedule.every().day.at("00:05").do(monthly_reporting)
 
 
 def cheep():

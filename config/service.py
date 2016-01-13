@@ -44,8 +44,7 @@ ELASTIC_SEARCH_EXAMPLE_DOCS = [
     "service.dao.UnroutedNotificationDAO",
     "service.dao.RoutedNotificationDAO",
     "service.dao.RepositoryConfigDAO",
-    "service.dao.MatchProvenanceDAO",
-    "service.dao.RetrievalRecordDAO"
+    "service.dao.MatchProvenanceDAO"
 ]
 """types which have their mappings initialised by example when initialising"""
 

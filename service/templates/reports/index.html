@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Download reports</h1>
+
+{% for report in reports %}
+<p><a href="/reports/{{report}}">{{report}}</a></p>
+{% endfor %}
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+{% endblock extra_js_bottom %}
