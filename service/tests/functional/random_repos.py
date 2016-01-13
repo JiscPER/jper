@@ -70,7 +70,7 @@ for i in range(70):
     fs = _select_n(fields, randint(1, len(fields)))
     cobj = {}
     for f in fs:
-        cobj[f] = randomisers[f]()
+        cobj[f] = [randomisers[f]()]
 
     cobj["id"] = uuid.uuid4().hex
     cobj["repository"] = uuid.uuid4().hex
