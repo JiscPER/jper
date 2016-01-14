@@ -405,7 +405,10 @@ def repackage(unrouted, repo_ids):
     links = []
     for d in done:
         with app.test_request_context():
-            url = app.config.get("BASE_URL") + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
+            burl = app.config.get("BASE_URL")
+            if burl.endswith("/"):
+                burl = burl[:-1]
+            url = burl + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
         links.append({
             "type": "package",
             "format" : "application/zip",
@@ -430,7 +433,10 @@ def links(routed):
             link['proxy'] = nid
             nl['access'] = 'router'
             with app.test_request_context():
-                nl['url'] = app.config.get("BASE_URL") + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid)
+                burl = app.config.get("BASE_URL")
+                if burl.endswith("/"):
+                    burl = burl[:-1]
+                nl['url'] = burl + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid)
             newlinks.append(nl)
     for l in newlinks:
         routed.add_link(l.get("url"), l.get("type"), l.get("format"), l.get("access"), l.get("packaging"))

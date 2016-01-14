@@ -101,11 +101,18 @@ def _random_string(shortest, longest):
 
 def _random_url():
     """
-    Create a random unique url
+    Return a random url.  Actually, this always returns the same url:
+
+    https://pubrouter.jisc.ac.uk/static/jperlogo.png
+
+    which isn't that random, but it is resolvable, and doesn't rely on an external service to be up.
+
+    If you are messing with this module, you need to keep your eye on this bit.
 
     :return: url
     """
-    return "http://example.com/file/" + uuid.uuid4().hex
+    # return "http://example.com/file/" + uuid.uuid4().hex
+    return "https://pubrouter.jisc.ac.uk/static/jperlogo.png"
 
 def _random_datetime(since):
     """
