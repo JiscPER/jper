@@ -137,3 +137,39 @@ server {
         # proxy_buffering off;
     }
 }
+
+# THESE GIVE DIRECT ROUTES FROM EXTERNAL TO THE INDEX AND STORE
+# SO BE SURE TO TURN OFF OR SECURE BEFORE LIVE
+server {
+    listen          80;
+    server_name     index.pubrouter.jisc.ac.uk;
+
+    keepalive_timeout 70;
+
+    location / {
+        proxy_pass http://index;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "";
+        # proxy_buffering off;
+    }
+}
+
+server {
+    listen          80;
+    server_name     store.pubrouter.jisc.ac.uk;
+
+    keepalive_timeout 70;
+
+    location / {
+        proxy_pass http://store;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization "";
+        # proxy_buffering off;
+    }
+}
