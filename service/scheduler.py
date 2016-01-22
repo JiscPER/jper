@@ -227,7 +227,7 @@ def monthly_reporting():
             lm = open(monthtracker,'r')
             lastmonth = lm.read().strip('\n')
             lm.close()
-        else:
+        except:
             lm = open(monthtracker,'w')
             lm.close()
             lastmonth = ''
@@ -316,7 +316,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("17:30").do(monthly_reporting)
+    schedule.every().day.at("17:31").do(monthly_reporting)
 
 
 def cheep():
