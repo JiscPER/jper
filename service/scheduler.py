@@ -207,7 +207,7 @@ if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
 
 def monthly_reporting():
     # python schedule does not actually handle months, so this will run every day and check whether the current month has rolled over or not
-    try:
+    if 1==1:
         app.logger.info('Scheduler - Running monthly reporting')
         
         # create / update a monthly deliveries by institution report
@@ -223,14 +223,14 @@ def monthly_reporting():
         reportsdir = app.config.get['REPORTSDIR','/home/mark/jper_reports']
         if not os.path.exists(reportsdir): os.makedirs(reportsdir)
         monthtracker = reportsdir + '/monthtracker.cfg'
-        try:
+        if 1==1:
             lm = open(monthtracker,'r')
             lastmonth = lm.read().strip('\n')
             lm.close()
-        except:
+        else:
             lastmonth = ''
             
-        if True: #lastmonth != month:
+        if lastmonth != month:
             app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
             lmm = open(monthtracker,'w')
             lmm.write(month)
@@ -310,11 +310,11 @@ def monthly_reporting():
             # reporting that has to run more regularly could be defined as different reporting methods altogether
             # and controlled with different settings in the config
             
-    except:
+    else: #except Exception as e:
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("00:05").do(monthly_reporting)
+    schedule.every().day.at("17:20").do(monthly_reporting)
 
 
 def cheep():
