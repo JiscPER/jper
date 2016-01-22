@@ -232,7 +232,7 @@ def monthly_reporting():
             lm.close()
             lastmonth = ''
             
-        if True: #lastmonth != month:
+        if lastmonth != month:
             app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
             lmm = open(monthtracker,'w')
             lmm.write(month)
@@ -311,14 +311,11 @@ def monthly_reporting():
             headers = ['HEI','ID','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
             outfile.write(",".join(headers) + '\n')
             for hk in orderedkeys:
-                print hk
                 hei = out[hk]
-                print hei
                 ln = hk + ','
                 for hr in headers:
                     if hr != 'HEI':
                         ln += str(hei.get(hr,'')) + ','
-                print ln
                 outfile.write(ln.strip(',') + '\n')
             outfile.close()
 
@@ -326,11 +323,11 @@ def monthly_reporting():
             # reporting that has to run more regularly could be defined as different reporting methods altogether
             # and controlled with different settings in the config
             
-    else: #except Exception as e:
+    except Exception as e:
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("22:52").do(monthly_reporting)
+    schedule.every().day.at("00:05").do(monthly_reporting)
 
 
 def cheep():
