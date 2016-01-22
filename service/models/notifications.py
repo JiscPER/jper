@@ -77,7 +77,7 @@ class NotificationMetadata(dataobj.DataObj):
                             "fields" : {
                                 "title" : {"coerce" : "unicode"},
                                 "type" : {"coerce" : "unicode"},
-                                "url" : {"coerce" : "url"},
+                                "url" : {"coerce" : "unicode"},
                                 "version" : {"coerce" : "unicode"}
                             }
                         },
