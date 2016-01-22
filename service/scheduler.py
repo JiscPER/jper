@@ -299,13 +299,13 @@ def monthly_reporting():
                         if mth != 'HEI':
                             out[row['HEI']][mth] = row[mth]
 
-            print out
-            print out.keys()
             orderedkeys = out.keys()
             print orderedkeys
-            orderedkeys = orderedkeys.remove('uniques').remove('total')
+            orderedkeys.remove('uniques')
+            orderedkeys.remove('total')
             orderedkeys.sort()
-            orderedkeys.append('total').append('uniques')
+            orderedkeys.append('total')
+            orderedkeys.append('uniques')
             print orderedkeys
             outfile = open(reportfile,'w')
             headers = ['HEI','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -325,7 +325,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("22:02").do(monthly_reporting)
+    schedule.every().day.at("22:05").do(monthly_reporting)
 
 
 def cheep():
