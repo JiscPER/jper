@@ -207,7 +207,7 @@ if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
 
 def monthly_reporting():
     # python schedule does not actually handle months, so this will run every day and check whether the current month has rolled over or not
-    if 1==1:
+    try:
         app.logger.info('Scheduler - Running monthly reporting')
         
         # create / update a monthly deliveries by institution report
