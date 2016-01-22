@@ -271,6 +271,7 @@ def monthly_reporting():
             }
             res = models.ContentLog.query(q=q) # query for all retrievals in lastmonth
             total = res.get('hits',{}).get('total',0)
+            print res
             while loop < total:
                 for ht in [i['_source'] for i in res.get('hits',{}).get('hits',[])]:
                     inst = models.Account.pull(ht['user']).data.get('repository',{}).get('url',ht['user'])
@@ -297,6 +298,7 @@ def monthly_reporting():
                         if mth != 'HEI':
                             out[row['HEI']][mth] = row[mth]
 
+            print out
             orderedkeys = out.keys()
             orderedkeys.remove('uniques').remove('total').sort().append('total').append('uniques')
             outfile = open(reportfile,'w')
@@ -317,7 +319,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("21:33").do(monthly_reporting)
+    schedule.every().day.at("21:37").do(monthly_reporting)
 
 
 def cheep():
