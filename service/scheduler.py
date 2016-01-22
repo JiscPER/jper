@@ -20,7 +20,7 @@ all machines but some synchronisation would have to be added to that tasks were 
 running the schedule would need access to any relevant directories.
 '''
 
-import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json
+import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json, csv
 from threading import Thread
 from octopus.core import app, initialise
 
@@ -325,7 +325,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("22:10").do(monthly_reporting)
+    schedule.every().day.at("22:13").do(monthly_reporting)
 
 
 def cheep():
