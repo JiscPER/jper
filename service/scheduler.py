@@ -292,8 +292,7 @@ def monthly_reporting():
             # check for the report csv and read it in if it exists or else create something to start from
             reportfile = reportsdir + '/monthly_notifications_to_institutions_' + year + '.csv'
             if os.path.exists(reportfile):
-                sofar = csv.DictReader(reportfile)
-                print sofar
+                sofar = csv.DictReader(open(reportfile))
                 for row in sofar:
                     if row['HEI'] not in out.keys(): out[row['HEI']] = {}
                     for mth in row.keys():
@@ -301,13 +300,11 @@ def monthly_reporting():
                             out[row['HEI']][mth] = row[mth]
 
             orderedkeys = out.keys()
-            print orderedkeys
             orderedkeys.remove('uniques')
             orderedkeys.remove('total')
             orderedkeys.sort()
             orderedkeys.append('total')
             orderedkeys.append('uniques')
-            print orderedkeys
             outfile = open(reportfile,'w')
             headers = ['HEI','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
             outfile.write(",".join(headers))
