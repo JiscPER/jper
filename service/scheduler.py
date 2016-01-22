@@ -316,7 +316,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("17:46").do(monthly_reporting)
+    schedule.every().day.at("21:31").do(monthly_reporting)
 
 
 def cheep():
