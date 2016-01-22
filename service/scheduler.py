@@ -276,7 +276,7 @@ def monthly_reporting():
                     acc = models.Account.pull(ht['user'])
                     inst = acc.data.get('repository',{}).get('name','')
                     if inst not in out.keys(): out[inst] = {}
-                    out['inst']['ID'] = ht['user']
+                    out[inst]['ID'] = ht['user']
                     # add other fields about repo accounts here, and remember to add them to the print headers list below
                     if month not in out[inst].keys():
                         out[inst][month] = 1
@@ -330,7 +330,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("22:50").do(monthly_reporting)
+    schedule.every().day.at("22:52").do(monthly_reporting)
 
 
 def cheep():
