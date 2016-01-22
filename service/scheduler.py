@@ -246,9 +246,9 @@ def monthly_reporting():
             if tmth == 0: 
                 tmth = 12
                 lastyear = int(year) - 1
-                frm = lastyear + "-" + str(tmth) + "-01T00:00:00Z"
+                frm = str(lastyear) + "-" + str(tmth) + "-01T00:00:00Z"
             else:
-                frm = year + "-" + str(tmth) + "-01T00:00:00Z"
+                frm = str(year) + "-" + str(tmth) + "-01T00:00:00Z"
             q = {
                 'query': {
                     "filtered": {
@@ -316,7 +316,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("17:31").do(monthly_reporting)
+    schedule.every().day.at("17:34").do(monthly_reporting)
 
 
 def cheep():
