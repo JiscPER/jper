@@ -294,9 +294,9 @@
 				var results = function(data) {
 						var disp = '<table class="table table-striped table-bordered">';
 						for ( var r in data.hits.hits ) {
+							  var rec = data.hits.hits[r]._source;
 							  disp += '<tr><td>';
 								disp += '<p>Notification ' + rec.notification + '</a></p>'
-							  var rec = data.hits.hits[r]._source;
 							  for ( var p in rec.provenance ) {
 										var prov = rec.provenance[p];
 										disp += '<p>' + prov.explanation + '</p>';
