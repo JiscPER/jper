@@ -230,7 +230,7 @@ def monthly_reporting():
         except:
             lastmonth = ''
             
-        if lastmonth != month:
+        if True: #lastmonth != month:
             app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
             lmm = open(monthtracker,'w')
             lmm.write(month)

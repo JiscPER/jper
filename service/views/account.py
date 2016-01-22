@@ -53,26 +53,6 @@ def username(username):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
             
-        if request.values.get('repository_software',False):
-            acc.data['repository'] = {
-                'software': request.values['repository_software']
-            }
-            if request.values.get('repository_url',False): acc.data['repository']['url'] = request.values['repository_url']
-            if request.values.get('repository_name',False): acc.data['repository']['name'] = request.values['repository_name']
-            
-        if request.values.get('sword_username',False):
-            acc.data['sword'] = {
-                'username': request.values['sword_username']
-            }
-            if request.values.get('sword_password',False): acc.data['sword']['password'] = request.values['sword_password']
-            if request.values.get('sword_collection',False): acc.data['sword']['collection'] = request.values['sword_collection']
-
-        if request.values.get('packaging',False):
-            acc.data['packaging'] = request.values['packaging'].split(',')
-
-        if request.values.get('embargo_duration',False):
-            acc.data['embargo'] = {'duration': request.values['embargo_duration']}
-
         if request.values.get('email',False):
             acc.data['email'] = request.values['email']
 
@@ -95,6 +75,69 @@ def username(username):
         return render_template('account/user.html', account=acc, repoconfig=repoconfig)
     else:
         abort(404)
+
+
+@blueprint.route('/<username>/pubinfo', methods=['POST'])
+def pubinfo(username):
+    acc = models.Account.pull(username)
+    if current_user.id != acc.id and not current_user.is_super:
+        abort(401)
+
+    if 'embargo' not in acc.data: acc.data['embargo'] = {}
+    if request.values.get('embargo_duration',False):
+        acc.data['embargo']['duration'] = request.values['embargoe_duration'].split(',')
+    else:
+        acc.data['embargo']['duration'] = []
+
+    acc.save()
+    time.sleep(2);
+    flash('Thank you. Your publisher details have been updated.', "success")
+    return redirect(url_for('.username', username=username))
+
+        
+@blueprint.route('/<username>/repoinfo', methods=['POST'])
+def repoinfo(username):
+    acc = models.Account.pull(username)
+    if current_user.id != acc.id and not current_user.is_super:
+        abort(401)
+
+    if 'repository' not in acc.data: acc.data['repository'] = {}
+    if request.values.get('repository_software',False):
+        acc.data['repository']['software'] = request.values['repository_software']
+    else:
+        acc.data['repository']['software'] = ''
+    if request.values.get('repository_url',False):
+        acc.data['repository']['url'] = request.values['repository_url']
+    else:
+        acc.data['repository']['url'] = ''
+    if request.values.get('repository_name',False):
+        acc.data['repository']['name'] = request.values['repository_name']
+    else:
+        acc.data['repository']['name'] = ''
+        
+    if 'sword' not in acc.data: acc.data['sword'] = {}
+    if request.values.get('sword_username',False):
+        acc.data['sword']['username'] = request.values['sword_username']
+    else:
+        acc.data['sword']['username'] = ''
+    if request.values.get('sword_password',False):
+        acc.data['sword']['password'] = request.values['sword_password']
+    else:
+        acc.data['sword']['password'] = ''
+    if request.values.get('sword_collection',False):
+        acc.data['sword']['collection'] = request.values['sword_collection']
+    else:
+        acc.data['sword']['collection'] = ''
+        
+    if request.values.get('packaging',False):
+        acc.data['packaging'] = request.values['packaging'].split(',')
+    else:
+        acc.data['packaging'] = []
+
+    acc.save()
+    time.sleep(2);
+    flash('Thank you. Your repository details have been updated.', "success")
+    return redirect(url_for('.username', username=username))
 
 
 @blueprint.route('/<username>/api_key', methods=['POST'])
