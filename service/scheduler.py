@@ -220,7 +220,7 @@ def monthly_reporting():
         month = datetime.datetime.now().strftime("%B")[0:3]
         year = str(datetime.datetime.now().year)
         app.logger.info('Scheduler - checking monthly reporting for ' + month + ' ' + year)
-        reportsdir = app.config.get['REPORTSDIR','/home/mark/jper_reports']
+        reportsdir = app.config.get('REPORTSDIR','/home/mark/jper_reports')
         if not os.path.exists(reportsdir): os.makedirs(reportsdir)
         monthtracker = reportsdir + '/monthtracker.cfg'
         if 1==1:
@@ -314,7 +314,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("17:20").do(monthly_reporting)
+    schedule.every().day.at("17:22").do(monthly_reporting)
 
 
 def cheep():
