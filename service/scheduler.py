@@ -230,7 +230,7 @@ def monthly_reporting():
         else:
             lastmonth = ''
             
-        if lastmonth != month:
+        if True: #lastmonth != month:
             app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
             lmm = open(monthtracker,'w')
             lmm.write(month)
@@ -314,7 +314,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("17:22").do(monthly_reporting)
+    schedule.every().day.at("17:24").do(monthly_reporting)
 
 
 def cheep():
