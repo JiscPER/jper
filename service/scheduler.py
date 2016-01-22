@@ -293,6 +293,7 @@ def monthly_reporting():
             reportfile = reportsdir + '/monthly_notifications_to_institutions_' + year + '.csv'
             if os.path.exists(reportfile):
                 sofar = csv.DictReader(reportfile)
+                print sofar
                 for row in sofar:
                     if row['HEI'] not in out.keys(): out[row['HEI']] = {}
                     for mth in row.keys():
@@ -325,7 +326,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("22:13").do(monthly_reporting)
+    schedule.every().day.at("22:20").do(monthly_reporting)
 
 
 def cheep():
