@@ -71,7 +71,7 @@ def flatten(destination, depth=None):
     app.logger.debug('Flatten depth set ' + destination + ' ' + depth)
     for fl in os.listdir(depth):
         app.logger.debug('Flatten at ' + fl)
-        if '.zip' in fl or '.tar' in fl:
+        if '.zip' in fl: # or '.tar' in fl:
             app.logger.debug('Flatten ' + fl + ' is an archive')
             extracted = extract(depth + '/' + fl, depth)
             if extracted:
