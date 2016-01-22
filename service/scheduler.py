@@ -314,7 +314,9 @@ def monthly_reporting():
                 hei = out[hk]
                 print hei
                 ln = hk + ','
-                for hr in headers: ln += str(hei.get(hr,'')) + ','
+                for hr in headers:
+                    if hr != 'HEI':
+                        ln += str(hei.get(hr,'')) + ','
                 print ln
                 outfile.write(ln.strip(',') + '\n')
             outfile.close()
@@ -327,7 +329,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("22:41").do(monthly_reporting)
+    schedule.every().day.at("22:44").do(monthly_reporting)
 
 
 def cheep():
