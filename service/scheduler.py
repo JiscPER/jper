@@ -274,9 +274,10 @@ def monthly_reporting():
             while loop < total:
                 for ht in [i['_source'] for i in res.get('hits',{}).get('hits',[])]:
                     acc = models.Account.pull(ht['user'])
-                    inst = acc.data.get('repository',{}).get('name','') + ' ' + acc.data.get('repository',{}).get('url','')
-                    if len(inst) == 0: inst = ht['user']
+                    inst = acc.data.get('repository',{}).get('name','')
                     if inst not in out.keys(): out[inst] = {}
+                    out['inst']['ID'] = ht['user']
+                    # add other fields about repo accounts here, and remember to add them to the print headers list below
                     if month not in out[inst].keys():
                         out[inst][month] = 1
                     else:
@@ -307,7 +308,7 @@ def monthly_reporting():
             orderedkeys.append('total')
             orderedkeys.append('uniques')
             outfile = open(reportfile,'w')
-            headers = ['HEI','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+            headers = ['HEI','ID','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
             outfile.write(",".join(headers) + '\n')
             for hk in orderedkeys:
                 print hk
@@ -329,7 +330,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("22:44").do(monthly_reporting)
+    schedule.every().day.at("22:50").do(monthly_reporting)
 
 
 def cheep():
