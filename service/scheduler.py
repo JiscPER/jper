@@ -271,10 +271,11 @@ def monthly_reporting():
             }
             res = models.ContentLog.query(q=q) # query for all retrievals in lastmonth
             total = res.get('hits',{}).get('total',0)
-            print res
             while loop < total:
                 for ht in [i['_source'] for i in res.get('hits',{}).get('hits',[])]:
-                    inst = models.Account.pull(ht['user']).data.get('repository',{}).get('url',ht['user'])
+                    acc = models.Account.pull(ht['user'])
+                    inst = acc.data.get('repository',{}).get('name','') + ' ' + acc.data.get('repository',{}).get('url','')
+                    if len(inst) == 0: inst = ht['user']
                     if inst not in out.keys(): out[inst] = {}
                     if month not in out[inst].keys():
                         out[inst][month] = 1
@@ -300,7 +301,10 @@ def monthly_reporting():
 
             print out
             orderedkeys = out.keys()
-            orderedkeys.remove('uniques').remove('total').sort().append('total').append('uniques')
+            orderedkeys = orderedkeys.remove('uniques').remove('total')
+            orderedkeys.sort()
+            orderedkeys.append('total').append('uniques')
+            print orderedkeys
             outfile = open(reportfile,'w')
             headers = ['HEI','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
             outfile.write(",".join(headers))
@@ -319,7 +323,7 @@ def monthly_reporting():
         app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
-    schedule.every().day.at("21:37").do(monthly_reporting)
+    schedule.every().day.at("21:48").do(monthly_reporting)
 
 
 def cheep():
