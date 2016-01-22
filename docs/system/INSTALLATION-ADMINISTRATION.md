@@ -681,10 +681,53 @@ size(s) currently in use.
 We then tested sending random file sizes to the API, anything from 0 up to 500MB, for ten hours. These also were processed as expected. Of course, 
 keep an eye on disk usage and scale up the attached block devices or delete old files as necessary.
 
-We finally ran a one hour test with 50 fake user accounts, to simulate a load of more users on the system, which causes the matches of incoming 
-articles to repositories to require significantly more effort. 
+We finally ran a one hour test with 70 fake user accounts, to simulate a load of more users on the system, which causes the matches of incoming 
+articles to repositories to require significantly more effort. We sent validation requests every sixty seconds with a maximum file size of 20MB 
+and a 80% chance of metadata and format errors (high error rate here causing more load to test), along with creation requests every ten seconds 
+with 5% error chance and 20MB max file size, and list requests every five seconds with 5% error rate. This test was run with all supporting 
+infrastructure running too (store, oaipmh, jper-sword-in, jper-sword-out) and it ran without any issues for the full hour. All operations were 
+carried out successfully. The load on the server was 100% on one CPU for the duration of the test, showing that it is processing everything well 
+at full speed and without problems, and a fairly constant memory usage staying under 500MB. This indicates stability. After the test completed the 
+server returned to idle within seconds, showing that there was no backlog of processes to catch up with. Overall this was a successful final test.
 
-TODO: finish documenting how the last test went
+
+## ADMIN: Seeing what is going on
+
+The gateway_nginx config file in the jper deployment directory includes subdomain definitions for kibana, index, and store. However on the live 
+machine these are commented out so that they do not give unauthorised access to data once it goes into production.
+
+Enabling the kibana subdomain allows viewing the kibana log interface at kibana.pubrouter.jisc.ac.uk. This shows a comprehensive overview of 
+all jper logs. See the kibana documentation on the elasticsearch website for further information on how this can be customised.
+
+Enabling the store subdomain allows direct access to the contents of the store folder at store.pubrouter.jisc.ac.uk. This can also just be 
+browsed on the local filesystem, so is not so useful, but it is available just in case.
+
+Enabling the index subdomain allows direct access to the elasitcsearch index cluster at index.pubrouter.jisc.ac.uk. This can be useful for 
+querying the indexes to see what they contain and to see what is changing. The elasticsearch_head plugin is installed, and can be accessed 
+at _plugin/head in order to get an indexes overview. See the elasticsearch_head plugin documentation via the elasticsearch website for more 
+information.
+
+The jper logs can also be viewed directly, by default they are written on the app1 machine to /home/mark/jperlog
+
+A quick look at the FTP directories will show if there is anything waiting to be processed from the publishers that submit via FTP. By default 
+it is at /Incoming/sftpusers. If the scheduler is running, these directories should be getting regularly emptied so they should not keep filling up.
+
+The /Incoming/ftptmp directory is also the default location where files are put after being moved from the FTP user directories. These files are 
+processed in this location and then sent into the jper API, and should then get deleted. So it is possible to see files traversing through these 
+directories whilst the scheduler is running, but again files should not be filling up in here as the scheduler should be removing them when it is 
+finished processing them.
+
+There is also currently a tmparchive configured at /Incoming/tmparchive. This can be disabled if the system is running well, but has been left enabled 
+to assist with any further checks that may be desired. It contains exact copies of everything sent by publishers into their FTP directories, so that 
+it is possible to check what they sent before it was processed in any way by the jper systems.
+
+
+
+
+
+
+
+
 
 
 

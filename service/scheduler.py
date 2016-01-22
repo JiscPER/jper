@@ -269,7 +269,7 @@ def monthly_reporting():
             }
             res = models.ContentLog.query(q=q) # query for all retrievals in lastmonth
             total = res.get('hits',{}).get('total',0)
-            while loop < loops:
+            while loop < total:
                 for ht in res.get('hits',{}).get('hits',[]):
                     inst = models.Account.pull(ht['user']).data.get('repository',{}).get('url',ht['user'])
                     if inst not in out.keys(): out[inst] = {}
