@@ -111,7 +111,7 @@ def moveftp():
             else:
                 app.logger.info('Scheduler - found nothing to move for Account:' + dir)
     except:
-        app.logger.info("Scheduler - move from FTP failed")
+        app.logger.error("Scheduler - move from FTP failed")
         
 if app.config.get('MOVEFTP_SCHEDULE',10) != 0:
     schedule.every(app.config.get('MOVEFTP_SCHEDULE',10)).minutes.do(moveftp)
