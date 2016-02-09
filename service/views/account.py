@@ -85,9 +85,9 @@ def pubinfo(username):
 
     if 'embargo' not in acc.data: acc.data['embargo'] = {}
     if request.values.get('embargo_duration',False):
-        acc.data['embargo']['duration'] = request.values['embargoe_duration'].split(',')
+        acc.data['embargo']['duration'] = request.values['embargo_duration']
     else:
-        acc.data['embargo']['duration'] = []
+        acc.data['embargo']['duration'] = 0
 
     acc.save()
     time.sleep(2);

@@ -186,6 +186,14 @@ class JPER(object):
 
         magic = uuid.uuid4().hex
         app.logger.info("Request:{z} - Create request received from Account:{x}".format(z=magic, x=account.id))
+        
+        # add a check for default embargo if the account has a non-zero value set for it
+        # incoming notification structure is demonstrated in the account model and also documented at:
+        # https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md
+        if 'embargo' in account.data:
+            if 'duration' in account.data['embargo']:
+                if 'embargo' not in notification: notification['embargo'] = {}
+                if 'duration' not in notification['embargo']: notification['embargo']['duration'] = account.data['embargo']['duration']
 
         # attempt to serialise the record
         try:
