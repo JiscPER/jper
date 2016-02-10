@@ -34,6 +34,8 @@ def webservice(page_num):
     '''
     if not current_user.is_super:
         abort(401)
+        
+    page_num = int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     webservice, num_of_pages = harvesterModel.get_webservices(int(page_num)-1)
     return render_template('harvester/webservice.html', webservice_list = webservice, num_of_pages = num_of_pages, page_num = int(page_num), name='Web Service List')
 
@@ -46,6 +48,7 @@ def history(page_num):
     '''
     if not current_user.is_super:
         abort(401)
+    page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     history, num_of_pages = harvesterModel.get_history(int(page_num)-1)
     return render_template('harvester/history.html', history_list = history, num_of_pages = num_of_pages, page_num = int(page_num), name='History List')
 
