@@ -1,0 +1,54 @@
+{% extends "base.html" %} 
+{% block content %} 
+<h1>New Web Service Provider</h1>
+{% from "harvester/helpers/field_render.html" import render_field%}
+<form method=post action="#" class="form">
+
+	<fieldset class="form__fieldset">
+		<ul class="form-fields">
+			<li class="form-fields__item--text">{{
+				render_field(form.url,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item--text">{{
+				render_field(form.name,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item--text">{{
+				render_field(form.query,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item--text">{{
+				render_field(form.email,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item--text">{{
+				render_field(form.end_date,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item-select">{{
+				render_field(form.frequency,'form-fields__item-select','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item-select">{{
+				render_field(form.engine,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item--text">{{
+				render_field(form.wait_window,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+			<li class="form-fields__item-checkbox">{{
+				render_field(form.active,'form-fields__item--text','form-fields__label-text')
+				}}</li>
+		</ul>
+		<!--/ .form-fields -->
+				
+		<div class="btn--right-align">
+			<button class="btn btn--3d btn--large">Save</button>
+		</div>
+		
+		<div class="btn--right-align">
+			<input type="button" class="btn btn--3d btn--large" value="Cancel" onclick="history.back();" />
+		</div>
+		
+				
+	</fieldset>
+
+	</div>
+</form>
+
+{% endblock %} {% block extra_js_bottom %} {% endblock extra_js_bottom
+%}

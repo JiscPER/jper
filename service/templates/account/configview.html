@@ -1,0 +1,81 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="row cms">
+	<div class="col span-12">
+		<aside class="article-full__callout">
+			<strong>Details</strong>
+			<p></p>
+			<div>
+				<strong>Last updated:</strong>
+			</div>
+			<div id="updated"></div>
+			<p></p>
+			<div>
+				<strong>Repository:</strong>
+			</div>
+			<div id="repository"></div>
+			<p></p>
+			<div>
+				<strong>Created date:</strong>
+			</div>
+			<div id="created"></div>
+			<p></p>
+			<div>
+				<strong>Id:</strong>
+			</div>
+			<div id="id"></div>
+		</aside>
+	</div>
+</div>
+
+
+
+
+
+<div class="row">
+	<div class="span col-12" id="container"></div>
+</div>
+<script>
+var obj = JSON.parse({{ repo|tojson|safe }});
+
+
+
+print_table = function(data,id,title){
+	if(typeof data === "undefined"){
+		return 0;
+	}
+	$('#container').append('<section\
+			class="is-collapsible show_hide__container is-collapsible--button"\
+			data-collapsible>\
+			<h2 class="show_hide__trigger">'+title+'</h2>\
+			<div class="show_hide__target">\
+				<div class="cms">\
+				<table id="'+id+'">\
+						<tr>\
+							<th>'+title+'</th>\
+						</tr>\
+				</table>\
+				</div>\
+			</div>\
+		</section>\
+		');
+	
+	for (variable in data) {
+	$('#'+id+' tr:last').after('<tr>\
+			<td class="toggle">'+data[variable]+'</td> \
+			</tr>');	
+	}
+}
+
+print_table(obj.strings,'strings','Strings');
+print_table(obj.name_variants,'name_variants','Name Variants');
+print_table(obj.postcodes,'postcodes', 'Postcodes');
+print_table(obj.domains,'domains', 'Domains');
+
+$('#updated').append(obj.last_updated);
+$('#created').append(obj.created_date);
+$('#repository').append(obj.repository);
+$('#id').append(obj.id);
+
+</script>
+{% endblock %}

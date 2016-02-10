@@ -1,12 +1,18 @@
 """
 Blueprint for providing account management
 """
-
-import uuid, json, time, requests
+from __future__ import division
+import uuid, json, time, requests, re
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
 from flask.ext.login import login_user, logout_user, current_user
+from octopus.core import app
+from octopus.lib import webapp, dates
+from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
+import pprint
+import math
+
 
 from service import models
 
@@ -16,6 +22,83 @@ except:
     from StringIO import StringIO
 
 blueprint = Blueprint('account', __name__)
+
+def _list_request(repo_id=None):
+    """
+    Process a list request, either against the full dataset or the specific repo_id supplied
+    This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+    for the parameters of these kinds of requests.
+
+    :param repo_id: the repo id to limit the request to
+    :return: Flask response containing the list of notifications that are appropriate to the parameters
+    """
+    since = request.values.get("since")
+    page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
+    page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
+
+    if since is None or since == "":
+        return _bad_request("Missing required parameter 'since'")
+
+    try:
+        since = dates.reformat(since)
+    except ValueError as e:
+        return _bad_request("Unable to understand since date '{x}'".format(x=since))
+
+    try:
+        page = int(page)
+    except:
+        return _bad_request("'page' parameter is not an integer")
+
+    try:
+        page_size = int(page_size)
+    except:
+        return _bad_request("'pageSize' parameter is not an integer")
+
+    try:
+        nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
+    except ParameterException as e:
+        return _bad_request(e.message)
+
+    resp = make_response(nlist.json())
+    resp.mimetype = "application/json"
+    resp.status_code = 200
+    return resp
+
+def is_email(email):
+    """
+    Returns true if "email" is a valid email
+    """
+    return re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", email)
+
+def password_strong(password):
+    """
+    Verify the strength of 'password'
+    Returns true if the password is strong enough
+    A password is considered strong if:
+        8 characters length or more
+        1 digit or more
+        #1 symbol or more
+        1 uppercase letter or more
+        1 lowercase letter or more
+    """
+
+    # calculating the length
+    length_error = len(password) < 8
+
+    # searching for digits
+    digit_error = re.search(r"\d", password) is None
+
+    # searching for uppercase
+    uppercase_error = re.search(r"[A-Z]", password) is None
+
+    # searching for lowercase
+    lowercase_error = re.search(r"[a-z]", password) is None
+
+    # searching for symbols
+    #symbol_error = re.search(r"\W'", password) is None
+
+    # overall result
+    return not ( length_error or digit_error or uppercase_error or lowercase_error) # or symbol_error )
 
 
 @blueprint.before_request
@@ -31,6 +114,65 @@ def index():
         abort(401)
     users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
     return render_template('account/users.html', users=users)
+
+@blueprint.route('/details/<repo_id>', methods=["GET", "POST"])
+def details(repo_id):
+    data = _list_request(repo_id)
+    acc = models.Account.pull(repo_id)
+    link = '/account/details'
+    date = request.args.get('since')
+    if date == '':
+        date = '01/08/2015'
+    if current_user.has_role('admin'): 
+        link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
+    else:
+        link += '?since=01/08/2015&api_key='+acc.data['api_key']
+             
+    results = json.loads(data.response[0])      
+                        
+    page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
+    num_of_pages = int(math.ceil(results['total']/results['pageSize']))
+    return render_template('account/details.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+
+@blueprint.route("/configview", methods=["GET","POST"])
+@blueprint.route("/configview/<repoid>", methods=["GET","POST"])
+def configView(repoid=None):
+    app.logger.info(current_user.id + " " + request.method + " to config route")
+    if repoid is None:
+        if current_user.has_role('repository'):
+            repoid = current_user.id
+        elif current_user.has_role('admin'):
+            return '' # the admin cannot do anything at /config, but gets a 200 so it is clear they are allowed
+        else:
+            abort(400)
+    elif not current_user.has_role('admin'): # only the superuser can set a repo id directly
+        abort(401)
+    rec = models.RepositoryConfig().pull_by_repo(repoid)
+    if rec is None:
+        rec = models.RepositoryConfig()
+        rec.repository = repoid
+    if request.method == 'GET':
+        # get the config for the current user and return it
+        # this route may not actually be needed, but is convenient during development
+        # also it should be more than just the strings data once complex configs are accepted
+        resp = make_response(json.dumps(rec.data))
+        resp.mimetype = "application/json"
+        return render_template('account/configview.html',repo=resp.response)
+    elif request.method == 'POST':
+        if request.json:
+            saved = rec.set_repo_config(jsoncontent=request.json,repository=repoid)
+        else:
+            try:
+                if request.files['file'].filename.endswith('.csv'):
+                    saved = rec.set_repo_config(csvfile=request.files['file'],repository=repoid)
+                elif request.files['file'].filename.endswith('.txt'):
+                    saved = rec.set_repo_config(textfile=request.files['file'],repository=repoid)
+            except:
+                saved = False
+        if saved:
+            return ''
+        else:
+            abort(400)
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
@@ -212,6 +354,11 @@ def changerole(username,role):
         return redirect(url_for('.username', username=username))
     else:
         abort(401)
+
+
+@blueprint.route('/<username>/matches')
+def matches():
+    return redirect(url_for('.username/match.html', username=username))
         
 
 @blueprint.route('/login', methods=['GET', 'POST'])
@@ -251,8 +398,29 @@ def register():
         if 'email' not in vals:
             flash('You must provide an email address','error')
             return render_template('account/register.html')
+        elif 'email_verify' not in vals:
+            flash('You must confirm the email address','error')
+            return render_template('account/register.html')
+        elif not is_email(vals['email']):
+            flash('The format of the email is incorrect','error')
+            return render_template('account/register.html')
+        elif 'password' not in vals:
+            flash('You must provide a password','error')
+            return render_template('account/register.html')
+        elif 'password_verify' not in vals:
+            flash('You must confirm the password','error')
+            return render_template('account/register.html')
+        elif vals['password'] != vals['password_verify']:
+            flash('The passwords should be the same','error')
+            return render_template('account/register.html')
+        elif not password_strong(vals['password']):
+            flash('The password should be 8 characters long, contain upper and lower case and at least on number','error')
+            return render_template('account/register.html')
         elif models.Account.pull_by_email(vals['email']) is not None:
             flash('An account already exists for that email address', 'error')
+            return render_template('account/register.html')
+        elif 'radio' not in vals:
+            flash('You need to choose a user role','error')
             return render_template('account/register.html')
         else:
             api_key = str(uuid.uuid4())
@@ -282,10 +450,10 @@ def register():
                 account.data['embargo'] = {'duration': vals['embargo_duration']}
 
             account.set_password(vals['password'])
-            if vals.get('repository',False):
-                account.add_role('repository')
+            if vals['radio'] != 'publisher':
+                account.add_role(vals['radio'])
             account.save()
-            if vals.get('publisher',False):
+            if vals['radio'] == 'publisher':
                 account.become_publisher()
             time.sleep(1)
             flash('Account created for ' + account.id, 'success')

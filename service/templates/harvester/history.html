@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>History</h1>
+<table class="data-table" id="webservices-list">
+<thead>
+	<tr>
+		<th scope="col" class="persist essential" id="co-0-0">ID</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-1">Name</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-2">Start&nbsp;Date</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-3">End&nbsp;Date</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-4">Sent</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-5">Received</th>
+		<th scope="col" class="persist essential" id="co-0-6">Last&nbsp;Execution&nbsp;Date</th>
+		<th scope="col" class="persist essential" id="co-0-7">Error</th>
+	</tr>
+</thead>
+<tbody>
+{% set i = 10 * (page_num -1) %}
+{% for history in history_list %}
+{% set i = i +1 %}
+{% set param = history['_source']%}
+	<tr>
+		<th scope='row' class="persist essential" headers="co-0-0">{{i}}</th>
+		<td headers="co-0-1" class="optional">{{param['name_ws']}}</td>
+		<td headers="co-0-2" class="optional">{{param['start_date']}}</td>
+		<td headers="co-0-3" class="optional">{{param['end_date']}}</td>
+		<td headers="co-0-4" class="optional">{{param['num_files_sent']}}</td>
+		<td headers="co-0-5" class="optional">{{param['num_files_received']}}</td>
+		<td headers="co-0-6" class="optional">{{param['date']}}</td>
+		<td headers="co-0-6" class="optional">{{param['error']}}</td>
+	</tr>
+{% endfor %}
+</tbody>
+</table>
+{% from "harvester/helpers/pagination.html" import render_pagination%}
+{{ render_pagination(num_of_pages,page_num,'harvester.history') }}
+{% endblock %}
+
+{% block extra_js_bottom %}
+{% endblock extra_js_bottom %}
+

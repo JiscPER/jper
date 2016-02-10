@@ -1,0 +1,17 @@
+{% macro render_field(field,class,class_label) %} 
+	{% if field.errors %}
+	<span class="s-error"> 
+	{% endif %} 
+	{{ field.label(class_=class_label) }} 
+	{{ field(class_=class) |safe }} 
+	{% if field.errors %} 
+	<span class=error-message> 
+		{% for error in	field.errors %} 
+			{{ error }} 
+		{% endfor %} 
+	</span> 
+	{% endif %} 
+	{% if field.errors %}
+	</span>
+	{% endif %} 
+{% endmacro %}

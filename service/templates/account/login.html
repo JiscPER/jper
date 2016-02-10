@@ -1,39 +1,42 @@
-{% extends "base.html" %}
-
+{% extends "base.html" %} 
 {% block content %}
-<div class="row">
-    <div class="col-md-offset-4 col-md-4">
-        <h1>Log in to your account</h1>
-    </div>
+
+
+<div class="row cms">
+	<div class="col span-7 pull-1">
+		<h1>Login to Publications Router</h1>
+	</div>
 </div>
-
-<form method="post" action="">
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4 form-horizontal wide">
-			<input type="text" name="username" class="form-control" placeholder="email"><br>
-			<input type="password" name="password" class="form-control" placeholder="password"><br>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4">
-            <button class="btn btn-primary" id="login" type="submit" style="width: 100%; font-size: 30px; line-height: 30px">
-                Log in
-            </button>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-offset-4 col-md-4" style="padding-top:30px;">
-            <p>
-                If you do not yet have an account please 
-                <a href="mailto:someone@jisc.ac.uk">contact us</a> to register.
-                We offer accounts to publishers wishing to submit notifications, and also to UK institutional 
-                repositories wishing to receive notifications.
-            </p>
-        </div>
-    </div>
-</form>
+<div class="row">
+	<div class="col span-6">
+		<form method="post" action="" class="form">
+			<fieldset class="form__fieldset">
+				<legend>
+					<span class="legend-text">Enter your login details to continue</span>
+				</legend>
+				<ul class="form-fields">
+					<li class="form-fields__item--text">
+						<label> 
+							<span class="form-fields__label-text">Email address</span>
+							<input type="text" name="username" class="input--large">
+						</label>
+					</li>
+					<li class="form-fields__item--text">
+						<label> 
+							<span class="form-fields__label-text">Password</span> 
+							<input type="password" name="password" class="input--large">
+						</label>
+					</li>
+				</ul>
+				<div class="btn--right-align">
+					<button class="btn btn--3d btn--primary" id="login" type="submit">
+						Log	in
+					</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
 
 {% endblock %}
 

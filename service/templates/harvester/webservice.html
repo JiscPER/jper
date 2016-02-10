@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Web Service Providers List</h1>
+
+<div>
+	<a href="{{ url_for('harvester.manage') }}">
+		<button type="button" class="btn btn--3d btn--large">Add webservice</button>
+	</a>
+</div>
+<table class="data-table" id="webservices-list">
+<thead>
+	<tr>
+		<th scope="col" class="persist essential" id="co-0-0">ID</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-1">Name</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-2">Engine&nbsp;Name</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-3">Frequency</th>
+		<th scope="col" class="optional rwd-hid" id="co-0-4">Active</th>
+		<th scope="col" class="persist essential" id="co-0-5">Actions</th>
+	</tr>
+</thead>
+<tbody>
+{% set i = 10 * (page_num -1) %}
+{% for webservice in webservice_list %}
+{% set i = i +1 %}
+{% set param = webservice['_source']%}
+	<tr>
+		<th scope='row' class="persist essential" headers="co-0-0">{{i}}</th>
+		<td headers="co-0-1" class="optional rwd-hid">{{param['name']}}</td>
+		<td headers="co-0-2" class="optional rwd-hid">{{param['engine']}}</td>
+		<td headers="co-0-3" class="optional rwd-hid">{{param['frequency']}}</td>
+		<td headers="co-0-4" class="optional rwd-hid">{{param['active']}}</td>
+		<td headers="co-0-5" class="optional rwd-hid no-underscore">
+			<a href="{{ url_for('harvester.manage', webservice_id=webservice['_id']) }}">
+				<img alt="edit" src="/static/edit_small.png" class="icon">edit				
+			</a>
+			<a href="{{ url_for('harvester.delete', webservice_id=webservice['_id']) }}">
+				<img alt="remove" src="/static/remove_small.png" class="icon">delete
+			</a>
+		</td>
+	</tr>
+{% endfor %}
+</tbody>
+</table>
+{% from "harvester/helpers/pagination.html" import render_pagination%}
+{{ render_pagination(num_of_pages,page_num,'harvester.webservice') }}
+{% endblock %}
+{% block extra_js_bottom %}
+{% endblock extra_js_bottom %}
+

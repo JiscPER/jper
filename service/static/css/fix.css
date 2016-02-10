@@ -1,0 +1,7 @@
+.pattern-library__page-title.fix {
+    background: url(https://ux.jisc.ac.uk/ui/img/polygon-bg.png) 50% 0 no-repeat #E85E13;
+    background-image: url(https://ux.jisc.ac.uk/ui/img/polygon-bg.png);
+}
+.no-underscore a{
+	text-decoration: none;
+}

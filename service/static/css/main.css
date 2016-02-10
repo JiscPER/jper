@@ -1,0 +1,198 @@
+/* Overriding masthead with a different colour, and image when */
+.masthead__main {
+  background: url("masthead-image.png") scroll right top no-repeat #12567c;
+}
+
+.h1_like_h2 {
+ font-size:30px !important;
+ line-height:3rem !important;
+}
+/*Colour changes for PR**/
+
+.masthead__nav .submenu:hover {
+ color:#fff; 
+}
+
+.masthead__nav .submenu li a {
+  color:#026693;
+}
+
+.nav__item.active a, .nav__item.is-active a{
+ background-color:#fff!important;
+ color:#026693; 
+}
+
+.masthead__nav .submenu li a:hover {
+  color:#024368;
+}
+
+
+/* Aligning text in alert boxes */
+.box--centre {
+  text-align: center;
+}
+
+/* Changing colour of nav__item a when hovered */
+.nav__item.has-popup.active>a, .nav__item.has-popup:active>a, .nav__item.has-popup:hover>a, .nav__item>a:active, .nav__item>a:hover {
+  background-color: #026693!important;
+  color:#fff;
+  border:none;
+}
+
+/* Overriding colours of menu button */
+.menu-button {
+  background-color: #024368;
+}
+
+.menu-button:hover, .menu-button.is-open:hover {
+  background-color: #0f709b;
+  color: #fff;
+}
+
+.menu-button.is-open {
+  background-color: #024368;
+  color: #fff;
+}
+/* Setting padding at bottom of masthead*/
+.masthead__main {
+  padding-bottom: 76px; 
+}
+/*Using negative margin to control content*/
+#main {
+margin-top: -76px;
+}
+
+.box__inner > p {
+ margin:0; 
+}
+
+/*BEM class to set lineheight on ul*/
+.ul {
+  line-height:27px;
+  line-height:2.7rem;
+  margin-bottom:27px;
+  margin-bottom:2.7rem;
+ }
+ 
+ .teaser__copy dt {
+  font-weight: normal;
+  font-family: "Stag Sans Web Book", "HelveticaNeue", "Helvetica Neue", Arial, sans-serif;
+ }
+ 
+ .teaser__copy dl {
+  line-height:27px;
+  line-height:2.7rem; 
+   margin-bottom:27px;
+  margin-bottom:2.7rem;
+ }
+ 
+ h2.show_hide__trigger {
+  margin-bottom:0; 
+ }
+
+/*Removing independant margn's from nav items*/
+.masthead__nav {
+margin-bottom:0;
+}
+
+/*(Masthead)Default mobile padding*/
+#main > .inner {
+ padding-top:10px; 
+}
+
+#main > .inner > .l-centre-offset {
+ padding-right:10px; 
+}
+
+/*+++++
+/*Form modifications
+*/
+
+
+
+.form-fields__label-text {
+    float: left;
+    width: 32%;
+    text-align: right;
+    margin-right: 2%;
+}
+
+}
+
+.btn--large {
+    font-size: 18px;
+    font-size: 1.8rem;
+    padding: 4px 22px;
+    	
+}
+
+.btn--right-align {
+ float:right;
+ margin-right:6%; 
+}
+/***/
+
+@media screen and (min-width: 757px) {
+    
+    
+.masthead__nav .submenu ul {
+ border-top:2px solid #026693; 
+}
+
+/*(Masthead)Setting default padding on main */
+#main > .inner {
+ padding-top:30px; 
+ padding-bottom:30px;
+}
+#main >  .inner > .l-centre-offset {
+ padding-right:30px; 
+}
+/* Setting background colour on a elements */
+.nav__item > a {
+  background-color: #024368!important;
+}
+/* Positioning main to line up with masthead, without <br> tags  */
+
+/* Positioning credentials on masthead */
+.credentials {
+  position: absolute;
+  top: -60px;
+  margin-right: 0;
+  right: -10px;
+}
+/* +New Setting name left of log in button */
+.credentials__name {
+  margin-right: 10px;
+}
+
+}
+
+
+@media screen and (max-width: 757px) {
+/*Hiding name of logged in user for mobile devices */
+.credentials__name {
+  display: none;
+}
+
+/*Setting button position as relative, and changing background colour to match in context of menu */
+.credentials .btn--outline {
+  background-color: #024368;
+  border: none;
+  position: relative;
+  display: block;
+}
+
+}
+
+.collapse{
+	font-weight: bold;
+	cursor: pointer;
+}
+.expand{
+	font-weight: bold;
+	cursor: pointer;
+}
+.toggle{
+	text-decoration: underline;
+	cursor: pointer;
+}

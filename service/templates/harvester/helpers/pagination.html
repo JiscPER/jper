@@ -1,0 +1,81 @@
+{% macro render_pagination(num_of_pages,page_num,url) %}  
+{% if(1<num_of_pages) %}
+	<div class="pagination pagination--with-pages pagination--with-pages--small-pad pagination--white-bg">
+	  <ul class="pagination-container">
+	{% if(page_num >= 2 ) %}
+	    <li class="pagination__item pagination__item--previous">
+	      <a href="{{ url }}&page={{page_num-1}}" title="Previous">
+	        <span class="icon icon-chevron-left icon--heavy"></span>
+	        <span class="pagination__text">Previous</span>
+	      </a>
+	    </li>
+	{% endif  %}
+	<li class="pagination__item pagination__item--first {% if(1 == page_num) %} pagination__item--current {% endif %}">
+        <a href="{{ url }}&page={{1}}" title=" 1">1</a>
+    </li>
+    <li class="pagination__item {% if(2 == page_num) %} pagination__item--current {% endif %}">
+       <a href="{{ url }}&page={{2}}" title=" 2">2</a>
+    </li>
+	{% if(10<num_of_pages) %}
+		{% set center = page_num %}
+		{%if(page_num <= 3) %}
+			{% set center = 5 %}
+		{% elif(page_num > 5) %}
+			<li class="pagination__item pagination__item--space">&hellip;</li>
+		{% endif %}
+		{%if(page_num >= num_of_pages-4) %}
+			{% set center = num_of_pages-4 %}
+		{% endif %}
+		{% set penultimate = [] %}
+		{% for x in range(center-2, center+3) %}
+			{% if(x==1 or x ==2 or x >= num_of_pages-1) %}
+				{% continue %}
+			{% endif  %}
+			{% if(x >= num_of_pages-1) %}
+				{{x}}
+				{% do penultimate.append(1) %}
+			{%endif %}
+			<li class="pagination__item {% if(x == page_num) %} pagination__item--current {% endif %}">
+		       <a href="{{ url }}&page={{x}}" title=" {{x}}">{{x}}</a>
+		     </li>
+		{% endfor %}
+		{% if(not penultimate) %}
+			{% if(center+2 <= num_of_pages-3) %}
+				<li class="pagination__item pagination__item--space">&hellip;</li>
+			{% endif %}
+		<li class="pagination__item {% if(num_of_pages-1 == page_num) %} pagination__item--current {% endif %}">
+       		<a href="{{ url }}&page={{num_of_pages-1}}" title="{{num_of_pages-1}}">{{num_of_pages-1}}</a>
+    	</li>
+		{% endif %} 
+		
+		<li class="pagination__item pagination__item--last {% if(num_of_pages == page_num) %} pagination__item--current {% endif %}">
+       		<a href="{{ url }}&page={{num_of_pages}}" title="{{num_of_pages}}">{{num_of_pages}}</a>
+    	</li>
+    	
+	{% else %}
+	
+	{% for x in range(2, num_of_pages) %}
+		<li class="pagination__item
+		{% if(x == page_num-1) %}
+			pagination__item--current
+		{% endif  %}
+		{% if(x+1 == num_of_pages) %}
+			pagination__item--last
+		{% endif  %}
+		">
+	       <a href="{{ url }}&page={{x+1}}" title=" {{x+1}}">{{x+1}}</a>
+	     </li>
+	{% endfor %}
+	{% endif %}
+	{% if(page_num < num_of_pages) %}
+	    <li class="pagination__item pagination__item--next">
+	      <a href="{{ url }}&page={{page_num+1}}" title="Next">
+	        <span class="pagination__text">Next</span>
+	        <span class="icon icon-chevron-right icon--heavy"></span>
+	      </a>
+	    </li>
+	{% endif  %}
+	  </ul>
+	</div>
+{% endif  %}
+{% endmacro %}

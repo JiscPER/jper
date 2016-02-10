@@ -1,141 +1,148 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <div class="row">
-    <div class="col-md-offset-4 col-md-4">
-        <h1>Register a New User</h1>
-    </div>
+	<div class="col-md-offset-4 col-md-4">
+		<h1>Register a New User</h1>
+	</div>
 </div>
 
-<form method="post" action="{{url_for('account.register')}}" id="registration-details">
-    <div class="row">
-        <div class="col-md-offset-2 col-md-8 form-horizontal wide">
-						<div class="row">
-								<div class="col-md-4">
-										<p>Email address</p>
-								</div>
-								<div class="col-md-8">
-										<input type="text" name="email" class="form-control" placeholder="email">
-								</div>
-						</div>
-						<div class="row" style="padding-top:3px;">
-								<div class="col-md-4">
-										<p>Password</p>
-								</div>
-								<div class="col-md-8">
-										<input type="password" name="password" class="form-control" placeholder="password">
-								</div>
-						</div>
-            
-            <div class="checkbox">
-                <label>
-                    <input class="roler" type="checkbox" name="publisher"> publisher account
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input class="roler" type="checkbox" name="repository"> repository account
-                </label>
-            </div>
-
-            <div class="rolers repository" style="margin-top:10px;">
-								<div class="row">
-										<div class="col-md-4">
-												<p>Repository name</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="repository_name" class="form-control" placeholder="repository name">            
-										</div>
-								</div>
-								<div class="row" style="padding-top:3px;">
-										<div class="col-md-4">
-												<p>Repository URL</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="repository_url" class="form-control" placeholder="repository URL">            
-										</div>
-								</div>
-								<div class="row" style="padding-top:3px;">
-										<div class="col-md-4">
-												<p>Repository software</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="repository_software" class="form-control" placeholder="repository software">            
-										</div>
-								</div>
-								<div class="row" style="padding-top:3px;">
-										<div class="col-md-4">
-												<p>SWORD username</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="sword_username" class="form-control" placeholder="SWORD username">            
-										</div>
-								</div>
-								<div class="row" style="padding-top:3px;">
-										<div class="col-md-4">
-												<p>SWORD password</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="sword_password" class="form-control" placeholder="SWORD password">            
-										</div>
-								</div>
-								<div class="row" style="padding-top:3px;">
-										<div class="col-md-4">
-												<p>SWORD collection</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="sword_collection" class="form-control" placeholder="SWORD collection">            
-										</div>
-								</div>
-								<div class="row" style="padding-top:3px;">
-										<div class="col-md-4">
-												<p>Packaging prefs (comma separated)</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="packaging" class="form-control" placeholder="packaging prefs (comma separated)">            
-										</div>
-								</div>
-            </div>
-            
-            <div class="rolers publisher" style="margin-top:10px;">
-								<div class="row">
-										<div class="col-md-4">
-												<p>Embargo duration (months) (number)</p>
-										</div>
-										<div class="col-md-8">
-											<input type="text" name="embargo_duration" class="form-control" placeholder="embargo duration (months) (number)">            
-										</div>
-								</div>
-            </div>
-            
-            <button class="btn btn-primary btn-block" id="register" type="submit" style="margin-top:5px;">
-                Register
-            </button>
-        </div>
-    </div>
+<form class="article-full__body" method="post" action="{{url_for('account.register')}}" id="registration-details">
+	<div class="row">
+		<div class="col span-8">
+			<fieldset class="form__fieldset">
+				<ul class="form-fields">
+					<li class="form-fields__item--text">
+						<label> 
+							<span class="form-fields__label-text">Email address</span>
+							<input type="text" name="email" class="input--large form-control">
+						</label>
+					</li>
+					<li class="form-fields__item--text">
+						<label> 
+							<span class="form-fields__label-text">Confirm Email address</span>
+							<input type="text" name="email_verify" class="input--large form-control">
+						</label>
+					</li>
+					<li class="form-fields__item--text">
+						<label> 
+							<span class="form-fields__label-text">Password</span> 
+							<input type="password" name="password" class="input--large form-control">
+						</label>
+					</li>
+					<li class="form-fields__item--text">
+						<label> 
+							<span class="form-fields__label-text">Confirm Password</span> 
+							<input type="password" name="password_verify" class="input--large form-control">
+						</label>
+					</li>
+				</ul>
+				<ul class="form-fields">
+					<li class="form-fields__item-radio">
+                        <span class="form-fields__label-text">Account type</span>
+                        	<ul>
+                          		<li>
+                            		<label>
+                              			<input class="roler" type="radio" name="radio" value="publisher"> Publisher account</label>
+                          		</li>
+                          		<li>
+                            		<label>
+                              			<input class="roler" type="radio" name="radio" value="repository"> Repository account</label>
+                          		</li>
+                          		<li>
+                            		<label>
+                              			<input class="roler" type="radio" name="radio" value="admin"> Admin</label>
+                          		</li>
+                        	</ul>
+                      </li>
+				</ul>
+				<div class="rolers repository">
+					<ul class="form-fields">
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">Repository name</span>
+								<input type="text" name="repository_name" class="input--large form-control">
+							</label>
+						</li>
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">Repository URL</span> 
+								<input type="text" name="repository_url" class="input--large form-control">
+							</label>
+						</li>
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">Repository software</span> 
+								<input type="text" name="repository_software" class="input--large form-control">
+							</label>
+						</li>
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">SWORD username</span> 
+								<input type="text" name="sword_username" class="input--large form-control">
+							</label>
+						</li>
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">SWORD username</span> 
+								<input type="text" name="sword_password" class="input--large form-control">
+							</label>
+						</li>
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">SWORD collection</span> 
+								<input type="text" name="sword_collection" class="input--large form-control">
+							</label>
+						</li>
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">Packaging prefs (comma separated)</span> 
+								<input type="text" name="packaging" class="input--large form-control">
+							</label>
+						</li>
+					</ul>
+				</div>
+				<div class="rolers publisher">
+					<ul class="form-fields">
+						<li class="form-fields__item--text">
+							<label> 
+								<span class="form-fields__label-text">Embargo duration (months) (number)</span>
+								<input type="text" name="embargo_duration" class="input--large form-control">
+							</label>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="btn--right-align">
+					<button class="btn btn--3d btn--primary" id="register" type="submit">Add user</button>
+				</div>
+				
+				<div class="btn--right-align">
+					<input action="action" type="button" class="btn btn--3d btn--primary" value="Cancel" onclick="history.back();" />
+				</div>
+				
+			</fieldset>
+		</div>
+	</div>
 </form>
 
-{% endblock %}
+{% endblock %} 
 
 {% block extra_js_bottom %}
 
 <script>
 $( document ).ready(function() {
-    $('.rolers').hide();
+	$('.rolers').hide();
     var roler = function() {
-        var cls = '.' + $(this).attr('name');
-			  if ( $(cls).is(':visible') ) {
-					  $(cls).hide();
-				} else {
-				    $(cls).show();
-				}
+		var cls = '.' + $(this).attr('value');
+		$('.rolers').hide();
+		$(cls).show();
     }
     $('.roler').bind('change',roler);
 });
 </script>
 
 {% endblock extra_js_bottom %}
+
 
 
 

@@ -1,0 +1,29 @@
+{%
+    set CATEGORY_MAP = {
+        "error" : "danger"
+    }
+%}
+
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% set category_url_indicator = '+contains-url' %}
+
+            {% for category, message in messages %}
+                {% set message_has_url = False %}
+                {% if category.endswith(category_url_indicator) %}
+                    {% set category = category[:category.rfind(category_url_indicator)] %}
+                    {% set message_has_url = True %}
+                {% endif %}
+
+
+                <article class="box box--padding-large box--{{CATEGORY_MAP.get(category, category)}} fade in" data-alert="alert">
+                    {% if message_has_url %}
+                        {{ message | safe }}
+                    {% else %}
+                        {{ message }}
+                    {% endif %}
+                </article>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}

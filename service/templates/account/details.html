@@ -1,0 +1,89 @@
+{% extends "base.html" %} {% block content %}
+<div class="row">
+	<div class="col span-12">
+		<div class="cms">
+			<h1>Routed Notification History</h1>
+		</div>
+		<div class="row">
+		<form class="form" action="" method="GET">
+			<div class="col span-10">
+
+				<ul class="form-fields">
+					<li class="form-fields__item--text"><label> <span
+							class="form-fields__label-text">Show notification from</span> <input type="text"
+							name="since" value="{{date}}">
+					</label></li>
+				</ul>
+
+
+			</div>
+			<div class="col span-1">
+				<button class="btn btn--3d btn--primary" type="submit">Send</button>
+			</div>
+		</form>
+		</div>
+		<div class="col span-12">{% from
+			"harvester/helpers/pagination.html" import render_pagination%} {{
+			render_pagination(num_of_pages,page_num,link) }}</div>
+		<table id="dataAOTable">
+			<tr>
+				<th>Send&nbsp;Date</th>
+				<th>Event</th>
+				<th>Title</th>
+				<th>Analysis&nbsp;Date</th>
+			</tr>
+
+		</table>
+		{% from "harvester/helpers/pagination.html" import render_pagination%}
+		{{ render_pagination(num_of_pages,page_num,link) }}
+		<div class="row">
+			<div class="col span-1"></div>
+			<div class="col span-1"></div>
+			<div class="col span-1"></div>
+		</div>
+
+		<div id='elem'></div>
+	</div>
+</div>
+<script>
+	// obj to render.
+	var obj = JSON.parse({{ repo|tojson|safe }});
+	
+	var node = [];
+	
+	for (variable in obj.notifications) {
+		var id = obj.notifications[variable].id;
+		$('#dataAOTable tr:last').after('<tr>\
+				<td class="toggle">'+obj.notifications[variable].created_date+'</td> \
+				<td>'+obj.notifications[variable].event+'</td> \
+				<td>'+obj.notifications[variable].metadata.title+'</td> \
+				<td>'+obj.notifications[variable].analysis_date+'</td> \
+				</tr> \
+				<tr style="display: none;"> <td colspan="4"><div class="col span-10" id="'+id+'"></div> \
+				<div class="col span-1 expand" data="'+id+'"> \
+					<span class="icon-chevron-down icon"></span> \
+				</div> \
+				<div class="col span-1 collapse" data="'+id+'"> \
+					<span class="icon-chevron-up icon"></span> \
+				</div> \
+				</td></tr>');		
+		node[id] = new PrettyJSON.view.Node({
+			el : $('#'+id),
+			data : obj.notifications[variable]
+		});	
+	}
+	
+	$('.expand').on('click', function() {
+			node[$(this).attr('data')].expandAll();
+		});
+	
+	$('.collapse').on('click', function() {
+		node[$(this).attr('data')].collapseAll();
+	});
+	
+	$('.toggle').on('click',function(){
+		$(this).parent().next().toggle();
+	});
+	
+</script>
+{% endblock %}

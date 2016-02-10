@@ -1,0 +1,36 @@
+{% extends "base.html" %} 
+{% block content %}
+
+<div class="row">
+	<div class="col-md-12">
+		
+		<div id="matchholder">
+		
+			<a href="#" holder-function="prev" alt="previous" title="Previous" class="pager__item pager__item--left holder holder-function">
+				<div class="icon icon-chevron-left icon--heavy"></div>
+				<div class="pager__text--left">Previous</div>
+			</a>
+			<form class="form">
+		    	<label>
+		        	<span class="visuallyhidden">Search</span>
+		        	<input type="text" class="input--medium holder holder-search holder-function" holder-function="add" placeholder="search..." />
+		      	</label>
+		    </form>
+			<a href="#" holder-function="next" alt="next" title="Next" class="pager__item pager__item--right holder holder-function">
+				<div class="icon icon-chevron-right icon--heavy"></div>
+				<div class="pager__text--right">Next</div>
+			</a>
+		
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="holder holder-results">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
