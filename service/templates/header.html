@@ -19,7 +19,7 @@
     <div class="masthead__main">
         <div class="inner">
             <p class="masthead__title masthead__title--short">
-            	<a href="/" title="Publications Router">Publications router
+            	<a href="/" title="Publications Router">Publications Router
                     <span class="tags--white tags__item">
                         <span class="tags__link">
                             Beta
@@ -44,26 +44,21 @@
                 </div>
             {% endif %}
               	<nav class="masthead__nav masthead__nav--primary" role="navigation" data-dropdown="">
-                    <ul>
-                       <li class="nav__item {% if request.path == url_for('about.index')%}
-                         active
-                        {% endif %}">
-                            <a href="{{ url_for('about.index') }}">About</a>
-                        </li>
-                    
-                        <li class="nav__item  has-popup {% if request.path == url_for('more.institutions') or
-                        	request.path == url_for('more.publishers') or
-                        	request.path == url_for('more.resources') %}
+                    <ul>                    
+                        <li class="nav__item  has-popup {% if request.path == url_for('about.institutions') or
+                        	request.path == url_for('about.publishers') or
+                        	request.path == url_for('about.index') or
+                        	request.path == url_for('about.resources') %}
                          	is-active
                         	{% endif %}">
                             
-                            <a>More information</a>
+                            <a>About</a>
                             <div class="submenu submenu--left">
                                 <ul>
-<!--                                	<li><a href="{{ url_for('about.index') }}">About</a></li> --> 
-                                    <li><a href="{{ url_for('more.institutions') }}">Information for institutions</a></li>
-                                    <li><a href="{{ url_for('more.publishers') }}">Information for publishers</a></li>
-                                    <li><a href="{{ url_for('more.resources') }}">Technical documentation</a></li>
+                                	<li><a href="{{ url_for('about.index') }}">Overview</a></li>
+                                    <li><a href="{{ url_for('about.institutions') }}">Information for institutions</a></li>
+                                    <li><a href="{{ url_for('about.publishers') }}">Information for publishers</a></li>
+                                    <li><a href="{{ url_for('about.resources') }}">Technical documentation</a></li>
                                 </ul>
                             </div>
                         </li>

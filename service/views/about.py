@@ -17,3 +17,21 @@ def index():
     '''
     '''
     return render_template('about/about.html', name='About')
+
+@blueprint.route('/institutions/', methods=['GET','POST'])
+def institutions():
+    '''
+    '''
+    return render_template('about/institutions.html', name='Information for Institutions')
+
+@blueprint.route('/publishers/', methods=['GET','POST'])
+def publishers():
+    '''
+    '''
+    return render_template('about/publishers.html', name='Information for Publishers')
+
+@blueprint.route('/resources/', methods=['GET','POST'])
+def resources():
+    '''
+    '''        
+    return render_template('about/resources.html', name="Technical documentation")
