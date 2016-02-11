@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="row">
+	<div class="col span-11 pull-1 cms">
+		<h1>Technical documentation</h1>
+		<p>Jisc Publications Router is a messaging system that receives notifications from publishers and other sources (e.g. Europe PMC) about article publications and routes these using a matching algorithm to particular Institutional Repositories.  At its simplest, a notification is simply a metadata package providing details of an article that has been either accepted for publication or has been published.  The notification may also include the article text either embedded in the XML or as one or more separate binary files, for example a PDF or WORD document and graphics files.
+		</p>
+		<p>Publishers can provide Publications Router with notification metadata in one of two formats, either <a href="http://jats.nlm.nih.gov/publishing/">JATS XML</a> or the Router's proprietary API JSON structure, via any of these mechanisms:</p>
+		<ol>
+			<li>FTP: sending JATS XML metadata plus any binary files as a zipped package (or unzipped if particular rules are followed)</li>
+			<li>SWORD2 deposit: as per SWORD2 specifiction</li>
+			<li>Publication Router API: a REST web service  (Publication Router's JSON structure).</li>
+		</ol>
+		<p><img src="/static/img_2_800px.png"></p>
+		<p>Institutions may receive the notifications directly into their Repository or CRIS (if the vendor supports this) by any of these mechanisms:</p>
+		<ol>
+			<li>SWORD2 deposit: which allows Publication Router to push the notifications to those repositories which support this protocol (such as Eprints and DSpace)</li>
+			<li>OAI-PMG: which enables repositories to pull the notficitions from Publication Router via an exposted end-point (URL)</li>
+			<li>Publication Router API: which enables repositories or CRISs to pull notifications via a REST web service.</li>
+		</ol>
+		<p>In order to use Publications Router both Publishers and Institutions must have completed the sign-up process which results in creation of a Publication Router Account which is used to configure and administer Publication Router settings that are necessary for inter-connection. 
+		</p>
+		<p>Further information on how to set-up and configure Publications Router is provided in the following sections for Publishers and Institutions.</p>
+		<p><img src="/static/img_3_800px.png"></p>
+
+		<section id="inst_info" class="is-collapsible show_hide__container is-collapsible--button"
+			data-collapsible>
+			<h2 class="show_hide__trigger">Information for Institutions</h2>
+			<div class="show_hide__target">
+				<p>
+					Content coming soon.
+				</p>
+			</div>
+		</section>
+		<section id="pub_info" class="is-collapsible show_hide__container is-collapsible--button"
+			data-collapsible>
+			<h2 class="show_hide__trigger">Information for Publishers</h2>
+			<div class="show_hide__target">
+				<p>
+					Content coming soon.
+				</p>
+			</div>
+		</section>
+	</div>
+</div>
+
+{% endblock %} {% block extra_js_bottom %} {% endblock extra_js_bottom %}

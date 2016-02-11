@@ -1,0 +1,70 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="row">
+	<div class="col span-11 pull-1 cms">
+		<h1>For institutions</h1>
+
+		<h2>Key benefits</h2>
+		<ul>
+			<li>You will be alerted to new articles by your researchers that
+				you may not have known about otherwise.</li>
+			<li>Metadata, often with the full text, will be delivered
+				straight into your review queue, avoiding the need to enter it
+				manually.</li>
+			<li>For any full-text articles that we send that are under
+				embargo, we will send you an actionable embargo end date, saving you
+				time and effort otherwise needed to investigate what this should be
+				in each case.</li>
+		</ul>
+		<h2>How to join</h2>
+		<p>
+			Publications Router is now open to new institutions who wish to take advantage
+			of its benefits.<br> Please contact us on <a
+				href="mailto:pubrouter@jisc.ac.uk">pubrouter@jisc.ac.uk</a> if you
+			would like to find out more.
+		</p>
+
+		<h2>How it works</h2>
+		<p>Publications Router can deliver notifications about your researchers'
+			papers straight into a review queue in your repository or CRIS.  The notifications may include the full text of the published
+			version of record, or the authors' accepted manuscript, or may just
+			consist of metadata. This will depend on what individual publishers
+			can provide.</p>
+		<p><img src="/static/img_1_800px.png"></p>
+
+		<p>Initially publishers will send notifications at publication
+			stage. As these initial publishers all have rapid turn-around times
+			from acceptance to publication, these notifications will reach you in good time for
+			you to achieve REF compliance. In future we plan to add acceptance-stage notifications for further publishers. In those cases, you will receive an initial notification at acceptance and this will be followed by an updated notification at publication stage.</p>
+		<p>The notifications may include the full text of the published version of record, or the authors' accepted manuscript, or may just consist of metadata. This will depend on what individual publishers can provide.</p>
+		<p>There is also an automated feed from the open access subset of
+			Europe PubMed Central, including the full text of the version of
+			record. In future we will add further metadata-only feeds from various multi-publisher
+			sources.</p>
+		<p>To enable Publications Router to send you notifications about the
+			correct articles, you will need to provide us with some key
+			parameters that Publications Router can use to match them to your institution.
+			These include variant names for your institution, post-codes that may
+			occur in its addresses, email domain names that your authors may use,
+			or your researchers' ORCIDs.</p>
+		<p>Some publishers may supply content that is under embargo. If
+			so, we will include the embargo end-date in the metadata. For those
+			articles, you will need to agree to respect these embargoes by
+			signing an agreement with us.</p>
+		<p>Publications Router can supply the notifications directly into your
+			repository (using SWORD2). There may be some configuration required - for example to the
+			stylesheet specifying which data items from Publications Router should
+			populate which fields on your system.</p>
+		<p>Alternatively, if your work-flow goes via your CRIS, it can
+			pull notifications matched to your institution from Publications Router's API.
+			We are working with CRIS vendors and institutions to optimise this.</p>
+		<h2>Technical Information</h2>
+		<p>
+			Please see <a href="/about/resources/">here</a> for details
+			of the Publications Router architecture and how to connect to it.
+		</p>
+	</div>
+</div>
+
+{% endblock %} {% block extra_js_bottom %} {% endblock extra_js_bottom
+%}
