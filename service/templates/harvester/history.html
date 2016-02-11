@@ -34,7 +34,7 @@
 </tbody>
 </table>
 {% from "harvester/helpers/pagination.html" import render_pagination%}
-{{ render_pagination(num_of_pages,page_num,url_for('harvester.history')) }}
+{{ render_pagination(num_of_pages,page_num,url_for('harvester.history')+'?')}}
 {% endblock %}
 
 {% block extra_js_bottom %}
