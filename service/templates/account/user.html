@@ -29,7 +29,6 @@
 	<div class="col span-8 cms">
 		<h2><b>Configure Settings</b></h2>
 {% if account.has_role('publisher') %}
-		<div class="box box--padding-large box--brd-mgreyblue">
 			<h3>Embargo period</h3>
 			<form method="post" action="{{request.path}}/pubinfo" class="form">
 				<div class="row">
@@ -40,7 +39,6 @@
 			   		<button class="btn btn--3d" id="update" type="submit">Update details</button>
 				</div>
 			</form>
-		</div>
 		<br><br>
 		<h2>Connecting to Publications Router</h2>
 		<h3>Connecting to the API</h3>
@@ -51,7 +49,7 @@
 			Port:            <b>22</b><br>
 			Username:        <b>{{account.id}}</b><br>
 			Password:        <b>{{account.data['api_key']}}</b><br>
-			Send a directory for every publication notification. There shold be no files in the top level of yout SFTP folder.<br>
+			Send a directory for every publication notification. There should be no files in the top level of your SFTP folder.<br>
 		</p>
 		<h1 class="pattern-library__component-title"></h1>
 		<h3>Connecting via SWORD</h3>

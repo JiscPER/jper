@@ -19,7 +19,7 @@
     <div class="masthead__main">
         <div class="inner">
             <p class="masthead__title masthead__title--short">
-            	<a href="/" title="Publications Router">Jisc publications router
+            	<a href="/" title="Publications Router">Publications router
                     <span class="tags--white tags__item">
                         <span class="tags__link">
                             Beta
@@ -39,7 +39,7 @@
             {% else %}
                 <div class="credentials">
                     <a href="{{ url_for('account.logout') }}">
-                        <div class="btn btn--rounded"> <span class="btn__text">Log out</span></div>
+                        <div class="btn btn--rounded btn--outline"> <span class="btn__text">Log out</span></div>
                     </a>
                 </div>
             {% endif %}
@@ -79,7 +79,7 @@
                         request.path == url_for('account.register')%}
                          is-active
                         {% endif %}">
-                            <a>Admin</a>
+                            <a href="{{ url_for('account.index') }}">Admin</a>
                             <div class="submenu submenu--left">
                                 <ul>
                                     <li><a href="{{ url_for('account.register') }}">Add user</a></li>
