@@ -3,26 +3,40 @@
 <div class="row">
 	<div class="col span-11 pull-1 cms">
 		<h1>Technical documentation</h1>
-		<p>Jisc Publications Router is a messaging system that receives notifications from publishers and other sources (e.g. Europe PMC) about article publications and routes these using a matching algorithm to particular Institutional Repositories.  At its simplest, a notification is simply a metadata package providing details of an article that has been either accepted for publication or has been published.  The notification may also include the article text either embedded in the XML or as one or more separate binary files, for example a PDF or WORD document and graphics files.
+		<p>Jisc Publications Router is a messaging system that receives notifications about article publications from publishers and other sources (e.g. Europe PMC) and routes these using a matching algorithm to particular institutional repositories.  At its simplest, a notification is simply a metadata package providing details of an article that has either been accepted for publication or has been published.  The notification may also include the article text either embedded in the metadata or in associated binary files, for example PDF or WORD documents and graphics files.
 		</p>
-		<p>Publishers can provide Publications Router with notification metadata in one of two formats, either <a href="http://jats.nlm.nih.gov/publishing/">JATS XML</a> or the Router's proprietary API JSON structure, via any of these mechanisms:</p>
-		<ol>
-			<li>FTP: sending JATS XML metadata plus any binary files as a zipped package (or unzipped if particular rules are followed)</li>
-			<li>SWORD2 deposit: as per SWORD2 specifiction</li>
-			<li>PublicationsRouter API: a REST web service  (PublicationsRouter's JSON structure).</li>
-		</ol>
 		<p><img src="/static/img_2_800px.png"></p>
-		<p>Institutions may receive the notifications directly into their Repository or CRIS (if the vendor supports this) by any of these mechanisms:</p>
-		<ol>
-			<li>SWORD2 deposit: which allows PublicationsRouter to push the notifications to those repositories which support this protocol (such as Eprints and DSpace)</li>
-			<li>OAI-PMG: which enables repositories to pull the notficitions from Publications Router via an exposted end-point (URL)</li>
-			<li>PublicationsRouter API: which enables repositories or CRISs to pull notifications via a REST web service.</li>
-		</ol>
-		<p>In order to use Publications Router both Publishers and Institutions must have completed the sign-up process which results in creation of a PublicationsRouter Account which is used to configure and administer PublicationsRouter settings that are necessary for inter-connection. 
+		<p><b>Publishers</b> can currently provide Publications Router with notification metadata in one of two formats, either <a href="http://jats.nlm.nih.gov/publishing/">JATS-XML</a> or the Router's proprietary <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md">API JSON structure</a>, via any of these mechanisms:</p>
+		<ul>
+			<li><b>FTP</b>: sending JATS XML metadata plus any binary files as a zipped package (or unzipped if particular rules are followed)</li>
+			<li><b>SWORD2 deposit</b>: as per SWORD2 specifiction</li>
+			<li><b>Publications Router API</b>: a REST web service  (Publications Router's JSON structure).</li>
+		</ul>
+		<p>Note that we are open to supporting alternative formats and new mechanisms for receiving notifications from publishers and other sources so this list may expand in the future.</p>
+		
+		<p><b>Institutions</b> may receive the notifications directly into their repository or CRIS (if the vendor supports this) by any of these mechanisms:</p>
+		<ul>
+			<li><b>SWORD2 deposit</b>: which allows Publications Router to push the notifications to those repositories which support this protocol (such as Eprints and DSpace)</li>
+			<li><b>OAI-PMH</b>: which enables repositories to pull the notficitions from Publications Router via an exposted end-point (URL)</li>
+			<li><b>Publications Router API</b>: which enables repositories or CRISs to pull notifications via a REST web service.</li>
+		</ul>
+		<p>In order to use Publications Router both publishers and institutions must have completed the sign-up process which results in creation of a Publications Router account. This is used to configure and administer Publications Router settings that are necessary for inter-connection. 
 		</p>
-		<p>Further information on how to set-up and configure Publications Router is provided in the following sections for Publishers and Institutions.</p>
+		<p><b>Matching of notifications</b> to an insitutional repository is a key function of the Publications Router.  This is done using a set of matching criteria that each participating institution maintains via their administration screen.  On arrival, each notification is compared with these criteria and those that match are flagged for routing to that institution's repository.  Criteria may include any of the following:
+		</p>
+		<ul>
+			<li>Institution name variants (reflecting different ways that an institution is known)</li>
+			<li>Email or web domain names associated with the instituion</li>
+			<li>Postcodes of an institution's various premises</li>
+			<li>Grant numbers</li>
+			<li>ORCIDs of authors</li>
+			<li>Email addresses of authors.</li>
+		</ul>
+		<p>Matched notifications are stored for 90 days in Publications Router.  This gives repositories and CRISs that use either of the "pull" mechanisms (OAI-PMH or Router's API) ample time to obtain the notifications.  It also allows Institutions to view the metadata of those notifications via their administration screen.
+		</p>
 		<p><img src="/static/img_3_800px.png"></p>
-
+		<p>Further information on how to set-up and configure Publications Router is provided in the following sections for institutions and publishers.
+		</p>
 		<section id="inst_info" class="is-collapsible show_hide__container is-collapsible--button"
 			data-collapsible>
 			<h2 class="show_hide__trigger">Information for Institutions</h2>
