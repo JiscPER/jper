@@ -18,6 +18,7 @@
 				<tr>
 					<th scope="col" class="persist essential ">User Name</th>
 					<th scope="col" data-sort-default class="persist essential ">Account type</th>
+					<th scope="col" >ID</td>
 					<td scope="col" class="persist">Manage</td>
 				</tr>
 			</thead>
@@ -27,6 +28,7 @@
 				<tr>
 					<td>{{user[1]}}</td>
 					<td>{% for r in user[2] %} {{r}} {% endfor %}</td>
+					<td>{{user[0]}}</td>
 					<td><a href="/account/{{user[0]}}">Manage</a></td>
 				</tr>
 				{% endfor %}
