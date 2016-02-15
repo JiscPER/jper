@@ -6,20 +6,22 @@
 <div class="featured">
 	<div class="row">
 	  	<section class="box box--padding-large box--padding-bottom-none box--notice box--brd-vlgreyblue box--bg-vlgreyblue">
-	    	<div class="col span-6 cms">
-	        	<h2>
+			<div class="span-12 cms">
+				<h2>
 					{% if account.has_role('admin') %} Admin {% endif %} 
 					{% if account.has_role('repository') %} Institution Repository {% endif %} 
 					{% if account.has_role('publisher') %} 
 					{% if account.has_role('repository')
 					%} / {% endif %} Publisher {% endif %} account details
 				</h2>
+			</div>
+	    	<div class="col span-4 cms">
 				<dl>
 	            	<dt class="visuallyhidden">Email address</dt>
 	            	<dd>{{account.data['email']}}</dd>
 	            </dl>
 			</div>
-			<div class="col span-6 cms">
+			<div class="col span-8 cms">
             	<dl class="dl-horizontal dl-horizontal--account-details">
 	            	{% if current_user.is_super %}
 	                <dt>Created</dt>
@@ -243,8 +245,7 @@
 {% endif %}
 {% endblock %} 
 {% block extra_js_bottom %}
-    <script>
-    $( document ).ready(function() {        
+    <script>    	
         var deleteaccount = function(event) {
             var conf = confirm("This action will remove the user forever. Are you sure you want to do this?");
             if (!conf) event.preventDefault();
@@ -255,9 +256,9 @@
 		var results = function(data) {
 			var disp = '<table class="table table-striped table-bordered">';
 			for ( var r in data.hits.hits ) {
+				var rec = data.hits.hits[r]._source;
 				disp += '<tr><td>';
 				disp += '<p>Notification ' + rec.notification + '</a></p>'
-				var rec = data.hits.hits[r]._source;
 				for ( var p in rec.provenance ) {
 					var prov = rec.provenance[p];
 					disp += '<p>' + prov.explanation + '</p>';
@@ -313,6 +314,5 @@
 				size: 20
 		});
 		{% endif %}
-    });
     </script>
 {% endblock extra_js_bottom %}
