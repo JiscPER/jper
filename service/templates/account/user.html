@@ -2,29 +2,38 @@
 {% block content %} 
 
 {% if not current_user.is_anonymous() %}
-
-<div class="row cms">
-	<div class="col span-12">
-		<aside class="article-full__callout article-full__callout--left">
-	        <p><b>
-				{% if account.has_role('admin') %} Admin {% endif %} 
-				{% if account.has_role('repository') %} Institution Repository {% endif %} 
-				{% if account.has_role('publisher') %} 
-				{% if account.has_role('repository')
-				%} / {% endif %} Publisher {% endif %} account details
-			</b></p>
-			<p>{{account.data['email']}}</p>
-		</aside>
-		<aside class="article-full__callout article-full__callout--right">
-			{% if current_user.is_super %}
-			<p>Created: {{account.data['created_date']}}</p>
-			{% endif %}
-			<p>Account ID: {{account.id}}</p>
-			<p>API key: {{account.data['api_key']}}</p>
-        </aside>
+ <h1 class="visuallyhidden">My account</h1>
+<div class="featured">
+	<div class="row">
+	  	<section class="box box--padding-large box--padding-bottom-none box--notice box--brd-vlgreyblue box--bg-vlgreyblue">
+	    	<div class="col span-6 cms">
+	        	<h2>
+					{% if account.has_role('admin') %} Admin {% endif %} 
+					{% if account.has_role('repository') %} Institution Repository {% endif %} 
+					{% if account.has_role('publisher') %} 
+					{% if account.has_role('repository')
+					%} / {% endif %} Publisher {% endif %} account details
+				</h2>
+				<dl>
+	            	<dt class="visuallyhidden">Email address</dt>
+	            	<dd>{{account.data['email']}}</dd>
+	            </dl>
+			</div>
+			<div class="col span-6 cms">
+            	<dl class="dl-horizontal dl-horizontal--account-details">
+	            	{% if current_user.is_super %}
+	                <dt>Created</dt>
+					<dd>{{account.data['created_date']}}</dd>
+					{% endif %}
+					<dt>Account <abbr title="Identifier">ID</abbr></dt>
+					<dd>{{account.id}}</dd>
+					<dt><abbr title="Application Programming Interface">API</abbr> key</dt>
+	                <dd>{{account.data['api_key']}}</dd>
+				</dl>
+			</div>
+		</section>
 	</div>
 </div>
-
 <div class="row">
 	<div class="col span-8 cms">
 		<h2><b>Configure Settings</b></h2>
@@ -218,7 +227,7 @@
                     </div>
                     <div class="holder holder-filters" style="margin-top:5px;"></div>
                 </div>
-				</div>
+			</div>
 		</div>
 	</div>	
 </div>
@@ -243,52 +252,50 @@
         $('#delete').bind('click',deleteaccount);
 			
     {% if account.has_role('repository') %}
-		
 		var results = function(data) {
-				var disp = '<table class="table table-striped table-bordered">';
-				for ( var r in data.hits.hits ) {
-					disp += '<tr><td>';
-					disp += '<p>Notification ' + rec.notification + '</a></p>'
-					var rec = data.hits.hits[r]._source;
-					for ( var p in rec.provenance ) {
-						var prov = rec.provenance[p];
-						disp += '<p>' + prov.explanation + '</p>';
-						disp += '<p>' + searchify({class: 'holder', val: prov.source_field, attrs: {function: 'add', filter: 'provenance.source_field.exact', value: prov.source_field} });
-						disp += ': ' + searchify({class: 'holder', val: prov.term, attrs: {function: 'add', filter: 'provenance.term.exact', value: prov.term} });
-						disp += ' matched ' + searchify({class: 'holder', val: prov.notification_field, attrs: {function: 'add', filter: 'provenance.notification_field.exact', value: prov.notification_field} });
-						disp += ': ' + searchify({class: 'holder', val: prov.matched, attrs: {function: 'add', filter: 'provenance.matched.exact', value: prov.matched} });
-						disp += '</p>';
-					}
-					disp += '</td></tr>';
+			var disp = '<table class="table table-striped table-bordered">';
+			for ( var r in data.hits.hits ) {
+				disp += '<tr><td>';
+				disp += '<p>Notification ' + rec.notification + '</a></p>'
+				var rec = data.hits.hits[r]._source;
+				for ( var p in rec.provenance ) {
+					var prov = rec.provenance[p];
+					disp += '<p>' + prov.explanation + '</p>';
+					disp += '<p>' + searchify({class: 'holder', val: prov.source_field, attrs: {function: 'add', filter: 'provenance.source_field.exact', value: prov.source_field} });
+					disp += ': ' + searchify({class: 'holder', val: prov.term, attrs: {function: 'add', filter: 'provenance.term.exact', value: prov.term} });
+					disp += ' matched ' + searchify({class: 'holder', val: prov.notification_field, attrs: {function: 'add', filter: 'provenance.notification_field.exact', value: prov.notification_field} });
+					disp += ': ' + searchify({class: 'holder', val: prov.matched, attrs: {function: 'add', filter: 'provenance.matched.exact', value: prov.matched} });
+					disp += '</p>';
 				}
-				disp += '</table>';
-				$('.holder.holder-results').html(disp);
+				disp += '</td></tr>';
+			}
+			disp += '</table>';
+			$('.holder.holder-results').html(disp);
 		}
 		
 		var qr = {
-				'query': {
-						'filtered': {
-								'query': {
-										'bool': {
-											  'must': [
-												]
-										}
-								},
-								'filter': {
-										'bool': {
-												'must': [
-														{
-																'term': {
-																		'repository.exact': '{{account.id}}'
-																}
-														}
-												]
-										}
-								}
+			'query': {
+				'filtered': {
+					'query': {
+						'bool': {
+						  'must': [
+							]
 						}
+					},
+					'filter': {
+						'bool': {
+							'must': [
+								{
+									'term': {
+										'repository.exact': '{{account.id}}'
+									}
+								}
+							]
+						}
+					}
 				}
+			}
 		}
-		
 		$('#matchholder').holder({
 			what: "Matches review",
 			url: "/query/match_prov/_search",

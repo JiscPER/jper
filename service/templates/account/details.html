@@ -6,19 +6,20 @@
 		</div>
 		<div class="row">
 		<form class="form" action="" method="GET">
-			<div class="col span-10">
+			<div class="col span-6">
 
 				<ul class="form-fields">
 					<li class="form-fields__item--text"><label> <span
-							class="form-fields__label-text">Show notification from</span> <input type="text"
+							class="form-fields__label-text">Show notification from:</span> <input type="text"
 							name="since" value="{{date}}">
-					</label></li>
+					</label>
+					<button class="btn btn--3d btn--primary move-up" type="submit">Send</button>
+					</li>
 				</ul>
 
 
 			</div>
-			<div class="col span-1">
-				<button class="btn btn--3d btn--primary" type="submit">Send</button>
+			<div class="col span-5">
 			</div>
 		</form>
 		</div>
@@ -59,13 +60,13 @@
 				<td>'+obj.notifications[variable].metadata.title+'</td> \
 				<td>'+obj.notifications[variable].analysis_date+'</td> \
 				</tr> \
-				<tr style="display: none;"> <td colspan="4"><div class="col span-10" id="'+id+'"></div> \
-				<div class="col span-1 expand" data="'+id+'"> \
+				<tr style="display: none;"> <td colspan="4"><div class="col span-1 expand" data="'+id+'"> \
 					<span class="icon-chevron-down icon"></span> \
 				</div> \
 				<div class="col span-1 collapse" data="'+id+'"> \
 					<span class="icon-chevron-up icon"></span> \
 				</div> \
+				<div class="col span-12" id="'+id+'"></div> \
 				</td></tr>');		
 		node[id] = new PrettyJSON.view.Node({
 			el : $('#'+id),

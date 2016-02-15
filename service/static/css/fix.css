@@ -5,3 +5,20 @@
 .no-underscore a{
 	text-decoration: none;
 }
+.move-up{
+	margin-top: -5px;
+}
+/* over ride the jisc accordion */
+.is-collapsible--button.show_hide--is-expanded, .is-collapsible--button.show_hide--is-expanding{
+	background-color: #fff;
+}
+
+.data-table th, table th{
+	background-color: #e4eaec;
+}
+.data-table tbody tr:nth-child(odd), table tbody tr:nth-child(odd){
+	background-color: #f8fafa;
+}
+.data-table tbody tr, table tbody tr{
+	background-color: #f8fafa;
+}

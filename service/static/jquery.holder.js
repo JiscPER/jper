@@ -178,7 +178,7 @@ function scrollin(elem) {
     var bottom = top + elem.height();
     if ( bottom > docbottom || top <  doctop ) $('html, body').animate({ scrollTop: top - 10 }, 200);
 }
-
+console.log("Included");
 (function($){
     $.fn.holder = function(options) {
 
