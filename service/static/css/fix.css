@@ -22,3 +22,45 @@
 .data-table tbody tr, table tbody tr{
 	background-color: #f8fafa;
 }
+.btn{
+	white-space: nowrap;
+}
+
+.box--brd-vlgreyblue {
+  border-color: #e4e9ec;
+}
+.box--bg-vlgreyblue {
+  background-color: #e4e9ec;
+}
+.box--padding-bottom-none {
+  padding-bottom: 0;
+}
+
+.dl-horizontal dd:before,
+.dl-horizontal dd:after {
+  display: table;
+  content: " ";
+}
+.dl-horizontal dd:after {
+  clear: both;
+}
+@media (min-width: 758px) {
+  .cms > .dl-horizontal dt {
+    float: left;
+    width: 160px;
+    overflow: hidden;
+    clear: left;
+    font-family: "Stag Sans Web Light", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Arial, sans-serif;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cms > .dl-horizontal dd {
+    margin-top: 9px;
+    margin-top: .9rem;
+    margin-left: 180px;
+  }
+  .cms > .dl-horizontal--account-details dt, .cms > .dl-horizontal--account-details dd {
+    margin-top: 0;
+  }
+}
