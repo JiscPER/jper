@@ -6,6 +6,7 @@ import uuid, json, time, requests, re
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
+from service.forms.adduser import AdduserForm
 from flask.ext.login import login_user, logout_user, current_user
 from octopus.core import app
 from octopus.lib import webapp, dates
@@ -63,43 +64,6 @@ def _list_request(repo_id=None):
     resp.mimetype = "application/json"
     resp.status_code = 200
     return resp
-
-def is_email(email):
-    """
-    Returns true if "email" is a valid email
-    """
-    return re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", email)
-
-def password_strong(password):
-    """
-    Verify the strength of 'password'
-    Returns true if the password is strong enough
-    A password is considered strong if:
-        8 characters length or more
-        1 digit or more
-        #1 symbol or more
-        1 uppercase letter or more
-        1 lowercase letter or more
-    """
-
-    # calculating the length
-    length_error = len(password) < 8
-
-    # searching for digits
-    digit_error = re.search(r"\d", password) is None
-
-    # searching for uppercase
-    uppercase_error = re.search(r"[A-Z]", password) is None
-
-    # searching for lowercase
-    lowercase_error = re.search(r"[a-z]", password) is None
-
-    # searching for symbols
-    #symbol_error = re.search(r"\W'", password) is None
-
-    # overall result
-    return not ( length_error or digit_error or uppercase_error or lowercase_error) # or symbol_error )
-
 
 @blueprint.before_request
 def restrict():
@@ -224,13 +188,30 @@ def pubinfo(username):
     acc = models.Account.pull(username)
     if current_user.id != acc.id and not current_user.is_super:
         abort(401)
-
     if 'embargo' not in acc.data: acc.data['embargo'] = {}
     if request.values.get('embargo_duration',False):
         acc.data['embargo']['duration'] = request.values['embargo_duration']
     else:
         acc.data['embargo']['duration'] = 0
-
+    
+    if 'license' not in acc.data: acc.data['license'] = {}
+    if request.values.get('license_title',False):
+        acc.data['license']['title'] = request.values['license_title']
+    else:
+        acc.data['license']['title'] = ""
+    if request.values.get('license_type',False):
+        acc.data['license']['type'] = request.values['license_type']
+    else:
+        acc.data['license']['type'] = ""
+    if request.values.get('license_url',False):
+        acc.data['license']['url'] = request.values['license_url']
+    else:
+        acc.data['license']['url'] = ""
+    if request.values.get('license_version',False):
+        acc.data['license']['version'] = request.values['license_version']
+    else:
+        acc.data['license']['version'] = ""
+    
     acc.save()
     time.sleep(2);
     flash('Thank you. Your publisher details have been updated.', "success")
@@ -391,73 +372,55 @@ def logout():
 def register():
     if not current_user.is_super:
         abort(401)
-    elif request.method == 'GET':
-        return render_template('account/register.html')
-    elif request.method == 'POST':
-        vals = request.json if request.json else request.values
-        if 'email' not in vals:
-            flash('You must provide an email address','error')
-            return render_template('account/register.html')
-        elif 'email_verify' not in vals:
-            flash('You must confirm the email address','error')
-            return render_template('account/register.html')
-        elif not is_email(vals['email']):
-            flash('The format of the email is incorrect','error')
-            return render_template('account/register.html')
-        elif 'password' not in vals:
-            flash('You must provide a password','error')
-            return render_template('account/register.html')
-        elif 'password_verify' not in vals:
-            flash('You must confirm the password','error')
-            return render_template('account/register.html')
-        elif vals['password'] != vals['password_verify']:
-            flash('The passwords should be the same','error')
-            return render_template('account/register.html')
-        elif not password_strong(vals['password']):
-            flash('The password should be 8 characters long, contain upper and lower case and at least on number','error')
-            return render_template('account/register.html')
-        elif models.Account.pull_by_email(vals['email']) is not None:
-            flash('An account already exists for that email address', 'error')
-            return render_template('account/register.html')
-        elif 'radio' not in vals:
-            flash('You need to choose a user role','error')
-            return render_template('account/register.html')
-        else:
-            api_key = str(uuid.uuid4())
-            account = models.Account()
-            account.data['email'] = vals['email']
-            account.data['api_key'] = api_key
-            account.data['role'] = []
+        
+    form = AdduserForm(request.form)
+    vals = request.json if request.json else request.values
+    
+    if request.method == 'POST' and form.validate():
+        api_key = str(uuid.uuid4())
+        account = models.Account()
+        account.data['email'] = vals['email']
+        account.data['api_key'] = api_key
+        account.data['role'] = []
 
-            if vals.get('repository_software',False):
-                account.data['repository'] = {
-                    'software': vals['repository_software']
-                }
-                if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
-                if vals.get('repository_name',False): account.data['repository']['name'] = vals['repository_name']
+        if vals.get('repository_software',False):
+            account.data['repository'] = {
+                'software': vals['repository_software']
+            }
+            if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
+            if vals.get('repository_name',False): account.data['repository']['name'] = vals['repository_name']
 
-            if vals.get('sword_username',False):
-                account.data['sword'] = {
-                    'username': vals['sword_username']
-                }
-                if vals.get('sword_password',False): account.data['sword']['password'] = vals['sword_password']
-                if vals.get('sword_collection',False): account.data['sword']['collection'] = vals['sword_collection']
+        if vals.get('sword_username',False):
+            account.data['sword'] = {
+                'username': vals['sword_username']
+            }
+            if vals.get('sword_password',False): account.data['sword']['password'] = vals['sword_password']
+            if vals.get('sword_collection',False): account.data['sword']['collection'] = vals['sword_collection']
 
-            if vals.get('packaging',False):
-                account.data['packaging'] = vals['packaging'].split(',')
+        if vals.get('packaging',False):
+            account.data['packaging'] = vals['packaging'].split(',')
 
-            if vals.get('embargo_duration',False):
-                account.data['embargo'] = {'duration': vals['embargo_duration']}
+        if vals.get('embargo_duration',False):
+            account.data['embargo'] = {'duration': vals['embargo_duration']}
 
-            account.set_password(vals['password'])
-            if vals['radio'] != 'publisher':
-                account.add_role(vals['radio'])
-            account.save()
-            if vals['radio'] == 'publisher':
-                account.become_publisher()
-            time.sleep(1)
-            flash('Account created for ' + account.id, 'success')
-            return redirect('/account')
+        if vals.get('license_title',False):
+            account.data['license'] = {'title': vals['license_title']}
+            if vals.get('license_type',False):
+                account.data['license']['type'] = vals['license_type']
+            if vals.get('license_url',False):
+                account.data['license']['url'] = vals['license_url']
+            if vals.get('license_version',False):
+                account.data['license']['version'] = vals['license_version']
 
+        account.set_password(vals['password'])
+        if vals['radio'] != 'publisher':
+            account.add_role(vals['radio'])
+        account.save()
+        if vals['radio'] == 'publisher':
+            account.become_publisher()
+        time.sleep(1)
+        flash('Account created for ' + account.id, 'success')
+        return redirect('/account')
 
+    return render_template('account/register.html', vals = vals, form = form)
     

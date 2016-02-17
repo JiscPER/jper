@@ -38,6 +38,12 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         "embargo" : {
             "duration" : "<length of default embargo>",
             "from" : "<reference to field in data to measure embargo from>"
+        },
+        "license_ref" : {
+            "title" : "<license title>",
+            "type" : "<license type>",
+            "url" : "<license url>",
+            "version" : "<license version>"
         }
     }
     '''

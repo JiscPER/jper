@@ -14,7 +14,9 @@ blueprint = Blueprint('reports', __name__)
 
 @blueprint.before_request
 def restrict():
-    if not current_user.has_role('admin'):
+    if current_user.is_anonymous():
+        return redirect('/account/login')
+    elif not current_user.has_role('admin'):
         return redirect(request.path.rsplit('/',1)[0] + '/login')
 
 

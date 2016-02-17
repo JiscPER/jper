@@ -2,113 +2,75 @@
 <h1 class="visuallyhidden">Admin</h1>
 <div class="row">
 	<div class="col-md-offset-4 col-md-4">
-		<h2><b>Register a New User</b></h1>
+		<h2><b>Register a New User</b></h2>
 	</div>
 </div>
-
+{% from "harvester/helpers/field_render.html" import render_field%}
 <form class="article-full__body" method="post" action="{{url_for('account.register')}}" id="registration-details">
 	<div class="row">
-		<div class="col span-8">
+		<div class="col span-12">
 			<fieldset class="form__fieldset">
 				<ul class="form-fields">
-					<li class="form-fields__item--text">
-						<label> 
-							<span class="form-fields__label-text">Email address</span>
-							<input type="text" name="email" class="input--large form-control">
-						</label>
+					<li class="form-fields__item--text"> 
+						{{render_field(form.email,'form-fields__item--text','form-fields__label-text')}}
 					</li>
 					<li class="form-fields__item--text">
-						<label> 
-							<span class="form-fields__label-text">Confirm Email address</span>
-							<input type="text" name="email_verify" class="input--large form-control">
-						</label>
+						{{render_field(form.email_verify,'form-fields__item--text','form-fields__label-text')}}
 					</li>
 					<li class="form-fields__item--text">
-						<label> 
-							<span class="form-fields__label-text">Password</span> 
-							<input type="password" name="password" class="input--large form-control">
-						</label>
+						{{render_field(form.password,'form-fields__item--text','form-fields__label-text')}}
 					</li>
 					<li class="form-fields__item--text">
-						<label> 
-							<span class="form-fields__label-text">Confirm Password</span> 
-							<input type="password" name="password_verify" class="input--large form-control">
-						</label>
+						{{render_field(form.password_verify,'form-fields__item--text','form-fields__label-text')}}
 					</li>
 				</ul>
 				<ul class="form-fields">
 					<li class="form-fields__item-radio">
-                        <span class="form-fields__label-text">Account type</span>
-                        	<ul>
-                          		<li>
-                            		<label>
-                              			<input class="roler" type="radio" name="radio" value="publisher"> Publisher account</label>
-                          		</li>
-                          		<li>
-                            		<label>
-                              			<input class="roler" type="radio" name="radio" value="repository"> Repository account</label>
-                          		</li>
-                          		<li>
-                            		<label>
-                              			<input class="roler" type="radio" name="radio" value="admin"> Admin</label>
-                          		</li>
-                        	</ul>
-                      </li>
+					{{render_field(form.radio,'form-fields__item--text','form-fields__label-text')}}
+					</li>
 				</ul>
 				<div class="rolers repository">
 					<ul class="form-fields">
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">Repository name</span>
-								<input type="text" name="repository_name" class="input--large form-control">
-							</label>
+							{{render_field(form.repository_name,'form-fields__item--text','form-fields__label-text')}}
 						</li>
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">Repository URL</span> 
-								<input type="text" name="repository_url" class="input--large form-control">
-							</label>
+							{{render_field(form.repository_url,'form-fields__item--text','form-fields__label-text')}}
 						</li>
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">Repository software</span> 
-								<input type="text" name="repository_software" class="input--large form-control">
-							</label>
+							{{render_field(form.repository_software,'form-fields__item--text','form-fields__label-text')}}
 						</li>
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">SWORD username</span> 
-								<input type="text" name="sword_username" class="input--large form-control">
-							</label>
+							{{render_field(form.sword_username,'form-fields__item--text','form-fields__label-text')}}
 						</li>
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">SWORD password</span> 
-								<input type="text" name="sword_password" class="input--large form-control">
-							</label>
+							{{render_field(form.sword_password,'form-fields__item--text','form-fields__label-text')}}
 						</li>
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">SWORD collection</span> 
-								<input type="text" name="sword_collection" class="input--large form-control">
-							</label>
+							{{render_field(form.sword_collection,'form-fields__item--text','form-fields__label-text')}}
 						</li>
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">Packaging prefs (comma separated)</span> 
-								<input type="text" name="packaging" class="input--large form-control">
-							</label>
+							{{render_field(form.packaging,'form-fields__item--text','form-fields__label-text')}}
 						</li>
 					</ul>
 				</div>
 				<div class="rolers publisher">
 					<ul class="form-fields">
 						<li class="form-fields__item--text">
-							<label> 
-								<span class="form-fields__label-text">Embargo duration (months) (number)</span>
-								<input type="text" name="embargo_duration" class="input--large form-control">
-							</label>
+							{{render_field(form.embargo_duration,'form-fields__item--text','form-fields__label-text')}}
 						</li>
+						<li class="form-fields__item--text">
+					   		{{render_field(form.license_title,'form-fields__item--text','form-fields__label-text')}}
+					   	</li>
+					   	<li class="form-fields__item--text">
+					   		{{render_field(form.license_type,'form-fields__item--text','form-fields__label-text')}}
+					   	</li>
+					   	<li class="form-fields__item--text">
+					   		{{render_field(form.license_url,'form-fields__item--text','form-fields__label-text')}}
+					   	</li>
+						<li class="form-fields__item--text">
+					   		{{render_field(form.license_version,'form-fields__item--text','form-fields__label-text')}}
+					   	</li>
 					</ul>
 				</div>
 				
@@ -132,12 +94,12 @@
 <script>
 $( document ).ready(function() {
 	$('.rolers').hide();
-    var roler = function() {
-		var cls = '.' + $(this).attr('value');
+	var name = 'input[name=radio]';
+	$(name).on('change',function(){
 		$('.rolers').hide();
-		$(cls).show();
-    }
-    $('.roler').bind('change',roler);
+		$('.'+$(name+':checked').prop('value')).show();
+	});
+	$(name).trigger('change');
 });
 </script>
 

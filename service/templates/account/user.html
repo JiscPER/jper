@@ -40,6 +40,7 @@
 	<div class="col span-8 cms">
 		<h2><b>Configure Settings</b></h2>
 {% if account.has_role('publisher') %}
+		<div class="box box--padding-large box--brd-mgreyblue">
 			<h3>Embargo period</h3>
 			<form method="post" action="{{request.path}}/pubinfo" class="form">
 				<div class="row">
@@ -50,6 +51,39 @@
 			   		<button class="btn btn--3d" id="update" type="submit">Update details</button>
 				</div>
 			</form>
+		</div>
+		<div class="box box--padding-large box--brd-mgreyblue">
+			<h3>Default license</h3>
+			<form method="post" action="{{request.path}}/pubinfo" class="form">
+				<ul class="form-fields">
+					<li class="form-fields__item--text">
+				   		<label>
+				       		<span class="form-fields__label-text">License title</span>
+				       		<input type="text" name="license_title" class="form-control"	value="{{account.data.get('license',{}).get('title','')}}">
+				   		</label>
+				   	</li>
+					<li class="form-fields__item--text">
+				   		<label>
+				       		<span class="form-fields__label-text">License type</span>
+				       		<input type="text" name="license_type" class="form-control"	value="{{account.data.get('license',{}).get('type','')}}">
+				   		</label>
+				   	</li>
+					<li class="form-fields__item--text">
+				   		<label>
+				       		<span class="form-fields__label-text">License URL</span>
+				       		<input type="text" name="license_url" class="form-control"	value="{{account.data.get('license',{}).get('url','')}}">
+				   		</label>
+				   	</li>
+					<li class="form-fields__item--text">
+				   		<label>
+				       		<span class="form-fields__label-text">License version</span>
+				       		<input type="text" name="license_version" class="form-control"	value="{{account.data.get('license',{}).get('version','')}}">
+				   		</label>
+				   	</li>
+			   	</ul>
+		   		<button class="btn btn--3d" id="update" type="submit">Update details</button>
+			</form>
+		</div>
 		<br><br>
 		<h2>Connecting to Publications Router</h2>
 		<h3>Connecting to the API</h3>
