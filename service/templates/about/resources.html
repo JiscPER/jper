@@ -41,15 +41,98 @@
 			data-collapsible>
 			<h2 class="show_hide__trigger">Information for Institutions</h2>
 			<div class="show_hide__target">
-				<p>
-					Content coming soon.
-				</p>
+				<h3>Getting Connected to Publications Router</h3>
+				<p>In order to connect to Publications Router you must enter into an Agreement with Jisc, which will lead to Account creation, including details that you will need to use to submit notifications. (You should contact <a href="mailto:pubrouter@jisc.ac.uk">pubrouter@jisc.ac.uk</a> to begin the process).</p>
+				<h3>Notification types</h3>
+				<p>Router can provide repositories with notifications in different formats depending on the method used to retrieve this information or the options chosen by the user. The different <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md#a-guide-to-the-formats">formats</a> are:</p>
+				<ul>
+					<li>JATS XML (Journal Publishing Tag Set) <a href="https://pubrouter.jisc.ac.uk/FilesAndJATS">https://pubrouter.jisc.ac.uk/FilesAndJATS</a></li>
+					<li>SimpleZip <a href="http://purl.org/net/sword/package/SimpleZip">http://purl.org/net/sword/package/SimpleZip</a></li>
+					<li>Proprietary JSON structure (this is available if retrieving notifications via the Publications Router API).</li>
+				</ul>
+				<h3>Notification Matching Configuration</h3>
+				<p>Once you have an Account, your will need to configure Publications Router before you can start receiving notifications.</p>
+				<p>You will only receive notifications that have been matched to you using a set of matching parameters that you have loaded into Publication Router from a CSV file.  These criteria include any of the following:</p>
+				<ul>
+					<li>Institution name variants (reflecting different ways that an institution is known)</li>
+					<li>Email or web domain names associated with the institution</li>
+					<li>Postcodes of an institution's various premises</li>
+					<li>Grant numbers</li>
+					<li>ORCIDs of authors</li>
+					<li>Email addresses of authors.</li>
+				</ul>
+				<p>The configuration file containing the matching parameters looks like this <a href="https://raw.githubusercontent.com/JiscPER/jper/develop/docs/csvtemplate.csv">example</a>. Once this file has been uploaded into the system you will receive matching notifications. This file can be updated at any time to add / remove / amend parameters in order to fine-tune the matching process.</p>
+				<h3>Retrieving Notifications</h3>
+				<p>Your routed notifications will be available to you via one of these currently available methods:</p>
+				<ul>
+					<li>SWORD2</li>
+					<li>OAI-PMH</li>
+					<li>Publications Router API.</li>
+				</ul>
+				<h3>SWORD2</h3>
+				<p>If your repository has a SWORD2 interface (as do Eprints and DSpace) then Publications Router can automatically send notifications directly into your repository.  To achieve this you will need to configure Publications Router via the Admin screen with details of your repository (e.g. its SWORD2 URL and SWORD2 account information).  Once this is done, notifications that satisfy your matching parameters will be automatically sent to and ingested by your repository.</p>
+				<h3>OAI-PMH</h3>
+				<p>This endpoint allows you to retrieve the metadata records of successfully routed notifications by using OAI-PMH protocol compliant format.</p>
+				<p>There are 2 possible access methods for the OAI endpoint:</p>
+				<ul>
+					<li>To retrieve the entire set of routed notifications in the Publications Router</li>
+					<li>To retrieve a specific repository's set of routed notifications</li>
+				</ul>
+				<p>More information about this method <a href="https://github.com/JiscPER/jper-oaipmh/blob/develop/docs/system/USER.md#jper-oai-pmh-endpoint">here</a>.</p>
+				<h3>Retrieving of Notifications via Publications Router API</h3>
+				<p>If you want to use the Publications Router API to receive notifications then you have access to two endpoints:</p>
+				<ul>
+					<li><b>Notification list feed</b> - which allows you to list all routed notifications to your repository, and to page through the list in date order. This provides access to a full history of notifications in "analysed_date" order, oldest first. You may list the notifications routed to your repository, or all notifications that were routed to any repository.</li>
+					<li><b>Notification endpoint</b> - is the live endpoint used to retrieve individual notifications and the binary/packaged content associated with it. This will return to you the <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md">JSON Outgoing Notification</a> record containing metadata and possibly also one or more links elements which are used to retrieve any associated binary content (e.g. an article text file).</li>
+				</ul>
+				<p>For more information about how this works click <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/API.md#for-repositories">here</a>.</p>
+				
 			</div>
 		</section>
 		<section id="pub_info" class="is-collapsible show_hide__container is-collapsible--button" data-collapsible>
 			<h2 class="show_hide__trigger">Information for Publishers</h2>
 			<div class="show_hide__target cms">
-				<p>Content coming soon</p>
+				<h3>Getting Connected to Publications Router</h3>
+				<p>In order to connect to Publications Router you must enter into an Agreement with Jisc, which will lead to Account creation, including details that you will need to use to submit notifications. (You should contact <a href="mailto:pubrouter@jisc.ac.uk">pubrouter@jisc.ac.uk</a> to begin the process).</p>
+				<h3>Notification types</h3>
+				<p>Ideally, you will provide us with a notifications for an article on:</p>
+				<ul>
+					<li>Acceptance, at which point we would anticipate basic metadata</li>
+					<li>Publication, at which point we would anticipate full metadata and (optionally) the article text.</li>
+				</ul>
+				<p>Notifications may be in any of the supported formats, currently:</p>
+				<ul>
+					<li>JATS XML (<a href="http://jats.nlm.nih.gov/publishing/">Journal Publishing Tag Set)</a></li>
+					<li>the Router's proprietary <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md">API JSON structure</a></li>
+				</ul>
+				<p>(Note that we will consider supporting alternative formats if there is a demand).</p>
+				<p>These notifications will be processed by Publications Router to match them to the Institutions and will be forwarded to them.</p>
+				<h3>Sending Notifications</h3>
+				<p>You will be able to submit Notifications via any of the available methods, currently:</p>
+				<ul>
+					<li>FTP</li>
+					<li>SWORD2</li>
+					<li>Publications Router API</li>
+				</ul>
+				<h3>FTP Submission of Notifications</h3>
+				<p>On the other hand, if you want to use FTP, in your account screen there is a section called "Connecting via SFTP" where you can find the FTP address you need to use to send a notification as well as your username and password. You will need to send a directory for every publication notification and there should be no files in the top level of your SFTP folder.</p>
+				<p>But if you want to connect via SWORD2, in the section called "Connecting via SWORD", you can find the SWORD endpoint address and your username and password to send the notifications.</p>
+				<h3>SWORD2</h3>
+				<p>Sword2 provides a thin interface between the JPER notification API and a publisher's SWORDv2 deposit client, which allows you to interact with JPER via SWORDv2 rather than its native API.</p>
+				<p>As in the API, you have access to two endpoints (Validation and Notification) where you can send metadata notifications only or metadata and binary package content. </p>
+				<p>More information about this method <a href="https://github.com/JiscPER/jper-sword-in/blob/develop/docs/system/USER.md#jper-swordv2-deposit-endpoint">here</a>.</p>
+				<h3>Submission of Notifications via Publications Router API</h3>
+				<p>If you want to use the Publications Router <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/API.md#for-publishers">API</a>, then you have access to two endpoints:</p>
+				<ul>
+					<li><b>Validation endpoint</b> - which may be used by you during initial set-up of your API client to check if the content will work with Publications Router</li>
+					<li><b>Notification endpoint</b> - is the live endpoint used to send notifications to Publications Router</li>
+				</ul>
+				<p>If you are sending a notifications to be routed, you can create content in two ways:</p>
+				<ul>
+					<li>Sending a metadata only notification. This must comply with  our native JSON format for an <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md">Incoming Notification</a></li>
+					<li>Sending metadata + binary package notification, where you want to include additional material such as the article text in, for example, PDF format. This is sent as a multi-part request complying with our native JSON format for an <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md">Incoming Notification</a> with the zipped binary file(s) in a supported <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md">Packaging Format</a>.</li>
+				</ul>
+				<p>For more information about how this works click <a href="https://github.com/JiscPER/jper/blob/develop/docs/api/API.md#for-publishers">here</a>.</p>
 			</div>
 		</section>
 	</div>

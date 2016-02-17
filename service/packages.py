@@ -56,7 +56,7 @@ class PackageFactory(object):
         cname = formats.get(format)
         if cname is None:
             msg = "No handler for package format {x}".format(x=format)
-            app.logger.info("Package Factory Incoming - {x}".format(x=msg))
+            app.logger.debug("Package Factory Incoming - {x}".format(x=msg))
             raise PackageException(msg)
         klazz = plugin.load_class(cname)
         return klazz(zip_path=zip_path, metadata_files=metadata_files)
@@ -73,7 +73,7 @@ class PackageFactory(object):
         cname = formats.get(format)
         if cname is None:
             msg = "No handler for package format {x}".format(x=format)
-            app.logger.info("Package Factory Converter - {x}".format(x=msg))
+            app.logger.debug("Package Factory Converter - {x}".format(x=msg))
             raise PackageException(msg)
         klazz = plugin.load_class(cname)
         return klazz()
@@ -105,7 +105,7 @@ class PackageManager(object):
         :param format: format identifier for the package handler.  As seen in the configuration.
         :param storage_manager: an instance of Store to use as the storage API
         """
-        app.logger.info("Package Ingest - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
+        app.logger.debug("Package Ingest - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
 
         # load the package manager and the storage manager
         pm = PackageFactory.incoming(format, zip_path)
@@ -139,7 +139,7 @@ class PackageManager(object):
         :param storage_manager: an instance of Store to use as the storage API
         :return: a tuple of (NotificationMetadata, RoutingMetadata) representing the metadata stored in the package
         """
-        app.logger.info("Package Extract - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
+        app.logger.debug("Package Extract - StoreID:{a}; Format:{b}".format(a=store_id, b=format))
 
         # load the storage manager
         if storage_manager is None:
@@ -194,7 +194,7 @@ class PackageManager(object):
         :param storage_manager: an instance of Store to use as the storage API
         :return: a list of tuples of the conversions carried out of the form [(format, filename, url name)]
         """
-        app.logger.info("Package Convert - StoreID:{a}; SourceFormat:{b}; TargetFormats:{c}".format(a=store_id, b=source_format, c=",".join(target_formats)))
+        app.logger.debug("Package Convert - StoreID:{a}; SourceFormat:{b}; TargetFormats:{c}".format(a=store_id, b=source_format, c=",".join(target_formats)))
 
         # load the storage manager
         if storage_manager is None:

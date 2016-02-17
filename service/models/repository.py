@@ -210,12 +210,12 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                         self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x].strip()}]
                     elif x.strip().lower().replace(' ','').replace('s','') == 'orcid' and len(row[x].strip()) > 1:
                         self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x].strip()}]
-            app.logger.info("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
+            app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
             self.data['repository'] = repository
             self.save()
             return True
         elif textfile is not None:
-            app.logger.info("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
+            app.logger.debug("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
             self.data['strings'] = [line.rstrip('\n').rstrip('\r').strip() for line in textfile if len(line.rstrip('\n').rstrip('\r').strip()) > 1]
             self.data['repository'] = repository
             self.save()
@@ -226,10 +226,10 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 self.data[k] = jsoncontent[k]
             self.data['repository'] = repository
             self.save()
-            app.logger.info("Saved config for repo: {x}".format(x=self.id))
+            app.logger.debug("Saved config for repo: {x}".format(x=self.id))
             return True
         else:
-            app.logger.info("Could not save config for repo: {x}".format(x=self.id))            
+            app.logger.error("Could not save config for repo: {x}".format(x=self.id))            
             return False
         
 

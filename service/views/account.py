@@ -101,7 +101,7 @@ def details(repo_id):
 @blueprint.route("/configview", methods=["GET","POST"])
 @blueprint.route("/configview/<repoid>", methods=["GET","POST"])
 def configView(repoid=None):
-    app.logger.info(current_user.id + " " + request.method + " to config route")
+    app.logger.debug(current_user.id + " " + request.method + " to config route")
     if repoid is None:
         if current_user.has_role('repository'):
             repoid = current_user.id
@@ -188,12 +188,13 @@ def pubinfo(username):
     acc = models.Account.pull(username)
     if current_user.id != acc.id and not current_user.is_super:
         abort(401)
+
     if 'embargo' not in acc.data: acc.data['embargo'] = {}
     if request.values.get('embargo_duration',False):
         acc.data['embargo']['duration'] = request.values['embargo_duration']
     else:
         acc.data['embargo']['duration'] = 0
-    
+             
     if 'license' not in acc.data: acc.data['license'] = {}
     if request.values.get('license_title',False):
         acc.data['license']['title'] = request.values['license_title']
@@ -211,7 +212,7 @@ def pubinfo(username):
         acc.data['license']['version'] = request.values['license_version']
     else:
         acc.data['license']['version'] = ""
-    
+        
     acc.save()
     time.sleep(2);
     flash('Thank you. Your publisher details have been updated.', "success")
@@ -372,37 +373,39 @@ def logout():
 def register():
     if not current_user.is_super:
         abort(401)
-        
+
+    
     form = AdduserForm(request.form)
     vals = request.json if request.json else request.values
     
     if request.method == 'POST' and form.validate():
+        #From here! 
         api_key = str(uuid.uuid4())
         account = models.Account()
         account.data['email'] = vals['email']
         account.data['api_key'] = api_key
         account.data['role'] = []
-
+    
         if vals.get('repository_software',False):
             account.data['repository'] = {
                 'software': vals['repository_software']
             }
             if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
             if vals.get('repository_name',False): account.data['repository']['name'] = vals['repository_name']
-
+    
         if vals.get('sword_username',False):
             account.data['sword'] = {
                 'username': vals['sword_username']
             }
             if vals.get('sword_password',False): account.data['sword']['password'] = vals['sword_password']
             if vals.get('sword_collection',False): account.data['sword']['collection'] = vals['sword_collection']
-
+    
         if vals.get('packaging',False):
             account.data['packaging'] = vals['packaging'].split(',')
-
+    
         if vals.get('embargo_duration',False):
             account.data['embargo'] = {'duration': vals['embargo_duration']}
-
+    
         if vals.get('license_title',False):
             account.data['license'] = {'title': vals['license_title']}
             if vals.get('license_type',False):
@@ -411,16 +414,18 @@ def register():
                 account.data['license']['url'] = vals['license_url']
             if vals.get('license_version',False):
                 account.data['license']['version'] = vals['license_version']
-
+    
         account.set_password(vals['password'])
         if vals['radio'] != 'publisher':
             account.add_role(vals['radio'])
         account.save()
         if vals['radio'] == 'publisher':
             account.become_publisher()
+        #To here! it should be a method in model not part of the controller!
         time.sleep(1)
         flash('Account created for ' + account.id, 'success')
         return redirect('/account')
-
+    
     return render_template('account/register.html', vals = vals, form = form)
+
     

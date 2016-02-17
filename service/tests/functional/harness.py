@@ -380,7 +380,7 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
     :return:
     """
     tname = threading.current_thread().name
-    app.logger.info("Thread:{x} - Initialise Validate; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir))
+    app.logger.debug("Thread:{x} - Initialise Validate; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir))
 
     mdopts = ["mdonly", "md+ct"]
     mdprobs = [mdrate, 1 - mdrate]
@@ -419,14 +419,14 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
                 #print "File" + filepath
                 file_handle = open(filepath)
 
-            app.logger.info("Thread:{x} - Validate request for Account:{y} Type:{z} MD:{a} CT:{b}".format(x=tname, y=api_key, z=hasct, a=mdtype, b=cterr))
+            app.logger.debug("Thread:{x} - Validate request for Account:{y} Type:{z} MD:{a} CT:{b}".format(x=tname, y=api_key, z=hasct, a=mdtype, b=cterr))
 
             # make the validate request (which will throw an exception more often than not, because that's what we're testing)
             try:
                 j.validate(note, file_handle)
-                app.logger.info("Thread:{x} - Validate request resulted in success".format(x=tname))
+                app.logger.debug("Thread:{x} - Validate request resulted in success".format(x=tname))
             except:
-                app.logger.info("Thread:{x} - Validate request resulted in expected exception".format(x=tname))
+                app.logger.error("Thread:{x} - Validate request resulted in expected exception".format(x=tname))
 
             # cleanup after ourselves
             if filepath is not None:
@@ -436,7 +436,7 @@ def validate(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size
             # sleep before making the next request
             time.sleep(throttle)
         except Exception as e:
-            app.logger.info("Thread:{x} - MAJOR ISSUE - Fatal exception '{y}'".format(x=tname, y=e.message))
+            app.logger.error("Thread:{x} - MAJOR ISSUE - Fatal exception '{y}'".format(x=tname, y=e.message))
 
 def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, tmpdir, retrieve_rate, routable, repo_configs):
     """
@@ -458,7 +458,7 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
     :return:
     """
     tname = threading.current_thread().name
-    app.logger.info("Thread:{x} - Initialise Create; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}, retrieve_rate:{h}, routable:{i}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir, h=retrieve_rate, i=routable))
+    app.logger.debug("Thread:{x} - Initialise Create; base_url:{a}, throttle:{b}, mdrate:{c}, mderrors:{d}, cterrors:{e}, max_file_size:{f}, tmpdir:{g}, retrieve_rate:{h}, routable:{i}".format(x=tname, a=base_url, b=throttle, c=mdrate, d=mderrors, e=cterrors, f=max_file_size, g=tmpdir, h=retrieve_rate, i=routable))
 
     mdopts = ["mdonly", "md+ct"]
     mdprobs = [mdrate, 1 - mdrate]
@@ -500,15 +500,15 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
                 #print "File" + filepath
                 file_handle = open(filepath)
 
-            app.logger.info("Thread:{x} - Create request for Account:{y} Type:{z} MD:{a} CT:{b}".format(x=tname, y=api_key, z=hasct, a=mdtype, b=cterr))
+            app.logger.debug("Thread:{x} - Create request for Account:{y} Type:{z} MD:{a} CT:{b}".format(x=tname, y=api_key, z=hasct, a=mdtype, b=cterr))
 
             # make the create request, which may occasionally throw errors
             id = None
             try:
                 id, loc = j.create_notification(note, file_handle)
-                app.logger.info("Thread:{x} - Create request for Account:{z} resulted in success, Notification:{y}".format(x=tname, y=id, z=api_key))
+                app.logger.debug("Thread:{x} - Create request for Account:{z} resulted in success, Notification:{y}".format(x=tname, y=id, z=api_key))
             except:
-                app.logger.info("Thread:{x} - Create request for Account:{y} resulted in expected exception".format(x=tname, y=api_key))
+                app.logger.error("Thread:{x} - Create request for Account:{y} resulted in expected exception".format(x=tname, y=api_key))
 
             # cleanup after ourselves
             if filepath is not None:
@@ -521,25 +521,25 @@ def create(base_url, keys, throttle, mdrate, mderrors, cterrors, max_file_size, 
                 ret = _select_from(retrieveopts, retrieveprobs)
                 if ret == "get":
                     # time.sleep(2)   # this gives JPER a chance to catch up
-                    app.logger.info("Thread:{x} - Following Create for Account:{y}, requesting copy of Notification:{z}".format(x=tname, y=api_key, z=id))
+                    app.logger.debug("Thread:{x} - Following Create for Account:{y}, requesting copy of Notification:{z}".format(x=tname, y=api_key, z=id))
                     try:
                         n = j.get_notification(id)
-                        app.logger.info("Thread:{x} - Following Create for Account:{y}, successfully retrieved copy of Notification:{z}".format(x=tname, y=api_key, z=id))
+                        app.logger.debug("Thread:{x} - Following Create for Account:{y}, successfully retrieved copy of Notification:{z}".format(x=tname, y=api_key, z=id))
                         for link in n.links:
                             if link.get("packaging") is not None:
                                 url = link.get("url")
-                                app.logger.info("Thread:{x} - Following Create for Account:{y}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=id, a=url))
+                                app.logger.debug("Thread:{x} - Following Create for Account:{y}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=id, a=url))
                                 try:
                                     stream, headers = j.get_content(url)
                                 except Exception as e:
-                                    app.logger.info("Thread:{x} - MAJOR ISSUE; get content failed for Content:{z} that should have existed.  This needs a fix: '{b}'".format(x=tname, z=url, b=e.message))
+                                    app.logger.error("Thread:{x} - MAJOR ISSUE; get content failed for Content:{z} that should have existed.  This needs a fix: '{b}'".format(x=tname, z=url, b=e.message))
                     except Exception as e:
-                        app.logger.info("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=id, b=e.message))
+                        app.logger.error("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=id, b=e.message))
 
             # sleep before making the next request
             time.sleep(throttle)
         except Exception as e:
-            app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
+            app.logger.error("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
 
 def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_configs, error_rate, get_rate):
     """
@@ -559,7 +559,7 @@ def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_c
     :return:
     """
     tname = threading.current_thread().name
-    app.logger.info("Thread:{x} - Initialise List/Get; base_url:{a}, throttle:{b}, generic_rate:{c}, max_lookback:{d}, tmpdir:{g}, error_rate:{h}, get_rate:{i}".format(x=tname, a=base_url, b=throttle, c=generic_rate, d=max_lookback, g=tmpdir, h=error_rate, i=get_rate))
+    app.logger.debug("Thread:{x} - Initialise List/Get; base_url:{a}, throttle:{b}, generic_rate:{c}, max_lookback:{d}, tmpdir:{g}, error_rate:{h}, get_rate:{i}".format(x=tname, a=base_url, b=throttle, c=generic_rate, d=max_lookback, g=tmpdir, h=error_rate, i=get_rate))
 
     genopts = ["generic", "specific"]
     genprobs = [generic_rate, 1 - generic_rate]
@@ -616,30 +616,30 @@ def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_c
 
                 # make the malformed url with the JPER client, so we know it gets there ok
                 url = j._url("routed", id=repository_id, params=params)
-                app.logger.info("Thread:{x} - List/Get sending malformed request for Account:{y} Type:{z} Error:{a} URL:{b}".format(x=tname, y=api_key, z=reqtype, a=malformed, b=url))
+                app.logger.debug("Thread:{x} - List/Get sending malformed request for Account:{y} Type:{z} Error:{a} URL:{b}".format(x=tname, y=api_key, z=reqtype, a=malformed, b=url))
 
                 # make the request, and check the response
                 resp = http.get(url)
                 if resp is not None and resp.status_code == 400:
-                    app.logger.info("Thread:{x} - List/Get received correct 400 response to malformed request".format(x=tname))
+                    app.logger.debug("Thread:{x} - List/Get received correct 400 response to malformed request".format(x=tname))
                 else:
                     if resp is None:
                         sc = None
                     else:
                         sc = resp.status_code
-                    app.logger.info("Thread:{x} - MAJOR ISSUE; did not receive 400 response to malformed request, got {y}; URL:{z}".format(x=tname, y=sc, z=url))
+                    app.logger.error("Thread:{x} - MAJOR ISSUE; did not receive 400 response to malformed request, got {y}; URL:{z}".format(x=tname, y=sc, z=url))
 
                 # continue, so that we don't have to indent the code below any further
                 continue
 
             # if we get to here, we're going to go ahead and do a normal request
-            app.logger.info("Thread:{x} - List/Get request for Account:{y} Type:{z} Since:{a}".format(x=tname, y=api_key, z=reqtype, a=since))
+            app.logger.debug("Thread:{x} - List/Get request for Account:{y} Type:{z} Since:{a}".format(x=tname, y=api_key, z=reqtype, a=since))
 
             # iterate over the notifications, catching any errors (which would be unexpected)
             try:
                 count = 0
                 for note in j.iterate_notifications(since, repository_id, page_size):
-                    app.logger.info("Thread:{x} - List/Get request for Account:{y} listing notifications for Repository:{z} retrieved Notification:{a}".format(x=tname, y=api_key, z=repository_id, a=note.id))
+                    app.logger.debug("Thread:{x} - List/Get request for Account:{y} listing notifications for Repository:{z} retrieved Notification:{a}".format(x=tname, y=api_key, z=repository_id, a=note.id))
                     count += 1
 
                     # determine if we're going to get the notification by itself (which is technically unnecessary, of course, but who knows what people's workflows will be)
@@ -647,31 +647,31 @@ def listget(base_url, keys, throttle, generic_rate, max_lookback, tmpdir, repo_c
                     if reget == "get":
                         try:
                             n = j.get_notification(note.id)
-                            app.logger.info("Thread:{x} - Following List/Get for Account:{y} listing notifications for Repository:{z}, successfully retrieved copy of Notification:{a}".format(x=tname, y=api_key, z=repository_id, a=note.id))
+                            app.logger.debug("Thread:{x} - Following List/Get for Account:{y} listing notifications for Repository:{z}, successfully retrieved copy of Notification:{a}".format(x=tname, y=api_key, z=repository_id, a=note.id))
                         except Exception as e:
-                            app.logger.info("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=note.id, b=e.message))
+                            app.logger.error("Thread:{x} - MAJOR ISSUE; get notification failed for Notification:{y} that should have existed.  This needs a fix: '{b}'".format(x=tname, y=note.id, b=e.message))
 
                     # now retrieve all the links in the note
                     for link in note.links:
                         url = link.get("url")
-                        app.logger.info("Thread:{x} - Following List/Get for Account:{y} on Repository:{b}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=note.id, a=url, b=repository_id))
+                        app.logger.debug("Thread:{x} - Following List/Get for Account:{y} on Repository:{b}, from Notification:{z} requesting copy of Content:{a}".format(x=tname, y=api_key, z=note.id, a=url, b=repository_id))
                         try:
                             stream, headers = j.get_content(url)
                         except client.JPERAuthException as e:
                             # we got a 401 back from the service, that is acceptable, since we may not be authorised to access it
-                            app.logger.info(("Thread:{x} - get content unauthorised (401) for Content:{z} - this can happen, so is not necessarily unexpected".format(x=tname, z=url)))
+                            app.logger.debug(("Thread:{x} - get content unauthorised (401) for Content:{z} - this can happen, so is not necessarily unexpected".format(x=tname, z=url)))
                         except Exception as e:
-                            app.logger.info("Thread:{x} - MAJOR ISSUE; get content failed for Content:{z} that should have existed.  This needs a fix: '{b}'".format(x=tname, z=url, b=e.message))
+                            app.logger.error("Thread:{x} - MAJOR ISSUE; get content failed for Content:{z} that should have existed.  This needs a fix: '{b}'".format(x=tname, z=url, b=e.message))
 
-                app.logger.info("Thread:{x} - List/Get request completed successfully for Account:{y} listing notifications for Repository:{z} Count:{a}".format(x=tname, y=api_key, z=repository_id, a=count))
+                app.logger.debug("Thread:{x} - List/Get request completed successfully for Account:{y} listing notifications for Repository:{z} Count:{a}".format(x=tname, y=api_key, z=repository_id, a=count))
 
             except Exception as e:
-                app.logger.info("Thread:{x} - MAJOR ISSUE; List/Get request for Account:{y} listing notifications for Repository:{z} resulted in exception '{e}'".format(x=tname, y=api_key, z=repository_id, e=e.message))
+                app.logger.error("Thread:{x} - MAJOR ISSUE; List/Get request for Account:{y} listing notifications for Repository:{z} resulted in exception '{e}'".format(x=tname, y=api_key, z=repository_id, e=e.message))
 
             # sleep before making the next request
             time.sleep(throttle)
         except Exception as e:
-            app.logger.info("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
+            app.logger.error("Thread:{x} - Fatal exception '{y}'".format(x=tname, y=e.message))
 
 if __name__ == "__main__":
     import argparse
@@ -795,7 +795,7 @@ if __name__ == "__main__":
 
     # now kick off all the threads
     for t in thread_pool:
-        app.logger.info("Starting Thread:{x}".format(x=t.name))
+        app.logger.debug("Starting Thread:{x}".format(x=t.name))
         t.start()
 
     # now we just wait until either we timeout or we are explicitly terminated (e.g. by KeyboardInterrupt)

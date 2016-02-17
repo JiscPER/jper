@@ -43,13 +43,15 @@
 		<div class="box box--padding-large box--brd-mgreyblue">
 			<h3>Embargo period</h3>
 			<form method="post" action="{{request.path}}/pubinfo" class="form">
-				<div class="row">
-			   		<label>
-			       		<span>Embargo duration (months)</span>
-			       		<input type="text" name="embargo_duration" class="form-control"	value="{{account.data.get('embargo',{}).get('duration','')}}">
-			   		</label>
-			   		<button class="btn btn--3d" id="update" type="submit">Update details</button>
-				</div>
+				<ul class="form-fields">
+					<li class="form-fields__item--text">
+				   		<label>
+				       		<span class="form-fields__label-text">Embargo duration (months)</span>
+				       		<input type="text" name="embargo_duration" class="form-control"	value="{{account.data.get('embargo',{}).get('duration','')}}">
+				   		</label>
+				   		<button class="btn btn--3d" id="update" type="submit">Update details</button>
+			   		</li>
+		   		</ul>
 			</form>
 		</div>
 		<div class="box box--padding-large box--brd-mgreyblue">
@@ -79,9 +81,9 @@
 				       		<span class="form-fields__label-text">License version</span>
 				       		<input type="text" name="license_version" class="form-control"	value="{{account.data.get('license',{}).get('version','')}}">
 				   		</label>
+		   				<button class="btn btn--3d" id="update" type="submit">Update details</button>
 				   	</li>
 			   	</ul>
-		   		<button class="btn btn--3d" id="update" type="submit">Update details</button>
 			</form>
 		</div>
 		<br><br>

@@ -150,7 +150,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
                 subprocess.call([fl,un])
                 app.logger.info(str(self.id) + ' calling deleteFTPuser subprocess')
             except:
-                app.logger.info(str(self.id) + ' failed deleteFTPuser subprocess')
+                app.logger.error(str(self.id) + ' failed deleteFTPuser subprocess')
         self.delete()
 
     def become_publisher(self):

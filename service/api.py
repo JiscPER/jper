@@ -65,13 +65,13 @@ class JPER(object):
         :return: does not return anything.  If there is a problem, though, exceptions are raised
         """
         magic = uuid.uuid4().hex
-        app.logger.info("Request:{z} - Validate request received from Account:{x}".format(z=magic, x=account.id))
+        app.logger.debug("Request:{z} - Validate request received from Account:{x}".format(z=magic, x=account.id))
 
         # does the metadata parse as valid
         try:
             incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
-            app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
+            app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
 
         # if so, convert it to an unrouted notification
@@ -81,7 +81,7 @@ class JPER(object):
         format = note.packaging_format
         if format is None and file_handle is not None:
             msg = "If zipped content is provided, metadata must specify packaging format"
-            app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+            app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
             raise ValidationException(msg)
 
         # extract the match data from the metadata
@@ -110,7 +110,7 @@ class JPER(object):
             except packages.PackageException as e:
                 s.delete(local_id)
                 s.delete(validated_id)
-                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
                 raise ValidationException("Problem reading from the zip file: {x}".format(x=e.message))
 
             # If successful, we should extract the metadata from the package, using the validated id and the
@@ -123,7 +123,7 @@ class JPER(object):
             except packages.PackageException as e:
                 s.delete(local_id)
                 s.delete(validated_id)
-                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
                 raise ValidationException("Problem extracting data from the zip file: {x}".format(x=e.message))
 
             # ensure that we don't keep copies of the files
@@ -133,7 +133,7 @@ class JPER(object):
         # now check that we got some kind of actionable match data from the notification or the package
         if not nma.has_data() and (ma is None or not ma.has_data()):
             msg = "Unable to extract any actionable routing metadata from notification or associated package"
-            app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+            app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
             raise ValidationException(msg)
 
         # if we've been given files by reference, check that we can access them
@@ -141,7 +141,7 @@ class JPER(object):
             url = l.get("url")
             if url is None:
                 msg = "All supplied links must include a URL"
-                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
                 raise ValidationException(msg)
 
             # just ensure that we can get the first few bytes, and that the response is the right one
@@ -149,20 +149,20 @@ class JPER(object):
 
             if resp is None:
                 msg = "Unable to connecto to server to retrieve {x}".format(x=url)
-                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
                 raise ValidationException(msg)
 
             if resp.status_code != 200:
                 msg = "Received unexpected status code when downloading from {x} - {y}".format(x=url, y=resp.status_code)
-                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
                 raise ValidationException(msg)
 
             if content is None or content == "":
                 msg = "Received no content when downloading from {x}".format(x=url)
-                app.logger.info("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=msg))
                 raise ValidationException(msg)
 
-        app.logger.info("Request:{z} - Validate request Account:{x} succeeded".format(z=magic, x=account.id))
+        app.logger.debug("Request:{z} - Validate request Account:{x} succeeded".format(z=magic, x=account.id))
 
     @classmethod
     def create_notification(cls, account, notification, file_handle=None):
@@ -185,7 +185,7 @@ class JPER(object):
             return False
 
         magic = uuid.uuid4().hex
-        app.logger.info("Request:{z} - Create request received from Account:{x}".format(z=magic, x=account.id))
+        app.logger.debug("Request:{z} - Create request received from Account:{x}".format(z=magic, x=account.id))
         
         # add a check for default embargo if the account has a non-zero value set for it
         # incoming notification structure is demonstrated in the account model and also documented at:
@@ -211,7 +211,7 @@ class JPER(object):
         try:
             incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
-            app.logger.info("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
+            app.logger.error("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
             raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
 
         # if successful, convert it to an unrouted notification
@@ -247,7 +247,7 @@ class JPER(object):
             except packages.PackageException as e:
                 tmp.delete(local_id)
                 remote.delete(note.id)
-                app.logger.info("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
+                app.logger.error("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
                 raise ValidationException("Problem reading from the zip file: {x}".format(x=e.message))
 
             # remove the local copy
@@ -260,7 +260,7 @@ class JPER(object):
         # if we get to here there was either no package, or the package saved successfully, so we can store the
         # note
         note.save()
-        app.logger.info("Request:{z} - Create request from Account:{x} succeeded; Notification:{y}".format(z=magic, x=account.id, y=note.id))
+        app.logger.debug("Request:{z} - Create request from Account:{x} succeeded; Notification:{y}".format(z=magic, x=account.id, y=note.id))
         return note
 
     @classmethod
@@ -285,22 +285,22 @@ class JPER(object):
         rn = models.RoutedNotification.pull(notification_id)
         if rn is not None:
             if accid == rn.provider_id:
-                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the routed notification".format(z=magic, x=accid, y=notification_id))
+                app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the routed notification".format(z=magic, x=accid, y=notification_id))
                 return rn.make_outgoing(provider=True)
             else:
-                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the routed notification".format(z=magic, x=accid, y=notification_id))
+                app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the routed notification".format(z=magic, x=accid, y=notification_id))
                 return rn.make_outgoing()
         if accid is not None and (account.has_role('publisher') or current_user.is_super):
             urn = models.UnroutedNotification.pull(notification_id)
             if urn is not None:
                 if accid == urn.provider_id:
-                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the unrouted notification".format(z=magic, x=accid, y=notification_id))
+                    app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the unrouted notification".format(z=magic, x=accid, y=notification_id))
                     return urn.make_outgoing(provider=True)
                 else:
-                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the unrouted notification".format(z=magic, x=accid, y=notification_id))
+                    app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the unrouted notification".format(z=magic, x=accid, y=notification_id))
                     return urn.make_outgoing()
 
-        app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; no distributable notification of that id found".format(z=magic, x=accid, y=notification_id))
+        app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; no distributable notification of that id found".format(z=magic, x=accid, y=notification_id))
         return None
 
     @classmethod
@@ -325,7 +325,7 @@ class JPER(object):
                 pm = packages.PackageFactory.incoming(urn.packaging_format)
                 store_filename = pm.zip_name()
             sm = store.StoreFactory.get()
-            app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns unrouted notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
+            app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns unrouted notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
             return sm.get(urn.id, store_filename) # returns None if not found
         else:
             rn = models.RoutedNotification.pull(notification_id)
@@ -339,13 +339,13 @@ class JPER(object):
                         pm = packages.PackageFactory.incoming(rn.packaging_format)
                         store_filename = pm.zip_name()
                     sm = store.StoreFactory.get()
-                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns routed notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
+                    app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; returns routed notification stored file {b}".format(z=magic, x=account.id, y=notification_id, a=filename, b=store_filename))
                     return sm.get(rn.id, store_filename)
                 else:
-                    app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; not authorised to receive this content".format(z=magic, x=account.id, y=notification_id, a=filename))
+                    app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; not authorised to receive this content".format(z=magic, x=account.id, y=notification_id, a=filename))
                     raise UnauthorisedException()
             else:
-                app.logger.info("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; no suitable content found to return".format(z=magic, x=account.id, y=notification_id, a=filename))
+                app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y} Content:{a}; no suitable content found to return".format(z=magic, x=account.id, y=notification_id, a=filename))
                 return None
 
     @classmethod

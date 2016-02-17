@@ -109,7 +109,7 @@ def moveftp():
                     moveitem = userdir + '/' + dir + '/xfer/' + thisitem
                     subprocess.call( [ 'sudo', fl, dir, newowner, tmpdir, uniqueid, uniquedir, moveitem ] )
             else:
-                app.logger.info('Scheduler - found nothing to move for Account:' + dir)
+                app.logger.debug('Scheduler - found nothing to move for Account:' + dir)
     except:
         app.logger.error("Scheduler - move from FTP failed")
         
@@ -122,7 +122,7 @@ def processftp():
         # list all directories in the temp dir - one for each ftp user for whom files have been moved from their jail
         userdir = app.config.get('TMP_DIR','/tmp')
         userdirs = os.listdir(userdir)
-        app.logger.info("Scheduler - processing for FTP found " + str(len(userdirs)) + " temp user directories")
+        app.logger.debug("Scheduler - processing for FTP found " + str(len(userdirs)) + " temp user directories")
         for dir in userdirs:
             # configure for sending anything for the user of this dir
             apiurl = app.config['API_URL']
@@ -131,7 +131,7 @@ def processftp():
             # there is a uuid dir for each item moved in a given operation from the user jail
             for udir in os.listdir(userdir + '/' + dir):
                 thisdir = userdir + '/' + dir + '/' + udir
-                app.logger.info('Scheduler - processing ' + thisdir + ' for Account:' + dir)
+                app.logger.debug('Scheduler - processing ' + thisdir + ' for Account:' + dir)
                 for pub in os.listdir(thisdir):
                     # should be a dir per publication notification - that is what they are told to provide
                     # and at this point there should just be one pub in here, whether it be a file or directory or archive
@@ -163,7 +163,7 @@ def processftp():
                     app.logger.debug('Scheduler - processing POSTing ' + pkg + ' ' + json.dumps(notification))
                     resp = requests.post(apiurl, files=files, verify=False)
                     if str(resp.status_code).startswith('4') or str(resp.status_code).startswith('5'):
-                        app.logger.info('Scheduler - processing completed with POST failure to ' + apiurl + ' - ' + str(resp.status_code) + ' - ' + resp.text)
+                        app.logger.error('Scheduler - processing completed with POST failure to ' + apiurl + ' - ' + str(resp.status_code) + ' - ' + resp.text)
                     else:
                         app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
                                             
@@ -179,7 +179,7 @@ def checkunrouted():
     urobjids = []
     robjids = []
     try:
-        app.logger.info("Scheduler - check for unrouted notifications")
+        app.logger.debug("Scheduler - check for unrouted notifications")
         # query the service.models.unroutednotification index
         # returns a list of unrouted notification from the last three up to four months
         counter = 0
@@ -190,12 +190,12 @@ def checkunrouted():
                 robjids.append(obj.id)
             else:
                 urobjids.append(obj.id)
-        app.logger.info("Scheduler - routing sent " + str(counter) + " notifications for routing")
+        app.logger.debug("Scheduler - routing sent " + str(counter) + " notifications for routing")
         if app.config.get("DELETE_ROUTED", False) and len(robjids) > 0:
-            app.logger.info("Scheduler - routing deleting " + str(len(robjids)) + " of " + str(counter) + " unrouted notifications that have been processed and routed")
+            app.logger.debug("Scheduler - routing deleting " + str(len(robjids)) + " of " + str(counter) + " unrouted notifications that have been processed and routed")
             models.UnroutedNotification.bulk_delete(robjids)
         if app.config.get("DELETE_UNROUTED", False) and len(urobjids) > 0:
-            app.logger.info("Scheduler - routing deleting " + str(len(urobjids)) + " of " + str(counter) + " unrouted notifications that have been processed and were unrouted")
+            app.logger.debug("Scheduler - routing deleting " + str(len(urobjids)) + " of " + str(counter) + " unrouted notifications that have been processed and were unrouted")
             models.UnroutedNotification.bulk_delete(urobjids)
     except Exception as e:
         app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: '{x}'".format(x=e.message))
@@ -208,7 +208,7 @@ if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
 def monthly_reporting():
     # python schedule does not actually handle months, so this will run every day and check whether the current month has rolled over or not
     try:
-        app.logger.info('Scheduler - Running monthly reporting')
+        app.logger.debug('Scheduler - Running monthly reporting')
         
         # create / update a monthly deliveries by institution report
         # it should have the columns HEI, Jan, Feb...
@@ -219,7 +219,7 @@ def monthly_reporting():
         
         month = datetime.datetime.now().strftime("%B")[0:3]
         year = str(datetime.datetime.now().year)
-        app.logger.info('Scheduler - checking monthly reporting for ' + month + ' ' + year)
+        app.logger.debug('Scheduler - checking monthly reporting for ' + month + ' ' + year)
         reportsdir = app.config.get('REPORTSDIR','/home/mark/jper_reports')
         if not os.path.exists(reportsdir): os.makedirs(reportsdir)
         monthtracker = reportsdir + '/monthtracker.cfg'
@@ -233,7 +233,7 @@ def monthly_reporting():
             lastmonth = ''
             
         if lastmonth != month:
-            app.logger.info('Scheduler - updating monthly report of notifications delivered to institutions')
+            app.logger.debug('Scheduler - updating monthly report of notifications delivered to institutions')
             lmm = open(monthtracker,'w')
             lmm.write(month)
             lmm.close()
@@ -331,7 +331,7 @@ if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
 
 
 def cheep():
-    app.logger.info("Scheduled cheep")
+    app.logger.debug("Scheduled cheep")
     print "Scheduled cheep"
 #schedule.every(1).minutes.do(cheep)
 
@@ -349,6 +349,6 @@ def go():
 if __name__ == "__main__":
     initialise()
     print "starting scheduler"
-    app.logger.info("Scheduler - starting up directly in own process.")
+    app.logger.debug("Scheduler - starting up directly in own process.")
     run()
     

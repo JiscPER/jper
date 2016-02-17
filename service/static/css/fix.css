@@ -64,3 +64,11 @@
     margin-top: 0;
   }
 }
+
+.show_hide__target ol li{
+	background-image: inherit;
+}
+
+.show_hide__target li{
+	font-size: 18px;
+}

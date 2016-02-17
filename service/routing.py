@@ -38,14 +38,14 @@ def route(unrouted):
     :param unrouted: an UnroutedNotification object
     :return: True if the notification was routed to a repository, False if there were no matches
     """
-    app.logger.info(u"Routing - Notification:{y}".format(y=unrouted.id))
+    app.logger.debug(u"Routing - Notification:{y}".format(y=unrouted.id))
 
     # first get the packaging system to load and retrieve all the metadata
     # and match data from the content file (if it exists)
     try:
         metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
-        app.logger.info(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
+        app.logger.debug(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
         raise RoutingException(e.message)
 
     # extract the match data from the notification and combine it with the match data from the package
@@ -65,25 +65,25 @@ def route(unrouted):
             prov = models.MatchProvenance()
             prov.repository = rc.repository
             prov.notification = unrouted.id
-            app.logger.info(u"Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
+            app.logger.debug(u"Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
             match(match_data, rc, prov)
             if len(prov.provenance) > 0:
                 match_provenance.append(prov)
                 match_ids.append(rc.repository)
-                app.logger.info(u"Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug(u"Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id, x=rc.repository))
             else:
-                app.logger.info(u"Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug(u"Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
 
     except esprit.tasks.ScrollException as e:
-        app.logger.info(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
+        app.logger.error(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
         raise RoutingException(e.message)
 
-    app.logger.info(u"Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
+    app.logger.debug(u"Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
 
     # write all the match provenance out to the index (could be an empty list)
     for p in match_provenance:
         p.save()
-        app.logger.info(u"Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
+        app.logger.debug(u"Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
 
     # if there are matches then the routing is successful, and we want to finalise the
     # notification for the routed index and its content for download
@@ -103,11 +103,11 @@ def route(unrouted):
             enhance(routed, metadata)
         links(routed)
         routed.save()
-        app.logger.info(u"Routing - Notification:{y} successfully routed".format(y=unrouted.id))
+        app.logger.debug(u"Routing - Notification:{y} successfully routed".format(y=unrouted.id))
         return True
     else:
         # log the failure
-        app.logger.info(u"Routing - Notification:{y} was not routed".format(y=unrouted.id))
+        app.logger.error(u"Routing - Notification:{y} was not routed".format(y=unrouted.id))
 
         # if config says so, convert the unrouted notification to a failed notification, enhance and save
         # for later diagnosis
@@ -117,7 +117,7 @@ def route(unrouted):
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.info(u"Routing - Notification:{y} as stored as a Failed Notification")
+            app.logger.debug(u"Routing - Notification:{y} as stored as a Failed Notification")
 
         return False
 

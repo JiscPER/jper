@@ -54,7 +54,7 @@ def _accepted(obj):
     :param obj: the object that was accepted
     :return: Flask response for a 202 with the id of the object in the json body, and the Location header set correctly
     """
-    app.logger.info("Sending 202 Accepted: {x}".format(x=obj.id))
+    app.logger.debug("Sending 202 Accepted: {x}".format(x=obj.id))
     root = request.url_root
     if root.endswith("/"):
         root = root[:-1]
@@ -83,7 +83,7 @@ def standard_authentication():
 
     if remote_user:
         print "remote user present " + remote_user
-        app.logger.info("Remote user connecting: {x}".format(x=remote_user))
+        app.logger.debug("Remote user connecting: {x}".format(x=remote_user))
         user = models.Account.pull(remote_user)
         if user:
             login_user(user, remember=False)
@@ -91,7 +91,7 @@ def standard_authentication():
             abort(401)
     elif apik:
         print "API key provided " + apik
-        app.logger.info("API key connecting: {x}".format(x=apik))
+        app.logger.debug("API key connecting: {x}".format(x=apik))
         res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
         if len(res) == 1:
             user = models.Account.pull(res[0]['_source']['id'])
@@ -106,7 +106,7 @@ def standard_authentication():
         if (request.path.startswith("/api/v1/notification") and "/content" not in request.path) or request.path.startswith("/api/v1/routed"):
             return
         print "aborting, no user"
-        app.logger.info("Standard authentication failed")
+        app.logger.debug("Standard authentication failed")
         abort(401)
 
 class BadRequest(Exception):
@@ -227,7 +227,7 @@ def retrieve_content(notification_id, filename=None):
     :param filename: the filename of the content file in the notification
     :return: 404 (Not Found) if either the notification or content are not found) or 200 (OK) and the binary content
     """
-    app.logger.info("{x} {y} content requested".format(x=notification_id, y=filename))
+    app.logger.debug("{x} {y} content requested".format(x=notification_id, y=filename))
     if filename is None:
         fn = "none"
     else:
@@ -250,7 +250,7 @@ def retrieve_content(notification_id, filename=None):
 
 @blueprint.route("/notification/<notification_id>/proxy/<pid>", methods=["GET"])
 def proxy_content(notification_id, pid):
-    app.logger.info("{x} {y} proxy requested".format(x=notification_id, y=pid))
+    app.logger.debug("{x} {y} proxy requested".format(x=notification_id, y=pid))
     purl = JPER.get_proxy_url(current_user, notification_id, pid)
     if purl is not None:
         nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":pid,"delivered_from":"proxy"})
@@ -334,7 +334,7 @@ def list_repository_routed(repo_id):
 @blueprint.route("/config/<repoid>", methods=["GET","POST"])
 @webapp.jsonp
 def config(repoid=None):
-    app.logger.info(current_user.id + " " + request.method + " to config route")
+    app.logger.debug(current_user.id + " " + request.method + " to config route")
     if repoid is None:
         if current_user.has_role('repository'):
             repoid = current_user.id
