@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 import utils.connector.connector as DB
-from harvester.body.Harvester import H_Harvester
 import utils.config as config
 import json
 from werkzeug.datastructures import MultiDict
@@ -28,7 +27,6 @@ class HarvesterModel():
     
     def __init__(self):
         self.__conn = DB.U_DBConnection().get_connection(config.DB_NAME)
-        H_Harvester.initialise_DB(self.__conn)
         self.__match_all = config.MATCH_ALL
         self.limit = 10
     
