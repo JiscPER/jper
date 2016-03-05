@@ -23,6 +23,7 @@ running the schedule would need access to any relevant directories.
 import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json, csv
 from threading import Thread
 from octopus.core import app, initialise
+from service import reports
 
 import models, routing
 
@@ -238,86 +239,30 @@ def monthly_reporting():
             lmm.write(month)
             lmm.close()
         
-            out = {'uniques':{},'total':{}}
-            uniques = []
-            size = 1000
-            loop = 0
-            tmth = datetime.datetime.now().month - 1
-            if tmth == 0: 
+            # get the month number that we are reporting on
+            tmth = datetime.datetime.utcnow().month - 1
+
+            # if the month is zero, it means the year just rolled over
+            if tmth == 0:
                 tmth = 12
                 lastyear = int(year) - 1
                 frm = str(lastyear) + "-" + str(tmth) + "-01T00:00:00Z"
+                to_date = str(year) + "-01-01T00:00:00Z"
             else:
-                frm = str(year) + "-" + str(tmth) + "-01T00:00:00Z"
-            q = {
-                'query': {
-                    "filtered": {
-                        "query": {
-                            "query_string": {
-                                "query": "NOT delivered_from:notfound"
-                            }
-                        },
-                        "filter": {
-                            "range": {
-                                "created_date": {
-                                    "from": frm
-                                }
-                            }
-                        }
-                    }
-                },
-                'size': size,
-                'from': loop
-            }
-            res = models.ContentLog.query(q=q) # query for all retrievals in lastmonth
-            total = res.get('hits',{}).get('total',0)
-            while loop < total:
-                for ht in [i['_source'] for i in res.get('hits',{}).get('hits',[])]:
-                    acc = models.Account.pull(ht['user'])
-                    inst = acc.data.get('repository',{}).get('name','')
-                    if inst not in out.keys(): out[inst] = {}
-                    out[inst]['ID'] = ht['user']
-                    # add other fields about repo accounts here, and remember to add them to the print headers list below
-                    if month not in out[inst].keys():
-                        out[inst][month] = 1
-                    else:
-                        out[inst][month] = int(out[inst][month]) + 1
-                    fn = ht['notification'] + '/' + ht.get('filename','')
-                    if fn not in uniques: uniques.append(fn)
-                loop += size
-                q['from'] = loop
-                res = models.ContentLog.query(q=q)
-            out['uniques'][month] = len(uniques)
-            out['total'][month] = total
+                mnthstr = str(tmth) if tmth > 9 else "0" + str(tmth)
+                nexmnth = str(tmth + 1) if tmth + 1 > 9 else "0" + str(tmth + 1)
+                frm = str(year) + "-" + mnthstr + "-01T00:00:00Z"
+                if tmth == 12:
+                    nextyear = int(year) + 1
+                    to_date = str(nextyear) + "-01-01T00:00:00Z"
+                else:
+                    to_date = str(year) + "-" + nexmnth + "-01T00:00:00Z"
 
-            # check for the report csv and read it in if it exists or else create something to start from
+            # specify the file that we're going to output to
             reportfile = reportsdir + '/monthly_notifications_to_institutions_' + year + '.csv'
-            if os.path.exists(reportfile):
-                sofar = csv.DictReader(open(reportfile))
-                for row in sofar:
-                    if row['HEI'] not in out.keys(): out[row['HEI']] = {}
-                    for mth in row.keys():
-                        if mth != 'HEI':
-                            out[row['HEI']][mth] = row[mth]
-                            if out[row['HEI']][mth] == None: out[row['HEI']][mth] = ''
 
-            orderedkeys = out.keys()
-            orderedkeys.remove('uniques')
-            orderedkeys.remove('total')
-            orderedkeys.sort()
-            orderedkeys.append('total')
-            orderedkeys.append('uniques')
-            outfile = open(reportfile,'w')
-            headers = ['HEI','ID','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-            outfile.write(",".join(headers) + '\n')
-            for hk in orderedkeys:
-                hei = out[hk]
-                ln = hk + ','
-                for hr in headers:
-                    if hr != 'HEI':
-                        ln += str(hei.get(hr,'')) + ','
-                outfile.write(ln.strip(',') + '\n')
-            outfile.close()
+            # run the delivery report
+            reports.delivery_report(frm, to_date, reportfile)
 
             # necessary tasks for other monthly reporting could be defined here
             # reporting that has to run more regularly could be defined as different reporting methods altogether
