@@ -126,6 +126,14 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def repository_software(self, val):
         self._set_single("repository.software", val, coerce=self._utf8_unicode())
 
+    @property
+    def repository_name(self):
+        return self._get_single("repository.name", coerce=self._utf8_unicode())
+
+    @repository_name.setter
+    def repository_name(self, val):
+        self._set_single("repository.name", val, coerce=self._utf8_unicode())
+
     def can_log_in(self):
         return True
 
