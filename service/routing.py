@@ -117,7 +117,7 @@ def route(unrouted):
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} as stored as a Failed Notification")
+            app.logger.debug(u"Routing - Notification:{y} as stored as a Failed Notification".format(y=unrouted.id))
 
         return False
 
@@ -263,19 +263,31 @@ def enhance(routed, metadata):
     mas = metadata.authors
     ras = routed.authors
     for ma in mas:
+        merged = False
+        # first run through all the existing authors, and see if any of them merge
         for ra in ras:
             merged = _merge_entities(ra, ma, "name", other_properties=["affiliation"])
-            if not merged:
-                routed.add_author(ma)
+            # if one merges, don't continue
+            if merged:
+                break
+        # if we didn't get a merge, add the author from the metadata
+        if not merged:
+            routed.add_author(ma)
 
     # merge project entities in with the same rule set as above
     mps = metadata.projects
     rps = routed.projects
     for mp in mps:
+        merged = False
+        # first run through all the existing projects, and see if any of them merge
         for rp in rps:
             merged = _merge_entities(rp, mp, "name", other_properties=["grant_number"])
-            if not merged:
-                routed.add_project(mp)
+            # if one merges, don't continue
+            if merged:
+                break
+        # if we didn't get a merge, add the project from the metadata
+        if not merged:
+            routed.add_project(mp)
 
     # add any new subjects
     for s in metadata.subjects:
