@@ -192,7 +192,7 @@ class TestModels(ESTestCase):
         }
         name_id_map, account_map = self._load_data(notes1)
 
-        time.sleep(5)
+        time.sleep(10)
 
         now = datetime.utcnow()
         year = str(now.year)
@@ -232,7 +232,7 @@ class TestModels(ESTestCase):
 
         self._load_data(notes2, account_map)
 
-        time.sleep(5)
+        time.sleep(10)
 
         now = datetime.utcnow()
         year = str(now.year)
@@ -342,7 +342,7 @@ class TestModels(ESTestCase):
         }
         name_id_map, account_map = self._load_data(notes1)
 
-        time.sleep(5)
+        time.sleep(10)
 
         now = datetime.utcnow()
         year = str(now.year)
@@ -382,7 +382,7 @@ class TestModels(ESTestCase):
 
         self._load_data(notes2, account_map)
 
-        time.sleep(5)
+        time.sleep(10)
 
         now = datetime.utcnow()
         year = str(now.year)

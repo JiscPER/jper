@@ -14,6 +14,7 @@ from service.tests import fixtures
 
 from datetime import datetime
 import time, os
+from copy import deepcopy
 
 PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
@@ -289,7 +290,135 @@ class TestRouting(ESTestCase):
                     nid = link['proxy']
                 elif nid and link['url'] == app.config.get("BASE_URL") + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid):
                     assert link['access'] == 'router'
-        
+
+    def test_11_enhance_authors_projects(self):
+        routed_source = fixtures.NotificationFactory.routed_notification()
+        metadata_source = fixtures.NotificationFactory.notification_metadata()
+        routed_ref = models.RoutedNotification(deepcopy(routed_source))
+
+        # first check an enhance when no authors or projects is present in either case
+        rs1 = deepcopy(routed_source)
+        del rs1["metadata"]["author"]
+        del rs1["metadata"]["project"]
+        routed1 = models.RoutedNotification(rs1)
+
+        ms1 = deepcopy(metadata_source)
+        del ms1["metadata"]["author"]
+        del ms1["metadata"]["project"]
+        metadata1 = models.NotificationMetadata(ms1)
+
+        routing.enhance(routed1, metadata1)
+
+        # check the results
+        assert len(routed1.authors) == 0
+        assert len(routed1.projects) == 0
+
+        # next check an enhance when authors or projects are present in the metadata but not the routed notification
+        rs2 = deepcopy(routed_source)
+        del rs2["metadata"]["author"]
+        del rs2["metadata"]["project"]
+        routed2 = models.RoutedNotification(rs2)
+
+        ms2 = deepcopy(metadata_source)
+        metadata2 = models.NotificationMetadata(ms2)
+
+        routing.enhance(routed2, metadata2)
+
+        # check the results
+        assert len(routed2.authors) == 2
+        assert len(routed2.projects) == 2
+
+        names = [a.get("name") for a in routed2.authors]
+        assert "Richard Jones" in names
+        assert "Dave Spiegel" in names
+
+        for n in routed2.authors:
+            if n.get("name") == "Richard Jones":
+                assert len(n.get("identifier", [])) == 3
+            elif n.get("name") == "Dave Spiegel":
+                assert len(n.get("identifier", [])) == 1
+
+        names = [a.get("name") for a in routed2.projects]
+        assert "BBSRC" in names
+        assert "EPSRC" in names
+
+        for n in routed2.projects:
+            if n.get("name") == "BBSRC":
+                assert len(n.get("identifier", [])) == 2
+            elif n.get("name") == "EPSRC":
+                assert len(n.get("identifier", [])) == 1
+
+        # next check an enhance when authors or projects are present in the routed notification but not the metadata
+        rs3 = deepcopy(routed_source)
+        routed3 = models.RoutedNotification(rs3)
+
+        ms3 = deepcopy(metadata_source)
+        del ms3["metadata"]["author"]
+        del ms3["metadata"]["project"]
+        metadata3 = models.NotificationMetadata(ms3)
+
+        routing.enhance(routed3, metadata3)
+
+        # check the results
+        assert len(routed3.authors) == 2
+        assert len(routed3.projects) == 1
+
+        names = [a.get("name") for a in routed3.authors]
+        assert "Richard Jones" in names
+        assert "Mark MacGillivray" in names
+
+        for n in routed3.authors:
+            if n.get("name") == "Richard Jones":
+                assert len(n.get("identifier", [])) == 2
+            elif n.get("name") == "Mark MacGillivray":
+                assert len(n.get("identifier", [])) == 2
+
+        names = [a.get("name") for a in routed3.projects]
+        assert "BBSRC" in names
+
+        for n in routed3.projects:
+            if n.get("name") == "BBSRC":
+                assert len(n.get("identifier", [])) == 1
+
+        # finally check an enhance when:
+        # - unique authors are present in both cases
+        # - one author record enhances another author record
+        rs4 = deepcopy(routed_source)
+        routed4 = models.RoutedNotification(rs4)
+
+        ms4 = deepcopy(metadata_source)
+        metadata4 = models.NotificationMetadata(ms4)
+
+        routing.enhance(routed4, metadata4)
+
+        # check the results
+        assert len(routed4.authors) == 3
+        assert len(routed4.projects) == 2
+
+        names = [a.get("name") for a in routed4.authors]
+        assert "Richard Jones" in names
+        assert "Dave Spiegel" in names
+        assert "Mark MacGillivray" in names
+
+        for n in routed4.authors:
+            if n.get("name") == "Richard Jones":
+                assert len(n.get("identifier", [])) == 3
+            elif n.get("name") == "Dave Spiegel":
+                assert len(n.get("identifier", [])) == 1
+            elif n.get("name") == "Mark MacGillivray":
+                assert len(n.get("identifier", [])) == 2
+
+        names = [a.get("name") for a in routed4.projects]
+        assert "BBSRC" in names
+        assert "EPSRC" in names
+
+        for n in routed4.projects:
+            if n.get("name") == "BBSRC":
+                assert len(n.get("identifier", [])) == 2
+            elif n.get("name") == "EPSRC":
+                assert len(n.get("identifier", [])) == 1
+
+
     def test_50_match_success(self):
         # example routing metadata from a notification
         source = fixtures.NotificationFactory.routing_metadata()

@@ -16,7 +16,7 @@ Router works with the following package formats
 
 | Format | Description |
 |--------|-------------|
-| https://pubsrouter.jisc.ac.uk/FilesAndJATS | A flat file structure with JATS XML embedded |
+| https://pubrouter.jisc.ac.uk/FilesAndJATS | A flat file structure with JATS XML embedded |
 | http://purl.org/net/sword/package/SimpleZip | A flat file structure of unspecified files |
 
 When sending or retrieving packages from the router, the format needs to be specified.
