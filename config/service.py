@@ -118,6 +118,10 @@ DELETE_UNROUTED = True
 REPORTSDIR = '/home/mark/jper_reports'
 SCHEDULE_MONTHLY_REPORTING = False
 
+# Scheduler can also remove old routed indexes
+SCHEDULE_DELETE_OLD_ROUTED = True
+SCHEDULE_KEEP_ROUTED_MONTHS = 3
+
 LOGLEVEL = 'debug'
 LOGFILE = '/home/mark/jperlog'
 

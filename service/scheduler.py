@@ -274,7 +274,36 @@ def monthly_reporting():
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
     schedule.every().day.at("00:05").do(monthly_reporting)
 
+    
+def delete_old_routed():
+    app.logger.info('Scheduler - checking for old routed indexes to delete')
+    try:
+        # each day send a delete to the index name that is beyond the range of those to keep
+        # so only actually has an effect on the first day of each month - other days in the month it is sending a delete to an index that is already gone
+        # index names look like routed201601
+        # so read from config how many months to keep, and add 1 to it
+        # so if in March, and keep is 3, then it becomes 4
+        keep = app.config.get('SCHEDULE_KEEP_ROUTED_MONTHS',3) + 1
+        year = datetime.datetime.utcnow().year
+        # subtracting the keep gives us a month of -1 if now March
+        month = datetime.datetime.utcnow().month - keep
+        if month < 1:
+            # so roll back the year, and set the month to 11 (if now March)
+            year = year - 1
+            month = 12 + month
+        # so idx would look like routed201511 if now March - meaning we would keep Dec, Jan, and Feb (and Mar currently in use of course)
+        idx = 'routed' + str(year) + str(month)
+        addr = app.config['ELASTIC_SEARCH_HOST'] + '/' + app.config['ELASTIC_SEARCH_INDEX'] + '/' + idx
+        app.logger.debug('Scheduler - sending delete to ' + addr)
+        # send the delete - at the start of a month this would delete an index. Other days it will just fail
+        requests.delete(addr)
+    except Exception as e:
+        app.logger.error("Scheduler - Failed monthly routed index deletion: '{x}'".format(x=e.message))
 
+if app.config.get('SCHEDULE_DELETE_OLD_ROUTED',False):
+    schedule.every().day.at("03:00").do(delete_old_routed)
+
+    
 def cheep():
     app.logger.debug("Scheduled cheep")
     print "Scheduled cheep"
