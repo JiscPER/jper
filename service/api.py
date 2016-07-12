@@ -200,6 +200,8 @@ class JPER(object):
         # https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md
         if 'license' in account.data:
             if 'title' in account.data['license']:
+                # 2016-06-28 TD : additional safety check for bare-minimum JSON notification
+                if 'metadata' not in notification: notification['metadata'] = {}
                 if 'license_ref' not in notification['metadata']: 
                     notification['metadata']['license_ref'] = {}
                     if 'title' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['title'] = account.data['license']['title']

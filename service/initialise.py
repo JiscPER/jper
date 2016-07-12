@@ -38,7 +38,7 @@ def initialise():
         su = {
             "id":un, 
             "role": ["admin"],
-            "email":"mark@cottagelabs.com",
+            "email":"green@deepgreen.org",
             "api_key":"admin",
             "password":generate_password_hash(un)
         }
@@ -46,7 +46,7 @@ def initialise():
         print "first superuser account created for user " + un + " with password " + un 
         print "THIS FIRST SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE..."
                 
-    file_handler = RotatingFileHandler(app.config.get('LOGFILE','/home/mark/jperlog'), maxBytes=1000000000, backupCount=5)
+    file_handler = RotatingFileHandler(app.config.get('LOGFILE','/home/green/jperlog'), maxBytes=1000000000, backupCount=5)
     lvl = app.config.get('LOGLEVEL','info')
     if lvl == 'debug':
         file_handler.setLevel(logging.DEBUG)

@@ -18,7 +18,8 @@ acc.save(blocking=True)
 
 note = {
     "content": {
-        "packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+        "packaging_format": "https://datahub.deepgreen.org/FilesAndJATS"
+        ## "packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"
     }
 }
 

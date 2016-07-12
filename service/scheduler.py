@@ -155,7 +155,8 @@ def processftp():
 
                     # create a notification and send to the API to join the unroutednotification index
                     notification = {
-                        "content": {"packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"}
+                        "content": {"packaging_format": "https://datahub.deepgreen.org/FilesAndJATS"}
+                        ## "content": {"packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"}
                     }
                     files = [
                         ("metadata", ("metadata.json", json.dumps(notification), "application/json")),

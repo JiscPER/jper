@@ -15,8 +15,10 @@ from lxml import etree
 from octopus.lib import paths
 import os
 
-PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
-TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
+## PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+## TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
+PACKAGE = "https://datahub.deepgreen.org/FilesAndJATS"
+TEST_FORMAT = "http://datahub.deepgreen.org/packages/OtherTestFormat"
 SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 TEST_HANDLER = "service.tests.fixtures.TestPackageHandler"
 STORE_ID = "12345"

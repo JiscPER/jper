@@ -124,6 +124,8 @@ def _get_parts():
     md = None
     zipfile = None
 
+    # app.logger.debug("len(request.files)={x}".format(x=len(request.files)))
+
     if len(request.files) > 0:
         # this is a multipart request, so extract the data accordingly
         metadata = request.files["metadata"]
@@ -146,7 +148,7 @@ def _get_parts():
         zipfile = content.stream
     else:
         if "content-type" not in request.headers or request.headers["content-type"] != "application/json":
-            raise BadRequest("Content-Type must be application/json")
+            raise BadRequest("Content-Type must be application/json (#files={x})".format(x=len(request.files)))
 
         try:
             md = json.loads(request.data)

@@ -16,9 +16,11 @@ from datetime import datetime
 import time, os
 from copy import deepcopy
 
-PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+## PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+## TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
+PACKAGE = "https://datahub.deepgreen.org/FilesAndJATS"
+TEST_FORMAT = "http://datahub.deepgreen.org/packages/OtherTestFormat"
 SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
-TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
 
 class TestRouting(ESTestCase):
     def setUp(self):

@@ -103,7 +103,8 @@ def _random_url():
     """
     Return a random url.  Actually, this always returns the same url:
 
-    https://pubrouter.jisc.ac.uk/static/jperlogo.png
+    https://datahub.deepgreen.org/static/jperlogo.png
+    ## https://pubrouter.jisc.ac.uk/static/jperlogo.png
 
     which isn't that random, but it is resolvable, and doesn't rely on an external service to be up.
 
@@ -112,7 +113,8 @@ def _random_url():
     :return: url
     """
     # return "http://example.com/file/" + uuid.uuid4().hex
-    return "https://pubrouter.jisc.ac.uk/static/jperlogo.png"
+    ## return "https://pubrouter.jisc.ac.uk/static/jperlogo.png"
+    return "https://datahub.deepgreen.org/static/jperlogo.png"
 
 def _random_datetime(since):
     """

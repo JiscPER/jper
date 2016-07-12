@@ -393,7 +393,8 @@ class FilesAndJATS(PackageHandler):
     """
     Class for representing the FilesAndJATS format
 
-    You should use the format identifier: https://pubrouter.jisc.ac.uk/FilesAndJATS
+    You should use the format identifier: https://datahub.deepgreen.org/FilesAndJATS
+    ## You should use the format identifier: https://pubrouter.jisc.ac.uk/FilesAndJATS
 
     This is the default format that we currently prefer to get from
     providers.  It consists of a zip of a single XML file which is the JATS fulltext,

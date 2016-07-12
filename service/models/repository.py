@@ -30,7 +30,9 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 "id" : {"coerce" : "unicode"},
                 "created_date" : {"coerce" : "unicode"},
                 "last_updated" : {"coerce" : "unicode"},
-                "repository" : {"coerce" : "unicode"}
+                "repo" : {"coerce" : "unicode"}
+                # "repository" : {"coerce" : "unicode"}
+                # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
             },
             "lists" : {
                 "domains" : {"contains" : "field", "coerce" : "unicode"},
@@ -61,7 +63,9 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
 
         :return: repository id
         """
-        return self._get_single("repository", coerce=dataobj.to_unicode())
+        return self._get_single("repo", coerce=dataobj.to_unicode())
+        # return self._get_single("repository", coerce=dataobj.to_unicode())
+        # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
 
     @repository.setter
     def repository(self, val):
@@ -70,7 +74,9 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
 
         :param val: the repository id
         """
-        self._set_single("repository", val, coerce=dataobj.to_unicode())
+        self._set_single("repo", val, coerce=dataobj.to_unicode())
+        # self._set_single("repository", val, coerce=dataobj.to_unicode())
+        # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
 
     @property
     def domains(self):
@@ -185,9 +191,13 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
 
     @classmethod
     def pull_by_repo(cls,repoid):
-        return cls.pull_by_key('repository',repoid)
+        return cls.pull_by_key('repo',repoid)
+        # return cls.pull_by_key('repository',repoid)
+        # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
         
+
     def set_repo_config(self,repository,csvfile=None,textfile=None,jsoncontent=None):
+        repoid = repository
         # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
         fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types','strings']
         for f in fields:
@@ -210,26 +220,36 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                         self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x].strip()}]
                     elif x.strip().lower().replace(' ','').replace('s','') == 'orcid' and len(row[x].strip()) > 1:
                         self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x].strip()}]
-            app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
-            self.data['repository'] = repository
+            app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=repoid))
+            # app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
+            self.data['repo'] = repoid
+            # self.data['repository'] = repository
+            # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
             self.save()
             return True
         elif textfile is not None:
-            app.logger.debug("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
+            app.logger.debug("Extracted simple config from .txt file for repo: {x}".format(x=repoid))
+            # app.logger.debug("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
             self.data['strings'] = [line.rstrip('\n').rstrip('\r').strip() for line in textfile if len(line.rstrip('\n').rstrip('\r').strip()) > 1]
-            self.data['repository'] = repository
+            self.data['repo'] = repoid
+            # self.data['repository'] = repository
+            # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
             self.save()
             return True
         elif jsoncontent is not None:
             # save the lines into the repo config
             for k in jsoncontent.keys():
                 self.data[k] = jsoncontent[k]
-            self.data['repository'] = repository
+            self.data['repo'] = repoid
+            # self.data['repository'] = repository
+            # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
             self.save()
-            app.logger.debug("Saved config for repo: {x}".format(x=self.id))
+            app.logger.debug("Saved config for repo: {x}".format(x=repoid))
+            # app.logger.debug("Saved config for repo: {x}".format(x=self.id))
             return True
         else:
-            app.logger.error("Could not save config for repo: {x}".format(x=self.id))            
+            app.logger.error("Could not save config for repo: {x}".format(x=repoid))            
+            # app.logger.error("Could not save config for repo: {x}".format(x=self.id))            
             return False
         
 
@@ -256,7 +276,9 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 "id" : {"coerce" : "unicode"},
                 "created_date" : {"coerce" : "unicode"},
                 "last_updated" : {"coerce" : "unicode"},
-                "repository" : {"coerce" : "unicode"},
+                "repo" : {"coerce" : "unicode"},
+                # "repository" : {"coerce" : "unicode"},
+                # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
                 "notification" : {"coerce" : "unicode"}
             },
             "lists" : {
@@ -285,7 +307,9 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
 
         :return: repository id
         """
-        return self._get_single("repository", coerce=dataobj.to_unicode())
+        return self._get_single("repo", coerce=dataobj.to_unicode())
+        # return self._get_single("repository", coerce=dataobj.to_unicode())
+        # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
 
     @repository.setter
     def repository(self, val):
@@ -294,7 +318,9 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
 
         :param val: repository id
         """
-        self._set_single("repository", val, coerce=dataobj.to_unicode())
+        self._set_single("repo", val, coerce=dataobj.to_unicode())
+        # self._set_single("repository", val, coerce=dataobj.to_unicode())
+        # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
 
     @property
     def notification(self):
@@ -371,7 +397,9 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
                 "id" : {"coerce" : "unicode"},
                 "created_date" : {"coerce" : "unicode"},
                 "last_updated" : {"coerce" : "unicode"},
-                "repository" : {"coerce" : "unicode"},
+                "repo" : {"coerce" : "unicode"},
+                # "repository" : {"coerce" : "unicode"},
+                # 2016-06-29 TD : index type 'retrieval'(???) mapping exception fix for ES 2.3.3
                 "notification" : {"coerce" : "unicode"},
                 "content" : {"coerce" : "unicode"},
                 "retrieval_date" : {"coerce" : "utcdatetime"},

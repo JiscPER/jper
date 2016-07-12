@@ -76,7 +76,8 @@ def restrict():
 def index():
     if not current_user.is_super:
         abort(401)
-    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
+    ## users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
+    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*').get('hits',{}).get('hits',[])]
     return render_template('account/users.html', users=users)
 
 @blueprint.route('/details/<repo_id>', methods=["GET", "POST"])
@@ -190,28 +191,32 @@ def pubinfo(username):
         abort(401)
 
     if 'embargo' not in acc.data: acc.data['embargo'] = {}
-    if request.values.get('embargo_duration',False):
-        acc.data['embargo']['duration'] = request.values['embargo_duration']
-    else:
-        acc.data['embargo']['duration'] = 0
+    # 2016-07-12 TD: proper handling of two independent forms using hidden input fields
+    if request.values.get('embargo_form',False):
+        if request.values.get('embargo_duration',False):
+            acc.data['embargo']['duration'] = request.values['embargo_duration']
+        else:
+            acc.data['embargo']['duration'] = 0
              
     if 'license' not in acc.data: acc.data['license'] = {}
-    if request.values.get('license_title',False):
-        acc.data['license']['title'] = request.values['license_title']
-    else:
-        acc.data['license']['title'] = ""
-    if request.values.get('license_type',False):
-        acc.data['license']['type'] = request.values['license_type']
-    else:
-        acc.data['license']['type'] = ""
-    if request.values.get('license_url',False):
-        acc.data['license']['url'] = request.values['license_url']
-    else:
-        acc.data['license']['url'] = ""
-    if request.values.get('license_version',False):
-        acc.data['license']['version'] = request.values['license_version']
-    else:
-        acc.data['license']['version'] = ""
+    # 2016-07-12 TD: proper handling of two independent forms using hidden input fields
+    if request.values.get('license_form',False):
+        if request.values.get('license_title',False):
+            acc.data['license']['title'] = request.values['license_title']
+        else:
+            acc.data['license']['title'] = ""
+        if request.values.get('license_type',False):
+            acc.data['license']['type'] = request.values['license_type']
+        else:
+            acc.data['license']['type'] = ""
+        if request.values.get('license_url',False):
+            acc.data['license']['url'] = request.values['license_url']
+        else:
+            acc.data['license']['url'] = ""
+        if request.values.get('license_version',False):
+            acc.data['license']['version'] = request.values['license_version']
+        else:
+            acc.data['license']['version'] = ""
         
     acc.save()
     time.sleep(2);

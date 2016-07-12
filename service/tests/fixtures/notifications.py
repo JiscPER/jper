@@ -81,8 +81,8 @@ ROUTED_LINK = {
     "type" : "fulltext",
     "format" : "application/zip",
     "access" : "router",
-    "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content",
-    "packaging" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+    "url" : "http://datahub.deepgreen.org/api/v1/notification/1234567890/content",
+    "packaging" : "https://datahub.deepgreen.org/FilesAndJATS"
 }
 """A link object that can be grafted in to notifications"""
 
@@ -174,7 +174,7 @@ BASE_NOTIFICATION = {
     },
 
     "content" : {
-        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+        "packaging_format" : "https://datahub.deepgreen.org/FilesAndJATS"
     },
 
     "links" : [

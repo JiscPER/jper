@@ -95,7 +95,8 @@ class TestModels(ESTestCase):
         rr = models.RetrievalRecord()
 
         # build one from example document
-        source = fixtures.RepositoryFactory.retreival_record()
+        ## source = fixtures.RepositoryFactory.retreival_record()
+        source = fixtures.RepositoryFactory.retrieval_record()
         rr = models.RetrievalRecord(source)
 
         # check that we can write/read

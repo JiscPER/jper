@@ -80,7 +80,8 @@ SECRET_KEY = "super-secret-key"
 ############################################
 # Service-specific config
 
-BASE_URL = "https://pubrouter.jisc.ac.uk/"
+BASE_URL = "https://datahub.deepgreen.org/"
+## BASE_URL = "https://pubrouter.jisc.ac.uk/"
 """base url at which the service is deployed"""
 
 API_BASE_URL = BASE_URL + "api/v1/"
@@ -97,16 +98,19 @@ MAX_LIST_PAGE_SIZE = 100
 
 PACKAGE_HANDLERS = {
     "http://router.jisc.ac.uk/packages/FilesAndJATS" : "service.packages.FilesAndJATS",
-    "https://pubrouter.jisc.ac.uk/FilesAndJATS": "service.packages.FilesAndJATS",
+    ## "https://pubrouter.jisc.ac.uk/FilesAndJATS": "service.packages.FilesAndJATS",
+    "https://datahub.deepgreen.org/FilesAndJATS": "service.packages.FilesAndJATS",
     "http://purl.org/net/sword/package/SimpleZip" : "service.packages.SimpleZip"
 }
 """map from format identifiers to PackageHandler plugins that should be used in those cases"""
 
 
 USERDIR = '/home/sftpusers' # this is ASSUMED in ssh config and possibly in shell scripts. So just don't change it
-API_URL = "https://pubrouter.jisc.ac.uk/api/v1/notification"
+API_URL = "https://datahub.deepgreen.org/api/v1/notification"
+## API_URL = "https://pubrouter.jisc.ac.uk/api/v1/notification"
 #API_URL = "http://test.cottagelabs.com:5998/api/v1/notification"
-TMP_DIR = "/home/mark/ftptmp"
+TMP_DIR = "/home/green/ftptmp"
+## TMP_DIR = "/home/mark/ftptmp"
 RUN_SCHEDULE = False
 MOVEFTP_SCHEDULE = 10
 PROCESSFTP_SCHEDULE = 10

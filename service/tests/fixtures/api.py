@@ -74,19 +74,19 @@ OUTGOING = {
     "event" : "submission",
 
     "content" : {
-        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS",
+        "packaging_format" : "https://datahub.deepgreen.org/FilesAndJATS",
     },
 
     "links" : [
         {
             "type" : "splash",
             "format" : "text/html",
-            "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/1"
+            "url" : "http://datahub.deepgreen.org/api/v1/notification/1234567890/content/1"
         },
         {
             "type" : "fulltext",
             "format" : "application/pdf",
-            "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/2"
+            "url" : "http://datahub.deepgreen.org/api/v1/notification/1234567890/content/2"
         }
     ],
 
@@ -176,7 +176,7 @@ INCOMING = {
     },
 
     "content" : {
-        "packaging_format" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
+        "packaging_format" : "https://datahub.deepgreen.org/FilesAndJATS"
     },
 
     "links" : [

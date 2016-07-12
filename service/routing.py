@@ -53,6 +53,7 @@ def route(unrouted):
     if pmd is not None:
         match_data.merge(pmd)
 
+    app.logger.debug(u"Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
     # iterate through all the repository configs, collecting match provenance and
     # id information
     # FIXME: at the moment this puts all the provenance in memory and then writes it all

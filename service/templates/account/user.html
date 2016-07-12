@@ -43,13 +43,14 @@
 		<div class="box box--padding-large box--brd-mgreyblue">
 			<h3>Embargo period</h3>
 			<form method="post" action="{{request.path}}/pubinfo" class="form">
+				<input type="hidden" name="embargo_form" value="True">
 				<ul class="form-fields">
 					<li class="form-fields__item--text">
 				   		<label>
 				       		<span class="form-fields__label-text">Embargo duration (months)</span>
 				       		<input type="text" name="embargo_duration" class="form-control"	value="{{account.data.get('embargo',{}).get('duration','')}}">
 				   		</label>
-				   		<button class="btn btn--3d" id="update" type="submit">Update details</button>
+				   		<button class="btn btn--3d" id="update_embargo" type="submit">Update details</button>
 			   		</li>
 		   		</ul>
 			</form>
@@ -57,6 +58,7 @@
 		<div class="box box--padding-large box--brd-mgreyblue">
 			<h3>Default license</h3>
 			<form method="post" action="{{request.path}}/pubinfo" class="form">
+				<input type="hidden" name="license_form" value="True">
 				<ul class="form-fields">
 					<li class="form-fields__item--text">
 				   		<label>
@@ -81,7 +83,7 @@
 				       		<span class="form-fields__label-text">License version</span>
 				       		<input type="text" name="license_version" class="form-control"	value="{{account.data.get('license',{}).get('version','')}}">
 				   		</label>
-		   				<button class="btn btn--3d" id="update" type="submit">Update details</button>
+		   				<button class="btn btn--3d" id="update_license" type="submit">Update details</button>
 				   	</li>
 			   	</ul>
 			</form>
@@ -89,10 +91,10 @@
 		<br><br>
 		<h2>Connecting to Publications Router</h2>
 		<h3>Connecting to the API</h3>
-		<p>To use the API for deposit, please read or <a href="https://github.com/JiscPER/jper/blob/2bb8bb5179aedcb68d8e86a53ec8d3f0a9dca165/docs/api/API.md">API documentation</a><br></p>
+		<p>To use the API for deposit, please read or <a href="https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/API.md">API documentation</a><br></p>
 		<h1 class="pattern-library__component-title"></h1>
 		<h3>Connecting via SFTP</h3>
-		<p>SFTP Address:     <b>sftp.pubrouter.jisc.ac.uk</b> <br>
+		<p>SFTP Address:     <b>probibw39.zib.de</b> <br>
 			Port:            <b>22</b><br>
 			Username:        <b>{{account.id}}</b><br>
 			Password:        <b>{{account.data['api_key']}}</b><br>
@@ -100,7 +102,7 @@
 		</p>
 		<h1 class="pattern-library__component-title"></h1>
 		<h3>Connecting via SWORD</h3>
-		<p>	SWORD endpoint:  <b>https://pubrouter.jisc.ac.uk/sword</b><br>
+		<p>	SWORD endpoint:  <b>https://probibw39.zib.de/sword</b><br>
 			Username:        <b>{{account.id}}</b><br>
 			Password:        <b>{{account.data['api_key']}}</b><br>
 		</p>
@@ -128,7 +130,7 @@
 					</li>
 					<li class="form-fields__item--text">
 			   			<label>
-			       			<a href="https://raw.githubusercontent.com/JiscPER/jper/develop/docs/csvtemplate.csv" download>See csv example</a>
+			       			<a href="https://raw.githubusercontent.com/OA-DeepGreen/jper/develop/docs/csvtemplate.csv" download>See csv example</a>
 			   			</label>
 					</li>
 				</ul>
