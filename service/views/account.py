@@ -363,7 +363,7 @@ def login():
             flash('Welcome back.', 'success')
             return redirect(url_for('.username', username=user.id))
         else:
-            flash('Incorrect username/password', 'error')
+            flash('Incorrect username/password, for reset please contact: info@deepgreen.de', 'error')
             return render_template('account/login.html')
 
 
