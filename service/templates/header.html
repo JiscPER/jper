@@ -2,7 +2,7 @@
     <div class="masthead__top">
         <div class="inner">
             <a id="skiplinks" class="visuallyhidden focusable in-page" href="#main" tabindex="1">
-                <span>Skip to main content</span>
+                <span>{{ _('Skip to main content') }}</span>
             </a>
             <a class="masthead__logo" href="https://deepgreen.kobv.de/de/deepgreen/">
                 <img alt="DeepGreen Logo" src="">
@@ -37,39 +37,38 @@
             <div class="nav-wrapper" data-mobilemenu="">
               	<nav class="masthead__nav header___nav--primary" role="navigation" data-dropdown="">
                     <ul>                    
-                        <li class="nav__item  has-popup {% if request.path == url_for('about.institutions') or
-                        	request.path == url_for('more.publishers') or
-                        	request.path == url_for('more.index') or
-                        	request.path == url_for('more.resources') %}
+                        <li class="nav__item  has-popup {% if request.path == url_for ('about.about') or request.path == url_for ('about.about') %}
                          	is-active
                         	{% endif %}">
                             
-                            <a>About</a>
+                            <a>{{ _('About') }}</a>
                             <div class="submenu submenu--left">
                                 <ul>
-                                    <li><a href="{{ url_for('more.about') }}">DeepGreen</a></li>
-                                    <li><a href="{{ url_for('more.jisc') }}">JISC</a></li>
+                                    <li><a href="{{ url_for('about.about') }}">DeepGreen</a></li>
+                                    <li><a href="{{ url_for('about.about') }}">JISC</a></li>
                                 </ul>
                             </div>
                         </li>
 
-                        <li class="nav__item has-popup {% if request path == url_for ('more.institutions') or request.path == url_for ('more.publishers') or request.path == url_for ('more.resources') %} is active {% endif %}">
+                        <li class="nav__item has-popup {% if request.path == url_for ('about.institutions') or request.path == url_for ('about.publishers') or request.path == url_for ('about.resources') %} is active {% endif %}">
 
                         <a>Information</a>
                             <div class="submenu submenu--left">
                                 <ul>
-                                    <li><a href="{{ url_for('more.institutions') }}">Information for Institutions</a></li>
-                                    <li><a href="{{ url_for('more.publishers') }}">Information for Publishers</a></li>
-                                    <li><a href="{{ url_for('more.resources') }}">Technical Details</a> </li>
+                                    <li><a href="{{ url_for('about.institutions') }}">{{ _('Information for Institutions') }}</a></li>
+                                    <li><a href="{{ url_for('about.publishers') }}">{{ _('Information for Publishers') }}</a></li>
+                                    <li><a href="{{ url_for('about.resources') }}">{{ _('Technical Details') }}</a> </li>
                                 </ul>
                              </div>
                         </li>
+
+
                     {% if not current_user.is_anonymous()  %}
                         
                         <li class="nav__item {% if request.path == url_for('account.username', username=current_user.id)%}
                          active
                         {% endif %}">
-                            <a href="{{ url_for('account.username', username=current_user.id) }}">My Account</a>
+                            <a href="{{ url_for('account.username', username=current_user.id) }}">{{ _('My Account') }}</a>
                         </li>
                     {% if  current_user.has_role('admin') %}
                         <li class="nav__item has-popup {% if request.path == url_for('account.index') or
@@ -79,15 +78,15 @@
                             <a href="{{ url_for('account.index') }}">Admin</a>
                             <div class="submenu submenu--left">
                                 <ul>
-                                    <li><a href="{{ url_for('account.register') }}">Add user</a></li>
-                                    <li><a href="{{ url_for('account.index') }}">Manage users</a></li>
+                                    <li><a href="{{ url_for('account.register') }}">{{ _('Add user') }}</a></li>
+                                    <li><a href="{{ url_for('account.index') }}">{{ _('Manage users') }}</a></li>
                                 </ul>
                             </div>
                         </li>
                         <li class="nav__item {% if request.path == url_for('reports.index')%}
                          active
                         {% endif %}">
-                            <a href="{{ url_for('reports.index') }}">Reports</a>
+                            <a href="{{ url_for('reports.index') }}">{{ _('Reports') }}</a>
                         </li>
                         <li class="nav__item has-popup 
                         	{% if request.path == url_for('harvester.webservice') or 
@@ -98,9 +97,9 @@
 	                    	<a >Harvester</a>
                             <div class="submenu">
                                 <ul>
-                                    <li><a href="{{ url_for('harvester.manage') }}">Add web service</a></li>
-                                    <li><a href="{{ url_for('harvester.webservice') }}">WebService List</a></li>
-                                    <li><a href="{{ url_for('harvester.history') }}">History List</a></li>
+                                    <li><a href="{{ url_for('harvester.manage') }}">{{ _('Add web service') }}</a></li>
+                                    <li><a href="{{ url_for('harvester.webservice') }}">{{ _(WebService List') }}</a></li>
+                                    <li><a href="{{ url_for('harvester.history') }}">{{ _('History List') }}</a></li>
                                 </ul>
                             </div>
                         </li>
