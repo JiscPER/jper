@@ -46,11 +46,9 @@
 				<input type="hidden" name="embargo_form" value="True">
 				<ul class="form-fields">
 					<li class="form-fields__item--text">
-				   		<label>
-				       		<span class="form-fields__label-text">Embargo duration (months)</span>
+			   	     		<span class="form-fields__label-text">Embargo duration (months)</span>
 				       		<input type="text" name="embargo_duration" class="form-control"	value="{{account.data.get('embargo',{}).get('duration','')}}">
-				   		</label>
-				   		<button class="btn btn--3d" id="update_embargo" type="submit">Update details</button>
+		 		 		<button class="btn btn--3d" id="update_embargo" type="submit">Update details</button>
 			   		</li>
 		   		</ul>
 			</form>
@@ -61,28 +59,28 @@
 				<input type="hidden" name="license_form" value="True">
 				<ul class="form-fields">
 					<li class="form-fields__item--text">
-				   		<label>
+				   		
 				       		<span class="form-fields__label-text">License title</span>
 				       		<input type="text" name="license_title" class="form-control"	value="{{account.data.get('license',{}).get('title','')}}">
-				   		</label>
+				   		
 				   	</li>
 					<li class="form-fields__item--text">
-				   		<label>
+				   		
 				       		<span class="form-fields__label-text">License type</span>
 				       		<input type="text" name="license_type" class="form-control"	value="{{account.data.get('license',{}).get('type','')}}">
-				   		</label>
+				   		
 				   	</li>
 					<li class="form-fields__item--text">
-				   		<label>
+				   		
 				       		<span class="form-fields__label-text">License URL</span>
 				       		<input type="text" name="license_url" class="form-control"	value="{{account.data.get('license',{}).get('url','')}}">
-				   		</label>
+				   		
 				   	</li>
 					<li class="form-fields__item--text">
-				   		<label>
+				   		
 				       		<span class="form-fields__label-text">License version</span>
 				       		<input type="text" name="license_version" class="form-control"	value="{{account.data.get('license',{}).get('version','')}}">
-				   		</label>
+				   		
 		   				<button class="btn btn--3d" id="update_license" type="submit">Update details</button>
 				   	</li>
 			   	</ul>
@@ -117,20 +115,22 @@
 						<h4>Upload new match config file</h4>
 						<label class="form-fields__item--text">
 							<input type="file" name="file" id="file" class="input--large">
+							</br>
+							<button class="btn btn--3d" id="config_upload" type="submit">Upload new match config</button>
 						</label>
-						<button class="btn btn--3d" id="config_upload" type="submit">Upload new match config</button>
+						
 					</li>
 					<li class="form-fields__item--text">
 						<h4>Or retrieve config file from URL</h4>
 						<label class="form-fields__item--text">
 				       		<span>URL</span>
-				       		<input type="text" name="url" id="url" class="input--large" placeholder="Or retrieve config file from URL"/>
+				       		<input type="text" name="url" id="url" class="input--large"/>
 				   		</label>
 						<button class="btn btn--3d" id="config_retrieve" type="submit">Retrieve new match config</button>
 					</li>
 					<li class="form-fields__item--text">
 			   			<label>
-			       			<a href="https://raw.githubusercontent.com/OA-DeepGreen/jper/develop/docs/csvtemplate.csv" download>See csv example</a>
+			       			<a href="https://raw.githubusercontent.com/OA-DeepGreen/jper/develop/docs/csvtemplate.csv" target="_blank">See csv example</a>
 			   			</label>
 					</li>
 				</ul>
@@ -149,46 +149,41 @@
 	        <h3>Manage connection settings</h3>	
 			<form method="post" action="{{request.path}}/repoinfo" class="form">
 				<ul class="form-fields">
-					<li class="form-fields__item--text"><label> 
+					<li class="form-fields__item--text"> 
 						<span class="form-fields__label-text">Repository name</span>
-						<input type="text" class="input--large" name="repository_name" placeholder="repository name" value="{{account.data.get('repository',{}).get('name','')}}" />
+						<input type="text" class="input--large" name="repository_name" value="{{account.data.get('repository',{}).get('name','')}}" />
 					</label></li>
-					<li class="form-fields__item--text"><label> <span
+					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">Repository URL</span> <input
 							type="text" class="input--large" name="repository_url"
-							placeholder="repository url"
 							value="{{account.data.get('repository',{}).get('url','')}}" />
-					</label></li>
-					<li class="form-fields__item--text"><label> <span
+					</li>
+					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">Repository software</span> <input
 							type="text" class="input--large" name="repository_software"
-							placeholder="repository software"
 							value="{{account.data.get('repository',{}).get('software','')}}" />
-					</label></li>
-					<li class="form-fields__item--text"><label> <span
+					</li>
+					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">SWORD username</span> <input
 							type="text" class="input--large" name="sword_username"
-							placeholder="repository SWORD username"
 							value="{{account.data.get('sword',{}).get('username','')}}" />
-					</label></li>
-					<li class="form-fields__item--text"><label> <span
+					</li>
+					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">SWORD password</span> <input
 							type="text" class="input--large" name="sword_password"
-							placeholder="repository SWORD password"
 							value="{{account.data.get('sword',{}).get('password','')}}" />
-					</label></li>
-					<li class="form-fields__item--text"><label> <span
+					</li>
+					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">Repository collection</span> <input
 							type="text" class="input--large" name="sword_collection"
-							placeholder="repository SWORD collection"
 							value="{{account.data.get('sword',{}).get('collection','')}}" />
-					</label></li>
-					<li class="form-fields__item--text"><label> <span
+					</li>
+					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">Packaging preferences</span> <input
 							type="text" class="input--large" name="packaging"
-							placeholder="packaging prefs (comma separated)"
+							placeholder="(comma separated)"
 							value="{{','.join(account.data.get('packaging',[]))}}" />
-					</label><button class="btn btn--3d" id="update" type="submit">Update
+					<button class="btn btn--3d" id="update" type="submit">Update
 						details</button></li>
 				</ul>
 			</form>
@@ -199,9 +194,9 @@
 			<form method="POST" action="" class="form">
 				<ul class="form-fields">
 					<li class="form-fields__item--text">
-						<label> <span class="form-fields__label-text"> New
+						<span class="form-fields__label-text"> New
 								Email address </span> <input type="text" name="email">
-						</label>
+						
 					</li>
 					<li class="form-fields__item--text">
 						<label> <span class="form-fields__label-text"> Confirm </span> 
@@ -240,7 +235,6 @@
 			{% if account.has_role('repository') %} Repository account {% endif %} 
 			{% if account.has_role('publisher') %} Publisher account {% endif %} 
 			</p>
-			<br>
 			<form method="POST" action="" class="form">
 				<div class="form-fields__item--text form-fields__item--single">
 					<input type="submit" name="submit" class="btn btn--3d" id="delete" value="Delete this account">
