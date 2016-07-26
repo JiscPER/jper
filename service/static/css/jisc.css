@@ -4899,8 +4899,7 @@ a.marker:focus,a.marker:hover {
 .masthead__logo {
 	float:left;
 	line-height:1
-	height: 35px;
-	width: 60px;
+	
 }
 .masthead__logo:focus,.no-touch .masthead__logo:hover {
 	opacity:.7
