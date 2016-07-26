@@ -3,6 +3,11 @@
   background: url("masthead-image.png") scroll right top no-repeat;
 }
 
+/* Logo Size */
+
+masthead__logo
+{ height: 25px; width: 43px; }
+
 .h1_like_h2 {
  font-size:30px !important;
  line-height:3rem !important;
@@ -38,7 +43,7 @@
 
 /* Changing colour of nav__item a when hovered */
 .nav__item.has-popup.active>a, .nav__item.has-popup:active>a, .nav__item.has-popup:hover>a, .nav__item>a:active, .nav__item>a:hover {
-  background-color: #026693!important;
+  background-color: #008000!important;
   color:#fff;
   border:none;
 }
