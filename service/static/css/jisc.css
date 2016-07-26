@@ -5163,7 +5163,7 @@ a.marker:focus,a.marker:hover {
 		margin-top:-5px
 	}
 	.topnav__item.has-popup.active>a,.topnav__item.has-popup:hover>a {
-		color:#006633
+		color:#00331a
 	}
 	.topnav__item.has-popup.active>a:before,.topnav__item.has-popup:hover>a:before {
 		content:" "
@@ -5199,7 +5199,7 @@ a.marker:focus,a.marker:hover {
 	padding-right:0
 }
 .masthead__topnav .submenu a:hover {
-	color:#006633
+	color:#00331a
 }
 .masthead__topnav .submenu a:before {
 	display:none
