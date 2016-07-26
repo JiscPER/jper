@@ -1,6 +1,6 @@
 /* Overriding masthead with a different colour, and image when */
 .masthead__main {
-  background: url("masthead-image.png") scroll right top no-repeat #12567c;
+  background: url("masthead-image.png") scroll right top no-repeat;
 }
 
 .h1_like_h2 {
@@ -14,16 +14,16 @@
 }
 
 .masthead__nav .submenu li a {
-  color:#026693;
+  color:#008000;
 }
 
 .nav__item.active a, .nav__item.is-active a{
  background-color:#fff!important;
- color:#026693; 
+ color:#006633; 
 }
 
 .masthead__nav .submenu li a:hover {
-  color:#024368;
+  color:#008000;
 }
 
 
@@ -41,16 +41,16 @@
 
 /* Overriding colours of menu button */
 .menu-button {
-  background-color: #024368;
+  background-color: #006633;
 }
 
 .menu-button:hover, .menu-button.is-open:hover {
-  background-color: #0f709b;
+  background-color: #008000;
   color: #fff;
 }
 
 .menu-button.is-open {
-  background-color: #024368;
+  background-color: #008000;
   color: #fff;
 }
 /* Setting padding at bottom of masthead*/
@@ -104,6 +104,28 @@ margin-bottom:0;
  padding-right:10px; 
 }
 
+/* Arrows */
+
+/* One Page further */
+.right-arrow:after {
+  content:'\25BA'
+}
+
+/* One Page back */
+.left-arrow:after {
+  content:'\25C4'
+}
+
+/* Sort arrow up */
+.up-arrow:after {
+  content:'\25B4'
+}
+
+/* Sort arrow down */
+.down-arrow:after {
+  content:'\25BE'
+}
+
 /*+++++
 /*Form modifications
 */
@@ -125,7 +147,7 @@ margin-bottom:0;
     
     
 .masthead__nav .submenu ul {
- border-top:2px solid #026693; 
+ border-top:2px solid #006633; 
 }
 
 /*(Masthead)Setting default padding on main */
@@ -138,7 +160,7 @@ margin-bottom:0;
 }
 /* Setting background colour on a elements */
 .nav__item > a {
-  background-color: #024368!important;
+  background-color: #008000!important;
 }
 /* Positioning main to line up with masthead, without <br> tags  */
 
@@ -165,7 +187,7 @@ margin-bottom:0;
 
 /*Setting button position as relative, and changing background colour to match in context of menu */
 .credentials .btn--outline {
-  background-color: #024368;
+  background-color: #008000;
   border: none;
   position: relative;
   display: block;
