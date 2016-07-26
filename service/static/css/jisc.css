@@ -2525,7 +2525,7 @@ footer[role=contentinfo] .cc__link {
 	text-decoration:underline
 }
 footer[role=contentinfo] .cc__link:focus,footer[role=contentinfo] .cc__link:hover {
-	color:#006633
+	color:#000000
 }
 .print-only {
 	display:none
