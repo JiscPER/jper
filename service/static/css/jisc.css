@@ -4901,6 +4901,7 @@ a.marker:focus,a.marker:hover {
 	line-height:1
 	height: 35px;
 	width: 60px;
+	margin: 10px;
 	
 }
 .masthead__logo:focus,.no-touch .masthead__logo:hover {
