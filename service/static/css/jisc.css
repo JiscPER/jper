@@ -392,28 +392,28 @@ a#submit {
 	font-size:1.8rem
 }
 .icon-chevron-thin-right:before {
-	content:"\e606"
+	content:"\02C3"
 }
 .icon-chevron-thin-left:before {
-	content:"\e607"
+	content:"\02C2"
 }
 .icon-chevron-left:before {
-	content:"\f104";
+	content:"\25C4";
 	font-size:20px;
 	font-size:2rem
 }
 .icon-chevron-right:before {
-	content:"\f105";
+	content:"\f25BA";
 	font-size:20px;
 	font-size:2rem
 }
 .icon-chevron-up:before {
-	content:"\f106";
+	content:"\25B2";
 	font-size:20px;
 	font-size:2rem
 }
 .icon-arrow-down:before,.icon-chevron-down:before {
-	content:"\f107";
+	content:"\25BC";
 	font-size:20px;
 	font-size:2rem
 }
