@@ -34,12 +34,6 @@
 
 .topnav__list li {float: left;}
 
-.topnav_item a
-{padding-right: 10px;}
-
-.topnav_item:first-child a
-{padding-left: 15px;}
-
 /* Aligning text in alert boxes */
 .box--centre {
   text-align: center;
