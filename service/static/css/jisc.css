@@ -5034,7 +5034,7 @@ a.marker:focus,a.marker:hover {
 .nav__item.has-popup.active>a,.nav__item.has-popup:active>a,.nav__item.has-popup:hover>a,.nav__item>a:active,.nav__item>a:hover {
 	background-color:#fff;
 	z-index:1;
-	color:#00cd66;
+	color:#00331a;
 	position:relative
 }
 .nav__item>a:active {
