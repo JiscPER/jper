@@ -26,6 +26,10 @@
   color:#008000;
 }
 
+/* Align topnav elements */
+
+.topnav__list li {float: left;}
+
 
 /* Aligning text in alert boxes */
 .box--centre {
