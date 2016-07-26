@@ -4608,7 +4608,7 @@ a.marker:focus,a.marker:hover {
 	display:block
 }
 .masthead--focussed .masthead__nav__item .submenu a:hover {
-	color:#006633
+	color:#000000
 }
 @media screen and (min-width:757px) {
 	.masthead--focussed .masthead__nav__item.has-popup.active,.masthead--focussed .masthead__nav__item.has-popup:hover {
