@@ -421,16 +421,16 @@ a#submit {
 	content:"\e603"
 }
 .icon-caret-down:before {
-	content:"\f0d7"
+	content:"\02C5"
 }
 .icon-caret-up:before {
-	content:"\f0d8"
+	content:"\02C4"
 }
 .icon-caret-left:before {
-	content:"\f0d9"
+	content:"\02C2"
 }
 .icon-caret-right:before {
-	content:"\f0da"
+	content:"\02C3"
 }
 .icon-reply:before {
 	content:"\e602"
