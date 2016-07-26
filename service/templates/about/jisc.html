@@ -1,0 +1,22 @@
+{% extends "base.html" %} 
+{% block content %}
+
+<div class="row cms">
+	<div class="col span-11 pull-1">
+		<h1>About JISC Publications Router</h1>
+		<p>The JISC Publications Router functions as an interface between publishers and institutions, which host repositories or CRIS. It facilitates the depositing of publications into Open Access repositories and minimizes the effort for authors, since the manual delivery is eliminated</p>
+		<p>Publishers send data packages to the router, which determines the appropriate target repository using affliation data such as ORCID or the name of the institution. The corresponding repositories are informed that a package has arrived and is waiting for pick up. These data packages consist in its smalles form of just the metadata and the information if the publication is in its acceptance stage or already published. To this the full text can be added, either in XML format with the metadata or as a PDF or WORD document. Additional files such as illustrations can also be added if necessary. </p>
+		<p>For delivering the data publishers can use a SWORD2, FTP or a publications router REST API interface. Currently two file formats, JATS-XML and a Publications Router specific JSON structure, are being supported. </p>
+		<p>Repositories can receive the data packages through a SWORD2, OAI-PMH or a Publications Router API interface. </p>
+		<p>The necessary information for these interfaces are obtained during the registration for publishers and institutions to define their preferred terms of depositing or receiving the data. Each participant receives their own account for the router and can adjust and update the information if needed. </p>
+		<article class="box--padding-medium box--brd-mgreyblue">
+			<div class="box__inner">
+				<p>
+					<b>Find out more about the <a href="https://pubrouter.jisc.ac.uk/" target="_blank">JISC Publications Router</a> on their website</a>.
+				</p>
+			</div>
+		</article>
+	</div>
+</div>
+
+{% endblock %} {% block extra_js_bottom %} {% endblock extra_js_bottom %}
