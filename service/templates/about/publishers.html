@@ -2,51 +2,40 @@
 
 <div class="row">
 	<div class="col span-11 pull-1 cms">
-		<h1>For publishers</h1>
+		<h1>For Publishers</h1>
 
-		<h2>Key benefits</h2>
+		<h2>Benefits</h2>
 		<p>
 			<ul>
-				<li> Be seen to be helping institutions in their long-standing aspiration to capture and disseminate copies of the outputs of their researchers.</li>
-				<li> Help UK institutions comply with the policy of open access and the REF, and mandates and policies from other bodies.</li>
+				<li>Confidence that their documents are being used according to their license agreements</li>
+				<li> Supporting the Green Way of Open Access</li>
 				<li> Help institutions accurately capture and respect your licensing terms, including any embargo periods.</li>
-		</ul>
+			</ul>
 		</p>
 		<h2>How to join</h2>
-		<p>Please contact us on <a href="mailto:pubrouter@jisc.ac.uk">pubrouter@jisc.ac.uk</a> if you would like to find out more.	</p>
+		<p>Please contact us on <a href="mailto:info@deepgreen.org">info@deepgreen.org</a> if you would like to find out more.	</p>
 
 		<h2>How it works</h2>
-		<p>Publications Router aims to pass notifications about research articles to UK institutions matching the affiliations of the authors, including all the co-authors, or their ORCIDs.</p>
-		<p><img src="/static/img_1_800px.png"></p>
+		<p>The Publications Router enables publishers to automatically deposit publications in corresponding Open Access repositories. Publishers send metadata for publicatons to the Publications Router which then checks their embargo period and finds corresponding repositories. Publications which can be made freely available after the end of their embargo period and can be linked to an institutions are then requested from the publishers and delivered to the repository. </p>
+		<p><img src="/static/xxx"></p>
 
-		<p>One of its key aims is to assist institutions in their compliance with the <a href="http://www.hefce.ac.uk/pubs/year/2014/201407/">policy on open access and the REF</a>.</p>
-		<p>An ideal workflow would consist of two notifications for each article, one at acceptance and another at publication. This can be varied depending on your workflow and turn-around times from acceptance to publication.</p>
+		<p>The JISC Publications Router provides the following interfaces for delivering metadata and the full text:</p>
+
 		<ul>
-			<li> <b>Upon acceptance</b> the notification should include basic metadata about the article accompanied, if possible, by the accepted manuscript: 
-				<ul>
-					<li> The article's <b>DOI</b></li>
-					<li> The article's <b>title</b> (even if still subject to change)</li>
-					<li> The full list of (co-)<b>authors</b> and, crucially, their <b>affiliations</b> (and ORCIDs if available). (Note that Publications Router will not cause these affiliations to be displayed anywhere. It will only use them to match to the appropriate institutions, so unedited, "back office" information is all that is required here.)</li>
-					<li> The title of the <b>journal</b>.</li>
-				</ul>
-			</li>
-			<li> <b>Upon publication</b> the notification should include finalised metadata:
-				<ul>
-					<li> The article's <b>DOI</b></li>
-					<li> The article's <b>title</b> </li>
-					<li> The full list of (co-)<b>authors</b> and, crucially, their <b>affiliations</b> (and ORCIDs if available)</li>
-					<li> The full <b>bibliographic details</b> (including year of publication, journal title, volume, page numbers)</li>
-					<li> The details of any <b>embargo period</b> that may apply to any version you have sent us (accepted manuscript and/or version of record). This could be encoded using NISO ALI metadata, for example.</li>
-				</ul>
-			</li>
+			<li><b>SWORD2</b>: according to the SWORD V2 service document (here: NISO JATS and PDF/WORD),</li>
+			<li><b>FTP</b>: JATS-XML for metadata, plus zip-files for full text and other files</li>
+			<li><b>Publicatons Router API</b>: specific JSON structure.</li>
+
 		</ul>
-		<p>The metadata can be supplied as JATS (or NLM) XML, for example, though other formats may well be possible. We are open to discussion on the details of this.</p>
-		<p>We are actively exploring additional options for ingesting notifications more flexibly, especially at acceptance.</p>
-		<p>Publications Router takes no view on what the embargo period or licensing terms should be, but undertakes to pass these on to the institutions if you provide them. If you supply embargoed content and metadata specifying an embargo end-date that applies to it, we will require institutions to respect the embargo that you stipulate in this way. This commitment forms part of a contract between Jisc and participating institutions, and between Jisc and participating publishers.</p>
-		<p>More detail on how you can transmit this information to Publications Router is given in the technical documentation listed below.</p>
+
+		<p>The DeepGreen Router will slightly adjust the transfer to fit German conditions. Further information will follow.</p>
+
+		<p>The publications are assigned to institutions with indicators that should be included in the metadata: name of the institution with postcode(s), author name(s) with ORCID if available, email adress of the author, etc.</p> 
+
+		<p>The institutions only receive publications at the end of their embargo period, and are obligated to respect any other license regulations which ensures complete compliance with publishers' licenses terms.</p>
 
 		<h2>Technical Information</h2>
-		<p>Please see <a href="/about/resources/">here</a> for details of Publications Router architecture and how to connect to it.</p>
+		<p>Please see <a href="/more/resources/">here</a> for details of publications router architecture and how to connect to it.</p>
 
 	</div>
 </div>
