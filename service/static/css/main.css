@@ -1,6 +1,6 @@
 /* Overriding masthead with a different colour, and image when */
 .masthead__main {
-  background: url("masthead-image.png") scroll right top no-repeat;
+  background: url("masthead-image.png") scroll right top no-repeat #12567c;
 }
 
 
@@ -26,10 +26,6 @@
 .masthead__nav .submenu li a:hover {
   color:#008000;
 }
-
-/* Align topnav elements */
-
-.topnav__list li {float: left;}
 
 /* Aligning text in alert boxes */
 .box--centre {
