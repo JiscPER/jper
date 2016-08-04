@@ -1,27 +1,27 @@
-.pattern-library__page-title.fix {
+/* .pattern-library__page-title.fix {
     background: url(https://ux.jisc.ac.uk/ui/img/polygon-bg.png) 50% 0 no-repeat #E85E13;
     background-image: url(https://ux.jisc.ac.uk/ui/img/polygon-bg.png);
-}
+} */
 .no-underscore a{
 	text-decoration: none;
 }
 .move-up{
 	margin-top: -5px;
 }
-/* over ride the jisc accordion */
+/* over ride the jisc accordion 
 .is-collapsible--button.show_hide--is-expanded, .is-collapsible--button.show_hide--is-expanding{
 	background-color: #fff;
 }
 
 .data-table th, table th{
 	background-color: #e4eaec;
-}
+} 
 .data-table tbody tr:nth-child(odd), table tbody tr:nth-child(odd){
 	background-color: #f8fafa;
 }
 .data-table tbody tr, table tbody tr{
 	background-color: #f8fafa;
-}
+} */
 .btn{
 	white-space: nowrap;
 }
