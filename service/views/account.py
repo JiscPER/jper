@@ -77,7 +77,7 @@ def index():
     if not current_user.is_super:
         abort(401)
     ## users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
-    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=100).get('hits',{}).get('hits',[])]
+    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000).get('hits',{}).get('hits',[])]
     return render_template('account/users.html', users=users)
 
 @blueprint.route('/details/<repo_id>', methods=["GET", "POST"])
@@ -391,12 +391,13 @@ def register():
         account.data['api_key'] = api_key
         account.data['role'] = []
     
-        if vals.get('repository_software',False):
+        if vals.get('repository_name',False):
             account.data['repository'] = {
-                'software': vals['repository_software']
+                'name': vals['repository_name']
             }
+            if vals.get('repository_software',False): account.data['repository']['software'] = vals['repository_software']
             if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
-            if vals.get('repository_name',False): account.data['repository']['name'] = vals['repository_name']
+            if vals.get('repository_sigel',False): account.data['repository']['sigel'] = vals['repository_sigel']
     
         if vals.get('sword_username',False):
             account.data['sword'] = {
