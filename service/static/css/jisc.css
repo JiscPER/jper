@@ -6322,7 +6322,7 @@ html.js .media__attribution__info {
 	vertical-align:top
 }
 .data-table th,table th {
-	background:#fff
+	background:#e4eaec;
 }
 .data-table td,table td {
 	color:#666
@@ -6334,7 +6334,7 @@ html.js .media__attribution__info {
 	background:#f8fafa
 }
 .data-table tbody tr:nth-child(odd),table tbody tr:nth-child(odd) {
-	background-color:#eaeff1
+	background-color:#f8fafa
 }
 .data-table td:first-child,.data-table th:first-child,table td:first-child,table th:first-child {
 	text-align:left
