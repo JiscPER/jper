@@ -3,6 +3,9 @@
   background: url("masthead-image.png") scroll right top no-repeat #12567c;
 }
 
+/* Align topnav elements */
+
+.topnav__list li {float: left;}
 
 .h1_like_h2 {
  font-size:30px !important;
