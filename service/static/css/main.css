@@ -14,20 +14,20 @@
 /*Colour changes for PR**/
 
 .masthead__nav .submenu:hover {
- color:#fff; 
+ color:#006633; 
 }
 
 .masthead__nav .submenu li a {
-  color:#006633;
+  color:#008000;
 }
 
 .nav__item.active a, .nav__item.is-active a{
  background-color:#fff!important;
- color:#006633; 
+ color:#008000 ; 
 }
 
 .masthead__nav .submenu li a:hover {
-  color:#00331a;
+  color:#006633;
 }
 
 /* Aligning text in alert boxes */
