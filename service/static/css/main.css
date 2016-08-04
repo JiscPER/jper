@@ -42,10 +42,10 @@
   border:none;
 }
 
-/* Overriding colours of menu button */
+/* Overriding colours of menu button 
 .menu-button {
-  background-color: #006633;
-}
+  background-color:#006633;
+} */ 
 
 .menu-button:hover, .menu-button.is-open:hover {
   background-color: #008000;
