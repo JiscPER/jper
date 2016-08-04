@@ -4960,10 +4960,10 @@ a.marker:focus,a.marker:hover {
 .menu-button:hover {
 	background:#006633
 }
-.menu-button.is-open {
+/*.menu-button.is-open {
 	background:#fff;
 	color:#006633
-}
+} */ 
 .menu-button.is-open .icon:before {
 	content:"\f106"
 }
@@ -5009,10 +5009,10 @@ a.marker:focus,a.marker:hover {
 		border-bottom:0
 	}
 }
-.nav__item.active a {
+/*.nav__item.active a {
 	background-color:#fff;
 	color:#008040
-}
+} */
 .nav__item>a {
 	font-size:18px;
 	font-size:1.8rem;
@@ -5031,12 +5031,12 @@ a.marker:focus,a.marker:hover {
 		display:inline-block
 	}
 }
-.nav__item.has-popup.active>a,.nav__item.has-popup:active>a,.nav__item.has-popup:hover>a,.nav__item>a:active,.nav__item>a:hover {
+/* .nav__item.has-popup.active>a,.nav__item.has-popup:active>a,.nav__item.has-popup:hover>a,.nav__item>a:active,.nav__item>a:hover {
 	background-color:#fff;
 	z-index:1;
 	color:#00331a;
 	position:relative
-}
+} */
 .nav__item>a:active {
 	outline:dotted 1px
 }
@@ -5281,9 +5281,9 @@ a.marker:focus,a.marker:hover {
 		line-height:3rem
 	}
 }
-.masthead__nav .submenu li a:hover {
+/* .masthead__nav .submenu li a:hover {
 	color:#006633
-}
+} */
 @media screen and (max-width:756px) {
 	.masthead__title {
 		font-size:27px;
