@@ -1,0 +1,332 @@
+# Translations template for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-07-25 14:18+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+
+#: service/templates/footer.html:8
+msgid "Contact"
+msgstr ""
+
+#: service/templates/footer.html:39
+msgid "Find out more at oa-deepgreen.en"
+msgstr ""
+
+#: service/templates/about/institutions.html:21
+msgid ""
+"Publications Router is now open to new institutions who wish to take "
+"advantage\n"
+"\t\t\tof its benefits.<br> Please contact us on"
+msgstr ""
+
+#: service/templates/account/configview.html:9
+msgid "Last updated"
+msgstr ""
+
+#: service/templates/account/configview.html:14
+msgid "Repository"
+msgstr ""
+
+#: service/templates/account/configview.html:19
+msgid "Created date"
+msgstr ""
+
+#: service/templates/account/details.html:5
+msgid "Routed Notification History"
+msgstr ""
+
+#: service/templates/account/details.html:13
+msgid "Show notification from"
+msgstr ""
+
+#: service/templates/account/details.html:16
+msgid "Send"
+msgstr ""
+
+#: service/templates/account/details.html:31
+msgid "Send&nbsp;Date"
+msgstr ""
+
+#: service/templates/account/details.html:33
+msgid "Title"
+msgstr ""
+
+#: service/templates/account/details.html:34
+msgid "Analysis&nbsp;Date"
+msgstr ""
+
+#: service/templates/account/login.html:7
+msgid "Login to Publications Router"
+msgstr ""
+
+#: service/templates/account/login.html:15
+msgid "Enter your login details to continue"
+msgstr ""
+
+#: service/templates/account/login.html:20
+msgid "Email address"
+msgstr ""
+
+#: service/templates/account/login.html:26
+msgid "Password"
+msgstr ""
+
+#: service/templates/account/match.html:11
+msgid "Previous"
+msgstr ""
+
+#: service/templates/account/match.html:15
+msgid "Search"
+msgstr ""
+
+#: service/templates/account/match.html:21
+msgid "Next"
+msgstr ""
+
+#: service/templates/account/register.html:78
+msgid "Add user"
+msgstr ""
+
+#: service/templates/more/about.html:6
+msgid "The DeepGreen Project"
+msgstr ""
+
+#: service/templates/more/about.html:7
+msgid ""
+"The Project Deep Green aims to transfer scientific publications, which "
+"can be made freely available at the end of their embargo period, into "
+"Open Acess repositories. The focus over the next two years will be on "
+"licenses which are funded by the Deutsche Forschungsgemeinschaft (DFG) "
+"and have been negotiated nationwide. These licenses are called Allianz-"
+"Lizenzen, and they contain special Open-Access regulations."
+msgstr ""
+
+#: service/templates/more/about.html:8
+msgid ""
+"The experience gathered from Allianz license agreements since 2011 shows,"
+" that the circle of authorized authors (or their instiutional "
+"representatives) hardly ever make use of these Open Access rights. In a "
+"span of 2 years the projects aims to make the agreed upon Open Access "
+"condition easy to use on a technical level and if possible to make them "
+"automatic. Which would enable publishers to deliver these publications "
+"periodically through defined interfaces to Open Access repositories, "
+"rather than having authors or the authorized libraries put them in "
+"manually."
+msgstr ""
+
+#: service/templates/more/about.html:9
+msgid "Project Goals"
+msgstr ""
+
+#: service/templates/more/about.html:10
+msgid ""
+"During the 2 year project phase, the goal is to make these agreed upon "
+"Open Access regulations comfortable on a technical level and if possible "
+"automatize them. Authors or the authorized libraries would then no longer"
+" be responsible of transfering publications into Ope Access repositories,"
+" instead publishers would deliver them periodically through a defined "
+"interface. For this the project partners will build a technical platform "
+"as a data hub: participating publishers transfer the publications and "
+"metadata through the interface and authorized institutional or subject "
+"repositories receive the data. The publishers Karger and SAGE are pilot "
+"partners for the project."
+msgstr ""
+
+#: service/templates/more/about.html:11
+msgid "About the DeepGreen Publications Router"
+msgstr ""
+
+#: service/templates/more/about.html:15
+msgid "More information on our website"
+msgstr ""
+
+#: service/templates/more/institutions.html:5
+msgid "For Institutions"
+msgstr ""
+
+#: service/templates/more/institutions.html:7
+msgid "Benefits"
+msgstr ""
+
+#: service/templates/more/institutions.html:9
+msgid ""
+"Reducing work for authors, researches and employees and therefore "
+"reducing administrative cost"
+msgstr ""
+
+#: service/templates/more/institutions.html:10
+msgid "More publications incl. metadata in their repositories"
+msgstr ""
+
+#: service/templates/more/institutions.html:11
+msgid "Supporting the Green Open Access movement in Germany"
+msgstr ""
+
+#: service/templates/more/institutions.html:13
+msgid "How to join"
+msgstr ""
+
+#: service/templates/more/institutions.html:15
+msgid ""
+"Please contact us on <a "
+"href=\"mailto:info@deepgreen.de\">info@deepgreen.de</a> if you would like"
+" to find out more."
+msgstr ""
+
+#: service/templates/more/institutions.html:18
+msgid "How it works"
+msgstr ""
+
+#: service/templates/more/institutions.html:19
+msgid ""
+"The Publications Router provides a simple delivery of publications into "
+"repositories. Publishers deliver the metadata and publications at the end"
+" of their embargo period to the router from where they can be received."
+msgstr ""
+
+#: service/templates/more/institutions.html:21
+msgid ""
+"The JISC Publications Router provides the following interfaces for "
+"receiving meatadata and the full text:"
+msgstr ""
+
+#: service/templates/more/institutions.html:23
+msgid ""
+"Notifications are delivered directly from the router (the SWORD-client) "
+"to repositories with SWORD deposits"
+msgstr ""
+
+#: service/templates/more/institutions.html:24
+msgid ""
+"Notifications are provided by the router and can be picked up by the "
+"repositories"
+msgstr ""
+
+#: service/templates/more/institutions.html:25
+msgid "Notifications are provided by the router and can be picked up using REST"
+msgstr ""
+
+#: service/templates/more/institutions.html:27
+msgid ""
+"The DeepGreen Router will probably slightly adjust the transfer to fit "
+"German conditions."
+msgstr ""
+
+#: service/templates/more/institutions.html:28
+msgid ""
+"Publications are assigned to the institutions using indicators that are "
+"provided upon registration. These can include the ORCID of researchers, "
+"the name of the institutions and the postecode(s) and the email domain "
+"name. To use the SWORD2 interface the institution has to provide their "
+"username and password during registration"
+msgstr ""
+
+#: service/templates/more/institutions.html:30
+msgid "Technical Information"
+msgstr ""
+
+#: service/templates/more/institutions.html:32
+msgid ""
+"Please see <a href=\"/more/resources/\">here</a> for details\n"
+"\t\t\tof the publications router architecture and how to connect to it."
+msgstr ""
+
+#: service/templates/more/resources.html:5
+msgid "Technical documentation"
+msgstr ""
+
+#: service/templates/more/resources.html:7
+#: service/templates/more/resources.html:13
+#: service/templates/more/resources.html:22
+msgid "Content coming soon."
+msgstr ""
+
+#: service/templates/more/resources.html:10
+msgid "Information for Institutions"
+msgstr ""
+
+#: service/templates/more/resources.html:19
+msgid "Information for Publishers"
+msgstr ""
+
+#: service/views/account.py:42
+msgid "Missing required parameter 'since'"
+msgstr ""
+
+#: service/views/account.py:47
+msgid "Unable to understand since date '{x}'"
+msgstr ""
+
+#: service/views/account.py:52
+msgid "'page' parameter is not an integer"
+msgstr ""
+
+#: service/views/account.py:57
+msgid "'pageSize' parameter is not an integer"
+msgstr ""
+
+#: service/views/account.py:158
+msgid "Account  deleted"
+msgstr ""
+
+#: service/views/account.py:169
+msgid "Sorry. Password must be at least eight characters long"
+msgstr ""
+
+#: service/views/account.py:224
+msgid "Thank you. Your publisher details have been updated."
+msgstr ""
+
+#: service/views/account.py:269
+msgid "Thank you. Your repository details have been updated."
+msgstr ""
+
+#: service/views/account.py:281
+msgid "Thank you. Your API key has been updated."
+msgstr ""
+
+#: service/views/account.py:312
+msgid "Thank you. Your match config has been updated."
+msgstr ""
+
+#: service/views/account.py:314 service/views/account.py:316
+msgid "Sorry, there was an error with your config upload. Please try again."
+msgstr ""
+
+#: service/views/account.py:341
+msgid "Record updated"
+msgstr ""
+
+#: service/views/account.py:367
+msgid "Incorrect username/password, for reset please contact: info@deepgreen.de"
+msgstr ""
+
+#: service/views/account.py:374
+msgid "You are now logged out"
+msgstr ""
+
+#: service/views/account.py:432
+msgid "Account created for "
+msgstr ""
+
+#: service/views/harvester.py:79
+msgid "Record Saved"
+msgstr ""
+
+#: service/views/harvester.py:93
+msgid "Record deleted"
+msgstr ""
+
