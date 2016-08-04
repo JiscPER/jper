@@ -4921,18 +4921,18 @@ a.marker:focus,a.marker:hover {
 	width:43px;
 	height:25px
 }
-.masthead__main {
+/* .masthead__main {
 	zoom:1;
 	background-color:#008000;
 	padding-bottom:40px
-}
+} */
 @media screen and (min-width:757px) {
 	.masthead .featured {
 		margin-top:-76px
 	}
-	.masthead__main {
+/*	.masthead__main {
 		padding-bottom:0
-	}
+	} */
 }
 .masthead__main .inner {
 	zoom:1;
