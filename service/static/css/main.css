@@ -1,6 +1,6 @@
 /* Overriding masthead with a different colour, and image when */
 .masthead__main {
-  background: url("masthead-image.png") scroll right top no-repeat #12567c;
+  background: url("masthead-image.png") scroll right top no-repeat #008000;
 }
 
 /* Align topnav elements */
