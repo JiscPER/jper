@@ -4699,7 +4699,7 @@ a.marker:focus,a.marker:hover {
 	line-height:5.1rem;
 	padding:0 20px
 }
-.masthead--focussed .menu-button .icon-chevron-up {
+.masthead--focussed .menu-button .up-arrow {
 	display:none
 }
 .masthead--focussed .mobile-menu {
@@ -4962,7 +4962,7 @@ a.marker:focus,a.marker:hover {
 }
 .menu-button.is-open {
 	background:#fff;
-	color:#4D4D4D
+	color:#006633
 }
 .menu-button.is-open .icon:before {
 	content:"\f106"
