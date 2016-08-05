@@ -4900,6 +4900,8 @@ a.marker:focus,a.marker:hover {
 	float:left;
 	line-height:1;
 	margin: 5px;
+	height: 25px;
+	width: 43px;
 	
 }
 .masthead__logo:focus,.no-touch .masthead__logo:hover {
