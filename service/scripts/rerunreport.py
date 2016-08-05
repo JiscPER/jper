@@ -42,7 +42,7 @@ if __name__ == "__main__":
     dt = datetime.strptime(args.from_date, "%Y-%m-%dT%H:%M:%SZ")
     year = dt.year
 
-    reportsdir = app.config.get('REPORTSDIR','/home/mark/jper_reports')
+    reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
     reportfile = reportsdir + '/monthly_notifications_to_institutions_' + str(year) + '.csv'
     if os.path.exists(reportfile):
         os.remove(reportfile)
