@@ -30,3 +30,10 @@ def resources():
     '''
     '''        
     return render_template('more/resources.html', name="Resources")
+
+@blueprint.route('/jisc/', methods=['GET','POST'])
+def deepgreen():
+    '''
+    '''
+    return render_template ('more/jisc.html', name="About DeepGreen")
+    
