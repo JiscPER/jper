@@ -397,7 +397,7 @@ def register():
             }
             if vals.get('repository_software',False): account.data['repository']['software'] = vals['repository_software']
             if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
-            if vals.get('repository_sigel',False): account.data['repository']['sigel'] = vals['repository_sigel']
+            if vals.get('repository_sigel',False): account.data['repository']['sigel'] = vals['repository_sigel'].split(',')
     
         if vals.get('sword_username',False):
             account.data['sword'] = {

@@ -23,6 +23,8 @@ def query(path='match_prov'):
     subpath = pathparts[0]
     if subpath.lower() == 'match_prov': 
         klass = getattr(models, 'MatchProvenance' )      
+    elif subpath.lower() == 'failed':
+        klass = getattr(models, 'FailedNotification')
     # could add more index types if want to make them queryable
     else:
         abort(401)

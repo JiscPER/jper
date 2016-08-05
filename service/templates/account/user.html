@@ -151,11 +151,14 @@
 				<ul class="form-fields">
 					<li class="form-fields__item--text"> 
 						<span class="form-fields__label-text">Repository sigel</span>
-						<input type="text" class="input--large" name="repository_sigel" value="{{account.data.get('repository',{}).get('sigel','')}}" />
+						<input type="text" class="input--large" name="repository_sigel" 
+							placeholder="(comma separated)"
+							value="{{','.join(account.data.get('repository',{}).get('sigel',[]))}}" />
 					</label></li>
 					<li class="form-fields__item--text"> 
 						<span class="form-fields__label-text">Repository name</span>
-						<input type="text" class="input--large" name="repository_name" value="{{account.data.get('repository',{}).get('name','')}}" />
+						<input type="text" class="input--large" name="repository_name" 
+							value="{{account.data.get('repository',{}).get('name','')}}" />
 					</label></li>
 					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">Repository URL</span> <input
