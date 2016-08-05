@@ -4987,7 +4987,7 @@ a.marker:focus,a.marker:hover {
 		right:auto
 	}
 	.masthead__nav {
-		margin-bottom:76px;
+		margin-bottom:0px;
 		float:left;
 		clear:none;
 		margin-left:0
