@@ -43,8 +43,8 @@
                         <a>About</a>
                             <div class="submenu submenu--left">
                                 <ul>
-                                    <li><a href="{{ url_for('about.institutions') }}">DeepGreen</a></li>
-                                    <li><a href="{{ url_for('about.publishers') }}">JISC</a></li>
+                                    <li><a href="{{ url_for('about.deepgreen') }}">DeepGreen</a></li>
+                                    <li><a href="{{ url_for('about.jisc') }}">JISC</a></li>
                                 </ul>
                              </div>
                         </li>
@@ -54,9 +54,9 @@
                         <a>Information</a>
                             <div class="submenu submenu--left">
                                 <ul>
-                                    <li><a href="/about/institutions/">Information for Institutions</a></li>
-                                    <li><a href="/about/publishers/">Information for Publishers</a></li>
-                                    <li><a href="/about/resources/">Technical Details</a> </li>
+                                    <li><a href="{{ url_for('about.institutions') }}">Information for Institutions</a></li>
+                                    <li><a href="{{ url_for('about.publishers') }}">Information for Publishers</a></li>
+                                    <li><a href="{{ url_for('about.resources') }}">Technical Details</a> </li>
                                 </ul>
                              </div>
                         </li>
