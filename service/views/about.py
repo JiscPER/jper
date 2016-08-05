@@ -35,3 +35,15 @@ def resources():
     '''
     '''        
     return render_template('about/resources.html', name="Technical documentation")
+    
+@blueprint.route('/deepgreen/', methods=['GET','POST'])
+def deepgreen():
+    '''
+    '''
+    return render_template ('about/deepgreen.html', name="About DeepGreen")
+    
+@blueprint.route('/jisc/', methods=['GET','POST'])
+def jisc():
+    '''
+    '''
+    return render_template ('about/jisc.html', name="About JISC")
