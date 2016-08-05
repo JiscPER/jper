@@ -6247,7 +6247,7 @@ html.js .media__attribution__info {
 		line-height:3rem
 	}
 }
-.is-collapsible--button .show_hide__trigger>a:after {
+/* .is-collapsible--button .show_hide__trigger>a:after {
 	font-family:icomoon;
 	font-weight:700;
 	width:24px;
@@ -6264,8 +6264,24 @@ html.js .media__attribution__info {
 	position:absolute;
 	top:8px;
 	left:10px;
-	display:block
+	display:block } */
+	
+.is-collapsible--button .show_hide__trigger>a:after {
+	width:24px;
+	height:24px;
+	line-height:24px;
+	text-align:center;
+	color:#fff;
+	-webkit-transition:all .3s linear;
+	transition:all .3s linear;
+	background-color:#008000;
+	content:"/f107";
+	position:absolute;
+	top:8px;
+	left:10px;
+	display:block;
 }
+
 .no-touch .is-collapsible--button .show_hide__trigger>a:hover:after {
 	background-color:#006633;
 	border-color:#008040;
@@ -6288,7 +6304,7 @@ html.js .media__attribution__info {
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear
 }
-.is-collapsible--button.show_hide--is-expanded .show_hide__trigger>a:after,.is-collapsible--button.show_hide--is-expanding .show_hide__trigger>a:after {
+/* .is-collapsible--button.show_hide--is-expanded .show_hide__trigger>a:after,.is-collapsible--button.show_hide--is-expanding .show_hide__trigger>a:after {
 	font-family:icomoon;
 	font-weight:700;
 	width:24px;
@@ -6302,6 +6318,20 @@ html.js .media__attribution__info {
 	transition:all .3s linear;
 	content:"\f106"
 }
+*/
+.is-collapsible--button.show_hide--is-expanded .show_hide__trigger>a:after,.is-collapsible--button.show_hide--is-expanding .show_hide__trigger>a:after {
+	width:24px;
+	height:24px;
+	line-height:24px;
+	text-align:center;
+	color:#fff;
+	-webkit-transition:all .3s linear;
+	transition:all .3s linear;
+	content:"/f106";
+	
+}
+
+
 .data-table,.tags__item,table {
 	font-family:"Stag Sans Web Book",HelveticaNeue,"Helvetica Neue",Arial,sans-serif
 }
