@@ -40,12 +40,23 @@
                     <ul>                    
                         <li class="nav__item has-popup {% if request.path == url_for ('about.institutions') or request.path == url_for ('about.publishers') or request.path == url_for ('about.resources') %} is-active {% endif %}">
 
+                        <a>About</a>
+                            <div class="submenu submenu--left">
+                                <ul>
+                                    <li><a href="{{ url_for('about.institutions') }}">DeepGreen</a></li>
+                                    <li><a href="{{ url_for('about.publishers') }}">JISC</a></li>
+                                </ul>
+                             </div>
+                        </li>
+                        
+                        <li class="nav__item has-popup ">
+
                         <a>Information</a>
                             <div class="submenu submenu--left">
                                 <ul>
-                                    <li><a href="{{ url_for('about.institutions') }}">Information for Institutions</a></li>
-                                    <li><a href="{{ url_for('about.publishers') }}">Information for Publishers</a></li>
-                                    <li><a href="{{ url_for('about.resources') }}">Technical Details</a> </li>
+                                    <li><a href="/about/institutions/">Information for Institutions</a></li>
+                                    <li><a href="/about/publishers/">Information for Publishers</a></li>
+                                    <li><a href="/about/resources/">Technical Details</a> </li>
                                 </ul>
                              </div>
                         </li>
