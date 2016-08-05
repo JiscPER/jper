@@ -106,7 +106,7 @@ class AdduserForm(Form):
     email = TextField('Email address', [validators.Length(min=2, max=2035), validators.Required(), is_email])
     email_verify = TextField('Confirm Email address', [validators.Length(min=2, max=2035), validators.Required(), valid_verify_email])
     radio = RadioField('Account type', choices=[('publisher','Publisher account'),('repository','Repository account'),('admin','Admin')])
-    repository_sigel = TextField('Repository sigel (comma separated))')
+    repository_sigel = TextField('Repository sigel (comma separated)')
     repository_name = TextField('Repository name')
     repository_url = TextField('Repository URL')
     repository_software = TextField('Repository software')
