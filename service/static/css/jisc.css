@@ -6270,7 +6270,7 @@ html.js .media__attribution__info {
 	width:24px;
 	height:24px;
 	line-height:24px;
-	text-align:center;
+	/* text-align:center; */
 	color:#fff;
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear;
@@ -6323,7 +6323,7 @@ html.js .media__attribution__info {
 	width:24px;
 	height:24px;
 	line-height:24px;
-	text-align:center;
+	/* text-align:center; */
 	color:#fff;
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear;
