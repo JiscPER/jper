@@ -9,8 +9,8 @@ The JSON structure of the model is as follows:
     }, 
     "embargo": {
         "duration": 0, 
-        "end": "2015-12-01T17:26:40Z", 
-        "start": "2015-12-01T17:26:40Z"
+        "end": "2016-08-09T14:22:11Z", 
+        "start": "2016-08-09T14:22:11Z"
     }, 
     "event": "string", 
     "links": [
@@ -33,8 +33,8 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "date_accepted": "2015-12-01T17:26:40Z", 
-        "date_submitted": "2015-12-01T17:26:40Z", 
+        "date_accepted": "2016-08-09T14:22:11Z", 
+        "date_submitted": "2016-08-09T14:22:11Z", 
         "identifier": [
             {
                 "id": "string", 
@@ -60,7 +60,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2015-12-01T17:26:40Z", 
+        "publication_date": "2016-08-09T14:22:11Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
@@ -108,7 +108,7 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | metadata.language | Language of the article | unicode | 3 letter ISO language code |  |
 | metadata.license_ref.title | Title or name of the licence applied to the article; free-text | unicode |  |  |
 | metadata.license_ref.type | Type of licence (most likely the same as the title); free-text | unicode |  |  |
-| metadata.license_ref.url | URL for information on the licence | unicode | URL |  |
+| metadata.license_ref.url | URL for information on the licence | unicode |  |  |
 | metadata.license_ref.version | Version of the licence | unicode |  |  |
 | metadata.project.grant_number | Grant number for funding source behind this article | unicode |  |  |
 | metadata.project.identifier.id | Funder identifier (e.g. Ringold ID) | unicode |  |  |

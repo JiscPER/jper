@@ -68,8 +68,9 @@
 <a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">paths</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
 <a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
-<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.tests.fixtures.api.RESOURCES=service.tests.fixtures.api-module.html#RESOURCES,Variable service.tests.fixtures.packages.RESOURCES=service.tests.fixtures.packages-module.html#RESOURCES"><a title="service.tests.fixtures.api.RESOURCES
-service.tests.fixtures.packages.RESOURCES" class="py-name" href="#" onclick="return doclink('link-0', 'RESOURCES', 'link-0');">RESOURCES</a></tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.tests.fixtures.api.RESOURCES=service.tests.fixtures.api-module.html#RESOURCES,Variable service.tests.fixtures.packages.RESOURCES=service.tests.fixtures.packages-module.html#RESOURCES,Variable service.tests.unit.test_report.RESOURCES=service.tests.unit.test_report-module.html#RESOURCES"><a title="service.tests.fixtures.api.RESOURCES
+service.tests.fixtures.packages.RESOURCES
+service.tests.unit.test_report.RESOURCES" class="py-name" href="#" onclick="return doclink('link-0', 'RESOURCES', 'link-0');">RESOURCES</a></tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
 <a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-string">"""Path to the test resources directory, calculated relative to this file"""</tt> </tt>
 <a name="APIFactory"></a><div id="APIFactory-def"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
 <a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
@@ -95,7 +96,8 @@ service.tests.fixtures.packages.RESOURCES" class="py-name" href="#" onclick="ret
 <a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">        :return: path</tt> </tt>
 <a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-2" class="py-name"><a title="service.tests.fixtures.api.RESOURCES
-service.tests.fixtures.packages.RESOURCES" class="py-name" href="#" onclick="return doclink('link-2', 'RESOURCES', 'link-0');">RESOURCES</a></tt><tt class="py-op">,</tt> <tt class="py-string">"example.zip"</tt><tt class="py-op">)</tt> </tt>
+service.tests.fixtures.packages.RESOURCES
+service.tests.unit.test_report.RESOURCES" class="py-name" href="#" onclick="return doclink('link-2', 'RESOURCES', 'link-0');">RESOURCES</a></tt><tt class="py-op">,</tt> <tt class="py-string">"example.zip"</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
 <a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
 <a name="APIFactory.outgoing"></a><div id="APIFactory.outgoing-def"><a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="APIFactory.outgoing-toggle" onclick="return toggle('APIFactory.outgoing');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.tests.fixtures.api.APIFactory-class.html#outgoing">outgoing</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">provider</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
@@ -138,19 +140,19 @@ service.tests.fixtures.packages.RESOURCES" class="py-name" href="#" onclick="ret
 <a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-string">"event"</tt> <tt class="py-op">:</tt> <tt class="py-string">"submission"</tt><tt class="py-op">,</tt> </tt>
 <a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
 <a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">    <tt class="py-string">"content"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
-<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-string">"packaging_format"</tt> <tt class="py-op">:</tt> <tt class="py-string">"https://pubrouter.jisc.ac.uk/FilesAndJATS"</tt><tt class="py-op">,</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-string">"packaging_format"</tt> <tt class="py-op">:</tt> <tt class="py-string">"https://datahub.deepgreen.org/FilesAndJATS"</tt><tt class="py-op">,</tt> </tt>
 <a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
 <a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"> </tt>
 <a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">    <tt class="py-string">"links"</tt> <tt class="py-op">:</tt> <tt class="py-op">[</tt> </tt>
 <a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-op">{</tt> </tt>
 <a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">            <tt class="py-string">"type"</tt> <tt class="py-op">:</tt> <tt class="py-string">"splash"</tt><tt class="py-op">,</tt> </tt>
 <a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">            <tt class="py-string">"format"</tt> <tt class="py-op">:</tt> <tt class="py-string">"text/html"</tt><tt class="py-op">,</tt> </tt>
-<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">            <tt class="py-string">"url"</tt> <tt class="py-op">:</tt> <tt class="py-string">"http://router.jisc.ac.uk/api/v1/notification/1234567890/content/1"</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">            <tt class="py-string">"url"</tt> <tt class="py-op">:</tt> <tt class="py-string">"http://datahub.deepgreen.org/api/v1/notification/1234567890/content/1"</tt> </tt>
 <a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
 <a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-op">{</tt> </tt>
 <a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">            <tt class="py-string">"type"</tt> <tt class="py-op">:</tt> <tt class="py-string">"fulltext"</tt><tt class="py-op">,</tt> </tt>
 <a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">            <tt class="py-string">"format"</tt> <tt class="py-op">:</tt> <tt class="py-string">"application/pdf"</tt><tt class="py-op">,</tt> </tt>
-<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">            <tt class="py-string">"url"</tt> <tt class="py-op">:</tt> <tt class="py-string">"http://router.jisc.ac.uk/api/v1/notification/1234567890/content/2"</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">            <tt class="py-string">"url"</tt> <tt class="py-op">:</tt> <tt class="py-string">"http://datahub.deepgreen.org/api/v1/notification/1234567890/content/2"</tt> </tt>
 <a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
 <a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
 <a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
@@ -240,7 +242,7 @@ service.tests.fixtures.packages.RESOURCES" class="py-name" href="#" onclick="ret
 <a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">    <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
 <a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"> </tt>
 <a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">    <tt class="py-string">"content"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
-<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-string">"packaging_format"</tt> <tt class="py-op">:</tt> <tt class="py-string">"https://pubrouter.jisc.ac.uk/FilesAndJATS"</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-string">"packaging_format"</tt> <tt class="py-op">:</tt> <tt class="py-string">"https://datahub.deepgreen.org/FilesAndJATS"</tt> </tt>
 <a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">    <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
 <a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"> </tt>
 <a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">    <tt class="py-string">"links"</tt> <tt class="py-op">:</tt> <tt class="py-op">[</tt> </tt>
@@ -350,7 +352,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Dec  1 17:26:38 2015
+    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:09 2016
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

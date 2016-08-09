@@ -82,7 +82,7 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="DEBUG"></a><span class="summary-name">DEBUG</span> = <code title="True">True</code><br />
+        <a name="DEBUG"></a><span class="summary-name">DEBUG</span> = <code title="False">False</code><br />
       is the web server in debug mode
     </td>
   </tr>
@@ -106,7 +106,7 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="THREADED"></a><span class="summary-name">THREADED</span> = <code title="False">False</code><br />
+        <a name="THREADED"></a><span class="summary-name">THREADED</span> = <code title="True">True</code><br />
       is the web server in threaded mode
     </td>
   </tr>
@@ -148,7 +148,7 @@
     </td><td class="summary">
         <a href="config.service-module.html#ELASTIC_SEARCH_EXAMPLE_DOCS" class="summary-name">ELASTIC_SEARCH_EXAMPLE_DOCS</a> = <code title="[&quot;service.dao.UnroutedNotificationDAO&quot;, &quot;service.dao.RoutedNotificatio\
 nDAO&quot;, &quot;service.dao.RepositoryConfigDAO&quot;, &quot;service.dao.MatchProvenance\
-DAO&quot;, &quot;service.dao.RetrievalRecordDAO&quot;]">[&quot;service.dao.UnroutedNotificati<code class="variable-ellipsis">...</code></code><br />
+DAO&quot;]">[&quot;service.dao.UnroutedNotificati<code class="variable-ellipsis">...</code></code><br />
       types which have their mappings initialised by example when initialising
     </td>
   </tr>
@@ -204,7 +204,7 @@ DAO&quot;, &quot;service.dao.RetrievalRecordDAO&quot;]">[&quot;service.dao.Unrou
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="BASE_URL"></a><span class="summary-name">BASE_URL</span> = <code title="&quot;https://pubrouter.jisc.ac.uk/&quot;">&quot;https://pubrouter.jisc.ac.uk/&quot;</code><br />
+        <a name="BASE_URL"></a><span class="summary-name">BASE_URL</span> = <code title="&quot;https://datahub.deepgreen.org/&quot;">&quot;https://datahub.deepgreen.org/&quot;</code><br />
       base url at which the service is deployed
     </td>
   </tr>
@@ -245,9 +245,9 @@ DAO&quot;, &quot;service.dao.RetrievalRecordDAO&quot;]">[&quot;service.dao.Unrou
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="config.service-module.html#PACKAGE_HANDLERS" class="summary-name">PACKAGE_HANDLERS</a> = <code title="{&quot;http://router.jisc.ac.uk/packages/FilesAndJATS&quot;: &quot;service.packages.F\
-ilesAndJATS&quot;, &quot;https://pubrouter.jisc.ac.uk/FilesAndJATS&quot;: &quot;service.pa\
-ckages.FilesAndJATS&quot;, &quot;http://purl.org/net/sword/package/SimpleZip&quot;: &quot;\
-service.packages.SimpleZip&quot;}">{&quot;http://router.jisc.ac.uk/packages/FilesAn<code class="variable-ellipsis">...</code></code><br />
+ilesAndJATS&quot;, &quot;https://datahub.deepgreen.org/FilesAndJATS&quot;: &quot;service.p\
+ackages.FilesAndJATS&quot;, &quot;http://purl.org/net/sword/package/SimpleZip&quot;: \
+&quot;service.packages.SimpleZip&quot;}">{&quot;http://router.jisc.ac.uk/packages/FilesAn<code class="variable-ellipsis">...</code></code><br />
       map from format identifiers to PackageHandler plugins that should be used in those cases
     </td>
   </tr>
@@ -262,21 +262,21 @@ service.packages.SimpleZip&quot;}">{&quot;http://router.jisc.ac.uk/packages/File
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="API_URL"></a><span class="summary-name">API_URL</span> = <code title="&quot;https://pubrouter.jisc.ac.uk/api/v1/notification&quot;">&quot;https://pubrouter.jisc.ac.uk/api/v1/notification&quot;</code>
+        <a name="API_URL"></a><span class="summary-name">API_URL</span> = <code title="&quot;https://datahub.deepgreen.org/api/v1/notification&quot;">&quot;https://datahub.deepgreen.org/api/v1/notification&quot;</code>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="TMP_DIR"></a><span class="summary-name">TMP_DIR</span> = <code title="&quot;/home/mark/ftptmp&quot;">&quot;/home/mark/ftptmp&quot;</code>
+        <a name="TMP_DIR"></a><span class="summary-name">TMP_DIR</span> = <code title="&quot;/home/green/ftptmp&quot;">&quot;/home/green/ftptmp&quot;</code>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="RUN_SCHEDULE"></a><span class="summary-name">RUN_SCHEDULE</span> = <code title="True">True</code>
+        <a name="RUN_SCHEDULE"></a><span class="summary-name">RUN_SCHEDULE</span> = <code title="False">False</code>
     </td>
   </tr>
 <tr>
@@ -312,6 +312,34 @@ service.packages.SimpleZip&quot;}">{&quot;http://router.jisc.ac.uk/packages/File
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a name="DELETE_UNROUTED"></a><span class="summary-name">DELETE_UNROUTED</span> = <code title="True">True</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="REPORTSDIR"></a><span class="summary-name">REPORTSDIR</span> = <code title="'/home/mark/jper_reports'">'/home/mark/jper_reports'</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SCHEDULE_MONTHLY_REPORTING"></a><span class="summary-name">SCHEDULE_MONTHLY_REPORTING</span> = <code title="False">False</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SCHEDULE_DELETE_OLD_ROUTED"></a><span class="summary-name">SCHEDULE_DELETE_OLD_ROUTED</span> = <code title="True">True</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SCHEDULE_KEEP_ROUTED_MONTHS"></a><span class="summary-name">SCHEDULE_KEEP_ROUTED_MONTHS</span> = <code title="3">3</code>
     </td>
   </tr>
 <tr>
@@ -419,7 +447,7 @@ service.packages.SimpleZip&quot;}">{&quot;http://router.jisc.ac.uk/packages/File
       <dd><table><tr><td><pre class="variable">
 [&quot;service.dao.UnroutedNotificationDAO&quot;, &quot;service.dao.RoutedNotificatio<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
 nDAO&quot;, &quot;service.dao.RepositoryConfigDAO&quot;, &quot;service.dao.MatchProvenance<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-DAO&quot;, &quot;service.dao.RetrievalRecordDAO&quot;]
+DAO&quot;]
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -438,9 +466,9 @@ DAO&quot;, &quot;service.dao.RetrievalRecordDAO&quot;]
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
 {&quot;http://router.jisc.ac.uk/packages/FilesAndJATS&quot;: &quot;service.packages.F<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-ilesAndJATS&quot;, &quot;https://pubrouter.jisc.ac.uk/FilesAndJATS&quot;: &quot;service.pa<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-ckages.FilesAndJATS&quot;, &quot;http://purl.org/net/sword/package/SimpleZip&quot;: &quot;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-service.packages.SimpleZip&quot;}
+ilesAndJATS&quot;, &quot;https://datahub.deepgreen.org/FilesAndJATS&quot;: &quot;service.p<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ackages.FilesAndJATS&quot;, &quot;http://purl.org/net/sword/package/SimpleZip&quot;: <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;service.packages.SimpleZip&quot;}
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -513,7 +541,7 @@ paths.rel2abs(__file__, &quot;..&quot;, &quot;service&quot;, &quot;tests&quot;, 
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Dec  1 17:26:35 2015
+    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:06 2016
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

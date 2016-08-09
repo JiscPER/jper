@@ -78,6 +78,25 @@ Blueprint for providing account management
     </table>
   </td>
 </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#_list_request" class="summary-sig-name" onclick="show_private();">_list_request</a>(<span class="summary-sig-arg">repo_id</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Process a list request, either against the full dataset or the specific repo_id supplied
+This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+for the parameters of these kinds of requests.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#_list_request">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -116,9 +135,73 @@ Blueprint for providing account management
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#details" class="summary-sig-name">details</a>(<span class="summary-sig-arg">repo_id</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#details">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#configView" class="summary-sig-name">configView</a>(<span class="summary-sig-arg">repoid</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#configView">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="service.views.account-module.html#username" class="summary-sig-name">username</a>(<span class="summary-sig-arg">username</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.account-pysrc.html#username">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#pubinfo" class="summary-sig-name">pubinfo</a>(<span class="summary-sig-arg">username</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#pubinfo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#repoinfo" class="summary-sig-name">repoinfo</a>(<span class="summary-sig-arg">username</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#repoinfo">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -168,6 +251,22 @@ Blueprint for providing account management
         <span class="summary-sig-arg">role</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.account-pysrc.html#changerole">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#matches" class="summary-sig-name">matches</a>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#matches">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -267,6 +366,33 @@ Blueprint for providing account management
   </td>
 </tr>
 </table>
+<a name="_list_request"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_list_request</span>(<span class="sig-arg">repo_id</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#_list_request">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Process a list request, either against the full dataset or the specific repo_id supplied
+This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+for the parameters of these kinds of requests.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>repo_id</code></strong> - the repo id to limit the request to</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Flask response containing the list of notifications that are appropriate to the parameters</dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="restrict"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -313,6 +439,53 @@ Blueprint for providing account management
   </dl>
 </td></tr></table>
 </div>
+<a name="details"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">details</span>(<span class="sig-arg">repo_id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#details">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route('/details/<repo_id>', methods= ["GET", "POST"])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="configView"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">configView</span>(<span class="sig-arg">repoid</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#configView">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route("/configview", methods= ["GET", "POST"])</code></li>
+        <li><code>@blueprint.route("/configview/<repoid>", methods= ["GET", "POST"])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="username"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -332,6 +505,52 @@ Blueprint for providing account management
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route('/<username>', methods= ['GET', 'POST', 'DELETE'])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="pubinfo"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">pubinfo</span>(<span class="sig-arg">username</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#pubinfo">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route('/<username>/pubinfo', methods= ['POST'])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="repoinfo"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">repoinfo</span>(<span class="sig-arg">username</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#repoinfo">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route('/<username>/repoinfo', methods= ['POST'])</code></li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -403,6 +622,29 @@ Blueprint for providing account management
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route('/<username>/become/<role>', methods= ['POST'])</code></li>
         <li><code>@blueprint.route('/<username>/cease/<role>', methods= ['POST'])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="matches"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">matches</span>()</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#matches">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route('/<username>/matches')</code></li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -505,7 +747,7 @@ Blueprint for providing account management
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Dec  1 17:26:35 2015
+    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:07 2016
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

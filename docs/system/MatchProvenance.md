@@ -17,7 +17,7 @@ The JSON structure of the model is as follows:
             "term": "string"
         }
     ], 
-    "repository": "string"
+    "repo": "string"
 }
 ```
 
@@ -34,4 +34,4 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | provenance.notification_field | Field in the notification which matched | unicode |  |  |
 | provenance.source_field | Field in the repository configuration which matched | unicode |  |  |
 | provenance.term | term in the notification metadata which matched | unicode |  |  |
-| repository | the repository this record relates to | unicode |  |  |
+| repo |  | unicode |  |  |

@@ -31,7 +31,7 @@ The JSON structure of the model is as follows:
     "postcodes": [
         "string"
     ], 
-    "repository": "string", 
+    "repo": "string", 
     "strings": [
         "string"
     ]
@@ -53,5 +53,5 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | last_updated | Date this record was last modified | unicode |  |  |
 | name_variants | Names by which the institution is known | unicode |  |  |
 | postcodes | Postcodes for addresses where to match on | unicode |  |  |
-| repository | the repository this record relates to | unicode |  |  |
+| repo |  | unicode |  |  |
 | strings | list of arbitrary match strings | unicode |  |  |

@@ -67,7 +67,11 @@
 <a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">,</tt> <tt class="py-name">send_from_directory</tt> </tt>
 <a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">paths</tt> </tt>
 <a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
-<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.views.account.blueprint=service.views.account-module.html#blueprint,Variable service.views.test.blueprint=service.views.test-module.html#blueprint,Variable service.views.webapi.blueprint=service.views.webapi-module.html#blueprint"><a title="service.views.account.blueprint
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.views.about.blueprint=service.views.about-module.html#blueprint,Variable service.views.account.blueprint=service.views.account-module.html#blueprint,Variable service.views.more.blueprint=service.views.more-module.html#blueprint,Variable service.views.query.blueprint=service.views.query-module.html#blueprint,Variable service.views.reports.blueprint=service.views.reports-module.html#blueprint,Variable service.views.test.blueprint=service.views.test-module.html#blueprint,Variable service.views.webapi.blueprint=service.views.webapi-module.html#blueprint"><a title="service.views.about.blueprint
+service.views.account.blueprint
+service.views.more.blueprint
+service.views.query.blueprint
+service.views.reports.blueprint
 service.views.test.blueprint
 service.views.webapi.blueprint" class="py-name" href="#" onclick="return doclink('link-0', 'blueprint', 'link-0');">blueprint</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">(</tt><tt class="py-string">'test'</tt><tt class="py-op">,</tt> <tt class="py-name">__name__</tt><tt class="py-op">)</tt> </tt>
 <a name="download"></a><div id="download-def"><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
@@ -82,8 +86,10 @@ service.views.webapi.blueprint" class="py-name" href="#" onclick="return doclink
 <a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">    :param filename:</tt> </tt>
 <a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">    :return:</tt> </tt>
 <a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
-<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt class="py-name">resources</tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"tests"</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
-<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">send_from_directory</tt><tt class="py-op">(</tt><tt class="py-name">resources</tt><tt class="py-op">,</tt> <tt class="py-string">"download.pdf"</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt id="link-2" class="py-name" targets="Function service.views.about.resources()=service.views.about-module.html#resources,Function service.views.more.resources()=service.views.more-module.html#resources"><a title="service.views.about.resources
+service.views.more.resources" class="py-name" href="#" onclick="return doclink('link-2', 'resources', 'link-2');">resources</a></tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"tests"</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">send_from_directory</tt><tt class="py-op">(</tt><tt id="link-3" class="py-name"><a title="service.views.about.resources
+service.views.more.resources" class="py-name" href="#" onclick="return doclink('link-3', 'resources', 'link-2');">resources</a></tt><tt class="py-op">,</tt> <tt class="py-string">"download.pdf"</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
@@ -119,7 +125,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Dec  1 17:26:38 2015
+    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:09 2016
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
