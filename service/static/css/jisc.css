@@ -6270,12 +6270,12 @@ html.js .media__attribution__info {
 	width:24px;
 	height:24px;
 	line-height:24px;
-	/* text-align:center; */
+	text-align:center
 	color:#fff;
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear;
 	background-color:#008000;
-	content:"/21A5";
+	content:"\21A5";
 	position:absolute;
 	top:8px;
 	left:10px;
@@ -6323,11 +6323,11 @@ html.js .media__attribution__info {
 	width:24px;
 	height:24px;
 	line-height:24px;
-	/* text-align:center; */
+	text-align:center
 	color:#fff;
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear;
-	content:"/21A7";
+	content:"\21A7";
 	
 }
 
