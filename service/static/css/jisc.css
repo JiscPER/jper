@@ -4959,8 +4959,8 @@ a.marker:focus,a.marker:hover {
 .menu-button .icon {
 	margin-left:6px
 }
-.menu-button:hover {
-	background:#006633
+/* .menu-button:hover {
+	background:#006633 */
 }
 /*.menu-button.is-open {
 	background:#fff;
