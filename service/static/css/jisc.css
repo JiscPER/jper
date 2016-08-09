@@ -4967,7 +4967,7 @@ a.marker:focus,a.marker:hover {
 	color:#006633
 } */ 
 .menu-button.is-open .icon:before {
-	content:"\f106"
+	content:"\25B2"
 }
 .nav-wrapper {
 	zoom:1;
