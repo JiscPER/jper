@@ -65,6 +65,9 @@ def route(unrouted):
         for rc in models.RepositoryConfig.scroll(page_size=10, keepalive="1m"):
             prov = models.MatchProvenance()
             prov.repository = rc.repository
+            # 2016-08-10 TD : fill additional field for origin of notification (publisher) with provider_id
+            prov.publisher = unrouted.provider_id
+            #
             prov.notification = unrouted.id
             app.logger.debug(u"Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
             match(match_data, rc, prov)

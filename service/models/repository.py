@@ -279,6 +279,8 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 "repo" : {"coerce" : "unicode"},
                 # "repository" : {"coerce" : "unicode"},
                 # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
+                "pub" : {"coerce" : "unicode"},
+                # 2016-08-10 TD : add an additional field for origin of notification (publisher)
                 "notification" : {"coerce" : "unicode"}
             },
             "lists" : {
@@ -321,6 +323,28 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         self._set_single("repo", val, coerce=dataobj.to_unicode())
         # self._set_single("repository", val, coerce=dataobj.to_unicode())
         # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
+
+    # 2016-08-10 TD : add additional field "pub" --- start ---
+    #
+    @property
+    def publisher(self):
+        """
+        Publisher id to which the match pertains
+
+        :return: publisher id
+        """
+        return self._get_single("pub", coerce=dataobj.to_unicode())
+
+    @publisher.setter
+    def publisher(self, val):
+        """
+        Set the publisher id to which the match pertains
+
+        :param val: publisher id
+        """
+        self._set_single("pub", val, coerce=dataobj.to_unicode())
+    #
+    # 2016-08-10 TD : add additional field "pub" --- end ---
 
     @property
     def notification(self):
@@ -400,6 +424,8 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
                 "repo" : {"coerce" : "unicode"},
                 # "repository" : {"coerce" : "unicode"},
                 # 2016-06-29 TD : index type 'retrieval'(???) mapping exception fix for ES 2.3.3
+                "pub" : {"coerce" : "unicode"},
+                # 2016-08-10 TD : add additional field for origin of notification (publisher)
                 "notification" : {"coerce" : "unicode"},
                 "content" : {"coerce" : "unicode"},
                 "retrieval_date" : {"coerce" : "utcdatetime"},
