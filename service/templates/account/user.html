@@ -150,6 +150,11 @@
 			<form method="post" action="{{request.path}}/repoinfo" class="form">
 				<ul class="form-fields">
 					<li class="form-fields__item--text"> 
+						<span class="form-fields__label-text">Repository bibid (EZB)</span>
+						<input type="text" class="input--large" name="repository_bibid" 
+							value="{{account.data.get('repository',{}).get('bibid','')}}" />
+					</label></li>
+					<li class="form-fields__item--text"> 
 						<span class="form-fields__label-text">Repository sigel</span>
 						<input type="text" class="input--large" name="repository_sigel" 
 							placeholder="(comma separated)"

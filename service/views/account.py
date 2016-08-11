@@ -243,6 +243,14 @@ def repoinfo(username):
         acc.data['repository']['name'] = request.values['repository_name']
     else:
         acc.data['repository']['name'] = ''
+    if request.values.get('repository_sigel',False):
+        acc.data['repository']['sigel'] = request.values['repository_sigel'].split(',')
+    else:
+        acc.data['repository']['sigel'] = []
+    if request.values.get('repository_bibid',False):
+        acc.data['repository']['bibid'] = request.values['repository_bibid'].upper()
+    else:
+        acc.data['repository']['bibid'] = ''
         
     if 'sword' not in acc.data: acc.data['sword'] = {}
     if request.values.get('sword_username',False):
@@ -397,6 +405,7 @@ def register():
             }
             if vals.get('repository_software',False): account.data['repository']['software'] = vals['repository_software']
             if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
+            if vals.get('repository_bibid',False): account.data['repository']['bibid'] = vals['repository_bibid'].upper()
             if vals.get('repository_sigel',False): account.data['repository']['sigel'] = vals['repository_sigel'].split(',')
     
         if vals.get('sword_username',False):
