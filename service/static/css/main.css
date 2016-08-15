@@ -78,7 +78,7 @@ margin-top: -76px;
  }
  
  .teaser__copy dt {
-  font-weight: normal;
+  /* font-weigth: normal; */
   font-family: "Stag Sans Web Book", "HelveticaNeue", "Helvetica Neue", Arial, sans-serif;
  }
  
