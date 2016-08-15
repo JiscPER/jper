@@ -6590,14 +6590,16 @@ html.js .media__attribution__info {
 	font-size:24px;
 	font-size:2.4rem;
 	line-height:27px;
-	line-height:2.7rem
+	line-height:2.7rem;
+	text-decoration: underline;
 }
 @media screen and (max-width:850px) {
 	.teaser__title {
 		font-size:21px;
 		font-size:2.1rem;
 		line-height:24px;
-		line-height:2.4rem
+		line-height:2.4rem;
+		text-decoration: underline;
 	}
 }
 @media screen and (max-width:565px) {
@@ -6606,6 +6608,7 @@ html.js .media__attribution__info {
 		font-size:2.1rem;
 		line-height:24px;
 		line-height:2.4rem;
+		text-decoration: underline;
 		margin-bottom:6px
 	}
 }
