@@ -44,7 +44,7 @@
 .dl-horizontal dd:after {
   clear: both;
 }
-@media (min-width: 758px) {
+/* @media (min-width: 758px) {
   .cms > .dl-horizontal dt {
     float: left;
     width: 160px;
@@ -63,7 +63,7 @@
   .cms > .dl-horizontal--account-details dt, .cms > .dl-horizontal--account-details dd {
     margin-top: 0;
   }
-}
+} */
 
 .show_hide__target ol li{
 	background-image: inherit;
