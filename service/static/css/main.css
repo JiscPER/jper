@@ -17,18 +17,18 @@
  color:#006633; 
 }
 
-.masthead__nav .submenu li a {
+/* .masthead__nav .submenu li a {
   color:#008000;
-}
+} */
 
 .nav__item.active a, .nav__item.is-active a{
  background-color:#fff!important;
  color:#008000 ; 
 }
 
-.masthead__nav .submenu li a:hover {
+/* .masthead__nav .submenu li a:hover {
   color:#006633;
-}
+} */
 
 /* Aligning text in alert boxes */
 .box--centre {
@@ -149,9 +149,9 @@ margin-bottom:0;
 @media screen and (min-width: 757px) {
     
     
-.masthead__nav .submenu ul {
+/* .masthead__nav .submenu ul {
  border-top:2px solid #006633; 
-}
+} */
 
 /*(Masthead)Setting default padding on main */
 #main > .inner {
