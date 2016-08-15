@@ -5229,7 +5229,7 @@ a.marker:focus,a.marker:hover {
 	}
 	.masthead__nav .submenu ul {
 		background-color:#fff;
-		border-top:2px solid #008000;
+		border-top:2px solid #006633;
 		overflow:auto
 	}
 }
@@ -5283,9 +5283,9 @@ a.marker:focus,a.marker:hover {
 		line-height:3rem
 	}
 }
-/* .masthead__nav .submenu li a:hover {
+ .masthead__nav .submenu li a:hover {
 	color:#006633
-} */
+} 
 @media screen and (max-width:756px) {
 	.masthead__title {
 		font-size:27px;
@@ -6227,6 +6227,7 @@ html.js .media__attribution__info {
 	margin-bottom:20px
 }
 .show_hide__target li {
+	font-size: 18px;
 	padding:5px 0 4px 1.3em;
 	background-repeat:no-repeat;
 	background-position:2px 10px;
