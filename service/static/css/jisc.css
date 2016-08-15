@@ -2753,12 +2753,12 @@ div.selector span {
 	}
 }
 div.selector span:after {
-	content:"\f107";
+	content:"\25BE";
 	display:block;
 	position:absolute;
 	top:-1px;
 	right:5px;
-	font-family:icomoon; */
+	/* font-family:icomoon; */
 	speak:none;
 	font-size:20px;
 	font-size:2rem;
