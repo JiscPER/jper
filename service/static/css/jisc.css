@@ -6555,6 +6555,7 @@ html.js .media__attribution__info {
 	zoom:1;
 	background:#fff;
 	padding:20px 30px 20px 40px;
+	margin-left: 10px;
 	border:solid #c9d5da;
 	border-width:1px 1px 2px;
 	font-weight:400;
