@@ -26,15 +26,15 @@
 	white-space: nowrap;
 }
 
-.box--brd-vlgreyblue {
+/* .box--brd-vlgreyblue {
   border-color: #e4e9ec;
 }
-.box--bg-vlgreyblue {
+ .box--bg-vlgreyblue {
   background-color: #e4e9ec;
 }
 .box--padding-bottom-none {
   padding-bottom: 0;
-}
+} 
 
 .dl-horizontal dd:before,
 .dl-horizontal dd:after {
@@ -44,7 +44,7 @@
 .dl-horizontal dd:after {
   clear: both;
 }
-/* @media (min-width: 758px) {
+  @media (min-width: 758px) {
   .cms > .dl-horizontal dt {
     float: left;
     width: 160px;
@@ -69,6 +69,6 @@
 	background-image: inherit;
 }
 
-.show_hide__target li{
+/* .show_hide__target li{
 	font-size: 18px;
-}
+} */
