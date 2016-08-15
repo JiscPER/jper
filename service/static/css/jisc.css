@@ -6552,7 +6552,7 @@ html.js .media__attribution__info {
 }
 .teaser {
 	position:relative;
-	zoom:1;
+	zoom: 1;
 	background:#fff;
 	padding:20px 20px 20px 20px;
 	margin-left: 10px;
