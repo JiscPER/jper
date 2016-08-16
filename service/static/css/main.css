@@ -211,7 +211,7 @@ margin-bottom:0;
 }
 .toggle{
 	text-decoration: underline;
-	/* cursor: pointer; */
+	cursor: pointer;
 }
 
 .box--brd-vlgreyblue {
