@@ -62,7 +62,7 @@ print_table = function(data,id,title){
 	
 	for (variable in data) {
 	$('#'+id+' tr:last').after('<tr>\
-			<td class="toggle">'+data[variable]+'</td> \
+			<td>'+data[variable]+'</td> \
 			</tr>');	
 	}
 }
