@@ -73,6 +73,6 @@
 	font-size: 18px;
 } */
 
-.outer {margin-left:10%; margin-top: 1%; float: left; position: relative;}
+.outer {margin-left:10%; margin-right: 5%; margin-top: 1%; float: left; position: relative;}
 
 .outer img {box-shadow: 8px 10px 10px rgba(0,0,0,.9)}
