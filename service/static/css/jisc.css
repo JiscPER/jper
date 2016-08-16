@@ -681,8 +681,8 @@ button.btn--square {
 	text-decoration:none;
 	font-family:"Stag Sans Web Light"
 }
-.cms h2,.cms h4,.cms h4 a,.cms h5,.cms h5 a,.cms h6,.cms h6 a,.cms>dl dt {
-	font-family:"Stag Sans Web Book"
+/* .cms h2,.cms h4,.cms h4 a,.cms h5,.cms h5 a,.cms h6,.cms h6 a,.cms>dl dt {
+	font-family:"Stag Sans Web Book" */
 }
 .cms h1 {
 	font-size:45px;
