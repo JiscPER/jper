@@ -72,3 +72,5 @@
 /* .show_hide__target li{
 	font-size: 18px;
 } */
+
+.outer {margin-left:10%; margin-top: 1%; float: left; position: relative;}
