@@ -54,7 +54,8 @@
 			</form>
 		</div>
 		<div class="box box--padding-large box--brd-mgreyblue">
-			<h3>Default license</h3>
+			<h3>License information</h3>
+			<p>These are fallback values if none, in the metadata, are found.</p>
 			<form method="post" action="{{request.path}}/pubinfo" class="form">
 				<input type="hidden" name="license_form" value="True">
 				<ul class="form-fields">
@@ -87,9 +88,9 @@
 			</form>
 		</div>
 		<br><br>
-		<h2>Connecting to Publications Router</h2>
+		<h2>Connecting to DeepGreen</h2>
 		<h3>Connecting to the API</h3>
-		<p>To use the API for deposit, please read or <a href="https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/API.md">API documentation</a><br></p>
+		<p>To use the API for deposit, please read our <a href="https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/API.md">API documentation</a><br></p>
 		<h1 class="pattern-library__component-title"></h1>
 		<h3>Connecting via SFTP</h3>
 		<p>SFTP Address:     <b>probibw39.zib.de</b> <br>
@@ -256,7 +257,8 @@
 	</div>
 	{% endif %}
 </div>
-{% if account.has_role('repository') %}
+<!-- 2016-08-18 TD : *** The following if-clause is NO typo. The role is mispelled to disable these lines. *** -->
+{% if account.has_role('xrepository') %}
 <div class="row">
 	<div class="col-md-12">
 		<div id="matchholder">
