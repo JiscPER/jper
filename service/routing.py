@@ -157,9 +157,10 @@ def match(notification_data, repository_config, provenance):
         "author_ids" : {
             "author_ids" : author_match
         },
-        "postcodes" : {
-            "postcodes" : postcode_match
-        },
+        # 2018-08-18 TD : taken out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
+        #"postcodes" : {
+        #    "postcodes" : postcode_match
+        #},
         "grants" : {
             "grants" : exact
         },
@@ -168,7 +169,8 @@ def match(notification_data, repository_config, provenance):
             "emails" : exact,
             "affiliations" : exact_substring,
             "author_ids" : author_string_match,
-            "postcodes" : postcode_match,
+            # 2016-08-18 TD : taken out postcodes. See also comment just above.
+            # "postcodes" : postcode_match,
             "grants" : exact
         }
     }
