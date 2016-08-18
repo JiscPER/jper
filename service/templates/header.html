@@ -1,4 +1,5 @@
 <header class="masthead" role="banner" data-mobilemenu="">
+    <!--
     <div class="masthead__top">
         <div class="inner">
             <a id="skiplinks" class="visuallyhidden focusable in-page" href="#main" tabindex="1">
@@ -20,11 +21,12 @@
             </nav>
         </div>
     </div>
+    -->
     <div class="masthead__main">
-    	<div class="outer"><a href="https://deepgreen.kobv.de/de/deepgreen/" target="_blank"><img src="/static/DeepGreen_Logo_abgestimmt_160211.png" width="125px" height="93px"></a></div>
+    	<!-- <div class="outer"><a href="/" target="_blank"><img src="/static/DeepGreen_Logo_abgestimmt_160211.png" width="125px" height="93px"></a></div> -->
         <div class="inner">
             <p class="masthead__title masthead__title--short">
-            	<a href="/" title="DeepGreen Prototype">DeepGreen Publications Router
+            	<a href="/" title="DeepGreen Prototype">DeepGreen
                   <span class="tags--white tags__item">
                      <span class="tags__link">
                          Prototype
@@ -43,7 +45,7 @@
                        	<div class="submenu submenu--left">
                        		<ul>
                        			<li><a href="{{ url_for('about.deepgreen') }}">DeepGreen</a></li>
-                       			<li><a href="{{ url_for('about.jisc') }}">JISC</a></li>
+                       			<!-- <li><a href="{{ url_for('about.jisc') }}">JISC</a></li> -->
                        		</ul>
                        	</div>
                        </li>
@@ -86,6 +88,7 @@
                         {% endif %}">
                             <a href="{{ url_for('reports.index') }}">Reports</a>
                         </li>
+                        <!--
                         <li class="nav__item has-popup 
                         	{% if request.path == url_for('harvester.webservice') or 
                         		request.path == url_for('harvester.history') or
@@ -101,6 +104,7 @@
                                 </ul>
                             </div>
                         </li>
+                        -->
                     {% endif %}
                     {% endif %}
                     </ul>
