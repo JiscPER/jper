@@ -26,7 +26,6 @@ The repository configuration may contain the following fields
 * Domains
 * Name Variants
 * Author Identifiers
-* Postcodes
 * Grants
 * Arbitrary Strings
 
@@ -34,6 +33,7 @@ The following fields are available in the data model, but are not currently used
 
 * Keywords
 * Content Types
+* Postcodes
 
 ## Paired fields and analysis required
 
@@ -47,7 +47,6 @@ Note that here "exact match" means that the lowercased, whitespace-trimmed strin
 * Name Variant <-> Affiliation - normalised name variant must be an exact substring of normalised affiliation
 * Author Identifier <-> Email - exact match required
 * Author Identifier <-> Author Identifier - exact match required
-* Postcode <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
 * Grant <-> Grant - exact match required
 * Arbitrary String <-> URL - Normalise the String and the URL: strip prefixes and URL paths.  If either ends with the other, it is a match
 * Arbitrary String <-> email - exact match required
@@ -61,3 +60,6 @@ in these fields:
 
 * Keyword <-> Keyword - exact match required
 * Content Type <-> Content Type - exact match required
+* Postcode <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
+
+For other countries, such as Germany, postcodes may not be as geo-locally resolving as it is the case in the UK.  Therefore, we are probably better off to put this matching option apart, in general.
