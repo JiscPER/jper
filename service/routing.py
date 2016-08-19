@@ -157,7 +157,7 @@ def match(notification_data, repository_config, provenance):
         "author_ids" : {
             "author_ids" : author_match
         },
-        # 2018-08-18 TD : taken out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
+        # 2018-08-18 TD : take out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
         #"postcodes" : {
         #    "postcodes" : postcode_match
         #},
@@ -169,7 +169,7 @@ def match(notification_data, repository_config, provenance):
             "emails" : exact,
             "affiliations" : exact_substring,
             "author_ids" : author_string_match,
-            # 2016-08-18 TD : taken out postcodes. See also comment just above.
+            # 2016-08-18 TD : take out postcodes. See also comment just above.
             # "postcodes" : postcode_match,
             "grants" : exact
         }
@@ -320,7 +320,7 @@ def _merge_entities(e1, e2, primary_property, other_properties=None):
     :param e2: second entity object
     :param primary_property: primary way to assert two entities refer to the same thing
     :param other_properties: explicit list of properties to merge
-    :return:
+    :return: True if the merge was successfully carried out (with e1 as the decisive object), False if not
     """
     if other_properties is None:
         other_properties = []

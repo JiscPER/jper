@@ -61,4 +61,4 @@ in these fields:
 * Content Type <-> Content Type - exact match required
 * Postcode <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
 
-For other countries, such as Germany, postcodes may not be as geo-locally resolving as it is the case in the UK.  Therefore, we are probably better off to put this matching option apart, in general.
+For some countries, such as Germany, postcodes may not be as geo-locally resolving as it is the case in the UK.  Therefore, we are probably better off to put away this matching option, in general.
