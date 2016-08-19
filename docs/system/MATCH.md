@@ -52,7 +52,6 @@ Note that here "exact match" means that the lowercased, whitespace-trimmed strin
 * Arbitrary String <-> email - exact match required
 * Arbitrary String <-> Affiliation - normalised string must be an exact substring of normalised affiliation
 * Arbitrary String <-> Author ID - exact match required
-* Arbitrary String <-> Postcode - Normalise postcodes: strip whitespace and lowercase, then exact match required
 * Arbitrary String <-> Grant - exact match requried
 
 The following mappings are also proposed, but are not currently implemented, due to the variable quality of the data
