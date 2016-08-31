@@ -449,7 +449,7 @@ class License(dataobj.DataObj, dao.LicenseDAO)
         self._add_to_list("identifier", obj)
 
     @property
-    def journal(self):
+    def journals(self):
         """
         The list of journal objects of the license package.  The returned objects have the form:
 
@@ -479,8 +479,8 @@ class License(dataobj.DataObj, dao.LicenseDAO)
         """
         return self._get_list("journal")
 
-    @journal.setter
-    def journal(self, objlist):
+    @journals.setter
+    def journals(self, objlist):
         """
         Set the supplied list of journal objects for the alliance license package. 
 

@@ -126,3 +126,21 @@ class AccountDAO(dao.ESDAO):
 
     __type__ = "account"
     """ The index type to use to store these objects """
+
+
+class AllianceDAO(dao.ESDAO):
+    """
+    DAO for Alliance (DeepGreen add-on)
+    """
+
+    __type__ = "alliance"
+    """ The index type to use to store these objects """
+
+class LicenseDAO(dao.ESDAO):
+    """
+    DAO for License (DeepGreen add-on)
+    """
+
+    __type__ = "license"
+    """ The index type to use to store these objects """
+
