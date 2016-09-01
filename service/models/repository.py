@@ -427,7 +427,9 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
                 "pub" : {"coerce" : "unicode"},
                 # 2016-08-10 TD : add additional field for origin of notification (publisher)
                 "notification" : {"coerce" : "unicode"},
-                "content" : {"coerce" : "unicode"},
+                "payload" : {"coerce" : "unicode"},
+                # "content" : {"coerce" : "unicode"},
+                # 2016-09-01 TD : index type 'retrieval'(!) mapping exception fix for ES 2.3.3
                 "retrieval_date" : {"coerce" : "utcdatetime"},
                 "scope" : {"coerce" : "unicode", "allowed_values" : ["notification", "fulltext"]}
             }

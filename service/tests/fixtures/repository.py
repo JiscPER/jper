@@ -46,16 +46,18 @@ class RepositoryFactory(object):
         return deepcopy(USELESS_REPO_CONFIG)
 
 RETRIEVAL = {
-    "repository" : "abcdefg",
+    # "repository" : "abcdefg",
+    "repo" : "abcdefg",
     "notification" : "1234567890",
-    "content" : "http://example.com/file",
+    "payload" : "http://example.com/file",
     "retrieval_date" : "2015-05-04T00:00:00Z",
     "scope" : "notification"
 }
 """Example retrieval record"""
 
 USELESS_REPO_CONFIG = {
-    "repository" : "abcdefg",
+    # "repository" : "abcdefg",
+    "repo" : "abcdefg",
     "domains" : ["someunknowndomain.withsubdomain.com"],
     "name_variants" : ["The Amazing University of Science, the Arts and Business (not to mention Medicine)"],
     "author_ids" : [],
