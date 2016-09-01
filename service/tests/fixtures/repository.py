@@ -28,7 +28,7 @@ class RepositoryFactory(object):
         return deepcopy(MATCH_PROV)
 
     @classmethod
-    def retreival_record(cls):
+    def retrieval_record(cls):
         """
         Example retrieval record
 
@@ -66,7 +66,8 @@ USELESS_REPO_CONFIG = {
 """repository config with no useful data"""
 
 REPO_CONFIG = {
-    "repository" : "abcdefg",
+    # "repository" : "abcdefg",
+    "repo" : "abcdefg",
     "domains" : ["ucl.ac.uk", "universitycollegelondon.ac.uk"],
     "name_variants" : ["UCL", "U.C.L", "University College"],
     "author_ids" : [
@@ -99,7 +100,8 @@ REPO_CONFIG = {
 """Example repository config"""
 
 MATCH_PROV = {
-    "repository" : "abcdefg",
+    # "repository" : "abcdefg",
+    "repo" : "abcdefg",
     "notification" : "1234567890",
     "provenance" : [
         {

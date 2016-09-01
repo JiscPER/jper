@@ -10,7 +10,8 @@ from datetime import datetime
 from octopus.core import app
 import esprit, time
 
-ESV = app.config.get("ELASTIC_SEARCH_VERSION", "1.4.2")
+ESV = app.config.get("ELASTIC_SEARCH_VERSION", "2.3.3")
+# ESV = app.config.get("ELASTIC_SEARCH_VERSION", "1.4.2")
 
 class TestDAO(ESTestCase):
     def setUp(self):
@@ -214,4 +215,36 @@ class TestDAO(ESTestCase):
         rts = d.get_read_types()
         assert len(rts) == 1
         assert "retrieval" in rts
+
+    def test_08_alliance(self):
+        # give the dao object a general workout
+        d = dao.AllianceDAO()
+        d.save()
+        m = d.mappings()
+        e = d.example()
+
+        assert isinstance(e, dao.AllianceDAO)
+
+        wt = d.get_write_type()
+        assert wt == "alliance"
+
+        rts = d.get_read_types()
+        assert len(rts) == 1
+        assert "alliance" in rts
+
+    def test_09_license(self):
+        # give the dao object a general workout
+        d = dao.LicenseDAO()
+        d.save()
+        m = d.mappings()
+        e = d.example()
+
+        assert isinstance(e, dao.LicenseDAO)
+
+        wt = d.get_write_type()
+        assert wt == "license"
+
+        rts = d.get_read_types()
+        assert len(rts) == 1
+        assert "license" in rts
 
