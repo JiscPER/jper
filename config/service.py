@@ -29,7 +29,8 @@ ELASTIC_SEARCH_HOST = "http://gateway:9200"
 ELASTIC_SEARCH_INDEX = "jper"
 """index name in elasticsearch where our types are stored"""
 
-ELASTIC_SEARCH_VERSION = "1.5.2"
+ELASTIC_SEARCH_VERSION = "2.3.3"
+# ELASTIC_SEARCH_VERSION = "1.5.2"
 """version of elasticsearch which we're using - matters for certain semantics of requests"""
 
 # Classes from which to retrieve ES mappings to be used in this application
