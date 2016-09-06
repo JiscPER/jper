@@ -76,3 +76,63 @@
 .outer {margin-left:10%; margin-right: 5%; margin-top: 1%; float: left; position: relative;}
 
 .outer img {box-shadow: 8px 10px 10px rgba(0,0,0,.9)}
+
+.FAQ {
+	display:block;
+	height:auto !important;
+	margin: 0px;
+	vertical-align:top;
+}
+	
+
+.list {
+    display:none; 
+    height:auto;
+    margin:0;
+    float: left;
+}
+
+.show {
+    display: none; 
+}
+.hide:target + .show {
+    display: inline; 
+}
+.hide:target {
+    display: none; 
+}
+.hide:target ~ .list {
+    display:inline; 
+}
+
+/*style the (+) and (-) */
+.hide, .show {
+	width: 30px;
+	height: 30px;
+	font-size: 20px;
+	color: #00331a;
+	text-align: center;
+	text-decoration: none !important;
+	margin-right: 0;
+	float: left;
+	margin-bottom: 5px;
+}
+
+.hide:hover, .show:hover {
+	color: #008000;
+	text-shadow: 0 0 1px #006633;
+	text-decoration: none;
+	opacity: 1;
+	margin-bottom: 5px;
+}
+
+.list p{
+    height:auto;
+    margin:0;
+}
+.question {
+	float: left;
+	width: 93%;
+	padding-left: 20px;
+	margin-bottom: 5px;
+}
