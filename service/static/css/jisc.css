@@ -6301,7 +6301,6 @@ html.js .media__attribution__info {
 	}
 }
 .is-collapsible--button.show_hide--is-expanded,.is-collapsible--button.show_hide--is-expanding {
-	background-color:#e4eaec;
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear
 }
