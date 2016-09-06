@@ -421,7 +421,7 @@ class JPER(object):
                     }
                 }
             },
-            "sort": [{"analysis_date":{"order":"asc"}}],
+            "sort": [{"analysis_date":{"order":"desc"}}],
             "from": (page - 1) * page_size,
             "size": page_size
         }
