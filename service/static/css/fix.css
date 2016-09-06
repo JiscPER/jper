@@ -87,9 +87,9 @@
 
 .list {
     display:none; 
-    height:auto;
-    margin-bottom:10px;
+    padding-left: 1px;
     float: left;
+    text-indent: 1em;
 }
 
 .show {
