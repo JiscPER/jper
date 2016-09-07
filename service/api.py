@@ -376,7 +376,9 @@ class JPER(object):
                 return None
 
     @classmethod
-    def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
+    def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None, provider=False):
+    # def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
+    # 2016-09-07 TD : trial to make some publisher's reporting available
         """
         List notification which meet the criteria specified by the parameters
 
@@ -429,14 +431,21 @@ class JPER(object):
         }
         
         if repository_id is not None:
-            qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
+            # 2016-09-07 TD : trial to filter for publisher's reporting
+            if provider:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": repository_id } })
+            else:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
+
             app.logger.debug(str(repository_id) + ' list notifications for query ' + json.dumps(qr))
         else:
             app.logger.debug('List all notifications for query ' + json.dumps(qr))
 
         res = models.RoutedNotification.query(q=qr)
-        app.logger.debug('List all notifications query resulted ' + json.dumps(res))
-        nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
+        app.logger.debug('List notifications query resulted ' + json.dumps(res))
+        # 2016-09-07 TD : trial to filter for publisher's reporting
+        #nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
+        nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing(provider=provider).data for i in res.get('hits',{}).get('hits',[])]
         nl.total = res.get('hits',{}).get('total',0)
         return nl
 

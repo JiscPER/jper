@@ -1049,8 +1049,12 @@ class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotific
                 del d["provider"]
         if "content" in d and "store_id" in d.get("content", {}):
             del d["content"]["store_id"]
-        if "repositories" in d:
-            del d["repositories"]
+        #if "repositories" in d:
+        #    del d["repositories"]
+        # 2016-09-07 TD : for providers _list_ all repositories being routed to 
+        if not provider:
+            if "repositories" in d:
+                del d["repositories"]
 
         # filter out all non-router links if the request is not for the provider copy
         if "links" in d:

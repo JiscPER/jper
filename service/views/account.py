@@ -24,13 +24,16 @@ except:
 
 blueprint = Blueprint('account', __name__)
 
-def _list_request(repo_id=None):
+# def _list_request(repo_id=None):
+# 2016-09-07 TD : trial to include some kind of reporting for publishers here!
+def _list_request(repo_id=None, provider=False):
     """
     Process a list request, either against the full dataset or the specific repo_id supplied
     This function will pull the arguments it requires out of the Flask request object.  See the API documentation
     for the parameters of these kinds of requests.
 
     :param repo_id: the repo id to limit the request to
+    :param provider: (boolean) whether the repo_id belongs to a publisher or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
     since = request.values.get("since")
@@ -56,7 +59,9 @@ def _list_request(repo_id=None):
         return _bad_request("'pageSize' parameter is not an integer")
 
     try:
-        nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
+        # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
+        # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
+        nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
     except ParameterException as e:
         return _bad_request(e.message)
 
@@ -82,8 +87,13 @@ def index():
 
 @blueprint.route('/details/<repo_id>', methods=["GET", "POST"])
 def details(repo_id):
-    data = _list_request(repo_id)
+    # data = _list_request(repo_id)
+    # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
     acc = models.Account.pull(repo_id)
+    #
+    provider = acc.has_role('publisher')
+    data = _list_request(repo_id=repo_id, provider=provider)
+    #
     link = '/account/details'
     date = request.args.get('since')
     if date == '':

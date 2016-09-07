@@ -162,6 +162,7 @@ class ProviderOutgoingNotification(OutgoingNotification):
     ::
 
         {
+            "repositories" : [ "<ids of repository user accounts which matched this notification>" ]
             "provider" : {
                 "id" : "<user account id of the provider>",
                 "agent" : "<string defining the software/process which put the content here, provided by provider - is this useful?>",
@@ -181,6 +182,11 @@ class ProviderOutgoingNotification(OutgoingNotification):
         object, and an exception will be raised if it does not validate
         """
         struct = {
+            # 2016-09-07 TD : addition for publisher's reporting style
+            "lists" : {
+                "repositories": {"contains" : "field", "coerce" : "unicode"}
+            }, 
+            # 2016-09.07 TD : addition for publisher's reporting style
             "objects" : [
                 "provider"
             ],
