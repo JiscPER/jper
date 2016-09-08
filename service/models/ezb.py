@@ -232,6 +232,13 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         self._delete_from_list("participant", matchsub=part_object)
         self._add_to_list("participant", part_object)
 
+    @classmethod
+    def pull_by_key(cls,key,value):
+        res = cls.query(q={"query":{"term":{key+'.exact':value}}})
+        if res.get('hits',{}).get('total',0) == 1:
+            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        else:
+            return None
 
 
 class License(dataobj.DataObj, dao.LicenseDAO)
@@ -270,7 +277,7 @@ class License(dataobj.DataObj, dao.LicenseDAO)
                 "link" : [ 
                     { 
                         "type" : "<kind of link, e.g. 'ezb', 'pub', ...>",
-                        "url" : "<actual http(s) address string"
+                        "url" : "<actual http(s) address string>"
                     }
                 ],
                 "subject" : [ "<keyword or subject of journal>", ... ]
@@ -564,4 +571,16 @@ class License(dataobj.DataObj, dao.LicenseDAO)
         """
         self._delete_from_list("journal", matchsub=journal_object)
         self._add_to_list("journal", journal_object)
+
+    @classmethod
+    def pull_by_key(cls,key,value):
+        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
+        if res.get('hits',{}).get('total',0) == 1:
+            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        else:
+            return None
+
+    @classmethod
+    def pull_by_issn(cls,issn):
+        return cls.pull_by_key('journal.identifier.id',issn)
 

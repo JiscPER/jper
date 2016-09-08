@@ -54,6 +54,30 @@ def route(unrouted):
         match_data.merge(pmd)
 
     app.logger.debug(u"Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
+
+    # 2016-09-08 TD : alliance license legitimation
+    issn_data = unrouted.get_identifiers("issn")
+    publ_date = unrouted.publication_date
+    part_albibids = []
+    for issn in issn_data:
+        # is there a license stored for this issn?
+        lic = models.License.pull_by_issn(issn)
+        if lic is not None and lic.type == "alliance":
+            # FIXME: !!! missing: check license period against publ_date here !!!
+            al = models.Alliance.pull_by_key("license_id",lic.id)
+            # collect all EZB-Ids of participating institutions of AL
+            for part in al.participants:
+                for i in part["identifier"]:
+                    if i.get("type") == "ezb":
+                        part_albibids.append( i.get("id") )
+    
+    al_repos = []
+    for bibid in part_albibids:
+        acc = models.Account.pull_by_key("repository.bibid",bibid)
+        if acc is not None and acc.has_role("repository"):
+            al_repos.append(acc.id)
+    # 2016-09-08 TD : alliance license legitimation
+
     # iterate through all the repository configs, collecting match provenance and
     # id information
     # FIXME: at the moment this puts all the provenance in memory and then writes it all
@@ -62,7 +86,11 @@ def route(unrouted):
     match_provenance = []
     match_ids = []
     try:
-        for rc in models.RepositoryConfig.scroll(page_size=10, keepalive="1m"):
+        # for rc in models.RepositoryConfig.scroll(page_size=10, keepalive="1m"):
+        # 2016-09-08 TD : iterate through all _qualified_ repositories by the current alliance license
+        for repo in al_repos:
+            rc = models.RepositoryConfig.pull_by_repo(repo)
+            #
             prov = models.MatchProvenance()
             prov.repository = rc.repository
             # 2016-08-10 TD : fill additional field for origin of notification (publisher) with provider_id
