@@ -128,7 +128,7 @@
 
 .list p{
     height:auto;
-    margin:0;
+    margin-bottom: 10px !important;
 }
 .question {
 	
