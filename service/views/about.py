@@ -47,3 +47,9 @@ def jisc():
     '''
     '''
     return render_template ('about/jisc.html', name="About JISC")
+
+@blueprint.route('/impressum/', methods=['GET','POST'])
+def impressum():
+    '''
+    '''
+    return render_template('about/impressum.html', name='Impressum')
