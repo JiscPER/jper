@@ -125,7 +125,10 @@ def configView(repoid=None):
     rec = models.RepositoryConfig().pull_by_repo(repoid)
     if rec is None:
         rec = models.RepositoryConfig()
-        rec.repository = repoid
+        rec.repo = repoid
+        # rec.repository = repoid
+        # 2016-09-16 TD : The field 'repository' has changed to 'repo' due to
+        #                 a bug fix coming with a updated version ES 2.3.3 
     if request.method == 'GET':
         # get the config for the current user and return it
         # this route may not actually be needed, but is convenient during development

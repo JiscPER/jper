@@ -3,7 +3,7 @@
 <div class="row cms">
 	<div class="col span-12">
 		<aside class="article-full__callout">
-			<strong>Details</strong>
+			<h3>Details [to unfold --> click on items below]</h3>
 			<p></p>
 			<div>
 				<strong>Last updated:</strong>
@@ -21,7 +21,7 @@
 			<div id="created"></div>
 			<p></p>
 			<div>
-				<strong>Id:</strong>
+				<strong>Config-Id:</strong>
 			</div>
 			<div id="id"></div>
 		</aside>
@@ -69,12 +69,20 @@ print_table = function(data,id,title){
 
 print_table(obj.strings,'strings','Strings');
 print_table(obj.name_variants,'name_variants','Name Variants');
-print_table(obj.postcodes,'postcodes', 'Postcodes');
+// print_table(obj.postcodes,'postcodes', 'Postcodes');
+// 2016-09-26 TD : 'postcodes' are taken out as match critria; esp. for Germany
 print_table(obj.domains,'domains', 'Domains');
+// 2016-09-26 TD : Additional listing of grant numbers if provided
+print_table(obj.grants,'grants', 'Grants');
+// print_table(obj.author_ids,'author_ids', 'Author IDs (email,ORCID,...)');
+// 2016-09-26 TD : Response time for this field _really_ unacceptable if 20000+ 
+//                 IDs are about to be listed...
 
 $('#updated').append(obj.last_updated);
 $('#created').append(obj.created_date);
-$('#repository').append(obj.repository);
+$('#repository').append(obj.repo);
+// $('#repository').append(obj.repository);
+// 2016-09-26 TD : Field 'repository' changed to 'repo' due to ES 2.3.3 (and higher)
 $('#id').append(obj.id);
 
 </script>
