@@ -12,8 +12,9 @@ echo "$username exists!"
 exit 1
 else
 password=$2 # get this from script params
-encryptedPassword=$(mkpasswd -m sha-512 $password)
-useradd -g sftpusers -p $encryptedPassword -d /xfer -s /sbin/nologin $username
+#encryptedPassword=$(mkpasswd -m sha-512 $password)
+encryptedPassword=$(python3 -c "import crypt; print(crypt.crypt('$password',crypt.mksalt(crypt.METHOD_SHA512)))")
+useradd -M -g sftpusers -p $encryptedPassword -d /xfer -s /sbin/nologin $username
 [ $? -eq 0 ] && echo "User has been added to system!" || echo "Failed to add a user!"
 mkdir /home/sftpusers/$username
 mkdir /home/sftpusers/$username/xfer
