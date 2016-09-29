@@ -54,3 +54,9 @@ def impressum():
     '''
     return render_template('about/impressum.html', name="Impressum")
 
+@blueprint.route('/faq/', methods=['GET', 'POST'])
+def faq():
+    '''
+    '''
+    return render_template ('about/faq.html', name="FAQ")
+
