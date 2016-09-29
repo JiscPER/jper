@@ -33,15 +33,15 @@ def publishers():
 @blueprint.route('/resources/', methods=['GET','POST'])
 def resources():
     '''
-    '''        
+    '''
     return render_template('about/resources.html', name="Technical documentation")
-    
+
 @blueprint.route('/deepgreen/', methods=['GET','POST'])
 def deepgreen():
     '''
     '''
     return render_template ('about/deepgreen.html', name="About DeepGreen")
-    
+
 @blueprint.route('/jisc/', methods=['GET','POST'])
 def jisc():
     '''
@@ -52,4 +52,5 @@ def jisc():
 def impressum():
     '''
     '''
-    return render_template('about/impressum.html', name='Impressum')
+    return render_template('about/impressum.html', name="Impressum")
+
