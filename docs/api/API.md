@@ -1,10 +1,10 @@
-# JPER API
+# DeepGreen API
 
-This document specifies the interface and data formats to be used by the JPER REST API.
+This document specifies the interface and data formats to be used by the DeepGreen REST API.
 
 The current version of the API is v1, and it can be accessed at
 
-    https://pubrouter.jisc.ac.uk/api/v1
+    https://oa-deepgreen.kobv.de/
 
 All URL paths provided in this document will extend from this base url.
 
@@ -25,10 +25,10 @@ You can create content in 2 ways in the router:
 1. As a metadata-only notification
 2. As a metadata + binary package notification
 
-The first allows you to provide publication information which complies with our native JSON format as an [Incoming Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md).
+The first allows you to provide publication information which complies with our native JSON format as an [Incoming Notification](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/IncomingNotification.md).
 
-The second allows you to give us a multi-part request containing the publication information which complies with our native JSON format as an [Incoming Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md)
-plus a zipped binary package containing content in a supported [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md).
+The second allows you to give us a multi-part request containing the publication information which complies with our native JSON format as an [Incoming Notification](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/IncomingNotification.md)
+plus a zipped binary package containing content in a supported [Packaging Format](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/PACKAGING.md).
 
 The following sections describe the HTTP methods, headers, body content and expected responses for each of the above endpoints and content.
 
@@ -47,11 +47,10 @@ us the best chance of routing the content to a suitable repository.  For example
 | metadata.source.identifier.id | The identifier of the journal for the publication, such as the ISSN.  Ideally also populate metadata.source.identifier.type for each identifier |
 | metadata.identifier.id | An identifier for the article, such as the DOI.  Ideally also populate the metadata.identifier.type field for each identifier |
 
-If you are applying an embargo to the content, you should ideally use **embargo.end**.  If this is provided, then **embargo.start** and **embargo.duration** 
+For the embargo period, you should ideally use **embargo.end**.  If this is provided, then **embargo.start** and **embargo.duration** 
 would be considered secondary information not to be acted upon.
 
-If you have publicly hosted content (e.g. splash pages, full-text web pages, or PDFs) that you want to share with the router, so that repositories can
-download the content directly, please place these in a **links** element.  For example:
+If you have publicly hosted content (e.g. splash pages, full-text web pages, or PDFs) that you want to share with the router, so that repositories can download the content directly, please place these in a **links** element.  For example:
 
     "links" : [
         {
@@ -110,7 +109,7 @@ If you are sending binary content as well as the metadata, the request must take
     --FulltextBoundary--
 
 If you are carrying out this request you MUST include the **content.packaging_format** field in the notification metadata, 
-and include the identifier to the appropriate format identifier as per the [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md) documentation.
+and include the identifier to the appropriate format identifier as per the [Packaging Format](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/PACKAGING.md) documentation.
 
 It is also possible to send a request which has limited/no JSON metadata, and relies entirely on any metadata embedded in the Package.
 
@@ -202,7 +201,7 @@ If you are sending binary content, the request must take the form:
     --FulltextBoundary--
 
 If you are carrying out this request you MUST include the **content.packaging_format** field in the notification metadata, 
-and include the identifier to the appropriate format identifier as per the [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md) documentation.
+and include the identifier to the appropriate format identifier as per the [Packaging Format](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/PACKAGING.md) documentation.
 
 It is also possible to send a request which has limited/no JSON metadata, and relies entirely on any metadata embedded in the Package.
 
@@ -268,11 +267,11 @@ The first allows you to list all routed notifications to your repository, and to
 
 The second allows you to retrieve individual notifications and the binary/packaged content asscoiated with it.
 
-Notifications are represented in our native JSON format as an [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md)
-(or a [Provider's Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/ProviderOutgoingNotification.md) if you happend to also be the publisher
+Notifications are represented in our native JSON format as an [Outgoing Notification](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/OutgoingNotification.md)
+(or a [Provider's Outgoing Notification](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/ProviderOutgoingNotification.md) if you happend to also be the publisher
 who created it).
 
-Packaged content is available as a zipped file whose contents conform to a supported [Packaging Format](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md).
+Packaged content is available as a zipped file whose contents conform to a supported [Packaging Format](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/PACKAGING.md).
 
 The following sections describe the HTTP methods, headers, body content and expected responses for each of the above endpoints and content.
 
@@ -342,7 +341,7 @@ On successful request, the response will be a 200 OK, with the following body
 
 Note that the "total" may increase between requests, as new notifications are added to the end of the list.
 
-See the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) data model for more info.
+See the [Outgoing Notification](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/OutgoingNotification.md) data model for more info.
 
 ### Notification Endpoint
 
@@ -369,7 +368,7 @@ If the notification is found and has been routed, you will receive a 200 (OK) an
     
     [Outgoing Notification JSON]
 
-See the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) data model for more info.
+See the [Outgoing Notification](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/OutgoingNotification.md) data model for more info.
 
 Some notifications may contain one or more **links** elements.  In this event, this means that there is binary content
 associated with the notification available for download.  Each of the links could be one of two kinds:
@@ -433,7 +432,7 @@ In this case there are 2 packages available (both representing the same content)
 that the publisher originally provided to the router, and the other is in the "SimpleZip" format to which the router has
 converted the incoming package.
 
-See the documentation on [Packaging Formats](https://github.com/JiscPER/jper/blob/develop/docs/api/PACKAGING.md) to understand
+See the documentation on [Packaging Formats](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/PACKAGING.md) to understand
 what each of the formats looks like.
 
 You may then choose one of these links to download to receive all of the content (e.g. publisher's PDF, JATS XML, additional
