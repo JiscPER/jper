@@ -151,14 +151,17 @@
 			
 			{% endif %}
 			
-		<div class="box box--padding-large box--brd-mgreyblue">
+		
+			
+		</div>
+		</div>
+	
+	<div class="box box--padding-large box--brd-mgreyblue">
 			<h3>View routing history</h3>
 			<div class="row">
 				<a target="_blank" href="/account/details/{{account.id}}?since=01/08/2015&api_key={{current_user.data['api_key']}}">View routed notifications for this institution (API)</a>
 			</div>
-			
-		</div>
-		</div>
+		
 		<div class="box box--padding-large box--brd-mgreyblue">
 	        <h3>Manage connection settings</h3>	
 			<form method="post" action="{{request.path}}/repoinfo" class="form">
@@ -188,7 +191,13 @@
 							class="form-fields__label-text">Repository software</span> <input
 							type="text" class="input--large" name="repository_software"
 							value="{{account.data.get('repository',{}).get('software','')}}" />
-					</li>
+					<button class="btn btn--3d" id="update" type="submit">Update
+						details</button></li>
+</ul> </form> </div>
+	<div class="box box--padding-large box--brd-mgreyblue">
+		<h3>SWORD v2 settings</h3>
+		<form method="post" action="{{request.path}}/repoinfo" class="form">
+			<ul class="form-fields">
 					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">SWORD username</span> <input
 							type="text" class="input--large" name="sword_username"
