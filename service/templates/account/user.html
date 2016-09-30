@@ -148,10 +148,16 @@
 				<a target="_blank" href="/account/configview{% if current_user.has_role('admin') %}/{{account.id}}?api_key={{current_user.data['api_key']}}{% else %}?api_key={{account.data['api_key']}}{% endif %}">View
 				current JSON config for this repository (API)</a> <br>
 			</div>
-			<div class="row">
-				<a target="_blank" href="/account/details/{{account.id}}?since=01/08/2015&api_key={{current_user.data['api_key']}}">View routed notifications for this repository (API)</a>
-			</div>
+			
 			{% endif %}
+			
+		<div class="box box--padding-large box--brd-mgreyblue">
+			<h3>View routing history</h3>
+			<div class="row">
+				<a target="_blank" href="/account/details/{{account.id}}?since=01/08/2015&api_key={{current_user.data['api_key']}}">View routed notifications for this institution (API)</a>
+			</div>
+			
+		</div>
 		</div>
 		<div class="box box--padding-large box--brd-mgreyblue">
 	        <h3>Manage connection settings</h3>	
