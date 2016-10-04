@@ -194,14 +194,11 @@
 							class="form-fields__label-text">Repository software</span> <input
 							type="text" class="input--large" name="repository_software"
 							value="{{account.data.get('repository',{}).get('software','')}}" />
-					<button class="btn btn--3d" id="update" type="submit">Update
-						details</button></li>
+					</li>
   				</ul>
-			</form>
-		</div>
-
-	<div class="box box--padding-large box--brd-mgreyblue">
-		<h3>Manage SWORD settings</h3>
+				
+			<hr>
+				<p><h3>Manage SWORD settings</h3></p>
 		<form method="post" action="{{request.path}}/repoinfo" class="form">
 			<input type="hidden" name="repo_sword_form" value="True">
 			<ul class="form-fields">
@@ -228,8 +225,17 @@
 					<button class="btn btn--3d" id="update" type="submit">Update
 						details</button></li>
 				</ul>
+			
+			<hr>
+			<p><button class="btn btn--3d btnright" id="update" type="submit">Update
+				details</button></p>
 			</form>
+			
 		</div>
+
+	
+		
+		
 	{% endif %}
 		<div class="box box--padding-large box--brd-mgreyblue">
 			<h3>Update login details</h3>
