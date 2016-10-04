@@ -245,7 +245,7 @@ def repoinfo(username):
 
     if 'repository' not in acc.data: acc.data['repository'] = {}
     # 2016-10-04 TD: proper handling of two independent forms using hidden input fields
-    if request.values.get('repo_profile_form',False):
+    # if request.values.get('repo_profile_form',False):
         if request.values.get('repository_software',False):
             acc.data['repository']['software'] = request.values['repository_software']
         else:
@@ -269,7 +269,7 @@ def repoinfo(username):
         
     if 'sword' not in acc.data: acc.data['sword'] = {}
     # 2016-10-04 TD: proper handling of two independent forms using hidden input fields
-    if request.values.get('repo_sword_form',False):
+    # if request.values.get('repo_sword_form',False):
         if request.values.get('sword_username',False):
             acc.data['sword']['username'] = request.values['sword_username']
         else:
