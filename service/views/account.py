@@ -244,45 +244,49 @@ def repoinfo(username):
         abort(401)
 
     if 'repository' not in acc.data: acc.data['repository'] = {}
-    if request.values.get('repository_software',False):
-        acc.data['repository']['software'] = request.values['repository_software']
-    else:
-        acc.data['repository']['software'] = ''
-    if request.values.get('repository_url',False):
-        acc.data['repository']['url'] = request.values['repository_url']
-    else:
-        acc.data['repository']['url'] = ''
-    if request.values.get('repository_name',False):
-        acc.data['repository']['name'] = request.values['repository_name']
-    else:
-        acc.data['repository']['name'] = ''
-    if request.values.get('repository_sigel',False):
-        acc.data['repository']['sigel'] = request.values['repository_sigel'].split(',')
-    else:
-        acc.data['repository']['sigel'] = []
-    if request.values.get('repository_bibid',False):
-        acc.data['repository']['bibid'] = request.values['repository_bibid'].upper()
-    else:
-        acc.data['repository']['bibid'] = ''
+    # 2016-10-04 TD: proper handling of two independent forms using hidden input fields
+    if request.values.get('repo_profile_form',False):
+        if request.values.get('repository_software',False):
+            acc.data['repository']['software'] = request.values['repository_software']
+        else:
+            acc.data['repository']['software'] = ''
+        if request.values.get('repository_url',False):
+            acc.data['repository']['url'] = request.values['repository_url']
+        else:
+            acc.data['repository']['url'] = ''
+        if request.values.get('repository_name',False):
+            acc.data['repository']['name'] = request.values['repository_name']
+        else:
+            acc.data['repository']['name'] = ''
+        if request.values.get('repository_sigel',False):
+            acc.data['repository']['sigel'] = request.values['repository_sigel'].split(',')
+        else:
+            acc.data['repository']['sigel'] = []
+        if request.values.get('repository_bibid',False):
+            acc.data['repository']['bibid'] = request.values['repository_bibid'].upper()
+        else:
+            acc.data['repository']['bibid'] = ''
         
     if 'sword' not in acc.data: acc.data['sword'] = {}
-    if request.values.get('sword_username',False):
-        acc.data['sword']['username'] = request.values['sword_username']
-    else:
-        acc.data['sword']['username'] = ''
-    if request.values.get('sword_password',False):
-        acc.data['sword']['password'] = request.values['sword_password']
-    else:
-        acc.data['sword']['password'] = ''
-    if request.values.get('sword_collection',False):
-        acc.data['sword']['collection'] = request.values['sword_collection']
-    else:
-        acc.data['sword']['collection'] = ''
+    # 2016-10-04 TD: proper handling of two independent forms using hidden input fields
+    if request.values.get('repo_sword_form',False):
+        if request.values.get('sword_username',False):
+            acc.data['sword']['username'] = request.values['sword_username']
+        else:
+            acc.data['sword']['username'] = ''
+        if request.values.get('sword_password',False):
+            acc.data['sword']['password'] = request.values['sword_password']
+        else:
+            acc.data['sword']['password'] = ''
+        if request.values.get('sword_collection',False):
+            acc.data['sword']['collection'] = request.values['sword_collection']
+        else:
+            acc.data['sword']['collection'] = ''
         
-    if request.values.get('packaging',False):
-        acc.data['packaging'] = request.values['packaging'].split(',')
-    else:
-        acc.data['packaging'] = []
+        if request.values.get('packaging',False):
+            acc.data['packaging'] = request.values['packaging'].split(',')
+        else:
+            acc.data['packaging'] = []
 
     acc.save()
     time.sleep(2);

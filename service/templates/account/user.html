@@ -167,6 +167,7 @@
 		<div class="box box--padding-large box--brd-mgreyblue">
 	        <h3>Manage profile settings</h3>	
 			<form method="post" action="{{request.path}}/repoinfo" class="form">
+				<input type="hidden" name="repo_profile_form" value="True">
 				<ul class="form-fields">
 					<li class="form-fields__item--text"> 
 						<span class="form-fields__label-text">Repository bibid (EZB)</span>
@@ -202,6 +203,7 @@
 	<div class="box box--padding-large box--brd-mgreyblue">
 		<h3>Manage SWORD settings</h3>
 		<form method="post" action="{{request.path}}/repoinfo" class="form">
+			<input type="hidden" name="repo_sword_form" value="True">
 			<ul class="form-fields">
 					<li class="form-fields__item--text"><span
 							class="form-fields__label-text">SWORD username</span> <input
