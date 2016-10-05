@@ -6276,7 +6276,7 @@ html.js .media__attribution__info {
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear;
 	background-color:#008000;
-	content:"\25B2";
+	content:"\25BC";
 	position:absolute;
 	top:8px;
 	left:10px;
@@ -6327,7 +6327,7 @@ html.js .media__attribution__info {
 	color:#fff;
 	-webkit-transition:all .3s linear;
 	transition:all .3s linear;
-	content:"\25BC";
+	content:"\25B2";
 	
 }
 
