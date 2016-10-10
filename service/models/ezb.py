@@ -1,7 +1,11 @@
+"""
+Model objects used to represent interactions with ezb items
+"""
 
-from octopus.core import app
-from service import dao
 from octopus.lib import dataobj
+from service import dao
+from octopus.core import app
+import csv
 
 class Alliance(dataobj.DataObj, dao.AllianceDAO):
     """
@@ -24,7 +28,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
                         ]
     }
     '''
-    def __init__(self, raw=None)
+    def __init__(self, raw=None):
         """
         Create a new instance of the Alliance object, optionally around the raw python dictionary.
 
@@ -209,7 +213,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         # finally write it
         self._set_list("participant", objlist)
 
-    def add_participant(self, part_object)
+    def add_participant(self, part_object):
         """
         Add a single participant object to the existing list of participant objects.
 
@@ -240,8 +244,27 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         else:
             return None
 
+    def set_alliance_data(self,license,ezbid,xmltree=None,jsoncontent=None):
+        licid = license
+        fields = [i'name','license_id','identifier','participant']
+        for f in fields:
+            if f in self.data: del self.data[f]
+        if xmltree is not None:
+            return True
+        elif jsoncontent is not None:
+            # save the lines into the alliance data
+            for k in jsoncontent.keys():
+                self.data[k] = jsoncontent[k]
+            self.data['license_id'] = licid
+            self.data['idententifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.save()
+            app.logger.debug("Saved data for license: {x} ({y})".format(x=licid,y=ezbid))
+            return True
+        else:
+            return False
 
-class License(dataobj.DataObj, dao.LicenseDAO)
+
+class License(dataobj.DataObj, dao.LicenseDAO):
     """
     Class to represent the license information as provided, for example, by an regular excerpt
     of data of EZB (Regensburg) on all journals included in a particular license, e.g. alliance 
@@ -293,7 +316,7 @@ class License(dataobj.DataObj, dao.LicenseDAO)
         ]
     }
     '''
-    def __init__(self, raw=None)
+    def __init__(self, raw=None):
         """
         Create a new instance of the License object, optionally around the raw python dictionary.
 
@@ -305,7 +328,7 @@ class License(dataobj.DataObj, dao.LicenseDAO)
                 "created_date" : {"coerce" : "utcdatetime"},
                 "last_updated" : {"coerce" : "utcdatetime"},
                 "name" : {"coerce" : "unicode"},
-                "type" : {"coerce" : "unicode", "allowed_values" : ["alliance", "national"]}
+                "type" : {"coerce" : "unicode", "allowed_values" : ["alliance", "national","open"]}
             },
             # not (yet?) needed here
             # "objects" : [ 
@@ -536,7 +559,7 @@ class License(dataobj.DataObj, dao.LicenseDAO)
         # finally write it
         self._set_list("journal", objlist)
 
-    def add_journal(self, journal_object)
+    def add_journal(self, journal_object):
         """
         Add a single journal object to the existing list of journal objects.
 
@@ -584,3 +607,73 @@ class License(dataobj.DataObj, dao.LicenseDAO)
     def pull_by_issn(cls,issn):
         return cls.pull_by_key('journal.identifier.id',issn)
 
+
+    def set_license_data(self,ezbid,name,type='alliance',csvfile=None,jsoncontent=None):
+        fields = ['name','type','identifier','journal']
+        for f in fields:
+            if f in self.data: del self.data[f]
+        if csvfile is not None:
+            inp = csv.DictReader(csvfile, delimiter='\t', quoting=csv.QUOTE_ALL)
+            for row in inp:
+                journal = {}
+                year = { "type": "year" }
+                volume = { "type": "volume" }
+                issue = { "type": "issue" }
+                journal['embargo'] = { "duration":6 }
+                journal['period'] = [ year, volume, issue ]
+                for x in inp.fieldnames:
+                    if x == 'EZB-Id':
+                        journal['identifier'] = journal.get('identifier',[]) + [{"type":"ezb","id":row[x].strip()}]
+                    elif x == 'Titel':
+                        journal['title'] = row[x].strip()
+                    elif x == 'Verlag':
+                        journal['publisher'] = row[x].strip()
+                    elif x == 'Fach':
+                        journal['subject'] = row[x].strip().split(';')
+                    elif x == 'E-ISSN':
+                        for issn in row[x].strip().split(';'):
+                            journal['identifier'] = journal.get('identifier',[]) + [{"type":"eissn","id":issn.strip()}]
+                    elif x == 'P-ISSN':
+                        for issn in row[x].strip().split(';'):
+                            journal['identifier'] = journal.get('identifier',[]) + [{"type":"issn","id":issn.strip()}]
+                    elif x == 'ZDB-Nummer':
+                        journal['identifier'] = journal.get('identifier',[]) + [{"type":"zbd","id":row[x].strip()}]
+                    elif x == 'FrontdoorURL':
+                        journal['link'] = journal.get('link',[]) + [{"type":"ezb","url":row[x].strip()}]
+                    elif x == 'Link zur Zeitschrift':
+                        journal['link'] = journal.get('link',[]) + [{"type":"pub","url":row[x].strip()}]
+                    elif x == 'erstes Jahr' and len(row[x].strip()) > 1:
+                         year['start'] = row[x].strip()
+                    elif x == 'erstes volume' and len(row[x].strip()) > 0:
+                         volume['start'] = row[x].strip() 
+                    elif x == 'erstes issue' and len(row[x].strip()) > 0:
+                         issue['start'] = row[x].strip()
+                    elif x == 'letztes Jahr' and len(row[x].strip()) > 1:
+                         year['end'] = row[x].strip()  
+                    elif x == 'letztes volume' and len(row[x].strip()) > 0:
+                         volume['end'] = row[x].strip()
+                    elif x == 'letztes issue' and len(row[x].strip()) > 0:
+                         issue['end'] = row[x].strip() 
+
+                journal['period'] = [ year, volume, issue ]
+                self.data['journal'] = self.data.get('journal',[]) + [journal]
+
+            app.logger.debug("Extracted complex journal metadata from .csv file for license: {x}".format(x=ezbid))
+            self.data['name'] = name.strip()
+            self.data['type'] = type.strip()
+            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.save()
+            return True
+        elif jsoncontent is not None:
+            # save the lines into the license fields
+            for k in jsoncontent.keys():
+               self.data[k] = jsoncontent[k]
+            self.data['name'] = name.strip()
+            self.data['type'] = type.strip()
+            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.save()
+            app.logger.debug("Saved data for license: {x}".format(x=ezbid))
+            return True
+        else:
+            app.logger.error("Could not save any data for license: {x}".format(x=ezbid))
+            return False
