@@ -244,12 +244,32 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         else:
             return None
 
-    def set_alliance_data(self,license,ezbid,xmltree=None,jsoncontent=None):
+    def set_alliance_data(self,license,ezbid,csvfile=None,jsoncontent=None):
         licid = license
         fields = [i'name','license_id','identifier','participant']
         for f in fields:
             if f in self.data: del self.data[f]
-        if xmltree is not None:
+        if csvfile is not None:
+            inp = csv.DictReader(csvfile, delimiter='\t', quoting=csv.QUOTE_ALL)
+            for row in inp:
+                participant = {}
+                for x in inp.fieldnames:
+                    if x == 'Institution':
+                        participant['name'] = row[x].strip()
+                    elif x == 'EZB-Id':
+                        participant['identifier'] = participant.get('identifier',[]) + [{"type":"ezb","id":row[x].strip()}]
+                    elif x == 'Sigel':
+                        # remove double sigel items by 'list(set(...))' trick!
+                        for sgl in list(set(row[x].strip().split(','))):
+                            if len(sgl.strip()) > 0:
+                                participant['identifier'] = participant.get('identifier',[]) + [{"type":"sigel","id":sgl.strip()}]
+
+                self.data['participant'] = self.data.get('participant',[]) + [participant]
+            
+            app.logger.debug("Extracted complex participant data for license: {x} ({y})".format(x=licid,y=ezbid))
+            self.data['license_id'] = licid
+            self.data['idententifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.save()
             return True
         elif jsoncontent is not None:
             # save the lines into the alliance data
@@ -258,9 +278,10 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
             self.data['license_id'] = licid
             self.data['idententifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
             self.save()
-            app.logger.debug("Saved data for license: {x} ({y})".format(x=licid,y=ezbid))
+            app.logger.debug("Saved participant data for license: {x} ({y})".format(x=licid,y=ezbid))
             return True
         else:
+            app.logger.error("Could not save any participant data for license: {x} ({y})".format(x=licid,y=ezbid))
             return False
 
 
@@ -658,7 +679,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 journal['period'] = [ year, volume, issue ]
                 self.data['journal'] = self.data.get('journal',[]) + [journal]
 
-            app.logger.debug("Extracted complex journal metadata from .csv file for license: {x}".format(x=ezbid))
+            app.logger.debug("Extracted complex data from .csv file for license: {x}".format(x=ezbid))
             self.data['name'] = name.strip()
             self.data['type'] = type.strip()
             self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
