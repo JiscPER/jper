@@ -7,14 +7,16 @@ All records are put into a new Alliance class. This means historical data will
 be kept.
 """
 from octopus.core import add_configuration, app
+from service.models import License, Alliance
 # from datetime import datetime
-import os, requests, json
+import os, requests, json, csv
+import lxml.html
 
-ELASTIC_SEARCH_HOST = "http://gateway:9200"
-"""Elasticsearch hostname"""
+EZB_SEARCH_HOST = "http://rzbvm016.ur.de"
+"""EZB web service hostname"""
 
-ELASTIC_SEARCH_INDEX = "jper"
-"""JPER index name in the elasticsearch instance"""
+EZB_SEARCH_PAGE = "OA_participants"
+"""page name in the EZB instance"""
 
 if __name__ == "__main__":
     import argparse
@@ -46,20 +48,36 @@ if __name__ == "__main__":
     #
     # reports.delivery_report(args.from_date, args.to_date, reportfile)
 
-    i = app.config['ELASTIC_SEARCH_HOST'] + '/' + app.config['ELASTIC_SEARCH_INDEX'] + '/'
-    un = 'admin'
-    pw = 'D33pGr33n'
-    ia = i + '/account/' + un
+    fname = app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE) # + "-EZB_current.csv"
+    ia = app.config.get('EZB_SEARCH_HOST',EZB_SEARCH_HOST) + '/' + app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE)
     ae = requests.get(ia)
     if ae.status_code == 200:
-        su = { 
-            "id":un, 
-            "role": ["admin"], 
-            "email":"green@deepgreen.org",
-            "api_key":"admin",
-            "password":generate_password_hash(pw) 
-        }
-        c = requests.post(ia, data=json.dumps(su))
-        print "superuser account reseted for user " + un + " with password " + pw
-        print "THIS SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE..."
+        try:
+            tree = lxml.html.fromstring(ae.content)
+        except:
+            print "ERROR: Could not parse .html page as tree."
+            print
+            exit(-3)
 
+        print "INFO: xml tree read."
+
+        fieldnames = ["Institution", "EZB-Id", "Sigel"]
+        csvfile = None
+        part = {}
+
+        for el in tree.iter():
+            if el.tag == 'br' and el.tail is None: continue
+            if el.tag == 'h3':
+                #
+            item = el.tail
+            if item and item.startswith(': '):
+                item = item[1:].replace(u"\u0096",'-')
+            if el.text == 'Institution':
+                #
+                part[el.text] = item.strip().encode('utf-8')
+            elif el.text == 'EZB-Id':
+                part[el.text] = item.strip().encode('utf-8')
+            elif el.text == 'Sigel':
+                part[el.text] = item.strip().encode('utf-8')
+            elif el.text is None and item:
+                part['Institution'] = part.get('Institution',"") + " \r" + item.strip().encode('utf-8')
