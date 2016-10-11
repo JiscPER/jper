@@ -4,7 +4,7 @@ This document specifies the interface and data formats to be used by the DeepGre
 
 The current version of the API is v1, and it can be accessed at
 
-    https://oa-deepgreen.kobv.de/
+    https://oa-deepgreen.kobv.de/api/v1
 
 All URL paths provided in this document will extend from this base url.
 
