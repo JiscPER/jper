@@ -246,7 +246,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
 
     def set_alliance_data(self,license,ezbid,csvfile=None,jsoncontent=None):
         licid = license
-        fields = [i'name','license_id','identifier','participant']
+        fields = ['name','license_id','identifier','participant']
         for f in fields:
             if f in self.data: del self.data[f]
         if csvfile is not None:
@@ -375,13 +375,13 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                     },
                     "objects" : [
                         "embargo"
-                    ]
+                    ],
                     "lists" : {
                         "identifier" : {"contains" : "object"},
                         "link" : {"contains" : "object"},
                         "period" : {"contains" : "object"},
                         "subject" : {"contains" : "field", "coerce" : "unicode"}
-                    }
+                    },
                     "required" : [],
 
                     "structs" : {
@@ -415,7 +415,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         }
 
         self._add_struct(struct)
-        super(License, self).__init(raw=raw)
+        super(License, self).__init__(raw=raw)
 
     @property
     def name(self):

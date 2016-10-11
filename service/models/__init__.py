@@ -24,3 +24,4 @@ from service.models.repository import RepositoryConfig, MatchProvenance, Retriev
 from service.models.api import NotificationList, IncomingNotification, OutgoingNotification, ProviderOutgoingNotification
 from service.models.account import Account
 from service.models.contentlog import ContentLog
+from service.models.ezb import Alliance, License
