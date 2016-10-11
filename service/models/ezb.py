@@ -652,11 +652,13 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                     elif x == 'Fach':
                         journal['subject'] = row[x].strip().split(';')
                     elif x == 'E-ISSN':
-                        for issn in row[x].strip().split(';'):
-                            journal['identifier'] = journal.get('identifier',[]) + [{"type":"eissn","id":issn.strip()}]
+                        for eissn in row[x].strip().split(';'):
+                            if len(eissn) > 0:
+                                journal['identifier'] = journal.get('identifier',[]) + [{"type":"eissn","id":eissn.strip()}]
                     elif x == 'P-ISSN':
                         for issn in row[x].strip().split(';'):
-                            journal['identifier'] = journal.get('identifier',[]) + [{"type":"issn","id":issn.strip()}]
+                            if len(issn) > 0:
+                                journal['identifier'] = journal.get('identifier',[]) + [{"type":"issn","id":issn.strip()}]
                     elif x == 'ZDB-Nummer':
                         journal['identifier'] = journal.get('identifier',[]) + [{"type":"zbd","id":row[x].strip()}]
                     elif x == 'FrontdoorURL':
@@ -677,7 +679,8 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                          issue['end'] = row[x].strip() 
 
                 journal['period'] = [ year, volume, issue ]
-                self.data['journal'] = self.data.get('journal',[]) + [journal]
+                if journal not in self.data.get('journal',[]):
+                    self.data['journal'] = self.data.get('journal',[]) + [journal]
 
             app.logger.debug("Extracted complex data from .csv file for license: {x}".format(x=ezbid))
             self.data['name'] = name.strip()
