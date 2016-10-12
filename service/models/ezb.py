@@ -76,7 +76,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
                 }
             }
         }
-        self._add_struct(struc)
+        self._add_struct(struct)
         super(Alliance, self).__init__(raw=raw)
         
     @property
@@ -268,7 +268,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
             
             app.logger.debug("Extracted complex participant data for license: {x} ({y})".format(x=licid,y=ezbid))
             self.data['license_id'] = licid
-            self.data['idententifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
             self.save()
             return True
         elif jsoncontent is not None:
@@ -276,7 +276,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
             for k in jsoncontent.keys():
                 self.data[k] = jsoncontent[k]
             self.data['license_id'] = licid
-            self.data['idententifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
             self.save()
             app.logger.debug("Saved participant data for license: {x} ({y})".format(x=licid,y=ezbid))
             return True
