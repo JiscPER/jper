@@ -619,8 +619,9 @@ class License(dataobj.DataObj, dao.LicenseDAO):
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        if res.get('hits',{}).get('total',0) == 1:
-            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        nres = res.get('hits',{}).get('total',0)
+        if nres > 0:
+            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in xrange(nres) ]
         else:
             return None
 

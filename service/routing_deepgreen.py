@@ -10,6 +10,7 @@ import esprit
 from service.web import app
 from flask import url_for
 from copy import deepcopy
+from datetime import datetime
 import uuid
 
 class RoutingException(Exception):
@@ -58,24 +59,45 @@ def route(unrouted):
     # 2016-09-08 TD : alliance license legitimation
     issn_data = unrouted.get_identifiers("issn")
     publ_date = unrouted.publication_date
+    dt = datetime.strptime(publ_date, "%Y-%m-%dT%H:%M:%SZ")
+    publ_year = str(dt.year)
     part_albibids = []
     for issn in issn_data:
-        # is there a license stored for this issn?
-        lic = models.License.pull_by_issn(issn)
-        if lic is not None and lic.type == "alliance":
-            # FIXME: !!! missing: check license period against publ_date here !!!
-            al = models.Alliance.pull_by_key("license_id",lic.id)
-            # collect all EZB-Ids of participating institutions of AL
-            for part in al.participants:
-                for i in part["identifier"]:
-                    if i.get("type") == "ezb":
-                        part_albibids.append( i.get("id") )
+        # are (was: is) there licenses stored for this issn?
+        # 2016-10-12 TD : an issn could appear in more than one license !
+        lics = models.License.pull_by_issn(issn)
+        for lic in lics:
+            if lic.type == "alliance":
+                # 2016-10-12 TD
+                # FIXED: !!! missing: check license period against publ_date here !!!
+                ys = "0000"
+                yt = "9999"
+                for jrnl in lic.journals:
+                    for i in jrnl["identifier"]:
+                        if i.get("type") == "issn" and i.get("id") == issn:
+                            for p in jrnl["period"]:
+                                if p.get("type") == "year":
+                                    if "start" in p.keys(): ys = str(p["start"])
+                                    if "end" in p.keys(): yt = str(p["end"])
+                            if ys <= publ_year <= yt:
+                                break
+                if not ys <= publ_year <= yt: 
+                    continue
+                # FIXED !!! 
+                al = models.Alliance.pull_by_key("license_id",lic.id)
+                # collect all EZB-Ids of participating institutions of AL
+                for part in al.participants:
+                    for i in part["identifier"]:
+                        if i.get("type") == "ezb":
+                            if i.get("id") not in part_albibids:
+                                part_albibids.append( (i.get("id"),lic.name) )
     
     al_repos = []
-    for bibid in part_albibids:
+    for bibid,alname in part_albibids:
         acc = models.Account.pull_by_key("repository.bibid",bibid)
         if acc is not None and acc.has_role("repository"):
-            al_repos.append(acc.id)
+            if acc.id not in al_repos:
+                al_repos.append(acc.id)
     # 2016-09-08 TD : alliance license legitimation
 
     # iterate through all the repository configs, collecting match provenance and
