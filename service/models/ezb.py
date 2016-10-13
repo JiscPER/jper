@@ -86,7 +86,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
 
         :return: The alliace license package name
         """
-        return self._get_single("name", coerce=self.to_unicode())
+        return self._get_single("name", coerce=dataobj.to_unicode())
 
     @name.setter
     def name(self, val):
@@ -95,7 +95,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
   
         :param val: the alliance license package name
         """
-        self._set_single("name", val, coerce=self.to_unicode())
+        self._set_single("name", val, coerce=dataobj.to_unicode())
 
     @property
     def license_id(self):
@@ -104,7 +104,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
 
         :return: the license_id
         """
-        return self._get_single("license_id", coerce=self.to_unicode())
+        return self._get_single("license_id", coerce=dataobj.to_unicode())
 
     @license_id.setter
     def license_id(self, val):
@@ -113,7 +113,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
 
         :param val: the license_id
         """
-        self._set_single("license_id", val, coerce=self.to_unicode())
+        self._set_single("license_id", val, coerce=dataobj.to_unicode())
 
     @property
     def identifiers(self):
@@ -424,7 +424,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
 
         :return: The license package name
         """
-        return self._get_single("name", coerce=self.to_unicode())
+        return self._get_single("name", coerce=dataobj.to_unicode())
 
     @name.setter
     def name(self, val):
@@ -433,7 +433,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
   
         :param val: the license package name
         """
-        self._set_single("name", val, coerce=self.to_unicode())
+        self._set_single("name", val, coerce=dataobj.to_unicode())
 
     @property
     def type(self):
@@ -442,7 +442,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
 
         :return: The license package type ('alliance', 'national',...)
         """
-        return self._get_single("type", coerce=self.to_unicode())
+        return self._get_single("type", coerce=dataobj.to_unicode())
 
     @type.setter
     def type(self, val):
@@ -454,7 +454,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         if val not in ["alliance", "national", "other"]:
             raise dataobj.DataSchemaException("license type must be one of 'alliance', 'national', or 'other'")
 
-        self._set_single("type", val, coerce=self.to_unicode())
+        self._set_single("type", val, coerce=dataobj.to_unicode())
 
     @property
     def identifiers(self):

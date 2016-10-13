@@ -62,42 +62,53 @@ def route(unrouted):
     dt = datetime.strptime(publ_date, "%Y-%m-%dT%H:%M:%SZ")
     publ_year = str(dt.year)
     part_albibids = []
+    lic_data = []
     for issn in issn_data:
-        # are (was: is) there licenses stored for this issn?
-        # 2016-10-12 TD : an issn could appear in more than one license !
+        # are (was: is) there licenses stored for this ISSN?
+        # 2016-10-12 TD : an ISSN could appear in more than one license !
         lics = models.License.pull_by_issn(issn)
         for lic in lics:
+            lic_data = []
             if lic.type == "alliance":
                 # 2016-10-12 TD
                 # FIXED: !!! missing: check license period against publ_date here !!!
-                ys = "0000"
-                yt = "9999"
                 for jrnl in lic.journals:
+                    # check anew for each journal included in the license
+                    ys = "0000"
+                    yt = "9999"
                     for i in jrnl["identifier"]:
                         if i.get("type") == "issn" and i.get("id") == issn:
                             for p in jrnl["period"]:
                                 if p.get("type") == "year":
                                     if "start" in p.keys(): ys = str(p["start"])
                                     if "end" in p.keys(): yt = str(p["end"])
+                                    break # so far, we are only interested in the year of publication 
+                                # elif p.get("type") == "volume":
+                                # elif p.get("type") == "issue":
                             if ys <= publ_year <= yt:
-                                break
-                if not ys <= publ_year <= yt: 
-                    continue
-                # FIXED !!! 
+                                for l in jrnl["link"]:
+                                    if l.get("type") == "ezb": 
+                                        lic_data.append({   'name' : lic.name, 
+                                                              'id' : lic.id,
+                                                            'link' : l.get("url"), 
+                                                         'embargo' : jrnl["embargo"]["duration"]})
+                                break  # found a (the?!) ISSN for which the publ_date _is_ in the OA-enabled period!
+                if len(lic_data) == 0: # no journal in this license found that apply to ISSN _and_ publ_date,
+                    continue           # thus try next!
+                # FIXED: !!! checking license period with year of publication
+ 
                 al = models.Alliance.pull_by_key("license_id",lic.id)
                 # collect all EZB-Ids of participating institutions of AL
                 for part in al.participants:
                     for i in part["identifier"]:
-                        if i.get("type") == "ezb":
-                            if i.get("id") not in part_albibids:
-                                part_albibids.append( (i.get("id"),lic.name) )
+                        if i.get("type") == "ezb":                            # note: only first ISSN record found 
+                            part_albibids.append( (i.get("id"),lic_data[0]) ) # in current license will be considered!
     
     al_repos = []
-    for bibid,alname in part_albibids:
+    for bibid,aldata in part_albibids:
         acc = models.Account.pull_by_key("repository.bibid",bibid)
         if acc is not None and acc.has_role("repository"):
-            if acc.id not in al_repos:
-                al_repos.append(acc.id)
+            al_repos.append((acc.id,aldata))
     # 2016-09-08 TD : alliance license legitimation
 
     # iterate through all the repository configs, collecting match provenance and
@@ -110,13 +121,15 @@ def route(unrouted):
     try:
         # for rc in models.RepositoryConfig.scroll(page_size=10, keepalive="1m"):
         # 2016-09-08 TD : iterate through all _qualified_ repositories by the current alliance license
-        for repo in al_repos:
+        for repo,aldata in al_repos:
             rc = models.RepositoryConfig.pull_by_repo(repo)
             #
             prov = models.MatchProvenance()
             prov.repository = rc.repository
             # 2016-08-10 TD : fill additional field for origin of notification (publisher) with provider_id
             prov.publisher = unrouted.provider_id
+            # 2016-10-13 TD : fill additional object of alliance license with data gathered from EZB
+            prov.alliance = aldata
             #
             prov.notification = unrouted.id
             app.logger.debug(u"Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))

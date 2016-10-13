@@ -283,10 +283,23 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 # 2016-08-10 TD : add an additional field for origin of notification (publisher)
                 "notification" : {"coerce" : "unicode"}
             },
+            "objects" : [
+                "alliance" 
+            ],
+            # 2016-10-13 TD : additional object for licensing data (alliance license)
             "lists" : {
                 "provenance" : {"contains" : "object"}
             },
             "structs" : {
+                "alliance" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "id" : {"coerce" : "unicode"},
+                        "link" : {"coerce" : "unicode"},
+                        "embargo" : {"coerce" : "integer"}
+                    }
+                },
+                # 2016-10-13 TD : additional object for licensing data (alliance license)
                 "provenance" : {
                     "fields" : {
                         "source_field" : {"coerce" : "unicode"},
@@ -405,6 +418,66 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
             "explanation" : self._coerce(explanation, uc)
         }
         self._add_to_list("provenance", obj)
+
+    @property
+    def alliance(self):
+        """
+        The alliance license information that apply to the combination of the 
+        repository id and notification id represented by this object
+
+        The returned object is of the following structure:
+
+        ::
+            {
+                "name" : "<name of license as per entry in EZB>",
+                "id" : "<license_id>",
+                "link" : "<url of license information (e.g. as given by EZB)>",
+                "embargo" : <number of month(s)> (integer)
+            }
+
+        :return: The alliance license information as a python dict object
+        """
+        return self._get_single("alliance")
+
+    @alliance.setter
+    def alliance(self, obj):
+        """
+        Set the alliance license object.
+
+        The object will be validated and types coerced as needed.
+
+        The supplied object should be structured as follows:
+
+        ::
+            {
+                "name" : "<name of license as per entry in EZB>",
+                "id" : "<license_id>",
+                "link" : "<url of license information (e.g. as given by EZB)>",
+                "embargo" : <number of month(s)> (integer)
+            }
+
+        :param obj: the alliance license object as a dict
+        :return:
+        """
+        # validate the object structure quickly
+        allowed = ["name", "id", "link", "embargo"]
+        for k in obj.keys():
+            if k not in allowed:
+                raise dataobj.DataSchemaException("Alliance license object must only contain the following keys: {x}".format(x=", ".join(allowed)))
+
+        # coerce the values of the keys
+        uc = dataobj.to_unicode()
+        it = dataobj.to_int()
+        for k in allowed:
+            if k in obj:
+                if k == "embargo":
+                    obj[k] = self._coerce(obj[k], it)
+                else:
+                    obj[k] = self._coerce(obj[k], uc)
+
+        # finally write it
+        self._set_single("alliance", obj)
+
 
 class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
     """
