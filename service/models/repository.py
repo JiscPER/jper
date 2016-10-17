@@ -296,6 +296,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                         "name" : {"coerce" : "unicode"},
                         "id" : {"coerce" : "unicode"},
                         "issn" : {"coerce" : "unicode"},
+                        "doi" : {"coerce" : "unicode"},
                         "link" : {"coerce" : "unicode"},
                         "embargo" : {"coerce" : "integer"}
                     }
@@ -433,6 +434,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 "name" : "<name of license as per entry in EZB>",
                 "id" : "<license_id>",
                 "issn" : "<issn (or eissn!) of the involved journal>,
+                "doi" : "<DOI of the involved article>,
                 "link" : "<url of license information (e.g. as given by EZB)>",
                 "embargo" : <number of month(s)> (integer)
             }
@@ -455,6 +457,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 "name" : "<name of license as per entry in EZB>",
                 "id" : "<license_id>",
                 "issn" : "<issn (or eissn!) of the involved journal>,
+                "doi" : "<DOI of the involved article>,
                 "link" : "<url of license information (e.g. as given by EZB)>",
                 "embargo" : <number of month(s)> (integer)
             }
@@ -463,7 +466,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         :return:
         """
         # validate the object structure quickly
-        allowed = ["name", "id", "issn", "link", "embargo"]
+        allowed = ["name", "id", "issn", "doi", "link", "embargo"]
         for k in obj.keys():
             if k not in allowed:
                 raise dataobj.DataSchemaException("Alliance license object must only contain the following keys: {x}".format(x=", ".join(allowed)))

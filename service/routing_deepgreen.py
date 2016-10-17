@@ -57,6 +57,13 @@ def route(unrouted):
     app.logger.debug(u"Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
 
     # 2016-09-08 TD : alliance license legitimation
+    doi = metadata.get_identifiers("doi")
+    if doi is None:
+        doi = "unkown"
+    elif len(doi) == 0:
+        doi = "unknown"
+    else:
+        doi = doi[0]
     issn_data = metadata.get_identifiers("issn")
     publ_date = metadata.publication_date
     if issn_data is not None and len(issn_data)>0 and publ_date is not None:
@@ -99,6 +106,7 @@ def route(unrouted):
                                         lic_data.append({   'name' : lic.name, 
                                                               'id' : lic.id,
                                                             'issn' : issn,
+                                                             'doi' : doi,
                                                             'link' : l.get("url"), 
                                                          'embargo' : jrnl["embargo"]["duration"]})
                                 break  # found a (the?!) ISSN for which the publ_date _is_ in the OA-enabled period!

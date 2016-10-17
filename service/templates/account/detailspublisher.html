@@ -19,14 +19,14 @@
 			
 			<h2>Repository</h2>
 			
-				<table id="publishertable">
+				<table id="publisherTable">
 					<tr>
-					<th>DateSent</th>
-					<th>DateAnalysed</th>
+					<th>Send&nbsp;Date</th>
+					<th>Analysis&nbsp;Date</th>
 					<th>DOI</th>
-					<th>AllianceLicense</th>
+					<th>License</th>
 					<th>Repository</th>
-					<th>MatchingCriteria</th>
+					<th>Matching&nbsp;Reason</th>
 					</tr>
 
 
@@ -49,26 +49,32 @@
 
 
 <script>
-var obj = JSON.parse ({{ repo|tojson|safe }}); 
+	var obj = JSON.parse ({{ repo|tojson|safe }}); 
 
-var node = [];
+	// var node = '';
 
-for (variable in obj.notifications) {
-	var id = obj.notifications[variable].id;
-	$('#publishertable tr:last').after('<tr>\
-		<td>'+obj.notifications[variable].created_date+'</td> \
-		<td>'+obj.notifications[variable].analysis_date+'</td> \
-		<td>'+obj.notifications[variable].metadata.identifier.type+' '+obj.notifications[variable].metadata.identifier.id+'</td> \
-		<td>'+obj.notifications[variable].provenance.explanation'</td> \
-	</tr>'
-	);
-node[id] = new PrettyJSON.view.Node({
-	el : $('#'+id),
-	data : obj.notifictaions[variable]
- });
-}
-	
-		
+	for (variable in obj.notifications) {
+		var md = obj.notifications[variable].metadata;
+		var doi = md.identifier[0].id
+		for (cnt in md.identifier) {
+			if (md.identifier[cnt].type == 'doi') {
+				doi = md.identifier[cnt].id;
+				break;
+			}
+		}
+		$('#publisherTable tr:last').after('<tr>\
+			<td>'+obj.notifications[variable].created_date+'</td> \
+			<td>'+obj.notifications[variable].analysis_date+'</td> \
+			<td>'+doi+'</td> \
+			<td></td> \
+			<td>'+obj.notifications[variable].repositories[0]+'</td> \
+			<td></td> \
+		</tr>');
+	//node[id] = new PrettyJSON.view.Node({
+	//	el : $('#'+id),
+	//	data : obj.notifictaions[variable]
+	// });
+	}
 </script>
 
 
