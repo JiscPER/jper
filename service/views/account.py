@@ -107,6 +107,8 @@ def details(repo_id):
                         
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
+    if provider:
+        return render_template('account/detailspublisher.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
     return render_template('account/details.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 @blueprint.route("/configview", methods=["GET","POST"])
