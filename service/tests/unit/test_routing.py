@@ -9,7 +9,11 @@ from octopus.lib import paths
 from octopus.modules.store import store
 from flask import url_for
 
-from service import routing, models, api, packages
+if app.config.get("DEEPGREEN_EZB_ROUTING",False):
+    from service import routing_deepgreen as routing
+else:
+    from service import routing
+from service import models, api, packages
 from service.tests import fixtures
 
 from datetime import datetime

@@ -57,16 +57,24 @@ def route(unrouted):
     app.logger.debug(u"Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
 
     # 2016-09-08 TD : alliance license legitimation
-    issn_data = unrouted.get_identifiers("issn")
-    publ_date = unrouted.publication_date
-    dt = datetime.strptime(publ_date, "%Y-%m-%dT%H:%M:%SZ")
-    publ_year = str(dt.year)
+    issn_data = metadata.get_identifiers("issn")
+    publ_date = metadata.publication_date
+    if issn_data is not None and len(issn_data)>0 and publ_date is not None:
+        dt = datetime.strptime(publ_date, "%Y-%m-%dT%H:%M:%SZ")
+        publ_year = str(dt.year)
+        app.logger.debug(u"Routing - Notification:{y} provides issn_data:{x} and publ_year:{w}".format(y=unrouted.id, x=issn_data, w=publ_year))
+    else:
+        app.logger.debug(u"Routing - Notification:{y} includes no ISSN or no publ_year in metatdata".format(y=unrouted.id, x=issn_data))
+        issn_data = []
+
     part_albibids = []
     lic_data = []
     for issn in issn_data:
         # are (was: is) there licenses stored for this ISSN?
         # 2016-10-12 TD : an ISSN could appear in more than one license !
-        lics = models.License.pull_by_issn(issn)
+        lics = models.License.pull_by_journal_id(issn) # matches issn, eissn, doi, etc.
+        if lics is None: # nothing found at all...
+            continue
         for lic in lics:
             lic_data = []
             if lic.type == "alliance":
@@ -77,7 +85,7 @@ def route(unrouted):
                     ys = "0000"
                     yt = "9999"
                     for i in jrnl["identifier"]:
-                        if i.get("type") == "issn" and i.get("id") == issn:
+                        if (i.get("type") == "eissn" and i.get("id") == issn) or (i.get("type") == "issn" and i.get("id") == issn):
                             for p in jrnl["period"]:
                                 if p.get("type") == "year":
                                     if "start" in p.keys(): ys = str(p["start"])
@@ -90,6 +98,7 @@ def route(unrouted):
                                     if l.get("type") == "ezb": 
                                         lic_data.append({   'name' : lic.name, 
                                                               'id' : lic.id,
+                                                            'issn' : issn,
                                                             'link' : l.get("url"), 
                                                          'embargo' : jrnl["embargo"]["duration"]})
                                 break  # found a (the?!) ISSN for which the publ_date _is_ in the OA-enabled period!
@@ -109,6 +118,11 @@ def route(unrouted):
         acc = models.Account.pull_by_key("repository.bibid",bibid)
         if acc is not None and acc.has_role("repository"):
             al_repos.append((acc.id,aldata))
+
+    if len(al_repos) > 0:
+        app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
+    else:
+        app.logger.debug(u"Routing - Notification {y} No qualified repositories currently found to receive this notification.  Notification will fail!".format(y=unrouted.id))
     # 2016-09-08 TD : alliance license legitimation
 
     # iterate through all the repository configs, collecting match provenance and
@@ -123,6 +137,10 @@ def route(unrouted):
         # 2016-09-08 TD : iterate through all _qualified_ repositories by the current alliance license
         for repo,aldata in al_repos:
             rc = models.RepositoryConfig.pull_by_repo(repo)
+            #
+            if rc is None:
+                app.logger.debug(u"Routing - Notification:{y} found no RepositoryConfig for Repository:{x}".format(y=unrouted.id, x=repo))
+                continue
             #
             prov = models.MatchProvenance()
             prov.repository = rc.repository
@@ -141,7 +159,9 @@ def route(unrouted):
             else:
                 app.logger.debug(u"Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
 
-    except esprit.tasks.ScrollException as e:
+    # except esprit.tasks.ScrollException as e:
+    # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above) 
+    except Exception as e:
         app.logger.error(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
         raise RoutingException(e.message)
 

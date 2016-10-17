@@ -626,8 +626,8 @@ class License(dataobj.DataObj, dao.LicenseDAO):
             return None
 
     @classmethod
-    def pull_by_issn(cls,issn):
-        return cls.pull_by_key('journal.identifier.id',issn)
+    def pull_by_journal_id(cls,journal_id):
+        return cls.pull_by_key('journal.identifier.id',journal_id)
 
 
     def set_license_data(self,ezbid,name,type='alliance',csvfile=None,jsoncontent=None):
