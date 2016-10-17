@@ -58,7 +58,7 @@ for (variable in obj.notifications) {
 	$('#publishertable tr:last').after('<tr>\
 		<td>'+obj.notifications[variable].created_date+'</td> \
 		<td>'+obj.notifications[variable].analysis_date+'</td> \
-		<td>'+obj.notifications[variable].metadata.identifier.type+ +obj.notifications[variable].metadata.identifier.id+'</td> \
+		<td>'+obj.notifications[variable].metadata.identifier.type+' '+obj.notifications[variable].metadata.identifier.id+'</td> \
 		<td>'+obj.notifications[variable].provenance.explanation'</td> \
 	</tr>'
 	);
