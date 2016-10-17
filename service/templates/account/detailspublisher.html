@@ -15,13 +15,12 @@
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
 
-			<section id="listrepos" class="is-collapsible show_hide__container is-collapsible--button"
-			data-collapsible>
-			<h2 class="show_hide__trigger">Repository</h2>
-			<div class="show_hide__target">
-				<table data-rwdtable-sortable id="publishertable">
+			
+			<h2>Repository</h2>
+			
+				<table id="publishertable">
 					<tr>
-					<th data-sort-default>Date Sent</th>
+					<th>Date Sent</th>
 					<th>Date Analysed</th>
 					<th>DOI</th>
 					<th>Alliance License</th>
@@ -32,8 +31,8 @@
 
 				</table>
 				
-			</div>
-		</section>
+			
+		
 			{% from "harvester/helpers/pagination.html" import render_pagination%}
 			{{ render_pagination(num_of_pages,page_num,link) }}
 		</div>
@@ -42,7 +41,30 @@
 		
 
 
+<script>
+var obj = JSON.parse ({{ repo|tojson|safe }}); 
 
+var node = [];
+
+for (variable in obj.notifications) {
+	var id = obj.notifications[variable].id;
+	$('#publishertable tr:last').after('<tr>\
+		<td>'+obj.notifications[variable].created_date+'</td> \
+		<td>'+obj.notifications[variable].analysis_date+'</td> \
+		<td>'+obj.notifications[variable].metadata.identifier.type+ +obj.notifications[variable].metadata.identifier.id+'</td> \
+		<td>'Allianz Lizenz ja/nein/unklar' </td> \
+		<td>'repositorium name' </td> \
+		<td>'+obj.notifications[variable].provenance.explanation'</td> \
+	</tr>'
+	);
+node[id] = new PrettyJSON.view.Node({
+	el : $('#'+id),
+	data : obj.notifictaions[variable]
+});
+}
+
+	
+</script>
 <script>
 // $( "#showrepo" ).click(function() {
     // $( "#hrepo" ).toggle();
@@ -91,32 +113,7 @@ $(document).ready(function() {
     }
 });
 
-
-
 </script>
-<script>
-var obj = JSON.parse ({{ repo|tojson|safe }}); 
 
-var node = [];
-
-for (variable in obj.notifications) {
-	var id = obj.notifications[variable].id;
-	$('#publishertable tr:last').after('<tr>\
-		<td>'+obj.notifications[variable].created_date+'</td> \
-		<td>'+obj.notifications[variable].analysis_date+'</td> \
-		<td>'+obj.notifications[variable].metadata.identifier.type+ +obj.notifications[variable].metadata.identifier.id+'</td> \
-		<td>'Allianz Lizenz ja/nein/unklar' </td> \
-		<td>'repositorium name' </td> \
-		<td>'+obj.notifications[variable].provenance.explanation'</td> \
-	</tr>'
-	);
-node[id] = new PrettyJSON.view.Node({
-	el : $('#'+id),
-	data : obj.notifictaions[variable]
-});
-}
-
-	
-</script>
 {% endblock %}
 		
