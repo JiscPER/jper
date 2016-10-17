@@ -10,7 +10,7 @@
 	<div id="repopiechart"></div>
 	<div id="joupiechart"></div>
 	</div>
-		<div id="hrepo" hidden>
+		
 		<div class="col span-12">{% from
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
@@ -38,21 +38,18 @@
 			{{ render_pagination(num_of_pages,page_num,link) }}
 		</div>
 
-		</section>
-			
-			{% from "harvester/helpers/pagination.html" import render_pagination%}
-			{{ render_pagination(num_of_pages,page_num,link) }}
-		</div>
+		
+		
 	</div>
 </div>
 
 <script>
-$( "#showrepo" ).click(function() {
-    $( "#hrepo" ).toggle();
-});
-$( "#showjou" ).click(function() {
-    $( "#hjou" ).toggle();
-});
+// $( "#showrepo" ).click(function() {
+    // $( "#hrepo" ).toggle();
+// });
+// $( "#showjou" ).click(function() {
+    //$( "#hjou" ).toggle();
+// });
 $(document).ready(function() {
     $.plot($("#repopiechart"), data, {
     series: {
