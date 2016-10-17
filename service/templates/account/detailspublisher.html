@@ -19,7 +19,7 @@
 			data-collapsible>
 			<h2 class="show_hide__trigger">Repository</h2>
 			<div class="show_hide__target">
-				<table data-rwdtable-sortable id="xyz">
+				<table data-rwdtable-sortable id="publishertable">
 					<tr>
 					<th data-sort-default>Date Sent</th>
 					<th>Date Analysed</th>
@@ -104,7 +104,7 @@ var node = [];
 
 for (variable in obj.notifications) {
 	var id = obj.notifications[variable].id;
-	$('#tableidname tr:last').after('<tr>\
+	$('#publishertable tr:last').after('<tr>\
 		<td>'+obj.notifications[variable].created_date+'</td> \
 		<td>'+obj.notifications[variable].analysis_date+'</td> \
 		<td>'+obj.notifications[variable].metadata.identifier.type+ +obj.notifications[variable].metadata.identifier.id+'</td> \
