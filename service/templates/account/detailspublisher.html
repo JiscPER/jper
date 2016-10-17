@@ -1,41 +1,38 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} 
+{% block content %} 
+
 <div class="row">
 	<div class="col span-12">
-		<div class="cms">
-			<h1>Routed Notification History</h1>
-		</div>
-		<div class="row">
-		<form class="form" action="" method="GET">
-			<div class="col span-6">
-
-				<ul class="form-fields">
-					<li class="form-fields__item--text"><label> <span
-							class="form-fields__label-text">Show notification until:</span> <input type="text"
-							name="since" value="{{date}}">
-					</label>
-					<button class="btn btn--3d btn--primary move-up" type="submit">Send</button>
-					</li>
-				</ul>
-
-
-			</div>
-			<div class="col span-5">
-			</div>
-		</form>
-		</div>
+	<div class="cms">
+		<h1> Routed Notification History</h1></div>
+	
+	<div class="row">
+	
+	<div id="repopiechart"></div>
+	<div id="joupiechart"></div>
+	
+	</div>	
 		<div class="col span-12">{% from
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
-		<table id="dataAOTable">
-			<tr>
-				<th>Send&nbsp;Date</th>
-				<th>Event</th>
-				<th>Title</th>
-				<th>Analysis&nbsp;Date</th>
-			</tr>
 
-		</table>
-		{% from "harvester/helpers/pagination.html" import render_pagination%}
+			
+			<h2>Repository</h2>
+			
+				<table id="publishertable">
+					<tr>
+					<th>DateSent</th>
+					<th>DateAnalysed</th>
+					<th>DOI</th>
+					<th>AllianceLicense</th>
+					<th>Repository</th>
+					<th>MatchingCriteria</th>
+					</tr>
+
+
+				</table>
+				
+			{% from "harvester/helpers/pagination.html" import render_pagination%}
 		{{ render_pagination(num_of_pages,page_num,link) }}
 		<div class="row">
 			<div class="col span-1"></div>
@@ -44,49 +41,37 @@
 		</div>
 
 		<div id='elem'></div>
+	</div>	
 	</div>
-</div>
-<script>
-	// obj to render.
-	var obj = JSON.parse({{ repo|tojson|safe }});
-	
-	var node = [];
-	
-	for (variable in obj.notifications) {
-		var id = obj.notifications[variable].id;
-		$('#dataAOTable tr:last').after('<tr>\
-				<td class="toggle">'+obj.notifications[variable].created_date+'</td> \
-				<td>'+obj.notifications[variable].event+'</td> \
-				<td>'+obj.notifications[variable].metadata.title+'</td> \
-				<td>'+obj.notifications[variable].analysis_date+'</td> \
-				</tr> \
-				<tr style="display: none;"> <td colspan="4"><div class="col span-1 expand" data="'+id+'"> \
-					<span class="down-arrow"></span> \
-				</div> \
-				<div class="col span-1 collapse" data="'+id+'"> \
-					<span class="up-arrow"></span> \
-				</div> \
-				<div class="col span-12" id="'+id+'"></div> \
-				</td></tr>');		
-		node[id] = new PrettyJSON.view.Node({
-			el : $('#'+id),
-			data : obj.notifications[variable]
-		});	
-	}
-	
-	$('.expand').on('click', function() {
-			node[$(this).attr('data')].expandAll();
-		});
-	
-	$('.collapse').on('click', function() {
-		node[$(this).attr('data')].collapseAll();
-	});
-	
-	$('.toggle').on('click',function(){
-		$(this).parent().next().toggle();
-	});
-	
-</script>
-{% endblock %}
 
 		
+		
+
+
+<script>
+var obj = JSON.parse ({{ repo|tojson|safe }}); 
+
+var node = [];
+
+for (variable in obj.notifications) {
+	var id = obj.notifications[variable].id;
+	$('#publishertable tr:last').after('<tr>\
+		<td>'+obj.notifications[variable].created_date+'</td> \
+		<td>'+obj.notifications[variable].analysis_date+'</td> \
+		<td>'+obj.notifications[variable].metadata.identifier.type+ +obj.notifications[variable].metadata.identifier.id+'</td> \
+		<td>'Allianz Lizenz ja/nein/unklar' </td> \
+		<td>'repositorium name' </td> \
+		<td>'+obj.notifications[variable].provenance.explanation'</td> \
+	</tr>'
+	);
+node[id] = new PrettyJSON.view.Node({
+	el : $('#'+id),
+	data : obj.notifictaions[variable]
+ });
+}
+	
+		
+</script>
+
+
+{% endblock %}
