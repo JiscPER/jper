@@ -496,7 +496,7 @@ class JPER(object):
                     }
                 }
             },
-            "sort": [{"analysis_date":{"order":"desc"}}],
+            "sort": [{"created_date":{"order":"desc"}}],
             # "sort": [{"analysis_date":{"order":"asc"}}],
             # 2016-09-06 TD : change of sort order newest first
             "from": (page - 1) * page_size,

@@ -4,13 +4,27 @@
 <div class="row">
 	<div class="col span-12">
 	<div class="cms">
-		<h1> Routed Matching History</h1>
+		<h1>Matching History</h1>
 	</div>
 	
 	<div class="row">
-	
-	<div id="repopiechart"></div>
-	<div id="joupiechart"></div>
+		<form class="form" action="" method="GET">
+			<div class="col span-6">
+
+				<ul class="form-fields">
+					<li class="form-fields__item--text"><label> <span
+							class="form-fields__label-text">Show history until:</span> <input type="text"
+							name="since" value="{{date}}">
+					</label>
+					<button class="btn btn--3d btn--primary move-up" type="submit">Send</button>
+					</li>
+				</ul>
+
+
+			</div>
+			<div class="col span-5">
+			</div>
+		</form>
 	
 	</div>	
 		<div class="col span-12">{% from
@@ -71,7 +85,7 @@
 			<td>'+issn+'</td> \
 			<td>'+doi+'</td> \
 			<td>'+link+'</td> \
-			<td>'+obj.matches[variable].repo+'</td> \
+			<td>'+bibid+'</td> \
 			<td>'+prov[0].term+'</td> \
 			<td>'+prov[0].notification_field+'</td> \
 		</tr>');

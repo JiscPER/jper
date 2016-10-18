@@ -22,16 +22,16 @@ def restrict():
 
 @blueprint.route('/')
 def index():
-    reportsdir = app.config.get('REPORTSDIR','/home/mark/jper_reports')
+    reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
     try:
         fls = os.listdir(reportsdir)
         reports = [fl for fl in fls if not fl.endswith('.cfg')]
     except:
-      reports = []
+        reports = []
     if len(reports) == 0: flash('There are currently no reports available','info')
     return render_template('reports/index.html', reports=reports)
 
 @blueprint.route('/<filename>')
 def serve(filename):
-    reportsdir = app.config.get('REPORTSDIR','/home/mark/jper_reports')
+    reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
     return send_from_directory(reportsdir, filename)
