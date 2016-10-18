@@ -651,6 +651,8 @@ class BaseNotification(NotificationMetadata):
                 "created_date" : {"coerce" : "utcdatetime"},
                 "last_updated" : {"coerce" : "utcdatetime"},
                 "event" : {"coerce" : "unicode"}
+                #"reason" : {"coerce" : "unicode"}
+                # 2016-10-18 TD : additional field for routing reason as needed by DeepGreen
             },
             "objects" : [
                 "provider", "content", "embargo"
@@ -698,6 +700,25 @@ class BaseNotification(NotificationMetadata):
 
         self._add_struct(struct)
         super(BaseNotification, self).__init__(raw)
+
+
+    # @property
+    # def reason(self):
+    #     """
+    #     Get the reason for this routing notification
+    # 
+    #     :return: the matching reason for the successful routing of this notification
+    #     """
+    #     return self._get_single("reason", coerce=dataobj.to_unicode())
+    # 
+    # @reason.setter
+    # def reason(self, val):
+    #     """
+    #     Set the reason for this routing notification
+    # 
+    #     :param val: the string explaining the reason for the successful routing
+    #     """
+    #     self._set_single("reason", val, coerce=dataobj.to_unicode())
 
     @property
     def packaging_format(self):

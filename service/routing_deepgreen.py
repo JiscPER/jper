@@ -56,7 +56,7 @@ def route(unrouted):
 
     app.logger.debug(u"Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
 
-    # 2016-09-08 TD : alliance license legitimation
+    # 2016-09-08 TD : start of alliance license legitimation
     doi = metadata.get_identifiers("doi")
     if doi is None:
         doi = "unkown"
@@ -125,13 +125,13 @@ def route(unrouted):
     for bibid,aldata in part_albibids:
         acc = models.Account.pull_by_key("repository.bibid",bibid)
         if acc is not None and acc.has_role("repository"):
-            al_repos.append((acc.id,aldata))
+            al_repos.append((acc.id,aldata,bibid))
 
     if len(al_repos) > 0:
         app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
     else:
         app.logger.debug(u"Routing - Notification {y} No qualified repositories currently found to receive this notification.  Notification will fail!".format(y=unrouted.id))
-    # 2016-09-08 TD : alliance license legitimation
+    # 2016-09-08 TD : end of checking alliance license legitimation
 
     # iterate through all the repository configs, collecting match provenance and
     # id information
@@ -143,7 +143,7 @@ def route(unrouted):
     try:
         # for rc in models.RepositoryConfig.scroll(page_size=10, keepalive="1m"):
         # 2016-09-08 TD : iterate through all _qualified_ repositories by the current alliance license
-        for repo,aldata in al_repos:
+        for repo,aldata,bibid in al_repos:
             rc = models.RepositoryConfig.pull_by_repo(repo)
             #
             if rc is None:
@@ -156,6 +156,7 @@ def route(unrouted):
             prov.publisher = unrouted.provider_id
             # 2016-10-13 TD : fill additional object of alliance license with data gathered from EZB
             prov.alliance = aldata
+            prov.bibid = bibid
             #
             prov.notification = unrouted.id
             app.logger.debug(u"Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))

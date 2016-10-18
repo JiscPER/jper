@@ -341,3 +341,140 @@ class NotificationList(dataobj.DataObj):
         :return:
         """
         self._set_list("notifications", val)
+
+
+class MatchProvenanceList(dataobj.DataObj):
+    """
+    Class to represent a list of matches, as a response to an API request for match procenances
+    matching a specified set of criteria.
+
+    It reflects back the original parameters of the request, and includes a list of serialised (to dict objects)
+    MatchProvenance objects
+
+    ::
+
+        {
+            "since" : "<date from which results start in the form YYYY-MM-DDThh:mm:ssZ>",
+            "page" : "<page number of results>,
+            "pageSize" : "<number of results per page>,
+            "timestamp" : "<timestamp of this request in the form YYYY-MM-DDThh:mm:ssZ>",
+            "total" : "<total number of results at this time>",
+            "matches" : [
+                "<ordered list of MatchProvenance JSON objects>"
+            ]
+        }
+    """
+
+    @property
+    def since(self):
+        """
+        The requested "since" date of the request
+
+        :return: The requested "since" date of the request
+        """
+        return self._get_single("since", coerce=self._date_str())
+
+    @since.setter
+    def since(self, val):
+        """
+        Set the requested since date of the request
+
+        :param val: the requested since date of the request
+        :return:
+        """
+        self._set_single("since", val, coerce=self._date_str())
+
+    @property
+    def page(self):
+        """
+        The requested page of the response
+
+        :return: The requested page of the response
+        """
+        return self._get_single("page", coerce=self._int())
+
+    @page.setter
+    def page(self, val):
+        """
+        Set the requested page of the response
+
+        :param val: the requested page of the response
+        :return:
+        """
+        self._set_single("page", val, coerce=self._int())
+
+    @property
+    def page_size(self):
+        """
+        The requested page size
+
+        :return: the requested page size
+        """
+        return self._get_single("pageSize", coerce=self._int())
+
+    @page_size.setter
+    def page_size(self, val):
+        """
+        Set the requested page size
+
+        :param val: the requested page size
+        :return:
+        """
+        self._set_single("pageSize", val, coerce=self._int())
+
+    @property
+    def timestamp(self):
+        """
+        The timestamp of the request
+
+        :return: the timestamp of the request in the form YYYY-MM-DDTHH:MM:SSZ
+        """
+        return self._get_single("timestamp", coerce=self._date_str())
+
+    @timestamp.setter
+    def timestamp(self, val):
+        """
+        Set the timestamp of the request
+
+        :param val: the timestamp of the request in the form YYYY-MM-DDTHH:MM:SSZ
+        :return:
+        """
+        self._set_single("timestamp", val, coerce=self._date_str())
+
+    @property
+    def total(self):
+        """
+        The total number of notifications in the full list (not necessarily included here) at the time of request
+
+        :return: number of available notifications
+        """
+        return self._get_single("total", coerce=self._int())
+
+    @total.setter
+    def total(self, val):
+        """
+        Set the number of available notifications
+
+        :param val: the number of available notifications
+        :return:
+        """
+        self._set_single("total", val, coerce=self._int())
+
+    @property
+    def matches(self):
+        """
+        The list of matches included in this specific response
+
+        :return: the list of matches
+        """
+        return self._get_list("matches")
+
+    @matches.setter
+    def matches(self, val):
+        """
+        Set the list of matches for this response
+
+        :param val: the list of matches
+        :return:
+        """
+        self._set_list("matches", val)

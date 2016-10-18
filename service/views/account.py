@@ -24,6 +24,52 @@ except:
 
 blueprint = Blueprint('account', __name__)
 
+# 2016-10-18 TD : new call to list all matches (model class MatchProvenance)
+def _list_matchrequest(repo_id=None, provider=False):
+    """
+    Process a list request, either against the full dataset or the specific repo_id supplied
+    This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+    for the parameters of these kinds of requests.
+
+    :param repo_id: the repo id to limit the request to
+    :param provider: (boolean) whether the repo_id belongs to a publisher or not
+    :return: Flask response containing the list of notifications that are appropriate to the parameters
+    """
+    since = request.values.get("since")
+    page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
+    page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
+
+    if since is None or since == "":
+        return _bad_request("Missing required parameter 'since'")
+
+    try:
+        since = dates.reformat(since)
+    except ValueError as e:
+        return _bad_request("Unable to understand since date '{x}'".format(x=since))
+
+    try:
+        page = int(page)
+    except:
+        return _bad_request("'page' parameter is not an integer")
+
+    try:
+        page_size = int(page_size)
+    except:
+        return _bad_request("'pageSize' parameter is not an integer")
+
+    try:
+        # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
+        # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
+        nlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
+    except ParameterException as e:
+        return _bad_request(e.message)
+
+    resp = make_response(nlist.json())
+    resp.mimetype = "application/json"
+    resp.status_code = 200
+    return resp
+
+
 # def _list_request(repo_id=None):
 # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
 def _list_request(repo_id=None, provider=False):
@@ -92,7 +138,10 @@ def details(repo_id):
     acc = models.Account.pull(repo_id)
     #
     provider = acc.has_role('publisher')
-    data = _list_request(repo_id=repo_id, provider=provider)
+    if provider:
+        data = _list_matchrequest(repo_id=repo_id, provider=provider)
+    else:
+        data = _list_request(repo_id=repo_id, provider=provider)
     #
     link = '/account/details'
     date = request.args.get('since')
@@ -110,6 +159,7 @@ def details(repo_id):
     if provider:
         return render_template('account/detailspublisher.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
     return render_template('account/details.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+
 
 @blueprint.route("/configview", methods=["GET","POST"])
 @blueprint.route("/configview/<repoid>", methods=["GET","POST"])

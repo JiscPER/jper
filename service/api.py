@@ -450,4 +450,77 @@ class JPER(object):
         return nl
 
 
+    @classmethod
+    def list_matches(cls, account, since, page=None, page_size=None, repository_id=None, provider=False):
+        """
+        List match provenances which meet the criteria specified by the parameters
+
+        :param account: user Account as which to carry out this action (all users can request matches, so this is primarily for logging purposes)
+        :param since: date string for the earliest match analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work
+        :param page: page number in result set to return (which results appear will also depend on the page_size parameter)
+        :param page_size: number of results to return in this page of results
+        :param repository_id: the id of the repository whose matches to return.  If no id is provided, all matches for all repositories will be queried.
+        :return: models.MatchProvenanceList containing the parameters and results
+        """
+        try:
+            since = dates.parse(since)
+        except ValueError as e:
+            raise ParameterException("Unable to understand since date '{x}'".format(x=since))
+
+        if page == 0:
+            raise ParameterException("'page' parameter must be greater than or equal to 1")
+
+        if page_size == 0 or page_size > app.config.get("MAX_LIST_PAGE_SIZE"):
+            raise ParameterException("page size must be between 1 and {x}".format(x=app.config.get("MAX_LIST_PAGE_SIZE")))
+
+        mpl = models.MatchProvenanceList()
+        mpl.since = dates.format(since)
+        mpl.page = page
+        mpl.page_size = page_size
+        mpl.timestamp = dates.now()
+        qr = {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "range": {
+                                        "created_date": {
+                                            "gte": mpl.since
+                                        }
+                                    }
+                                }                                
+                            ]
+                        }
+                    }
+                }
+            },
+            "sort": [{"analysis_date":{"order":"desc"}}],
+            # "sort": [{"analysis_date":{"order":"asc"}}],
+            # 2016-09-06 TD : change of sort order newest first
+            "from": (page - 1) * page_size,
+            "size": page_size
+        }
+        
+        if repository_id is not None:
+            # 2016-09-07 TD : trial to filter for publisher's reporting
+            if provider:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "pub.exact": repository_id } })
+            else:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repo.exact": repository_id } })
+
+            app.logger.debug(str(repository_id) + ' list matches for query ' + json.dumps(qr))
+        else:
+            app.logger.debug('List all matches for query ' + json.dumps(qr))
+
+        res = models.MatchProvenance.query(q=qr)
+        app.logger.debug('List matches query resulted ' + json.dumps(res))
+        # 2016-09-07 TD : trial to filter for publisher's reporting
+        #nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
+        mpl.matches = [models.MatchProvenance(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
+        mpl.total = res.get('hits',{}).get('total',0)
+        return mpl
+
+
 

@@ -4,7 +4,8 @@
 <div class="row">
 	<div class="col span-12">
 	<div class="cms">
-		<h1> Routed Notification History</h1></div>
+		<h1> Routed Matching History</h1>
+	</div>
 	
 	<div class="row">
 	
@@ -17,20 +18,18 @@
 			render_pagination(num_of_pages,page_num,link) }}</div>
 
 			
-			<h2>Repository</h2>
-			
-				<table id="publisherTable">
-					<tr>
-					<th>Send&nbsp;Date</th>
+			<table id="publisherTable">
+				<tr>
 					<th>Analysis&nbsp;Date</th>
+					<th>ISSN&nbsp;or&nbsp;EISSN</th>
 					<th>DOI</th>
 					<th>License</th>
-					<th>Repository</th>
-					<th>Matching&nbsp;Reason</th>
-					</tr>
+					<th>Forwarded&nbsp;to</th>
+					<th>Term</th>
+					<th>Appears&nbsp;in</th>
+				</tr>
 
-
-				</table>
+			</table>
 				
 			{% from "harvester/helpers/pagination.html" import render_pagination%}
 		{{ render_pagination(num_of_pages,page_num,link) }}
@@ -53,26 +52,32 @@
 
 	// var node = '';
 
-	for (variable in obj.notifications) {
-		var md = obj.notifications[variable].metadata;
-		var doi = md.identifier[0].id
-		for (cnt in md.identifier) {
-			if (md.identifier[cnt].type == 'doi') {
-				doi = md.identifier[cnt].id;
-				break;
-			}
+	for (variable in obj.matches) {
+		var prov = obj.matches[variable].provenance;
+		var bibid = obj.matches[variable].repo;
+		var issn = 'n/a';
+		var doi = 'n/a';
+		var link = 'n/a';
+                if ('alliance' in obj.matches[variable]) {
+			issn = obj.matches[variable].alliance.issn;
+			doi = obj.matches[variable].alliance.doi;
+			link = obj.matches[variable].alliance.link;
+		}
+		if ('bibid' in obj.matches[variable]) {
+			bibid = obj.matches[variable].bibid;
 		}
 		$('#publisherTable tr:last').after('<tr>\
-			<td>'+obj.notifications[variable].created_date+'</td> \
-			<td>'+obj.notifications[variable].analysis_date+'</td> \
+			<td>'+obj.matches[variable].created_date+'</td> \
+			<td>'+issn+'</td> \
 			<td>'+doi+'</td> \
-			<td></td> \
-			<td>'+obj.notifications[variable].repositories[0]+'</td> \
-			<td></td> \
+			<td>'+link+'</td> \
+			<td>'+obj.matches[variable].repo+'</td> \
+			<td>'+prov[0].term+'</td> \
+			<td>'+prov[0].notification_field+'</td> \
 		</tr>');
 	//node[id] = new PrettyJSON.view.Node({
 	//	el : $('#'+id),
-	//	data : obj.notifictaions[variable]
+	//	data : obj.matches[variable]
 	// });
 	}
 </script>

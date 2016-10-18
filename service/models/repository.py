@@ -276,6 +276,8 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 "id" : {"coerce" : "unicode"},
                 "created_date" : {"coerce" : "unicode"},
                 "last_updated" : {"coerce" : "unicode"},
+                "bibid" : {"coerce" : "unicode"},
+                # 2016-10-18 TD : additional field to hold EZB-Id (which is more 'human' readable...)
                 "repo" : {"coerce" : "unicode"},
                 # "repository" : {"coerce" : "unicode"},
                 # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
@@ -338,6 +340,30 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         self._set_single("repo", val, coerce=dataobj.to_unicode())
         # self._set_single("repository", val, coerce=dataobj.to_unicode())
         # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
+
+
+    # 2016-10-18 TD : additional field "bibid" --- start ---
+    #
+    @property
+    def bibid(self):
+        """
+        The repository EZB-Id to which the match pertains
+
+        :return: EZB-Id (or more general any 'readable' id...)
+        """
+        return self._get_single("bibid", coerce=dataobj.to_unicode())
+
+    @bibid.setter
+    def bibid(self, val):
+        """
+        Set the repository EZB-Id to which the match pertains
+
+        :param val: EZB-Id (or any more 'human' readable unique(!) repository id...)
+        """
+        self._set_single("bibid", val, coerce=dataobj.to_unicode())
+    #
+    # 2016-10-18 TD : additional field "bibid" --- end ---
+
 
     # 2016-08-10 TD : add additional field "pub" --- start ---
     #
