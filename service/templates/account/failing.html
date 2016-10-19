@@ -68,8 +68,8 @@
 		var issn = 'n/a';
 		var doi = 'n/a';
 		var reason = 'n/a';
-                if ('reason' in md) {
-			reason = md.reason;
+                if ('reason' in obj.failed[variable]) {
+			reason = obj.failed[variable].reason;
 		}
 		for (cnt in md.identifier) {
 			if (md.identifier[cnt].type === 'doi') {
