@@ -4,7 +4,7 @@
 <div class="row">
 	<div class="col span-12">
 	<div class="cms">
-		<h1>Matching History</h1>
+		<h1>Rejected Notification History</h1>
 	</div>
 	
 	<div class="row">
@@ -37,10 +37,7 @@
 					<th>Analysis&nbsp;Date</th>
 					<th>ISSN&nbsp;or&nbsp;EISSN</th>
 					<th>DOI</th>
-					<th>License</th>
-					<th>Forwarded&nbsp;to</th>
-					<th>Term</th>
-					<th>Appears&nbsp;in</th>
+					<th>Reason</th>
 				</tr>
 
 			</table>
@@ -66,28 +63,30 @@
 
 	// var node = '';
 
-	for (variable in obj.matches) {
-		var prov = obj.matches[variable].provenance;
-		var bibid = obj.matches[variable].repo;
+	for (variable in obj.failed) {
+		var md = obj.failed[variable].metadata;
 		var issn = 'n/a';
 		var doi = 'n/a';
-		var link = 'n/a';
-                if ('alliance' in obj.matches[variable]) {
-			issn = obj.matches[variable].alliance.issn;
-			doi = obj.matches[variable].alliance.doi;
-			link = obj.matches[variable].alliance.link;
+		var reason = 'n/a';
+                if ('reason' in md) {
+			reason = md.reason;
 		}
-		if ('bibid' in obj.matches[variable]) {
-			bibid = obj.matches[variable].bibid;
+		for (cnt in md.identifier) {
+			if (md.identifier[cnt].type === 'doi') {
+				doi = md.identifier[cnt].id;
+			}
+			if (md.identifier[cnt].type === 'issn') {
+				if (issn !== 'n/a')
+					issn += ' ; '+md.identifier[cnt].id;
+				else
+					issn = md.identifier[cnt].id;
+			}
 		}
 		$('#publisherTable tr:last').after('<tr>\
-			<td>'+obj.matches[variable].created_date+'</td> \
+			<td>'+obj.failed[variable].analysis_date+'</td> \
 			<td>'+issn+'</td> \
 			<td>'+doi+'</td> \
-			<td>'+link+'</td> \
-			<td>'+bibid+'</td> \
-			<td>'+prov[0].term+'</td> \
-			<td>'+prov[0].notification_field+'</td> \
+			<td>'+reason+'</td> \
 		</tr>');
 	//node[id] = new PrettyJSON.view.Node({
 	//	el : $('#'+id),

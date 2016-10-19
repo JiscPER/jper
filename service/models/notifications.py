@@ -870,7 +870,9 @@ class RoutingInformation(dataobj.DataObj):
         """
         struct = {
             "fields" : {
-                "analysis_date" : {"coerce" : "utcdatetime"}
+                "analysis_date" : {"coerce" : "utcdatetime"},
+                # 2016-10-19 TD : additional field for more reporting information (e.g. failing or rejecting!)
+                "reason" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "repositories" : {"contains" : "field", "coerce" : "unicode"}
@@ -879,6 +881,28 @@ class RoutingInformation(dataobj.DataObj):
 
         self._add_struct(struct)
         super(RoutingInformation, self).__init__(raw)
+
+    # 2016-10-19 TD : additional string field 'reason' -- start --
+    @property
+    def reason(self):
+        """
+        The reason why this notification was routed or rejected
+
+        :return: the routing (or failing) reason
+        """
+        return self._get_single("reason", coerce=dataobj.to_unicode())
+
+    @reason.setter
+    def reason(self, val):
+        """
+        Set the reason why this notification was routed or rejected
+
+        :param val: the reason (as short but informative as possible)
+        """
+        self._set_single("reason", val, coerce=dataobj.to_unicode())
+
+    # 2016-10-19 TD : additional string field 'reason' -- end --
+
 
     @property
     def analysis_date(self):

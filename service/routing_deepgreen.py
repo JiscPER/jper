@@ -41,11 +41,26 @@ def route(unrouted):
     """
     app.logger.debug(u"Routing - Notification:{y}".format(y=unrouted.id))
 
+    # 2016-10-19 TD : introduce a short(!) explanation for more routing information in history logs
+    routing_reason = "n/a"
+
     # first get the packaging system to load and retrieve all the metadata
     # and match data from the content file (if it exists)
     try:
         metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
+        routing_reason = e.message
+        # if config says so, convert the unrouted notification to a failed notification, enhance and save
+        # for later diagnosis
+        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
+            failed = unrouted.make_failed()
+            failed.analysis_date = dates.now()
+            failed.reason = routing_reason
+            if metadata is not None:
+                enhance(failed, metadata)
+            failed.save()
+            app.logger.debug(u"Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
+
         app.logger.debug(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
         raise RoutingException(e.message)
 
@@ -71,6 +86,7 @@ def route(unrouted):
         publ_year = str(dt.year)
         app.logger.debug(u"Routing - Notification:{y} provides issn_data:{x} and publ_year:{w}".format(y=unrouted.id, x=issn_data, w=publ_year))
     else:
+        routing_reason = "No ISSN/EISSN nor publication date found."
         app.logger.debug(u"Routing - Notification:{y} includes no ISSN or no publ_year in metatdata".format(y=unrouted.id, x=issn_data))
         issn_data = []
 
@@ -130,6 +146,7 @@ def route(unrouted):
     if len(al_repos) > 0:
         app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
     else:
+        routing_reason = "No qualified repositories."
         app.logger.debug(u"Routing - Notification {y} No qualified repositories currently found to receive this notification.  Notification will fail!".format(y=unrouted.id))
     # 2016-09-08 TD : end of checking alliance license legitimation
 
@@ -171,6 +188,18 @@ def route(unrouted):
     # except esprit.tasks.ScrollException as e:
     # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above) 
     except Exception as e:
+        routing_reason = e.message
+        # if config says so, convert the unrouted notification to a failed notification, enhance and save
+        # for later diagnosis
+        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
+            failed = unrouted.make_failed()
+            failed.analysis_date = dates.now()
+            failed.reason = routing_reason
+            if metadata is not None:
+                enhance(failed, metadata)
+            failed.save()
+            app.logger.debug(u"Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
+
         app.logger.error(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
         raise RoutingException(e.message)
 
@@ -184,6 +213,7 @@ def route(unrouted):
     # if there are matches then the routing is successful, and we want to finalise the
     # notification for the routed index and its content for download
     if len(match_ids) > 0:
+        routing_reason = "Matched to {x} qualified repositories.".format(x=len(match_ids))
         # repackage the content that came with the unrouted notification (if necessary) into
         # the formats required by the repositories for which there was a match
         pack_links = repackage(unrouted, match_ids)
@@ -191,6 +221,7 @@ def route(unrouted):
         # update the record with the information, and then
         # write it to the index
         routed = unrouted.make_routed()
+        routed.reason = routing_reason
         for pl in pack_links:
             routed.add_link(pl.get("url"), pl.get("type"), pl.get("format"), pl.get("access"), pl.get("packaging"))
         routed.repositories = match_ids
@@ -202,6 +233,8 @@ def route(unrouted):
         app.logger.debug(u"Routing - Notification:{y} successfully routed".format(y=unrouted.id))
         return True
     else:
+        if routing_reason == "n/a":
+            routing_reason = "No match in qualified repositories."
         # log the failure
         app.logger.error(u"Routing - Notification:{y} was not routed".format(y=unrouted.id))
 
@@ -210,14 +243,16 @@ def route(unrouted):
         if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
             failed = unrouted.make_failed()
             failed.analysis_date = dates.now()
+            failed.reason = routing_reason
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} as stored as a Failed Notification".format(y=unrouted.id))
+            app.logger.debug(u"Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
         return False
 
     # Note that we don't delete the unrouted notification here - that's for the caller to decide
+
 
 def match(notification_data, repository_config, provenance):
     """

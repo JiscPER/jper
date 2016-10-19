@@ -496,8 +496,8 @@ class JPER(object):
                     }
                 }
             },
-            "sort": [{"created_date":{"order":"desc"}}],
             # "sort": [{"analysis_date":{"order":"asc"}}],
+            "sort": [{"created_date":{"order":"desc"}}],
             # 2016-09-06 TD : change of sort order newest first
             "from": (page - 1) * page_size,
             "size": page_size
@@ -523,4 +523,72 @@ class JPER(object):
         return mpl
 
 
+
+    @classmethod
+    def list_failed(cls, account, since, page=None, page_size=None, provider_id=None):
+        """
+        List failed notifications which meet the criteria specified by the parameters
+
+        :param account: user Account as which to carry out this action (all users can request failed notifications, so this is primarily for logging purposes)
+        :param since: date string for the earliest failed analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work
+        :param page: page number in result set to return (which results appear will also depend on the page_size parameter)
+        :param page_size: number of results to return in this page of results
+        :param provider_id: the id of the provider whose failed notifications to return.  If no id is provided, all failed notifications for all providers will be queried.
+        :return: models.FailedNotificationList containing the parameters and results
+        """
+        try:
+            since = dates.parse(since)
+        except ValueError as e:
+            raise ParameterException("Unable to understand since date '{x}'".format(x=since))
+
+        if page == 0:
+            raise ParameterException("'page' parameter must be greater than or equal to 1")
+
+        if page_size == 0 or page_size > app.config.get("MAX_LIST_PAGE_SIZE"):
+            raise ParameterException("page size must be between 1 and {x}".format(x=app.config.get("MAX_LIST_PAGE_SIZE")))
+
+        fnl = models.FailedNotificationList()
+        fnl.since = dates.format(since)
+        fnl.page = page
+        fnl.page_size = page_size
+        fnl.timestamp = dates.now()
+        qr = {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "range": {
+                                        "created_date": {
+                                            "gte": fnl.since
+                                        }
+                                    }
+                                }                                
+                            ]
+                        }
+                    }
+                }
+            },
+            # "sort": [{"created_date":{"order":"desc"}}],
+            "sort": [{"analysis_date":{"order":"desc"}}],
+            # 2016-09-06 TD : change of sort order newest first
+            "from": (page - 1) * page_size,
+            "size": page_size
+        }
+        
+        if provider_id is not None:
+            qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": provider_id } })
+
+            app.logger.debug(str(provider_id) + ' list failed notifications for query ' + json.dumps(qr))
+        else:
+            app.logger.debug('List all failed notifications for query ' + json.dumps(qr))
+
+        res = models.FailedNotification.query(q=qr)
+        app.logger.debug('List failed notifications query resulted ' + json.dumps(res))
+        # 2016-09-07 TD : trial to filter for publisher's reporting
+        #nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
+        fnl.failed = [models.FailedNotification(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
+        fnl.total = res.get('hits',{}).get('total',0)
+        return fnl
 

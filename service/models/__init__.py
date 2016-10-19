@@ -22,7 +22,7 @@ you can do
 from service.models.notifications import RoutedNotification, UnroutedNotification, RoutingMetadata, NotificationMetadata, FailedNotification
 from service.models.repository import RepositoryConfig, MatchProvenance, RetrievalRecord
 from service.models.api import NotificationList, IncomingNotification, OutgoingNotification, ProviderOutgoingNotification
-from service.models.api import MatchProvenanceList
+from service.models.api import MatchProvenanceList, FailedNotificationList
 from service.models.account import Account
 from service.models.contentlog import ContentLog
 from service.models.ezb import Alliance, License

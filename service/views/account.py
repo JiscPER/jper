@@ -24,6 +24,50 @@ except:
 
 blueprint = Blueprint('account', __name__)
 
+# 2016-10-19 TD : new call to list all failed notifications (model class FailedNotification)
+def _list_failrequest(provider_id=None):
+    """
+    Process a list request, either against the full dataset or the specific provider_id supplied
+    This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+    for the parameters of these kinds of requests.
+
+    :param provider_id: the provider id to limit the request to
+    :return: Flask response containing the list of notifications that are appropriate to the parameters
+    """
+    since = request.values.get("since")
+    page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
+    page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
+
+    if since is None or since == "":
+        return _bad_request("Missing required parameter 'since'")
+
+    try:
+        since = dates.reformat(since)
+    except ValueError as e:
+        return _bad_request("Unable to understand since date '{x}'".format(x=since))
+
+    try:
+        page = int(page)
+    except:
+        return _bad_request("'page' parameter is not an integer")
+
+    try:
+        page_size = int(page_size)
+    except:
+        return _bad_request("'pageSize' parameter is not an integer")
+
+    try:
+        # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
+        nlist = JPER.list_failed(current_user, since, page=page, page_size=page_size, provider_id=provider_id)
+    except ParameterException as e:
+        return _bad_request(e.message)
+
+    resp = make_response(nlist.json())
+    resp.mimetype = "application/json"
+    resp.status_code = 200
+    return resp
+
+
 # 2016-10-18 TD : new call to list all matches (model class MatchProvenance)
 def _list_matchrequest(repo_id=None, provider=False):
     """
@@ -131,6 +175,7 @@ def index():
     users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000).get('hits',{}).get('hits',[])]
     return render_template('account/users.html', users=users)
 
+
 @blueprint.route('/details/<repo_id>', methods=["GET", "POST"])
 def details(repo_id):
     # data = _list_request(repo_id)
@@ -157,8 +202,59 @@ def details(repo_id):
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
     if provider:
-        return render_template('account/detailspublisher.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+        return render_template('account/matching.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
     return render_template('account/details.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+
+
+# 2016-10-19 TD : restructure matching and(!!) failing history output (primarily for publishers) -- start --
+@blueprint.route('/matching/<repo_id>', methods=["GET", "POST"])
+def matching(repo_id):
+    # data = _list_request(repo_id)
+    # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
+    acc = models.Account.pull(repo_id)
+    #
+    provider = acc.has_role('publisher')
+    data = _list_matchrequest(repo_id=repo_id, provider=provider)
+    #
+    link = '/account/matching'
+    date = request.args.get('since')
+    if date == '':
+        date = '01/08/2015'
+    if current_user.has_role('admin'): 
+        link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
+    else:
+        link += '?since=01/08/2015&api_key='+acc.data['api_key']
+             
+    results = json.loads(data.response[0])      
+                        
+    page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
+    num_of_pages = int(math.ceil(results['total']/results['pageSize']))
+    return render_template('account/matching.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+
+@blueprint.route('/failing/<provider_id>', methods=["GET", "POST"])
+def failing(provider_id):
+    acc = models.Account.pull(provider_id)
+    #
+    # provider = acc.has_role('publisher')
+    # 2016-10-19 TD : not needed here for the time being
+    data = _list_failrequest(provider_id=provider_id)
+    #
+    link = '/account/failing'
+    date = request.args.get('since')
+    if date == '':
+        date = '01/08/2015'
+    if current_user.has_role('admin'): 
+        link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
+    else:
+        link += '?since=01/08/2015&api_key='+acc.data['api_key']
+             
+    results = json.loads(data.response[0])      
+                        
+    page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
+    num_of_pages = int(math.ceil(results['total']/results['pageSize']))
+    return render_template('account/failing.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+
+# 2016-10-19 TD : restructure matching and(!!) failing -- end --
 
 
 @blueprint.route("/configview", methods=["GET","POST"])
