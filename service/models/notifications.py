@@ -1042,6 +1042,8 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
         :return: OutgoingNotification or ProviderOutgoingNotification
         """
         d = deepcopy(self.data)
+        if "reason" in d:
+            del d["reason"]
         if "last_updated" in d:
             del d["last_updated"]
         if not provider:
