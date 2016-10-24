@@ -141,13 +141,14 @@ def route(unrouted):
     for bibid,aldata in part_albibids:
         acc = models.Account.pull_by_key("repository.bibid",bibid)
         if acc is not None and acc.has_role("repository"):
+            unrouted.embargo = aldata["embargo"]
             al_repos.append((acc.id,aldata,bibid))
 
     if len(al_repos) > 0:
         app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
     else:
         routing_reason = "No qualified repositories."
-        app.logger.debug(u"Routing - Notification {y} No qualified repositories currently found to receive this notification.  Notification will fail!".format(y=unrouted.id))
+        app.logger.debug(u"Routing - Notification {y} No qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))
     # 2016-09-08 TD : end of checking alliance license legitimation
 
     # iterate through all the repository configs, collecting match provenance and

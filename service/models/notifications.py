@@ -702,6 +702,26 @@ class BaseNotification(NotificationMetadata):
         super(BaseNotification, self).__init__(raw)
 
 
+    # 2016-10-24 TD : adding an API for the embargo duration
+    @property
+    def embargo(self):
+        """
+        Get the number of month of a possible embargo of the publication
+
+        :return: the integer number of months of the publication's embargo
+        """
+        return self._get_single("embargo.duration", coerce=dataobj.to_int())
+
+    @embargo.setter
+    def embargo(self,val):
+        """
+        Set the number of month of a possible embargo of the publication
+
+        :param val: the integer number of the publication's embargo in months
+        """
+        self._set_single("embargo.duration", val, coerce=dataobj.to_int())
+
+
     # @property
     # def reason(self):
     #     """
