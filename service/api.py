@@ -204,10 +204,15 @@ class JPER(object):
                 if 'metadata' not in notification: notification['metadata'] = {}
                 if 'license_ref' not in notification['metadata']: 
                     notification['metadata']['license_ref'] = {}
-                    if 'title' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['title'] = account.data['license']['title']
-                    if 'type' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['type'] = account.data['license']['type']
-                    if 'url' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['url'] = account.data['license']['url']
-                    if 'version' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['version'] = account.data['license']['version']
+                    # 2016-10-24 TD : bug fix!
+                    # if 'title' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['title'] = account.data['license']['title']
+                    # if 'type' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['type'] = account.data['license']['type']
+                    # if 'url' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['url'] = account.data['license']['url']
+                    # if 'version' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['version'] = account.data['license']['version']
+                    if 'title' in account.data['license']: notification['metadata']['license_ref']['title'] = account.data['license']['title']
+                    if 'type' in account.data['license']: notification['metadata']['license_ref']['type'] = account.data['license']['type']
+                    if 'url' in account.data['license']: notification['metadata']['license_ref']['url'] = account.data['license']['url']
+                    if 'version' in account.data['license']: notification['metadata']['license_ref']['version'] = account.data['license']['version']
 
         # attempt to serialise the record
         try:
