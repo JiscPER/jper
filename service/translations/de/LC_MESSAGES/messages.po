@@ -183,7 +183,7 @@ msgstr ""
 #: service/templates/more/institutions.html:15
 msgid ""
 "Please contact us on <a "
-"href=\"mailto:info@deepgreen.de\">info@deepgreen.de</a> if you would like"
+"href=\"mailto:deeepgreen@zib.de?subject=Prototype\">info@oa-deepgreen.de</a> if you would like"
 " to find out more."
 msgstr ""
 
@@ -312,7 +312,7 @@ msgid "Record updated"
 msgstr ""
 
 #: service/views/account.py:367
-msgid "Incorrect username/password, for reset please contact: info@deepgreen.de"
+msgid "Incorrect username/password, for reset please contact: deeepgreen@zib.de"
 msgstr ""
 
 #: service/views/account.py:374
