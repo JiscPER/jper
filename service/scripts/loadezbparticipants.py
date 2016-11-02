@@ -26,16 +26,17 @@ def close_and_upload_csv(csvfile,newf,alid):
             csvfile.close()
             with open( newf, 'rb' ) as fd:
                 license = License.pull_by_key('identifier.id',alid)
-                if license:
+                if len(license)>0:
                     alliance = Alliance.pull_by_key('identifier.id',alid)
                     if not alliance:
                         alliance = Alliance()
-                    alliance.set_alliance_data(license.id,alid,csvfile=fd)
+                    alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
                     print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
                 else:
                     print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
     except:
          print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
+         print "WARNING: message: '{x}'".format(x=e.message)
 
 
 if __name__ == "__main__":
@@ -104,11 +105,11 @@ if __name__ == "__main__":
                     alid = item[s+1:t].upper()
                 newf = "{x}-EZB_current-{a}.csv".format(a=alid,x=fname)
                 try:
-                   csvfile = open( newf, 'wb' )
-                   outp = csv.DictWriter(csvfile, fieldnames=fieldnames,
-                                                  delimiter='\t', quoting=csv.QUOTE_ALL,
-                                                  lineterminator='\n')
-                   outp.writeheader()
+                    csvfile = open( newf, 'wb' )
+                    outp = csv.DictWriter(csvfile, fieldnames=fieldnames,
+                                                   delimiter='\t', quoting=csv.QUOTE_ALL,
+                                                   lineterminator='\n')
+                    outp.writeheader()
                 except IOError:
                     print "ERROR: could not write .csv file '{x}' (IOError).".format(x=newf)
                     print
@@ -120,8 +121,8 @@ if __name__ == "__main__":
                 item = item[1:].replace(u"\u0096",'-')   # funny hyphens...
             if el.text == 'Institution':
                 if len(part) > 0:
-                  if outp: outp.writerow(part)
-                  part = {}
+                    if outp: outp.writerow(part)
+                    part = {}
                 part[el.text] = item.strip().encode('utf-8')
             elif el.text == 'EZB-Id':
                 part[el.text] = item.strip().encode('utf-8')
