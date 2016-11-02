@@ -97,8 +97,8 @@ if __name__ == "__main__":
                 close_and_upload_csv(csvfile,newf,alid)     # first, pass all collected data so far to Alliance class
                                                             #        (i.e. import *previous* AL data to database)
                 item = el.text.strip()
-                s = item.find('(')
-                t = item.find(')',s)
+                s = item.rfind('(')
+                t = item.rfind(')',s)
                 alid = "0"
                 if s >= 0 and t > s:
                     alid = item[s+1:t].upper()
