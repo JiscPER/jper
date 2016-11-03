@@ -109,7 +109,7 @@ def moveftp():
                     try:
                         newowner = getpass.getuser()
                     except:
-                        newowner = 'mark'
+                        newowner = 'green'
                     uniqueid = uuid.uuid4().hex
                     uniquedir = tmpdir + '/' + dir + '/' + uniqueid
                     moveitem = userdir + '/' + dir + '/xfer/' + thisitem
@@ -227,7 +227,7 @@ def monthly_reporting():
         month = datetime.datetime.now().strftime("%B")[0:3]
         year = str(datetime.datetime.now().year)
         app.logger.debug('Scheduler - checking monthly reporting for ' + month + ' ' + year)
-        reportsdir = app.config.get('REPORTSDIR','/home/mark/jper_reports')
+        reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
         if not os.path.exists(reportsdir): os.makedirs(reportsdir)
         monthtracker = reportsdir + '/monthtracker.cfg'
         try:

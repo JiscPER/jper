@@ -19,10 +19,13 @@ if [ $? -eq 0 ]; then
 # TODO: could add a check for the username to see if matching user is logged in, by calling the w command
 # in which case do nothing on this iteration because the user is probably in the process of sending files
 
-# for time being copy everything to an ftp archive for this user first
-# so there is an original copy of everything received before processing by the system
-mkdir -p /home/mark/tmparchive/$username/$uniqueid
-cp -R $thefile /home/mark/tmparchive/$username/$uniqueid
+# 2016-11-03 TD : disabled this safety step for now!
+# # for time being copy everything to an ftp archive for this user first
+# # so there is an original copy of everything received before processing by the system
+# #mkdir -p /home/mark/tmparchive/$username/$uniqueid
+# #cp -R $thefile /home/mark/tmparchive/$username/$uniqueid
+# mkdir -p /home/green/thearchive/$username/$uniqueid
+# cp -R $thefile /home/green/thearchive/$username/$uniqueid
 
 # check that the tmp processing dir for this user and for this unique move process exists
 mkdir -p $uniquedir
