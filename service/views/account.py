@@ -181,6 +181,8 @@ def details(repo_id):
     # data = _list_request(repo_id)
     # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
     acc = models.Account.pull(repo_id)
+    if acc is None:
+        abort(404)
     #
     provider = acc.has_role('publisher')
     if provider:
@@ -212,6 +214,8 @@ def matching(repo_id):
     # data = _list_request(repo_id)
     # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
     acc = models.Account.pull(repo_id)
+    if acc is None:
+        abort(404)
     #
     provider = acc.has_role('publisher')
     data = _list_matchrequest(repo_id=repo_id, provider=provider)
@@ -234,6 +238,8 @@ def matching(repo_id):
 @blueprint.route('/failing/<provider_id>', methods=["GET", "POST"])
 def failing(provider_id):
     acc = models.Account.pull(provider_id)
+    if acc is None:
+        abort(404)
     #
     # provider = acc.has_role('publisher')
     # 2016-10-19 TD : not needed here for the time being
