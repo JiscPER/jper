@@ -266,7 +266,7 @@ def download(acc_id):
  
     rows=[]
     for hdr in ntable["header"]:
-        rows.append((for m in parse(ntable[hdr]).find(results)))
+        rows.append((m.value for m in parse(ntable[hdr]).find(results)))
 
     strm = StringIO()
     writer = csv.DictWriter(strm, fieldnames=ntable["header"], quoting=csv.QUOTE_ALL)
