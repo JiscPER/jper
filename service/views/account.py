@@ -36,7 +36,7 @@ ntable = {
   "Analysis Date" : "notifications[*].analysis_date",
       "Send Date" : "notifications[*].created_date",
         "Embargo" : "notifications[*].embargo.duration",
-            "DOI" : "notifications[*].metadata.identifier[?(@.type==""doi"")].id",
+            "DOI" : "notifications[*].metadata.identifier[?(@.type=='doi')].id",
       "Publisher" : "notifications[*].metadata.publisher",
           "Title" : "notifications[*].metadata.title"
 }
@@ -316,7 +316,7 @@ def details(repo_id):
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
     if provider:
         return render_template('account/matching.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
-    return render_template('account/details.html',repo=data.response, tbl=ntable, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/details.html',repo=data.response, tbl=[json.dumps(ntable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 
 # 2016-10-19 TD : restructure matching and(!!) failing history output (primarily for publishers) -- start --
