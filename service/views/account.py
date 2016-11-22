@@ -268,9 +268,11 @@ def download(acc_id):
         rows.append((m.value for m in parse(ntable[hdr]).find(results)))
 
     strm = StringIO()
-    writer = csv.DictWriter(strm, fieldnames=ntable["header"], quoting=csv.QUOTE_ALL)
+    writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
+    ## writer = csv.DictWriter(strm, fieldnames=ntable["header"], quoting=csv.QUOTE_ALL)
 
-    writer.writeheader()
+    ## writer.writeheader()
+    writer.writerow(ntable["header"])
     writer.writerows(zip(*rows))
 
     strm.reset()
