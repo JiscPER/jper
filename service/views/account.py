@@ -31,6 +31,7 @@ blueprint = Blueprint('account', __name__)
 # 2016-11-22 TD : global definition of output table by making use of jsonpath query strings;
 #                 applicable to both screen *and* file (e.g. csv) output simultanously
 ntable = {
+         "screen" : ["Send Date", ["DOI","Publisher"], "Title", "Analysis Date"],
          "header" : ["Analysis Date", "DOI", "Publisher", "Title", "Send Date", "Embargo"],
   "Analysis Date" : "notifications[*].analysis_date",
       "Send Date" : "notifications[*].created_date",
@@ -269,7 +270,8 @@ def download(acc_id):
 
     strm = StringIO()
     writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
-    ## writer = csv.DictWriter(strm, fieldnames=ntable["header"], quoting=csv.QUOTE_ALL)
+    ## writer = csv.DictWriter(strm, fieldnames=ntable["header"],
+    ##                               delimiter=',', quoting=csv.QUOTE_ALL)
 
     ## writer.writeheader()
     writer.writerow(ntable["header"])
@@ -278,8 +280,8 @@ def download(acc_id):
     strm.reset()
     fname = "details-{x}.csv".format(x=dates.now())
 
-    time.sleep(2)
-    flash("Routed Notification saved as '{x}'".format(x=fname), "success")
+    # time.sleep(2)
+    # flash("Routed Notification saved as '{x}'".format(x=fname), "success")
     return send_file(strm, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
 #
 # 2016-11-15 TD : enable download option ("csv", for a start...)
@@ -314,7 +316,7 @@ def details(repo_id):
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
     if provider:
         return render_template('account/matching.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
-    return render_template('account/details.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/details.html',repo=data.response, tbl=ntable, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 
 # 2016-10-19 TD : restructure matching and(!!) failing history output (primarily for publishers) -- start --

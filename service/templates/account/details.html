@@ -49,23 +49,29 @@
 <script>
 	// obj to render.
 	var obj = JSON.parse({{ repo|tojson|safe }});
+	var tabl = JSON.parse({{ tbl|tojson|safe }});
 	
+	var out = [];
+	for (hdr in tabl.header) {
+		out[hdr] = jsonpath.query(obj, tabl[hdr]);
+	}
+
 	var ids = jsonpath.query(obj, 'notifications[*].id');
-	var created = jsonpath.query(obj, 'notifications[*].created_date');
-	//var events = jsonpath.query(obj, 'notifications[*].event');
-	var dois = jsonpath.query(obj, 'notifications[*].metadata.identifier[?(@.type=="doi")].id');
+	// var created = jsonpath.query(obj, 'notifications[*].created_date');
+	// //var events = jsonpath.query(obj, 'notifications[*].event');
+	// var dois = jsonpath.query(obj, 'notifications[*].metadata.identifier[?(@.type=="doi")].id');
 	var publs = jsonpath.query(obj, 'notifications[*].metadata.publisher');
-	var titles = jsonpath.query(obj, 'notifications[*].metadata.title');
-	var analysis = jsonpath.query(obj, 'notifications[*].analysis_date');
+	// var titles = jsonpath.query(obj, 'notifications[*].metadata.title');
+	// var analysis = jsonpath.query(obj, 'notifications[*].analysis_date');
 	var node = [];
 	
 	for (variable in ids) {
 		var id = ids[variable];
 		$('#dataAOTable tr:last').after('<tr>\
-				<td class="toggle">'+created[variable]+'</td> \
-				<td>'+dois[variable]+'<br>'+"("+publs[variable]+")"+'</td> \
-				<td>'+titles[variable]+'</td> \
-				<td>'+analysis[variable]+'</td> \
+				<td class="toggle">'+out[tabl.header[4]][variable]+'</td> \
+				<td>'+out[tabl.header[1]][variable]+'<br>'+"("+publs[variable]+")"+'</td> \
+				<td>'+out[tabl.header[3]][variable]+'</td> \
+				<td>'+out[tabl.header[0][variable]+'</td> \
 				</tr> \
 				<tr style="display: none;"> <td colspan="4"><div class="col span-1 expand" data="'+id+'"> \
 					<span class="down-arrow"></span> \
