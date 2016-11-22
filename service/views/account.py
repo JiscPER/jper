@@ -201,7 +201,7 @@ def _list_request(repo_id=None, provider=False):
     return resp
 
 # 2016-11-15 TD : process a download request of a notification list
-def _download_request(repo_id=None):
+def _download_request(repo_id=None,provider=False):
     """
     Process a download request, either against the full dataset or the specific repo_id supplied
     This function will pull the arguments it requires out of the Flask request object. 
@@ -224,7 +224,6 @@ def _download_request(repo_id=None):
         nbulk = JPER.bulk_notifications(current_user, since, repository_id=repo_id)
     except ParameterException as e:
         return _bad_request(e.message)
-
 
     resp = make_response(nbulk.json())
     resp.mimetype = "application/json"
