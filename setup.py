@@ -7,7 +7,8 @@ setup(
     install_requires = [
         "octopus==1.0.0",
         "esprit",
-        "schedule==0.3.2"
+        "schedule==0.3.2",
+        "jsonpath_rw"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

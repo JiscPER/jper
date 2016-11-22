@@ -29,7 +29,7 @@
 		<table id="dataAOTable">
 			<tr>
 				<th>Send&nbsp;Date</th>
-				<th>Event</th>
+				<th>DOI / Publisher</th>
 				<th>Title</th>
 				<th>Analysis&nbsp;Date</th>
 			</tr>
@@ -50,15 +50,22 @@
 	// obj to render.
 	var obj = JSON.parse({{ repo|tojson|safe }});
 	
+	var ids = jsonpath.query(obj, 'notifications[*].id');
+	var created = jsonpath.query(obj, 'notifications[*].created_date');
+	//var events = jsonpath.query(obj, 'notifications[*].event');
+	var dois = jsonpath.query(obj, 'notifications[*].metadata.identifier[?(@.type=="doi")].id');
+	var publs = jsonpath.query(obj, 'notifications[*].metadata.publisher');
+	var titles = jsonpath.query(obj, 'notifications[*].metadata.title');
+	var analysis = jsonpath.query(obj, 'notifications[*].analysis_date');
 	var node = [];
 	
-	for (variable in obj.notifications) {
-		var id = obj.notifications[variable].id;
+	for (variable in ids) {
+		var id = ids[variable];
 		$('#dataAOTable tr:last').after('<tr>\
-				<td class="toggle">'+obj.notifications[variable].created_date+'</td> \
-				<td>'+obj.notifications[variable].event+'</td> \
-				<td>'+obj.notifications[variable].metadata.title+'</td> \
-				<td>'+obj.notifications[variable].analysis_date+'</td> \
+				<td class="toggle">'+created[variable]+'</td> \
+				<td>'+dois[variable]+'<br>'+"("+publs[variable]+")"+'</td> \
+				<td>'+titles[variable]+'</td> \
+				<td>'+analysis[variable]+'</td> \
 				</tr> \
 				<tr style="display: none;"> <td colspan="4"><div class="col span-1 expand" data="'+id+'"> \
 					<span class="down-arrow"></span> \
