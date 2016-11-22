@@ -597,3 +597,71 @@ class JPER(object):
         fnl.total = res.get('hits',{}).get('total',0)
         return fnl
 
+
+    @classmethod
+    def bulk_notifications(cls, account, since, repository_id=None, provider=False):
+    # 2016-09-07 TD : trial to make some publisher's reporting available
+        """
+        Bulk list notification which meet the criteria specified by the parameters
+
+        :param account: user Account as which to carry out this action (all users can request notifications, so this is primarily for logging purposes)
+        :param since: date string for the earliest notification date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work
+        :param repository_id: the id of the repository whose notifications to return.  If no id is provided, all notifications for all repositories will be queried.
+        :return: models.NotificationList containing the parameters and results
+        """
+        try:
+            since = dates.parse(since)
+        except ValueError as e:
+            raise ParameterException("Unable to understand since date '{x}'".format(x=since))
+
+        nl = models.NotificationList()
+        nl.since = dates.format(since)
+        nl.page = -1
+        nl.timestamp = dates.now()
+        qr = {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "range": {
+                                        "created_date": {
+                                            "gte": nl.since
+                                        }
+                                    }
+                                }                                
+                            ]
+                        }
+                    }
+                }
+            },
+            "sort": [{"analysis_date":{"order":"desc"}}],
+            # "sort": [{"analysis_date":{"order":"asc"}}],
+            # 2016-09-06 TD : change of sort order newest first
+        }
+        
+        if repository_id is not None:
+            # 2016-09-07 TD : trial to filter for publisher's reporting
+            if provider:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": repository_id } })
+            else:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
+
+            app.logger.debug(str(repository_id) + ' bulk notifications for query ' + json.dumps(qr))
+        else:
+            app.logger.debug('Bulk all notifications for query ' + json.dumps(qr))
+
+        nl.notifications = []
+        for rn in models.RoutedNotification.iterate(q=qr):
+            # 2016-09-07 TD : trial to filter for publisher's reporting
+            nl.notifications.append(rn.make_outgoing(provider=provider).data)
+
+        ### app.logger.debug('List notifications query resulted ' + json.dumps(res))
+        ### nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
+
+        ### nl.total = res.get('hits',{}).get('total',0)
+        nl.total = len(nl.notifications)
+        return nl
+
+

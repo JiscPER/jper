@@ -5,14 +5,17 @@ from __future__ import division
 import uuid, json, time, requests, re
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
-from flask import render_template, abort
+from flask import render_template, abort, send_file
 from service.forms.adduser import AdduserForm
 from flask.ext.login import login_user, logout_user, current_user
 from octopus.core import app
 from octopus.lib import webapp, dates
 from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
+from service.views.webapi import _bad_request
 import pprint
 import math
+import csv
+from jsonpath_rw_ext import parse
 
 
 from service import models
@@ -23,6 +26,43 @@ except:
     from StringIO import StringIO
 
 blueprint = Blueprint('account', __name__)
+
+
+# 2016-11-22 TD : global definition of output table by making use of jsonpath query strings;
+#                 applicable to both screen *and* file (e.g. csv) output simultanously
+ntable = {
+         "header" : ["Analysis Date", "DOI", "Publisher", "Title", "Send Date", "Embargo"],
+  "Analysis Date" : "notifications[*].analysis_date",
+      "Send Date" : "notifications[*].created_date",
+        "Embargo" : "notifications[*].embargo.duration",
+            "DOI" : "notifications[*].metadata.identifier[?(@.type==""doi"")].id",
+      "Publisher" : "notifications[*].metadata.publisher",
+          "Title" : "notifications[*].metadata.title"
+}
+
+# 2016-11-22 TD : '_flatten_json' superseded by previous construction (and the usage of jsonpath)
+#
+# # 2016-11-15 TD : create a flat json hierarchy
+# # ( taken from http://stackoverflow.com/questions/1871524/how-can-i-convert-json-to-csv#1871568 )
+# def _flatten_json(mp, delim='.'):
+#     ret = {}
+#     for k in mp.keys():
+#         if isinstance(mp[k], dict):
+#             get = _flatten_json(mp[k], delim)
+#             for j in get.keys():
+#                 ret[k + delim + j] = get[j]
+#         elif isinstance(mp[k], list):
+#             for l in mp[k]:
+#                 get = _flatten_json(l, delim)
+#                 for j in get.keys():
+#                     if k + delim + j in ret:
+#                         ret[k + delim + j].append(get[j])
+#                     else:
+#                         ret[k+ delim + j] = [get[j]]
+#         else:
+#             ret[k] = mp[k]
+#     return ret
+
 
 # 2016-10-19 TD : new call to list all failed notifications (model class FailedNotification)
 def _list_failrequest(provider_id=None):
@@ -160,6 +200,41 @@ def _list_request(repo_id=None, provider=False):
     resp.status_code = 200
     return resp
 
+# 2016-11-15 TD : process a download request of a notification list
+def _download_request(repo_id=None):
+    """
+    Process a download request, either against the full dataset or the specific repo_id supplied
+    This function will pull the arguments it requires out of the Flask request object. 
+    See the API documentation for the parameters of these kinds of requests.
+
+    :param repo_id: the repo id to limit the request to
+    :return: StringIO containing the list of notifications that are appropriate to the parameters
+    """
+    since = request.values.get("since")
+
+    if since is None or since == "":
+        return _bad_request("Missing required parameter 'since'")
+
+    try:
+        since = dates.reformat(since)
+    except ValueError as e:
+        return _bad_request("Unable to understand since date '{x}'".format(x=since))
+
+    try:
+        nbulk = JPER.bulk_notifications(current_user, since, repository_id=repo_id)
+    except ParameterException as e:
+        return _bad_request(e.message)
+
+
+    resp = make_response(nbulk.json())
+    resp.mimetype = "application/json"
+    resp.status_code = 200
+    return resp
+#
+# 2016-11-15 TD : process a download request of a notification list
+
+
+
 @blueprint.before_request
 def restrict():
     if current_user.is_anonymous():
@@ -174,6 +249,39 @@ def index():
     ## users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
     users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000).get('hits',{}).get('hits',[])]
     return render_template('account/users.html', users=users)
+
+
+# 2016-11-15 TD : enable download option ("csv", for a start...)
+@blueprint.route('/download/<acc_id>', methods=["GET"])
+def download(acc_id):
+    acc = models.Account.pull(acc_id)
+    if acc is None:
+        abort(404)
+   
+    provider = acc.has_role('publisher')
+
+    data = _download_request(repo_id=acc_id, provider=provider)
+
+    results = json.loads(data.response[0])
+ 
+    rows=[]
+    for hdr in ntable["header"]:
+        rows.append((for m in parse(ntable[hdr]).find(results)))
+
+    strm = StringIO()
+    writer = csv.DictWriter(strm, fieldnames=ntable["header"], quoting=csv.QUOTE_ALL)
+
+    writer.writeheader()
+    writer.writerows(zip(*rows))
+
+    strm.reset()
+    fname = "details-{x}.csv".format(x=dates.now())
+
+    time.sleep(2)
+    flash("Routed Notification saved as '{x}'".format(x=fname), "success")
+    return send_file(strm, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
+#
+# 2016-11-15 TD : enable download option ("csv", for a start...)
 
 
 @blueprint.route('/details/<repo_id>', methods=["GET", "POST"])
