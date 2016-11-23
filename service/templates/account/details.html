@@ -27,12 +27,6 @@
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
 		<table id="dataAOTable">
-			<tr>
-				<th>Send&nbsp;Date</th>
-				<th>DOI / Publisher</th>
-				<th>Title</th>
-				<th>Analysis&nbsp;Date</th>
-			</tr>
 
 		</table>
 		{% from "harvester/helpers/pagination.html" import render_pagination%}
@@ -46,15 +40,26 @@
 		<div id='elem'></div>
 	</div>
 </div>
+<!--
+		<table id="dataAOTable">
+			<tr>
+				<th>Send&nbsp;Date</th>
+				<th>DOI / Publisher</th>
+				<th>Title</th>
+				<th>Analysis&nbsp;Date</th>
+			</tr>
+
+		</table>
+-->
 <script>
 	// obj to render.
 	var obj = JSON.parse({{ repo|tojson|safe }});
-	var tabl = JSON.parse({{ tbl|tojson|safe }});
+	var tbl = JSON.parse({{ tabl|tojson|safe }});
 	
 	var out = [];
-	for (j in tabl.header) {
-		var hdr = tabl.header[j];
-		out[hdr] = jsonpath.query(obj, tabl[hdr]);
+	for (j in tbl.header) {
+		var hdr = tbl.header[j];
+		out[hdr] = jsonpath.query(obj, tbl[hdr]);
 	}
 
 	var ids = jsonpath.query(obj, 'notifications[*].id');
@@ -66,13 +71,20 @@
 	// var analysis = jsonpath.query(obj, 'notifications[*].analysis_date');
 	var node = [];
 	
+        $('#dataAOTable').prepend('<tr>\
+		<th>'+tbl.header[4]+'</th> \
+		<th>'+tbl.header[1]+" / "+tbl.header[2]+'</th> \
+		<th>'+tbl.header[3]+'</th> \
+		<th>'+tbl.header[0]+'</th> \
+		</tr>');
+
 	for (variable in ids) {
 		var id = ids[variable];
 		$('#dataAOTable tr:last').after('<tr>\
-				<td class="toggle">'+out[tabl.header[4]][variable]+'</td> \
-				<td>'+out[tabl.header[1]][variable]+'<br>'+"("+out[tabl.header[2]][variable]+")"+'</td> \
-				<td>'+out[tabl.header[3]][variable]+'</td> \
-				<td>'+out[tabl.header[0]][variable]+'</td> \
+				<td class="toggle">'+out[tbl.header[4]][variable]+'</td> \
+				<td>'+out[tbl.header[1]][variable]+'<br>'+"("+out[tbl.header[2]][variable]+")"+'</td> \
+				<td>'+out[tbl.header[3]][variable]+'</td> \
+				<td>'+out[tbl.header[0]][variable]+'</td> \
 				</tr> \
 				<tr style="display: none;"> <td colspan="4"><div class="col span-1 expand" data="'+id+'"> \
 					<span class="down-arrow"></span> \

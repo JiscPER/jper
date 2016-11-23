@@ -252,7 +252,7 @@ def index():
 
 
 # 2016-11-15 TD : enable download option ("csv", for a start...)
-@blueprint.route('/download/<acc_id>', methods=["GET"])
+@blueprint.route('/download/<acc_id>', methods=["GET", "POST"])
 def download(acc_id):
     acc = models.Account.pull(acc_id)
     if acc is None:
@@ -278,10 +278,10 @@ def download(acc_id):
     writer.writerows(zip(*rows))
 
     strm.reset()
-    fname = "details-{x}.csv".format(x=dates.now())
+    fname = "routed_{y}_{x}.csv".format(y=acc.id,x=dates.now())
 
-    # time.sleep(2)
-    # flash("Routed Notification saved as '{x}'".format(x=fname), "success")
+    #time.sleep(1)
+    #flash("Routed Notification saved as '{x}'".format(x=fname), "success")
     return send_file(strm, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
 #
 # 2016-11-15 TD : enable download option ("csv", for a start...)
@@ -316,7 +316,7 @@ def details(repo_id):
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
     if provider:
         return render_template('account/matching.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
-    return render_template('account/details.html',repo=data.response, tbl=[json.dumps(ntable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/details.html',repo=data.response, tabl=[json.dumps(ntable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 
 # 2016-10-19 TD : restructure matching and(!!) failing history output (primarily for publishers) -- start --
