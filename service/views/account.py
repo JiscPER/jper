@@ -303,7 +303,8 @@ def download(acc_id):
         abort(404)
    
     provider = acc.has_role('publisher')
-    
+    data = None
+   
     if provider:
         if request.args.get('rejected',False):
             fprefix = "failed"
@@ -373,7 +374,7 @@ def details(repo_id):
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
     if provider:
-        return render_template('account/matching.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+        return render_template('account/matching.html',repo=data.response, tabl=[json.dums(mtable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
     return render_template('account/details.html',repo=data.response, tabl=[json.dumps(ntable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 
@@ -402,7 +403,7 @@ def matching(repo_id):
                         
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
-    return render_template('account/matching.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/matching.html',repo=data.response, tabl=[json.dumps(mtable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 @blueprint.route('/failing/<provider_id>', methods=["GET", "POST"])
 def failing(provider_id):

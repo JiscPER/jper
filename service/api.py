@@ -719,7 +719,7 @@ class JPER(object):
             app.logger.debug('Bulk all matches for query ' + json.dumps(qr))
 
         mpl.matches = []
-        for mp in models.MatchProvenance.interate(q=qr):
+        for mp in models.MatchProvenance.iterate(q=qr):
             mpl.matches.append(mp.data)
 
         ### app.logger.debug('List matches query resulted ' + json.dumps(res))
