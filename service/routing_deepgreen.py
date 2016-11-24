@@ -43,6 +43,7 @@ def route(unrouted):
 
     # 2016-10-19 TD : introduce a short(!) explanation for more routing information in history logs
     routing_reason = "n/a"
+    issn_data = []
 
     # first get the packaging system to load and retrieve all the metadata
     # and match data from the content file (if it exists)
@@ -56,6 +57,11 @@ def route(unrouted):
             failed = unrouted.make_failed()
             failed.analysis_date = dates.now()
             failed.reason = routing_reason
+            # 2016-11-24 TD : collecting all available ISSN data of this notifiction
+            if issn_data is not None and len(issn_data)>0:
+                failed.issn_data = " ; ".join(issn_data)
+            else:
+                failed.issn_data = "None"
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
@@ -196,6 +202,11 @@ def route(unrouted):
             failed = unrouted.make_failed()
             failed.analysis_date = dates.now()
             failed.reason = routing_reason
+            # 2016-11-24 TD : collecting all available ISSN data of this notifiction
+            if issn_data is not None and len(issn_data)>0:
+                failed.issn_data = " ; ".join(issn_data)
+            else:
+                failed.issn_data = "None"
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
@@ -223,6 +234,11 @@ def route(unrouted):
         # write it to the index
         routed = unrouted.make_routed()
         routed.reason = routing_reason
+        # 2016-11-24 TD : collecting all available ISSN data of this notifiction
+        if issn_data is not None and len(issn_data)>0:
+            routed.issn_data = " ; ".join(issn_data)
+        else:
+            routed.issn_data = "None"
         for pl in pack_links:
             routed.add_link(pl.get("url"), pl.get("type"), pl.get("format"), pl.get("access"), pl.get("packaging"))
         routed.repositories = match_ids
@@ -245,6 +261,11 @@ def route(unrouted):
             failed = unrouted.make_failed()
             failed.analysis_date = dates.now()
             failed.reason = routing_reason
+            # 2016-11-24 TD : collecting all available ISSN data of this notifiction
+            if issn_data is not None and len(issn_data)>0:
+                failed.issn_data = " ; ".join(issn_data)
+            else:
+                failed.issn_data = "None"
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()

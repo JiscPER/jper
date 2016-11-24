@@ -871,6 +871,8 @@ class RoutingInformation(dataobj.DataObj):
 
         {
             "analysis_date" : "<date the routing analysis was carried out>",
+            "reason" : "<short explanation why this notification was routed or rejected>",
+            "issn_data" : "<all available issn items (P/EISSNs) collected in one string>",
             "repositories" : ["<ids of repository user accounts whcih match this notification>"]
         }
     """
@@ -891,6 +893,8 @@ class RoutingInformation(dataobj.DataObj):
         struct = {
             "fields" : {
                 "analysis_date" : {"coerce" : "utcdatetime"},
+                # 2016-11-24 TD : new field to collect all available ISSN data, mainly for customer convenience...
+                "issn_data" : {"coerce" : "unicode"},
                 # 2016-10-19 TD : additional field for more reporting information (e.g. failing or rejecting!)
                 "reason" : {"coerce" : "unicode"}
             },
@@ -901,6 +905,28 @@ class RoutingInformation(dataobj.DataObj):
 
         self._add_struct(struct)
         super(RoutingInformation, self).__init__(raw)
+
+    # 2016-11-24 TD : additional string field 'issn_data' -- start --
+    @property
+    def issn_data(self):
+        """
+        The issn_data of this notification 
+
+        :return: the routing (or failing) issn_data as *one* string
+        """
+        return self._get_single("issn_data", coerce=dataobj.to_unicode())
+
+    @issn_data.setter
+    def issn_data(self, val):
+        """
+        Set the issn_data of this notification 
+
+        :param val: the issn_data (coerced in *one* string!)
+        """
+        self._set_single("issn_data", val, coerce=dataobj.to_unicode())
+
+    # 2016-11-24 TD : additional string field 'issn_data' -- end --
+
 
     # 2016-10-19 TD : additional string field 'reason' -- start --
     @property

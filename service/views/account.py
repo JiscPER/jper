@@ -41,6 +41,31 @@ ntable = {
           "Title" : "notifications[*].metadata.title"
 }
 
+
+mtable = {
+         "screen" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term", "Appears in {notification_field}"],
+         "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
+  "Analysis Date" : "matches[*].created_date",
+  "ISSN or EISSN" : "matches[*].alliance.issn",
+            "DOI" : "matches[*].alliance.doi",
+        "License" : "matches[*].alliance.link",
+   "Forwarded to" : "matches[*].bibid",
+           "Term" : "matches[*].provenance[0].term",
+     "Appears in" : "matches[*].provenance[0].notification_field"
+}
+
+
+ftable = {
+         "screen" : ["Analysis Date", "ISSN of EISSN", "DOI", "Reason"],
+         "header" : ["Analysis Date", "ISSN of EISSN", "DOI", "Reason"],
+      "Send Date" : "failed[*].created_date",
+  "Analysis Date" : "failed[*].analysis_date",
+  "ISSN of EISSN" : "failed[*].metadata.identifier",
+            "DOI" : "failed[*].metadata.identifier[?(@.type=='doi')].id",
+         "Reason" : "failed[*].reason"
+}
+
+
 # 2016-11-22 TD : '_flatten_json' superseded by previous construction (and the usage of jsonpath)
 #
 # # 2016-11-15 TD : create a flat json hierarchy
