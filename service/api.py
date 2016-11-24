@@ -665,3 +665,130 @@ class JPER(object):
         return nl
 
 
+    @classmethod
+    def bulk_matches(cls, account, since, repository_id=None, provider=False):
+        """
+        Bulk match provenances which meet the criteria specified by the parameters
+
+        :param account: user Account as which to carry out this action (all users can request matches, so this is primarily for logging purposes)
+        :param since: date string for the earliest match analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work
+        :param repository_id: the id of the repository whose matches to return.  If no id is provided, all matches for all repositories will be queried.
+        :return: models.MatchProvenanceList containing the parameters and results
+        """
+        try:
+            since = dates.parse(since)
+        except ValueError as e:
+            raise ParameterException("Unable to understand since date '{x}'".format(x=since))
+
+        mpl = models.MatchProvenanceList()
+        mpl.since = dates.format(since)
+        mpl.page = -1
+        mpl.timestamp = dates.now()
+        qr = {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "range": {
+                                        "created_date": {
+                                            "gte": mpl.since
+                                        }
+                                    }
+                                }                                
+                            ]
+                        }
+                    }
+                }
+            },
+            # "sort": [{"analysis_date":{"order":"asc"}}],
+            "sort": [{"created_date":{"order":"desc"}}],
+            # 2016-09-06 TD : change of sort order newest first
+        }
+        
+        if repository_id is not None:
+            # 2016-09-07 TD : trial to filter for publisher's reporting
+            if provider:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "pub.exact": repository_id } })
+            else:
+                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repo.exact": repository_id } })
+
+            app.logger.debug(str(repository_id) + ' bulk matches for query ' + json.dumps(qr))
+        else:
+            app.logger.debug('Bulk all matches for query ' + json.dumps(qr))
+
+        mpl.matches = []
+        for mp in models.MatchProvenance.interate(q=qr):
+            mpl.matches.append(mp.data)
+
+        ### app.logger.debug('List matches query resulted ' + json.dumps(res))
+        ### mpl.matches = [models.MatchProvenance(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
+
+        ### mpl.total = res.get('hits',{}).get('total',0)
+        mpl.total = len(mpl.matches)
+        return mpl
+
+
+
+    @classmethod
+    def bulk_failed(cls, account, since, provider_id=None):
+        """
+        Bulk failed notifications which meet the criteria specified by the parameters
+
+        :param account: user Account as which to carry out this action (all users can request failed notifications, so this is primarily for logging purposes)
+        :param since: date string for the earliest failed analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work
+        :param provider_id: the id of the provider whose failed notifications to return.  If no id is provided, all failed notifications for all providers will be queried.
+        :return: models.FailedNotificationList containing the parameters and results
+        """
+        try:
+            since = dates.parse(since)
+        except ValueError as e:
+            raise ParameterException("Unable to understand since date '{x}'".format(x=since))
+
+        fnl = models.FailedNotificationList()
+        fnl.since = dates.format(since)
+        fnl.page = -1
+        fnl.timestamp = dates.now()
+        qr = {
+            "query": {
+                "filtered": {
+                    "filter": {
+                        "bool": {
+                            "must": [
+                                {
+                                    "range": {
+                                        "created_date": {
+                                            "gte": fnl.since
+                                        }
+                                    }
+                                }                                
+                            ]
+                        }
+                    }
+                }
+            },
+            # "sort": [{"created_date":{"order":"desc"}}],
+            "sort": [{"analysis_date":{"order":"desc"}}],
+            # 2016-09-06 TD : change of sort order newest first
+        }
+        
+        if provider_id is not None:
+            qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": provider_id } })
+
+            app.logger.debug(str(provider_id) + ' bulk failed notifications for query ' + json.dumps(qr))
+        else:
+            app.logger.debug('Bulk all failed notifications for query ' + json.dumps(qr))
+
+        fnl.failed = []
+        for fn in models.FailedNotification.iterate(q=qr):
+            fnl.failed.append(fn.data)
+
+        ### app.logger.debug('List failed notifications query resulted ' + json.dumps(res))
+        ### fnl.failed = [models.FailedNotification(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
+
+        ### fnl.total = res.get('hits',{}).get('total',0)
+        fnl.total = len(fnl.failed)
+        return fnl
+
+

@@ -60,7 +60,7 @@ ftable = {
          "header" : ["Analysis Date", "ISSN of EISSN", "DOI", "Reason"],
       "Send Date" : "failed[*].created_date",
   "Analysis Date" : "failed[*].analysis_date",
-  "ISSN of EISSN" : "failed[*].metadata.identifier",
+  "ISSN of EISSN" : "failed[*].issn_data",
             "DOI" : "failed[*].metadata.identifier[?(@.type=='doi')].id",
          "Reason" : "failed[*].reason"
 }
@@ -91,13 +91,15 @@ ftable = {
 
 
 # 2016-10-19 TD : new call to list all failed notifications (model class FailedNotification)
-def _list_failrequest(provider_id=None):
+# 2016-11-24 TD : to decrease the number of different calls; unifying screen and csv output
+def _list_failrequest(provider_id=None, bulk=False):
     """
     Process a list request, either against the full dataset or the specific provider_id supplied
     This function will pull the arguments it requires out of the Flask request object.  See the API documentation
     for the parameters of these kinds of requests.
 
     :param provider_id: the provider id to limit the request to
+    :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
     since = request.values.get("since")
@@ -124,7 +126,11 @@ def _list_failrequest(provider_id=None):
 
     try:
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
-        nlist = JPER.list_failed(current_user, since, page=page, page_size=page_size, provider_id=provider_id)
+        # 2016-11-24 TD : bulk switch to decrease the number of different calls
+        if bulk is True:
+            nlist = JPER.bulk_failed(current_user, since, provider_id=provider_id)
+        else:
+            nlist = JPER.list_failed(current_user, since, page=page, page_size=page_size, provider_id=provider_id)
     except ParameterException as e:
         return _bad_request(e.message)
 
@@ -135,7 +141,8 @@ def _list_failrequest(provider_id=None):
 
 
 # 2016-10-18 TD : new call to list all matches (model class MatchProvenance)
-def _list_matchrequest(repo_id=None, provider=False):
+# 2016-11-24 TD : to decrease the number of different calls; unifying screen and csv output
+def _list_matchrequest(repo_id=None, provider=False, bulk=False):
     """
     Process a list request, either against the full dataset or the specific repo_id supplied
     This function will pull the arguments it requires out of the Flask request object.  See the API documentation
@@ -143,6 +150,7 @@ def _list_matchrequest(repo_id=None, provider=False):
 
     :param repo_id: the repo id to limit the request to
     :param provider: (boolean) whether the repo_id belongs to a publisher or not
+    :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
     since = request.values.get("since")
@@ -169,8 +177,12 @@ def _list_matchrequest(repo_id=None, provider=False):
 
     try:
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
-        # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
-        nlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
+        # 2016-11-24 TD : bulk switch to decrease the number of different calls
+        if bulk is True:
+            nlist = JPER.bulk_matches(current_user, since, repository_id=repo_id)
+        else:
+            # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
+            nlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
     except ParameterException as e:
         return _bad_request(e.message)
 
@@ -182,7 +194,8 @@ def _list_matchrequest(repo_id=None, provider=False):
 
 # def _list_request(repo_id=None):
 # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
-def _list_request(repo_id=None, provider=False):
+# 2016-11-24 TD : to decrease the number of different calls; unifying screen and csv output
+def _list_request(repo_id=None, provider=False, bulk=False):
     """
     Process a list request, either against the full dataset or the specific repo_id supplied
     This function will pull the arguments it requires out of the Flask request object.  See the API documentation
@@ -190,6 +203,7 @@ def _list_request(repo_id=None, provider=False):
 
     :param repo_id: the repo id to limit the request to
     :param provider: (boolean) whether the repo_id belongs to a publisher or not
+    :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
     since = request.values.get("since")
@@ -216,8 +230,12 @@ def _list_request(repo_id=None, provider=False):
 
     try:
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
-        # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
-        nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
+        # 2016-11-24 TD : bulk switch to decrease the number of different calls
+        if bulk is True:
+            nlist = JPER.bulk_notifications(current_user, since, repository_id=repo_id)
+        else:
+            # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
+            nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
     except ParameterException as e:
         return _bad_request(e.message)
 
@@ -226,7 +244,8 @@ def _list_request(repo_id=None, provider=False):
     resp.status_code = 200
     return resp
 
-# 2016-11-15 TD : process a download request of a notification list
+# 2016-11-24 TD : *** DEPRECATED: this function shall not be called anymore! ***
+# 2016-11-15 TD : process a download request of a notification list -- start --
 def _download_request(repo_id=None,provider=False):
     """
     Process a download request, either against the full dataset or the specific repo_id supplied
@@ -256,7 +275,7 @@ def _download_request(repo_id=None,provider=False):
     resp.status_code = 200
     return resp
 #
-# 2016-11-15 TD : process a download request of a notification list
+# 2016-11-15 TD : process a download request of a notification list -- end --
 
 
 
@@ -284,14 +303,28 @@ def download(acc_id):
         abort(404)
    
     provider = acc.has_role('publisher')
-
-    data = _download_request(repo_id=acc_id, provider=provider)
+    
+    if provider:
+        if request.args.get('rejected',False):
+            fprefix = "failed"
+            xtable = ftable
+            data = _list_failrequest(provider_id=acc.id, bulk=True)
+        else:
+            fprefix = "matched"
+            xtable = mtable
+            data = _list_matchrequest(repo_id=acc.id, provider=provider, bulk=True)
+    else:
+        fprefix = "routed"
+        xtable = ntable
+        data = _list_request(repo_id=acc_id, provider=provider, bulk=True)
+        # 2016-11-24 TD : old call; DEPRECATED!
+        # data = _download_request(repo_id=acc_id, provider=provider)
 
     results = json.loads(data.response[0])
  
     rows=[]
-    for hdr in ntable["header"]:
-        rows.append((m.value for m in parse(ntable[hdr]).find(results)))
+    for hdr in xtable["header"]:
+        rows.append((m.value for m in parse(xtable[hdr]).find(results)))
 
     strm = StringIO()
     writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
@@ -299,14 +332,14 @@ def download(acc_id):
     ##                               delimiter=',', quoting=csv.QUOTE_ALL)
 
     ## writer.writeheader()
-    writer.writerow(ntable["header"])
+    writer.writerow(xtable["header"])
     writer.writerows(zip(*rows))
 
     strm.reset()
-    fname = "routed_{y}_{x}.csv".format(y=acc.id,x=dates.now())
+    fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=acc.id, x=dates.now())
 
     #time.sleep(1)
-    #flash("Routed Notification saved as '{x}'".format(x=fname), "success")
+    #flash(" Saved {z} notifications as\n '{x}'".format(z=fprefix,x=fname), "success")
     return send_file(strm, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
 #
 # 2016-11-15 TD : enable download option ("csv", for a start...)
