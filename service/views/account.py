@@ -25,6 +25,7 @@ try:
 except:
     from StringIO import StringIO
 
+
 blueprint = Blueprint('account', __name__)
 
 
@@ -128,13 +129,13 @@ def _list_failrequest(provider_id=None, bulk=False):
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
         # 2016-11-24 TD : bulk switch to decrease the number of different calls
         if bulk is True:
-            nlist = JPER.bulk_failed(current_user, since, provider_id=provider_id)
+            flist = JPER.bulk_failed(current_user, since, provider_id=provider_id)
         else:
-            nlist = JPER.list_failed(current_user, since, page=page, page_size=page_size, provider_id=provider_id)
+            flist = JPER.list_failed(current_user, since, page=page, page_size=page_size, provider_id=provider_id)
     except ParameterException as e:
         return _bad_request(e.message)
 
-    resp = make_response(nlist.json())
+    resp = make_response(flist.json())
     resp.mimetype = "application/json"
     resp.status_code = 200
     return resp
@@ -178,15 +179,15 @@ def _list_matchrequest(repo_id=None, provider=False, bulk=False):
     try:
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
         # 2016-11-24 TD : bulk switch to decrease the number of different calls
-        if bulk is True:
-            nlist = JPER.bulk_matches(current_user, since, repository_id=repo_id)
+        if bulk:
+            mlist = JPER.bulk_matches(current_user, since, repository_id=repo_id, provider=provider)
         else:
             # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
-            nlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
+            mlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
     except ParameterException as e:
         return _bad_request(e.message)
 
-    resp = make_response(nlist.json())
+    resp = make_response(mlist.json())
     resp.mimetype = "application/json"
     resp.status_code = 200
     return resp
@@ -232,7 +233,7 @@ def _list_request(repo_id=None, provider=False, bulk=False):
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
         # 2016-11-24 TD : bulk switch to decrease the number of different calls
         if bulk is True:
-            nlist = JPER.bulk_notifications(current_user, since, repository_id=repo_id)
+            nlist = JPER.bulk_notifications(current_user, since, repository_id=repo_id, provider=provider)
         else:
             # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
             nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
@@ -243,6 +244,7 @@ def _list_request(repo_id=None, provider=False, bulk=False):
     resp.mimetype = "application/json"
     resp.status_code = 200
     return resp
+
 
 # 2016-11-24 TD : *** DEPRECATED: this function shall not be called anymore! ***
 # 2016-11-15 TD : process a download request of a notification list -- start --
@@ -296,9 +298,9 @@ def index():
 
 
 # 2016-11-15 TD : enable download option ("csv", for a start...)
-@blueprint.route('/download/<acc_id>', methods=["GET", "POST"])
-def download(acc_id):
-    acc = models.Account.pull(acc_id)
+@blueprint.route('/download/<account_id>', methods=["GET", "POST"])
+def download(account_id):
+    acc = models.Account.pull(account_id)
     if acc is None:
         abort(404)
    
@@ -309,23 +311,32 @@ def download(acc_id):
         if request.args.get('rejected',False):
             fprefix = "failed"
             xtable = ftable
-            data = _list_failrequest(provider_id=acc.id, bulk=True)
+            html = _list_failrequest(provider_id=account_id, bulk=True)
         else:
             fprefix = "matched"
             xtable = mtable
-            data = _list_matchrequest(repo_id=acc.id, provider=provider, bulk=True)
+            html = _list_matchrequest(repo_id=account_id, provider=provider, bulk=True)
     else:
         fprefix = "routed"
         xtable = ntable
-        data = _list_request(repo_id=acc_id, provider=provider, bulk=True)
+        html = _list_request(repo_id=account_id, provider=provider, bulk=True)
         # 2016-11-24 TD : old call; DEPRECATED!
-        # data = _download_request(repo_id=acc_id, provider=provider)
+        # data = _download_request(repo_id=acc.id, provider=provider)
 
-    results = json.loads(data.response[0])
- 
+    res = json.loads(html.response[0])
+
+    ## app.logger.debug('Download call gathered data: ' + json.dumps(res))
+
     rows=[]
     for hdr in xtable["header"]:
-        rows.append((m.value for m in parse(xtable[hdr]).find(results)))
+        rows.append( (m.value for m in parse(xtable[hdr]).find(res)) )
+
+    #
+    # 2016-11-25 TD : FIXME: 'zip' command truncates *silently* to the shortest length! 
+    #                 Rows might therefore become really inconsistent here.  Indeed, very ugly!!!
+    rows = zip(*rows)
+    #
+    #
 
     strm = StringIO()
     writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
@@ -334,10 +345,10 @@ def download(acc_id):
 
     ## writer.writeheader()
     writer.writerow(xtable["header"])
-    writer.writerows(zip(*rows))
+    writer.writerows(rows)
 
+    fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=account_id, x=dates.now())
     strm.reset()
-    fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=acc.id, x=dates.now())
 
     #time.sleep(1)
     #flash(" Saved {z} notifications as\n '{x}'".format(z=fprefix,x=fname), "success")
