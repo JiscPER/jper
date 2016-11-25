@@ -428,7 +428,7 @@ def failing(provider_id):
                         
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
-    return render_template('account/failing.html',repo=data.response, num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/failing.html',repo=data.response, tabl=[json.dumps(ftable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 # 2016-10-19 TD : restructure matching and(!!) failing -- end --
 

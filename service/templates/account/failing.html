@@ -33,12 +33,6 @@
 
 			
 			<table id="publisherTable">
-				<tr>
-					<th>Analysis&nbsp;Date</th>
-					<th>ISSN&nbsp;or&nbsp;EISSN</th>
-					<th>DOI</th>
-					<th>Reason</th>
-				</tr>
 
 			</table>
 				
@@ -54,13 +48,45 @@
 	</div>	
 	</div>
 
-		
-		
-
+<!--
+				<tr>
+					<th>Analysis&nbsp;Date</th>
+					<th>ISSN&nbsp;or&nbsp;EISSN</th>
+					<th>DOI</th>
+					<th>Reason</th>
+				</tr>
+-->
 
 <script>
 	var obj = JSON.parse ({{ repo|tojson|safe }}); 
+	var tbl = JSON.parse ({{ tabl|tojson|safe }}); 
 
+	var out =[];
+	for (j in tbl.header) {
+		var hdr = tbl.header[j];
+		out[hdr] = jsonpath.query(obj, tbl[hdr]);
+	}
+
+	var ids = jsonpath.query(obj, 'failed[*].id');
+	// var node = '';
+
+	$('#publisherTable').prepend('<tr>\
+		<th>'+tbl.header[0]+'</th> \
+		<th>'+tbl.header[1]+'</th> \
+		<th>'+tbl.header[2]+'</th> \
+		<th>'+tbl.header[3]+'</th> \
+		</tr>');
+
+	for (variable in ids) {
+		$('#publisherTable tr:last').after('<tr>\
+			<td>'+out[tbl.header[0]][variable]+'</td> \
+			<td>'+out[tbl.header[1]][variable]+'</td> \
+			<td>'+out[tbl.header[2]][variable]+'</td> \
+			<td>'+out[tbl.header[3]][variable]+'</td> \
+			</tr>');
+	}
+
+/*
 	// var node = '';
 
 	for (variable in obj.failed) {
@@ -93,6 +119,7 @@
 	//	data : obj.matches[variable]
 	// });
 	}
+*/
 </script>
 
 
