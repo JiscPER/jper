@@ -10,7 +10,7 @@ from octopus.core import app
 from octopus.lib import plugin
 import zipfile, os, shutil
 from lxml import etree
-from octopus.modules.epmc.models import JATS, EPMCMetadataXML
+from octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
 from octopus.modules.identifiers import postcode
 from service import models
 from octopus.modules.store import store
@@ -870,3 +870,360 @@ class FilesAndJATS(PackageHandler):
         """
         # is valid if either one or both of jats/epmc is not none
         return self.jats is not None or self.epmc is not None
+
+
+class FilesAndRSC(PackageHandler):
+    """
+    Class for representing the FilesAndRSC format
+
+    You should use the format identifier: https://datahub.deepgreen.org/FilesAndRSC
+
+    This is the format that we prefer to get from (the?) RSC provider(s).  It consists 
+    of a zip of a single XML file which is the RSC metadata, a single PDF which is the 
+    fulltext, and an arbitrary number of other files which are supporting information.  
+
+    To be valid, the zip must just consist of the RSC metadata file.
+    All other files are optional
+    """
+    def __init__(self, zip_path=None, metadata_files=None):
+        """
+        Construct a new PackageHandler around the zip file and/or the metadata files.
+
+        Metadata file handles should be of the form
+
+        ::
+
+            [("filename", <file handle>)]
+
+        :param zip_path: locally accessible path to zip file
+        :param metadata_files: metadata file handles tuple
+        :return:
+        """
+        super(FilesAndRSC, self).__init__(zip_path=zip_path, metadata_files=metadata_files)
+
+        self.rsc_xml = None
+
+        if self.zip_path is not None:
+            self._load_from_zip()
+        elif self.metadata_files is not None:
+            self._load_from_metadata()
+
+    ################################################
+    ## Overrides of methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+
+        In this case FilesAndRSC.zip
+
+        :return: filname
+        """
+        return "FilesAndRSC.zip"
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+
+        In this case ["filesandrsc_rsc.xml"]
+
+        :return: list of metadata files
+        """
+        return ["filesandrsc_rsc.xml"]
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+
+        In this case FilesAndRSC
+
+        :return: url name
+        """
+        return "FilesAndRSC"
+
+    ################################################
+    ## Overrids of methods for retriving data from the actual package
+
+    def metadata_streams(self):
+        """
+        A generator which yields tuples of metadata file names and data streams
+
+        In this handler, this will yield one metadata streams: for "filesandrsc_rsc.xml".
+
+        :return: generator for file names/data streams
+        """
+        sources = [("filesandrsc_rsc.xml", self.rsc_xml)]
+        for n, x in sources:
+            if x is not None:
+                yield n, StringIO(x.tostring())
+
+    def notification_metadata(self):
+        """
+        Get the notification metadata as extracted from the package
+
+        This will extract metadata of the RSC XML.
+
+        :return: NotificationMetadata populated
+        """
+        rmd = None
+
+        # extract all the relevant data from rsc_xml
+        if self.rsc_xml is not None:
+            rmd = self._rsc_metadata()
+
+        return self._merge_metadata(None, rmd)
+
+    def match_data(self):
+        """
+        Get the match data as extracted from the package
+
+        This will extract match data of the RSC XML.
+
+        :return: RoutingMetadata populated
+        """
+        match = models.RoutingMetadata()
+
+        # extract all the relevant match data from jats
+        if self.rsc_xml is not None:
+            self._rsc_match_data(match)
+
+        return match
+
+    def convertible(self, target_format):
+        """
+        Checks whether this handler can do the conversion to the target format.
+
+        This handler currently supports the following conversion formats:
+
+        * http://purl.org/net/sword/package/SimpleZip
+
+        :param target_format: target format
+        :return: True if in the above list, else False
+        """
+        return target_format in ["http://purl.org/net/sword/package/SimpleZip"]
+
+    def convert(self, in_path, target_format, out_path):
+        """
+        Convert the file at the specified in_path to a package file of the
+        specified target_format at the out_path.
+
+        You should check first that this target_format is supported via convertible()
+
+        This handler currently supports the following conversion formats:
+
+        * http://purl.org/net/sword/package/SimpleZip
+
+        :param in_path: locally accessible file path to the source package
+        :param target_format: the format identifier for the format we want to convert to
+        :param out_path: locally accessible file path for the output to be written
+        :return: True/False on success/fail
+        """
+        if target_format == "http://purl.org/net/sword/package/SimpleZip":
+            self._simple_zip(in_path, out_path)
+            return True
+        return False
+
+    ################################################
+    ## Internal methods
+
+    def _simple_zip(self, in_path, out_path):
+        """
+        convert to simple zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # files and jats are already basically a simple zip, so a straight copy
+        shutil.copyfile(in_path, out_path)
+
+    def _merge_metadata(self, emd, rmd):
+        """
+        Merge the supplied None (==EMPC) and RSC metadata records into one
+
+        :param emd:
+        :param rmd:
+        :return:
+        """
+        if emd is None:
+            emd = models.NotificationMetadata()
+        if rmd is None:
+            rmd = models.NotificationMetadata()
+
+        md = models.NotificationMetadata()
+
+        md.title = rmd.title if rmd.title is not None else emd.title
+        md.publisher = rmd.publisher
+        md.type = emd.type
+        md.language = emd.language
+        md.publication_date = emd.publication_date if emd.publication_date is not None else rmd.publication_date
+        md.date_accepted = rmd.date_accepted
+        md.date_submitted = rmd.date_submitted
+        md.license = rmd.license
+
+        for id in emd.identifiers:
+            md.add_identifier(id.get("id"), id.get("type"))
+        for id in rmd.identifiers:
+            md.add_identifier(id.get("id"), id.get("type"))
+
+        md.authors = rmd.authors if len(rmd.authors) > 0 else emd.authors
+        md.projects = emd.projects
+
+        for s in emd.subjects:
+            md.add_subject(s)
+        for s in rmd.subjects:
+            md.add_subject(s)
+
+        return md
+
+    def _rsc_metadata(self):
+        """
+        Extract metadata from the RSC XML
+
+        :return:
+        """
+        md = models.NotificationMetadata()
+
+        md.title = self.jsc_xml.title
+        md.publisher = self.jsc_xml.publisher
+        md.publication_date = self.jsc_xml.publication_date
+        md.date_accepted = self.jsc_xml.date_accepted
+        md.date_submitted = self.jsc_xml.date_submitted
+
+        type, url, _ = self.jsc_xml.get_licence_details()
+        md.set_license(type, url)
+
+        for issn in self.jsc_xml.issn:
+            md.add_identifier(issn, "issn")
+
+        md.add_identifier(self.jsc_xml.pmcid, "pmcid")
+        md.add_identifier(self.jsc_xml.doi, "doi")
+
+        for author in self.jsc_xml.authors:
+            name = author.get("fname", "") + " " + author.get("surname", "")
+            if name.strip() == "":
+                continue
+            affs = "; ".join(author.get("affiliations", []))
+            obj = {"name" : name}
+            if affs is not None and affs != "":
+                obj["affiliation"] = affs
+            md.add_author(obj)
+
+        for kw in self.rsc_xml.categories:
+            md.add_subject(kw)
+        for kw in self.rsc_xml.keywords:
+            md.add_subject(kw)
+
+        return md
+
+    def _rsc_match_data(self, match):
+        """
+        Extract match data from the RSC XML
+
+        :param match:
+        :return:
+        """
+        # subject keywords
+        for c in self.rsc_xml.categories:
+            match.add_keyword(c)
+
+        # individual authors, emails, affiliations
+        for a in self.rsc_xml.contribs:
+            # name
+            name = a.get("given-names", "") + " " + a.get("surname", "")
+            if name.strip() != "":
+                match.add_author_id(name, "name")
+
+            # email
+            email = a.get("email")
+            if email is not None:
+                match.add_email(email)
+
+            # affiliations (and postcodes)
+            affs = a.get("affiliations", [])
+            for a in affs:
+                match.add_affiliation(a)
+                # 2016-11-29 TD : skip postcode extraction since
+                #                 it is not needed in DeepGreen
+                # codes = postcode.extract_all(a)
+                # for code in codes:
+                #     match.add_postcode(code)
+
+        # other keywords
+        for k in self.rsc_xml.keywords:
+            match.add_keyword(k)
+
+        # other email addresses
+        for e in self.rsc_xml.emails:
+            match.add_email(e)
+
+    def _load_from_metadata(self):
+        """
+        Load the properties for this handler from the file metadata
+
+        :return:
+        """
+        for name, stream in self.metadata_files:
+            if name == "filesandrsc_rsc.xml":
+                try:
+                    xml = etree.fromstring(stream.read())
+                    self._set_rsc(xml)
+                except Exception:
+                    raise PackageException("Unable to parse filesandrsc_rsc.xml file from store")
+
+        if not self._is_valid():
+            raise PackageException("No valid RSC metadata found in .xml file")
+
+    def _load_from_zip(self):
+        """
+        Load the properties for this handler from a zip file
+
+        :return:
+        """
+        try:
+            self.zip = zipfile.ZipFile(self.zip_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        for x in self._xml_files():
+            try:
+                doc = etree.fromstring(self.zip.open(x).read())
+            except Exception:
+                raise PackageException("Unable to parse XML file in package {x}".format(x=x))
+
+            if doc.tag == "article":
+                self._set_rsc(doc)
+
+        if not self._is_valid():
+            raise PackageException("No RSC metadata found in package")
+
+    def _xml_files(self):
+        """
+        List the XML files in the zip file
+
+        :return:
+        """
+        if self.zip is None:
+            return []
+        xmls = []
+        for name in self.zip.namelist():
+            if name.endswith(".xml"):
+                xmls.append(name)
+        return xmls
+
+    def _set_rsc(self, xml):
+        """
+        Set the local RSC XML property on this object based on the xml document passed in
+        :param xml:
+        :return:
+        """
+        self.rsc_xml = RSCMetadataXML(xml=xml)
+
+    def _is_valid(self):
+        """
+        Is this package valid as FilesAndRSC?
+
+        :return:
+        """
+        # is valid if rsc_xml is not none
+        return self.rsc_xml is not None 
