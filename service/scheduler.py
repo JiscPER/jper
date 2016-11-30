@@ -93,6 +93,24 @@ def flatten(destination, depth=None):
             except:
                 pass
 
+# 2016-11-30 TD : routine to peak in flattened packages, looking for a .xml file floating around
+def pkgformat(src):
+    # our first best guess...
+    pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
+    for fl in os.listdir(src):
+        if '.xml' in fl:
+            with open(fl,'r') as f:
+                for line in f:
+                    if "!DOCTYPE " in line:
+                       if "//DTD JATS " in line:
+                           pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
+                       elif "//DTD RSC " in line:
+                           pkg_fmt = "https://datahub.deepgreen.org/FilesAndRSC"
+                       break
+            # there shall only be *one* .xml as per package
+            break        
+    return pkg_fmt
+
 
 def moveftp():
     try:
@@ -155,12 +173,16 @@ def processftp():
                     # but we don't know the hierarchy of the content, so we have to unpack and flatten it all
                     # unzip and pull all docs to the top level then zip again. Should be jats file at top now
                     flatten(thisdir + '/' + pub)
+                    # 2016-11-30 TD : Since there are (at least!?) 2 formats now available, we have to find out
+                    pkg_fmt = pkgformat(thisdir + '/' + pub)
+                    #
                     pkg = thisdir + '/' + pub + '.zip'
                     zip(thisdir + '/' + pub, pkg)
 
                     # create a notification and send to the API to join the unroutednotification index
                     notification = {
-                        "content": {"packaging_format": "https://datahub.deepgreen.org/FilesAndJATS"}
+                        "content": {"packaging_format": pkg_fmt }
+                        #"content": {"packaging_format": "https://datahub.deepgreen.org/FilesAndJATS"}
                         ## "content": {"packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"}
                     }
                     files = [
