@@ -1166,7 +1166,9 @@ class FilesAndRSC(PackageHandler):
         for name, stream in self.metadata_files:
             if name == "filesandrsc_rsc.xml":
                 try:
-                    xml = etree.fromstring(stream.read())
+                    # 2016-11-30 TD : we need some XMLParser settings here... (don't ask!)
+                    parser = etree.XMLParser(load_dtd=True, no_network=False)
+                    xml = etree.fromstring(stream.read(), parser)
                     self._set_rsc(xml)
                 except Exception:
                     raise PackageException("Unable to parse filesandrsc_rsc.xml file from store")
@@ -1187,7 +1189,9 @@ class FilesAndRSC(PackageHandler):
 
         for x in self._xml_files():
             try:
-                doc = etree.fromstring(self.zip.open(x).read())
+                # 2016-11-30 TD : we need some XMLParser settings here... (don't ask!)
+                parser = etree.XMLParser(load_dtd=True, no_network=False)
+                doc = etree.fromstring(self.zip.open(x).read(), parser)
             except Exception:
                 raise PackageException("Unable to parse XML file in package {x}".format(x=x))
 
