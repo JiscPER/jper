@@ -108,11 +108,11 @@ class OutgoingNotification(NotificationMetadata):
                 "created_date" : {"coerce" : "utcdatetime"},
                 "analysis_date" : {"coerce" : "utcdatetime"},
                 "event" : {"coerce" : "unicode"},
+                # 2016-12-01 TD: additional (almost redundent?!) field issn_data
+                "issn_data" : {"coerce": "unicode"}
             },
             "objects" : [
-                "issn_data", "content", "embargo"
-                # "content", "embargo"
-                # 2016-12-01 TD: additional field issn_data
+                "content", "embargo"
             ],
             "lists" : {
                 "links" : {"contains" : "object"}
@@ -120,8 +120,6 @@ class OutgoingNotification(NotificationMetadata):
             "reqired" : [],
 
             "structs" : {
-                "issn_data" : {"coerce": "unicode"},
-                # 2016-12-01 TD: additional field issn_data
                 "content" : {
                     "fields" : {
                         "packaging_format" : {"coerce" :"unicode"}
