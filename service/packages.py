@@ -1084,22 +1084,22 @@ class FilesAndRSC(PackageHandler):
         """
         md = models.NotificationMetadata()
 
-        md.title = self.jsc_xml.title
-        md.publisher = self.jsc_xml.publisher
-        md.publication_date = self.jsc_xml.publication_date
-        md.date_accepted = self.jsc_xml.date_accepted
-        md.date_submitted = self.jsc_xml.date_submitted
+        md.title = self.rsc_xml.title
+        md.publisher = self.rsc_xml.publisher
+        md.publication_date = self.rsc_xml.publication_date
+        md.date_accepted = self.rsc_xml.date_accepted
+        md.date_submitted = self.rsc_xml.date_submitted
 
-        type, url, _ = self.jsc_xml.get_licence_details()
+        type, url, _ = self.rsc_xml.get_licence_details()
         md.set_license(type, url)
 
-        for issn in self.jsc_xml.issn:
+        for issn in self.rsc_xml.issn:
             md.add_identifier(issn, "issn")
 
-        md.add_identifier(self.jsc_xml.pmcid, "pmcid")
-        md.add_identifier(self.jsc_xml.doi, "doi")
+        md.add_identifier(self.rsc_xml.pmcid, "pmcid")
+        md.add_identifier(self.rsc_xml.doi, "doi")
 
-        for author in self.jsc_xml.authors:
+        for author in self.rsc_xml.authors:
             name = author.get("fname", "") + " " + author.get("surname", "")
             if name.strip() == "":
                 continue
