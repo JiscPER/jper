@@ -110,7 +110,9 @@ class OutgoingNotification(NotificationMetadata):
                 "event" : {"coerce" : "unicode"},
             },
             "objects" : [
-                "content", "embargo"
+                "issn_data", "content", "embargo"
+                # "content", "embargo"
+                # 2016-12-01 TD: additional field issn_data
             ],
             "lists" : {
                 "links" : {"contains" : "object"}
@@ -118,6 +120,8 @@ class OutgoingNotification(NotificationMetadata):
             "reqired" : [],
 
             "structs" : {
+                "issn_data" : {"coerce": "unicode"},
+                # 2016-12-01 TD: additional field issn_data
                 "content" : {
                     "fields" : {
                         "packaging_format" : {"coerce" :"unicode"}
