@@ -188,7 +188,7 @@ class ProviderOutgoingNotification(OutgoingNotification):
             "lists" : {
                 "repositories": {"contains" : "field", "coerce" : "unicode"}
             }, 
-            # 2016-09.07 TD : addition for publisher's reporting style
+            # 2016-09-07 TD : addition for publisher's reporting style
             "objects" : [
                 "provider"
             ],

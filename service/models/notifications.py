@@ -1102,6 +1102,7 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
         else:
             return ProviderOutgoingNotification(d)
 
+
 class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotificationDAO):
     """
     Class which represents a notification that has been received into the system and successfully
@@ -1175,6 +1176,7 @@ class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotific
         else:
             return ProviderOutgoingNotification(d)
 
+
 class FailedNotification(BaseNotification, RoutingInformation, dao.FailedNotificationDAO):
     """
     Class which represents a notification that has been received into the system but has not
@@ -1200,6 +1202,7 @@ class FailedNotification(BaseNotification, RoutingInformation, dao.FailedNotific
         :param raw: python dict object containing the notification data
         """
         super(FailedNotification, self).__init__(raw=raw)
+
 
 class RoutingMetadata(dataobj.DataObj):
     """

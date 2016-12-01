@@ -31,6 +31,8 @@ blueprint = Blueprint('account', __name__)
 
 # 2016-11-22 TD : global definition of output table by making use of jsonpath query strings;
 #                 applicable to both screen *and* file (e.g. csv) output simultanously
+#
+# Notification table/csv for repositories
 ntable = {
          "screen" : ["Send Date", ["DOI","Publisher"], "Title", "Analysis Date"],
          "header" : ["Analysis Date", "DOI", "Publisher", "Title", "Send Date", "Embargo"],
@@ -42,7 +44,7 @@ ntable = {
           "Title" : "notifications[*].metadata.title"
 }
 
-
+# Matching table/csv for providers (with detailed reasoning)
 mtable = {
          "screen" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term", "Appears in {notification_field}"],
          "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
@@ -56,6 +58,7 @@ mtable = {
 }
 
 
+# Rejected table/csv for providers
 ftable = {
          "screen" : ["Analysis Date", "ISSN of EISSN", "DOI", "Reason"],
          "header" : ["Analysis Date", "ISSN of EISSN", "DOI", "Reason"],
