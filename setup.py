@@ -8,7 +8,8 @@ setup(
         "octopus==1.0.0",
         "esprit",
         "schedule==0.3.2",
-        "jsonpath-rw-ext"
+        "jsonpath-rw-ext",
+        "unicodecsv"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

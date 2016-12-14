@@ -14,7 +14,9 @@ from service.api import JPER, ValidationException, ParameterException, Unauthori
 from service.views.webapi import _bad_request
 import pprint
 import math
-import csv
+# 2016-12-14 TD : Native 'csv'-module of python2.7 has encoding shortcomings
+# import csv
+import unicodecsv 
 from jsonpath_rw_ext import parse
 
 
@@ -342,7 +344,10 @@ def download(account_id):
     #
 
     strm = StringIO()
-    writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
+    writer = unicodecsv.writer(strm, delimiter=',', quoting=unicodecsv.QUOTE_ALL)
+    # writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
+    # 2016-12-14 TD : python's native 'csv'-module has encoding problems...
+    #
     ## writer = csv.DictWriter(strm, fieldnames=ntable["header"],
     ##                               delimiter=',', quoting=csv.QUOTE_ALL)
 
