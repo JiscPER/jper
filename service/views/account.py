@@ -64,7 +64,7 @@ ftable = {
          "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "Reason"],
       "Send Date" : "failed[*].created_date",
   "Analysis Date" : "failed[*].analysis_date",
-  "ISSN of EISSN" : "failed[*].issn_data",
+  "ISSN or EISSN" : "failed[*].issn_data",
             "DOI" : "failed[*].metadata.identifier[?(@.type=='doi')].id",
          "Reason" : "failed[*].reason"
 }
