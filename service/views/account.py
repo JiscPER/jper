@@ -60,8 +60,8 @@ mtable = {
 
 # Rejected table/csv for providers
 ftable = {
-         "screen" : ["Analysis Date", "ISSN of EISSN", "DOI", "Reason"],
-         "header" : ["Analysis Date", "ISSN of EISSN", "DOI", "Reason"],
+         "screen" : ["Analysis Date", "ISSN or EISSN", "DOI", "Reason"],
+         "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "Reason"],
       "Send Date" : "failed[*].created_date",
   "Analysis Date" : "failed[*].analysis_date",
   "ISSN of EISSN" : "failed[*].issn_data",
