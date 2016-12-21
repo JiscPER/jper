@@ -125,7 +125,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
     
     {
         "content" : {
-            "packaging_format" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+            "packaging_format" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
     }
     
@@ -207,7 +207,7 @@ It is also possible to send a request which has limited/no JSON metadata, and re
 
 To do this, send the bare-minimum JSON notification, with only the format identifier of the package included.  For example:
 
-    POST /validate?api_key=<api_key>
+    POST /notification?api_key=<api_key>
     Content-Type: multipart/form-data; boundary=FulltextBoundary
     
     --FulltextBoundary
@@ -217,7 +217,7 @@ To do this, send the bare-minimum JSON notification, with only the format identi
     
     {
         "content" : {
-            "packaging_format" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+            "packaging_format" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
     }
     
@@ -384,17 +384,17 @@ In order to tell the difference between (1) and (2), compare the following two l
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content",
-            "packaging" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content",
+            "packaging" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
         {
             "type" : "fulltext",
             "format" : "application/pdf",
-            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content/publisherpdf",
+            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content/publisherpdf",
         }
     ]
 
-The first link has type "package" and also has an element **packaging** which tells you this is of the format "https://pubsrouter.jisc.ac.uk/FilesAndJATS".
+The first link has type "package" and also has an element **packaging** which tells you this is of the format "https://datahub.deepgreen.org/FilesAndJATS".
 
 The second link does not contain a **packaging** element at all, and does not have "package" as its type.
 
@@ -403,7 +403,7 @@ This means the first link is a link to package held by the router, and the secon
 #### Packaged Content
 
 Some notifications may have binary content associated with them.  If this is the case, you will see one or more **links** elements
-appearing in the [Outgoing Notification](https://github.com/JiscPER/jper/blob/develop/docs/api/OutgoingNotification.md) JSON that
+appearing in the [Outgoing Notification](https://github.com/OA-DeepGreen/jper/blob/develop/docs/api/OutgoingNotification.md) JSON that
 you retrieve via either the **Notification List Feed** or the **Individual Notification**.
 
 Router stores full-text content for a temporary period (currently 90 days, subject to review) from the date of receipt from publisher and so it must be retrieved by a
@@ -417,13 +417,13 @@ The notification JSON may contain a section like:
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content",
-            "packaging" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content",
+            "packaging" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content/SimpleZip",
+            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content/SimpleZip",
             "packaging" : "http://purl.org/net/sword/package/SimpleZip"
         }
     ]
