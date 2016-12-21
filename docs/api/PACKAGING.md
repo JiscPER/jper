@@ -16,7 +16,8 @@ Router works with the following package formats
 
 | Format | Description |
 |--------|-------------|
-| https://pubrouter.jisc.ac.uk/FilesAndJATS | A flat file structure with JATS XML embedded |
+| https://datahub.deepgreen.org/FilesAndJATS | A flat file structure with JATS XML embedded |
+| https://datahub.deepgreen.org/FilesAndRSC | A flat file structure with RSC XML embedded |
 | http://purl.org/net/sword/package/SimpleZip | A flat file structure of unspecified files |
 
 When sending or retrieving packages from the router, the format needs to be specified.
@@ -26,7 +27,7 @@ notification JSON, thus:
 
     {
         "content" : {
-            "packaging_format" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+            "packaging_format" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
     }
 
@@ -37,13 +38,13 @@ JSON in the **links** section, for example:
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content",
-            "packaging" : "https://pubsrouter.jisc.ac.uk/FilesAndJATS"
+            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content",
+            "packaging" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://pubrouter.jisc.ac.uk/api/v1/notification/123456789/content/SimpleZip",
+            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content/SimpleZip",
             "packaging" : "http://purl.org/net/sword/package/SimpleZip"
         }
     ]
@@ -57,7 +58,8 @@ The router accepts and disseminates packages in the following formats:
 
 | Format | Accepts | Disseminates |
 |--------|---------|--------------|
-| https://pubsrouter.jisc.ac.uk/FilesAndJATS | yes | yes |
+| https://datahub.deepgreen.org/FilesAndJATS | yes | yes |
+| https://datahub.deepgreen.org/FilesAndRSC | yes | yet unknown |
 | http://purl.org/net/sword/package/SimpleZip | no | yes |
 
 If a package can be accepted, publishers may use it to deposit binary content associated with a notification into Router
@@ -68,7 +70,7 @@ repository (you must ensure your repository account in the Router specifies the 
 
 ## A guide to the formats
 
-### https://pubsrouter.jisc.ac.uk/FilesAndJATS
+### https://datahub.deepgreen.org/FilesAndJATS
 
 This is Router's native package format.  It conforms to the following specification:
 
@@ -92,6 +94,32 @@ xpath expressions:
     //license
     //publisher/publisher-name
     //title-group/article-title
+
+### https://datahub.deepgreen.org/FilesAndRSC
+
+This is the package format specific only for deliveries from the Royal Society of Chemistry (RSC).  It conforms to the following specification:
+
+1. Only contains files in a flat structure, does not contain folders
+2. Contains at least one RSC XML file (no naming convention, but must end with ".xml")
+3. May contain an arbitrary number of other binary files (e.g. pdfs, images, etc)
+
+The RSC XML file may be any version of RSC Article DTD which contains/supports some or all of the following
+xpath expressions:
+
+    //art-admin/doi
+    //published/pubfront/date
+    //published[@type='web']/pubfront/date
+    //published[@type='print']/pubfront/date
+    //published[@type='subsyear']/pubfront/date
+    //art-front/authgrp/author/person
+    //email
+    //art-admin/date[@role='revised']
+    //art-admin/date[@role='accepted']
+    //art-admin/received/date
+    //published[@type='web']/journalref/issn
+    //journalref/cpyrt
+    //publisher/orgname/nameelt
+    //art-front/titlegrp/title
 
 ### http://purl.org/net/sword/package/SimpleZip
 
