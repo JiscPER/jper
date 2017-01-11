@@ -99,16 +99,22 @@ def pkgformat(src):
     pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
     for fl in os.listdir(src):
         if '.xml' in fl:
-            with open(fl,'r') as f:
-                for line in f:
-                    if "!DOCTYPE " in line:
-                       if "//DTD JATS " in line:
-                           pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
-                       elif "//DTD RSC " in line:
-                           pkg_fmt = "https://datahub.deepgreen.org/FilesAndRSC"
-                       break
+            try:
+                with open(src + '/' + fl,'r') as f:
+                    for line in f:
+                        if "!DOCTYPE " in line:
+                            if "//DTD JATS " in line:
+                                pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
+                            elif "//DTD RSC " in line:
+                                pkg_fmt = "https://datahub.deepgreen.org/FilesAndRSC"
+
+                            break
+            except:
+                app.logger.info('Pkgformat could not open ' + src + '/' + fl)
+
             # there shall only be *one* .xml as per package
-            break        
+            break
+
     return pkg_fmt
 
 
@@ -181,7 +187,7 @@ def processftp():
 
                     # create a notification and send to the API to join the unroutednotification index
                     notification = {
-                        "content": {"packaging_format": pkg_fmt }
+                        "content": { "packaging_format": pkg_fmt }
                         #"content": {"packaging_format": "https://datahub.deepgreen.org/FilesAndJATS"}
                         ## "content": {"packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"}
                     }
