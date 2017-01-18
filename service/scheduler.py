@@ -112,9 +112,6 @@ def pkgformat(src):
                             pkg_fmt = "https://datahub.deepgreen.org/FilesAndRSC"
                             break
 
-                    # no DTD format recognised; should in principle never happen, but who knows...
-                    pkg_fmt = "unknown"
-
             except:
                 app.logger.info('Pkgformat could not open ' + src + '/' + fl)
 
