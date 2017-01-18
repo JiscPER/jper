@@ -96,25 +96,32 @@ def flatten(destination, depth=None):
 # 2016-11-30 TD : routine to peak in flattened packages, looking for a .xml file floating around
 def pkgformat(src):
     # our first best guess...
-    pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
+    ### pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
+    pkg_fmt = "unknown"
     for fl in os.listdir(src):
+        app.logger.debug('Pkgformat at ' + fl)
         if '.xml' in fl:
+            app.logger.debug('Pkgformat tries to open ' + src + '/' + fl)
             try:
                 with open(src + '/' + fl,'r') as f:
                     for line in f:
-                        if "!DOCTYPE " in line:
-                            if "//DTD JATS " in line:
-                                pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
-                            elif "//DTD RSC " in line:
-                                pkg_fmt = "https://datahub.deepgreen.org/FilesAndRSC"
-
+                        if "//NLM//DTD JATS " in line:
+                            pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
                             break
+                        elif "//RSC//DTD RSC " in line:
+                            pkg_fmt = "https://datahub.deepgreen.org/FilesAndRSC"
+                            break
+
+                    # no DTD format recognised; should in principle never happen, but who knows...
+                    pkg_fmt = "unknown"
+
             except:
                 app.logger.info('Pkgformat could not open ' + src + '/' + fl)
 
             # there shall only be *one* .xml as per package
             break
 
+    app.logger.debug('Pkgformat returns ' + pkg_fmt)
     return pkg_fmt
 
 
