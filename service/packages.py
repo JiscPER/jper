@@ -11,7 +11,8 @@ from octopus.lib import plugin
 import zipfile, os, shutil
 from lxml import etree
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
-from octopus.modules.identifiers import postcode
+# from octopus.modules.identifiers import postcode
+# 2017-01-19 TD : in the deepgreen setting, postcodes are not needed. They are rather counter-productive...
 from service import models
 from octopus.modules.store import store
 from StringIO import StringIO
@@ -724,9 +725,11 @@ class FilesAndJATS(PackageHandler):
             affs = a.get("affiliations", [])
             for a in affs:
                 match.add_affiliation(a)
-                codes = postcode.extract_all(a)
-                for code in codes:
-                    match.add_postcode(code)
+                # 2017-01-19 TD : not needed in DeepGreen
+                #
+                # codes = postcode.extract_all(a)
+                # for code in codes:
+                #     match.add_postcode(code)
 
         # other keywords
         for k in self.jats.keywords:
@@ -760,9 +763,11 @@ class FilesAndJATS(PackageHandler):
             aff = a.get("affiliation")
             if aff is not None:
                 match.add_affiliation(aff)
-                codes = postcode.extract_all(aff)
-                for code in codes:
-                    match.add_postcode(code)
+                # 2017-01-19 TD : not needed in DeepGreen
+                #
+                # codes = postcode.extract_all(aff)
+                # for code in codes:
+                #     match.add_postcode(code)
 
         # grant ids
         gs = self.epmc.grants
@@ -1034,7 +1039,7 @@ class FilesAndRSC(PackageHandler):
         :param out_path:
         :return:
         """
-        # files and jats are already basically a simple zip, so a straight copy
+        # files and rsc are already basically a simple zip, so a straight copy
         shutil.copyfile(in_path, out_path)
 
     def _merge_metadata(self, emd, rmd):
@@ -1130,7 +1135,7 @@ class FilesAndRSC(PackageHandler):
         # individual authors, emails, affiliations
         for a in self.rsc_xml.contribs:
             # name
-            name = a.get("given-names", "") + " " + a.get("surname", "")
+            name = a.get("fname", "") + " " + a.get("surname", "")
             if name.strip() != "":
                 match.add_author_id(name, "name")
 
