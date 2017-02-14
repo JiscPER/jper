@@ -105,7 +105,10 @@ def pkgformat(src):
             try:
                 with open(src + '/' + fl,'r') as f:
                     for line in f:
-                        if "//NLM//DTD JATS " in line:
+                        if "//NLM//DTD Journal " in line:
+                            pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
+                            break
+                        elif "//NLM//DTD JATS " in line:
                             pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
                             break
                         elif "//RSC//DTD RSC " in line:
