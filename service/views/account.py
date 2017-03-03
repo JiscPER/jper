@@ -508,9 +508,18 @@ def username(username):
         if not current_user.is_super:
             abort(401)
         else:
+            # 2017-03-03 TD : kill also any match configs if a repository is deleted ...
+            if acc.has_role('repository'):
+                repoconfig = models.RepositoryConfig().pull_by_repo(acc.id)
+                if repoconfig is not None:
+                    repoconfig.delete()
             acc.remove()
             time.sleep(1)
-            flash('Account ' + acc.id + ' deleted')
+            # 2017-03-03 TD : ... and be verbose about it!
+            if repoconfig is not None:
+                flash('Account ' + acc.id + ' and RepoConfig ' + repoconfig.id + ' deleted')
+            else:
+                flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
     elif request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
