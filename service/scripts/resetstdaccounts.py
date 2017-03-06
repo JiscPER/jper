@@ -1,0 +1,155 @@
+"""
+This is a script to create (or delete!!) account data in a live system,
+as it is collected from a previous EZB service call.  
+
+All records are put into possibly already existing alliance data. 
+This means historical data will probably be overwritten/updated. 
+So be warned/informed now!
+"""
+from octopus.core import add_configuration, app
+from service.models import License, Alliance
+# from datetime import datetime
+import os, requests, csv
+import lxml.html
+
+EZB_SEARCH_HOST = "http://rzbvm016.ur.de"
+"""EZB web service hostname"""
+
+EZB_SEARCH_PAGE = "OA_participants"
+"""page name in the EZB instance"""
+
+def collect_accounts():
+    gnd = {}
+    with open('ezb_institution2gnd_corporate.csv','r') as f:
+        for line in f:
+            line=line.replace('\r','')
+            key, val = line.split('\t')
+            if key in gnd: gnd[key] += [val[:-1]]
+            else: gnd[key] = [val[:-1]]
+
+    return gnd
+
+def grep(str)
+  return '\n'.join(re.findall())
+
+
+
+def close_and_upload_csv(csvfile,newf,alid):
+    try:
+        if csvfile and not csvfile.closed: 
+            csvfile.close()
+            with open( newf, 'rb' ) as fd:
+                license = License.pull_by_key('identifier.id',alid)
+                if len(license)>0:
+                    alliance = Alliance.pull_by_key('identifier.id',alid)
+                    if not alliance:
+                        alliance = Alliance()
+                    alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
+                    print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
+                else:
+                    print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
+    except:
+         print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
+         print "WARNING: message: '{x}'".format(x=e.message)
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+
+    # some general script running features
+    parser.add_argument("-c", "--config", help="additional configuration to load (e.g. for testing)")
+
+    # parser.add_argument("-f", "--from_date", help="date to run the report from")
+    # parser.add_argument("-t", "--to_date", help="date to run the report to")
+
+    args = parser.parse_args()
+
+    if args.config:
+        add_configuration(app, args.config)
+
+
+    # if not args.from_date or not args.to_date:
+    #     parser.print_help()
+    #     exit(0)
+
+    # dt = datetime.strptime(args.from_date, "%Y-%m-%dT%H:%M:%SZ")
+    # year = dt.year
+    #
+    # reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
+    # reportfile = reportsdir + '/monthly_notifications_to_institutions_' + str(year) + '.csv'
+    # if os.path.exists(reportfile):
+    #     os.remove(reportfile)
+    #
+    # reports.delivery_report(args.from_date, args.to_date, reportfile)
+
+    fname = app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE) # + "-EZB_current.csv"
+    ia = app.config.get('EZB_SEARCH_HOST',EZB_SEARCH_HOST) + '/' + app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE)
+
+    ae = requests.get(ia)
+
+    if ae.status_code == 200:
+        try:
+            tree = lxml.html.fromstring(ae.content)
+        except:
+            print "ERROR: Could not parse .html page as tree."
+            print
+            exit(-3)
+
+        print "INFO: xml tree read."
+
+        newf = "dummy"
+        alid = "0"
+        fieldnames = ["Institution", "EZB-Id", "Sigel"]
+        csvfile = None
+        part = {}
+
+        for el in tree.iter():
+            if el.tag == 'br' and el.tail is None: 
+                continue
+            if el.tag == 'h3':                              # h3 headline as AL seperator
+
+                close_and_upload_csv(csvfile,newf,alid)     # first, pass all collected data so far to Alliance class
+                                                            #        (i.e. import *previous* AL data to database)
+                item = el.text.strip()
+                s = item.rfind('(')
+                t = item.rfind(')',s)
+                alid = "0"
+                if s >= 0 and t > s:
+                    alid = item[s+1:t].upper()
+                newf = "{x}-EZB_current-{a}.csv".format(a=alid,x=fname)
+                try:
+                    csvfile = open( newf, 'wb' )
+                    outp = csv.DictWriter(csvfile, fieldnames=fieldnames,
+                                                   delimiter='\t', quoting=csv.QUOTE_ALL,
+                                                   lineterminator='\n')
+                    outp.writeheader()
+                except IOError:
+                    print "ERROR: could not write .csv file '{x}' (IOError).".format(x=newf)
+                    print
+                    exit(-4)
+
+            item = el.tail
+
+            if item and item.startswith(': '):           # kill leading colon ': ' and, if necessary,
+                item = item[1:].replace(u"\u0096",'-')   # funny hyphens...
+            if el.text == 'Institution':
+                if len(part) > 0:
+                    if outp: outp.writerow(part)
+                    part = {}
+                part[el.text] = item.strip().encode('utf-8')
+            elif el.text == 'EZB-Id':
+                part[el.text] = item.strip().encode('utf-8')
+            elif el.text == 'Sigel':
+                part[el.text] = item.strip().encode('utf-8')
+            elif el.text is None and item:
+                part['Institution'] = part.get('Institution',"") + " \r" + item.strip().encode('utf-8')
+
+        if len(part) > 0:
+            if outp: outp.writerow(part)
+
+        close_and_upload_csv(csvfile,newf,alid)
+
+    else:
+        print "ERROR: web page '{x}' not available (http {y}).".format(x=ia,y=ea.status_code)
+
