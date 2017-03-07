@@ -6,11 +6,11 @@ All records are put into possibly already existing alliance data.
 This means historical data will probably be overwritten/updated. 
 So be warned/informed now!
 """
-from octopus.core import add_configuration, app
-from service.models import License, Alliance
-# from datetime import datetime
-import os, requests, csv
-import lxml.html
+#from octopus.core import add_configuration, app
+#from service.models import License, Alliance
+## from datetime import datetime
+import os, re, requests, csv
+import glob, lxml.html
 
 EZB_SEARCH_HOST = "http://rzbvm016.ur.de"
 """EZB web service hostname"""
@@ -18,39 +18,95 @@ EZB_SEARCH_HOST = "http://rzbvm016.ur.de"
 EZB_SEARCH_PAGE = "OA_participants"
 """page name in the EZB instance"""
 
-def collect_accounts():
+def find_affiliation(http,recursion="full")
+    ans = []
+    ia = http + '/about/mrcxml'
+    ae = requests.get(ia)
+    
+    if ae.status_code == 200:
+        try:
+            mrcxml = lxml.html.fromstring(ae.content)
+        except:
+            print "ERROR: Could not parse mrcxml for '{x}'.".format(x=http)
+            print
+            exit(-7)
+
+    return ans
+
+
+def load_gndidx(fname):
+    txt = ""
+    try:
+        with open(fname,'r') as f:
+            txt = f.read()
+    except IOError:
+        print "ERROR: could not gndidx file '{x}' (IOError).".format(x=fname)
+        print
+        exit(-3)
+
+    return txt
+
+
+def load_ezb2gnd(fname):
     gnd = {}
-    with open('ezb_institution2gnd_corporate.csv','r') as f:
-        for line in f:
-            line=line.replace('\r','')
-            key, val = line.split('\t')
-            if key in gnd: gnd[key] += [val[:-1]]
-            else: gnd[key] = [val[:-1]]
+    try:
+        with open(fname,'r') as f:
+            for line in f:
+                line=unicode(line.replace('\r','; '),'utf-8')
+                key, val = line.split('\t')
+                if key in gnd: 
+                    gnd[key] += [ val[:-1] ] # [unicode(val[:-1],'utf-8')]
+                else: 
+                    gnd[key] = [ val[:-1] ] # [unicode(val[:-1],'utf-8')]
+    except IOError:
+        print "ERROR: Could not read ezb2gnd map '{x}' (IOError).".format(x=fname)
+        print
+        exit(-3)
 
     return gnd
 
-def grep(str)
-  return '\n'.join(re.findall())
+
+def grep(text,pattern):
+    return re.findall(r'%s' % pattern, text, flags=re.M)
 
 
 
-def close_and_upload_csv(csvfile,newf,alid):
-    try:
-        if csvfile and not csvfile.closed: 
-            csvfile.close()
-            with open( newf, 'rb' ) as fd:
-                license = License.pull_by_key('identifier.id',alid)
-                if len(license)>0:
-                    alliance = Alliance.pull_by_key('identifier.id',alid)
-                    if not alliance:
-                        alliance = Alliance()
-                    alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
-                    print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
-                else:
-                    print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
-    except:
-         print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
-         print "WARNING: message: '{x}'".format(x=e.message)
+def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
+
+    print (u" %7s == %s ('%s')" % (ezbid, fullname, sigel)).encode('utf-8')
+
+    recursion = 'full'
+
+    if 'Planck' in fullname or 'Fraunhofer' in fullname or 
+       'Leibniz' in fullname or 'Helmholtz' in fullname:
+        recursion = 'noadue'
+
+    if ezbid in ['aDLLR', 'aDZNE', 'aFZJUE', 'aDESY', 'aGFZPO', 'aIFZ', 'aMBCB', 
+                 'aDM', 'aZBW', 'aFAB', 'aUBWH', 'aDPMA', 'aSUBHH', 'aHDZ' ]:
+        recursion = 'noadue'
+
+    if fullname in ezb2gnd:
+        for corp in ezb2gnd[fullname]:
+            # 2017-03-07 TD : Working here with 'popen' instead regular expressions
+            #                 due to different encodings in ezb2gnd and gndidx
+            #                 Needs review though: Adopt to new subprocess module!
+            cmd = (u'grep "^%s\t" "%s" | cut -f2' % (corp,fname)).encode('utf-8')
+            ans = os.popen(cmd).read().split()
+            ##print "DEBUG: {d}".format(d=ans)
+            #if ans:
+            #    https = unicode( ','.join(ans), 'utf-8' )
+            #    print (u" %7s => %s : %s" % (ezbid, corp, https)).encode('utf-8')
+            #else:
+            print (u" %7s => %s" % (ezbid, corp)).encode('utf-8')
+
+            for http in ans:
+                affs = find_affiliation(http, recursion=recursion)
+
+            for aff in sorted(affs):
+                print (u'%s' % aff).encode('utf-8')
+
+    print
+    return
 
 
 if __name__ == "__main__":
@@ -83,73 +139,38 @@ if __name__ == "__main__":
     #
     # reports.delivery_report(args.from_date, args.to_date, reportfile)
 
-    fname = app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE) # + "-EZB_current.csv"
-    ia = app.config.get('EZB_SEARCH_HOST',EZB_SEARCH_HOST) + '/' + app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE)
+    oalist = glob.glob('OA_participants-EZB_current-NAL*.csv')
 
-    ae = requests.get(ia)
-
-    if ae.status_code == 200:
-        try:
-            tree = lxml.html.fromstring(ae.content)
-        except:
-            print "ERROR: Could not parse .html page as tree."
-            print
-            exit(-3)
-
-        print "INFO: xml tree read."
-
-        newf = "dummy"
-        alid = "0"
-        fieldnames = ["Institution", "EZB-Id", "Sigel"]
-        csvfile = None
+    if oalist:
         part = {}
+        for fname in oalist:
+            try:
+                with open(fname, 'r') as f:
+                    reader = csv.DictReader(f, fieldnames=['Institution', 'EZB-Id', 'Sigel'],
+                                               quoting=csv.QUOTE_ALL, 
+                                               delimiter='\t')
+                    for row in reader:
+                        if 'EZB-Id' in row and 'Institution' in row:
+                            if 'Institution' in row['Institution']: continue 
+                            part[unicode("a"+row['EZB-Id'],'utf-8')] = ( unicode(row['Institution'].replace('\r','; '),'utf-8'), unicode(row['Sigel'],'utf-8') )
+            except IOError:
+                print "ERROR: Could not read/parse '{x}' (IOError).".format(x=fname)
 
-        for el in tree.iter():
-            if el.tag == 'br' and el.tail is None: 
-                continue
-            if el.tag == 'h3':                              # h3 headline as AL seperator
+            print "INFO: Participant file '{x}' successfully read/parsed.".format(x=fname)
 
-                close_and_upload_csv(csvfile,newf,alid)     # first, pass all collected data so far to Alliance class
-                                                            #        (i.e. import *previous* AL data to database)
-                item = el.text.strip()
-                s = item.rfind('(')
-                t = item.rfind(')',s)
-                alid = "0"
-                if s >= 0 and t > s:
-                    alid = item[s+1:t].upper()
-                newf = "{x}-EZB_current-{a}.csv".format(a=alid,x=fname)
-                try:
-                    csvfile = open( newf, 'wb' )
-                    outp = csv.DictWriter(csvfile, fieldnames=fieldnames,
-                                                   delimiter='\t', quoting=csv.QUOTE_ALL,
-                                                   lineterminator='\n')
-                    outp.writeheader()
-                except IOError:
-                    print "ERROR: could not write .csv file '{x}' (IOError).".format(x=newf)
-                    print
-                    exit(-4)
+        print "INFO: All participant files processed; a total of {y} institution(s) found.".format(y=len(part))
 
-            item = el.tail
+        # print "DEBUG: {d}".format(d=part)
+        # print "DEBUG:"
+        idx = load_ezb2gnd('ezb_institution2gnd_corporate.csv')
+        txt = "" # load_gndidx('gnd_corporate_tag110_idx.csv')
 
-            if item and item.startswith(': '):           # kill leading colon ': ' and, if necessary,
-                item = item[1:].replace(u"\u0096",'-')   # funny hyphens...
-            if el.text == 'Institution':
-                if len(part) > 0:
-                    if outp: outp.writerow(part)
-                    part = {}
-                part[el.text] = item.strip().encode('utf-8')
-            elif el.text == 'EZB-Id':
-                part[el.text] = item.strip().encode('utf-8')
-            elif el.text == 'Sigel':
-                part[el.text] = item.strip().encode('utf-8')
-            elif el.text is None and item:
-                part['Institution'] = part.get('Institution',"") + " \r" + item.strip().encode('utf-8')
-
-        if len(part) > 0:
-            if outp: outp.writerow(part)
-
-        close_and_upload_csv(csvfile,newf,alid)
+        for ezbid,val in part.items():
+           fullname, sigel = val
+           find_in_gndidx(fullname, ezbid, sigel, idx, 'gnd_corporate_tag110_idx.csv')
 
     else:
-        print "ERROR: web page '{x}' not available (http {y}).".format(x=ia,y=ea.status_code)
+        print "ERROR: no flies 'OA_participants-EZB_current*.csv' found."
+        print
+        exit(-3)
 
