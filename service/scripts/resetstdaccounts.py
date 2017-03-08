@@ -18,19 +18,33 @@ EZB_SEARCH_HOST = "http://rzbvm016.ur.de"
 EZB_SEARCH_PAGE = "OA_participants"
 """page name in the EZB instance"""
 
-def find_affiliation(http,recursion="full")
+AFF_XPATH = "//datafield[@tag='110' or @tag='410' and not(./subfield[contains(@code,'b')]) and not(./subfield[contains(@code,'9')]) and not(./subfield[contains(@code,'g')]) and not(./subfield[contains(@code,'x')])]/subfield[@code='a']"
+ADU_XPATH = "//datafield[@tag='510' and contains(./subfield[@code='9'],'4:adue')]/subfield[@code='0']"
+
+def find_affiliation(http,recursion="full"):
     ans = []
-    ia = http + '/about/mrcxml'
+    ia = http + '/about/marcxml'
     ae = requests.get(ia)
     
     if ae.status_code == 200:
         try:
             mrcxml = lxml.html.fromstring(ae.content)
+            addrs = [x.text for x in mrcxml.xpath(ADU_XPATH) if x.text.startswith("http")]
+
+            if recursion == "noadue" or len(addrs) == 0:
+               return [x.text for x in mrcxml.xpath(AFF_XPATH)]
+            else:
+               for ht in addrs:
+                   ans += find_affiliation(ht,recursion)
+               return ans
         except:
-            print "ERROR: Could not parse mrcxml for '{x}'.".format(x=http)
+            print "ERROR: Could not parse/xpath mrcxml for '{x}'.".format(x=http)
             print
             exit(-7)
-
+    else:
+        print "WARNING: Could not GET '{x}': HTTP/1.1 {y} {z}.".format(x=ia,
+                                                                       y=ae.status_code,
+                                                                       z=ae.reason)
     return ans
 
 
@@ -77,8 +91,7 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
 
     recursion = 'full'
 
-    if 'Planck' in fullname or 'Fraunhofer' in fullname or 
-       'Leibniz' in fullname or 'Helmholtz' in fullname:
+    if 'Planck' in fullname or 'Fraunhofer' in fullname or 'Leibniz' in fullname or 'Helmholtz' in fullname:
         recursion = 'noadue'
 
     if ezbid in ['aDLLR', 'aDZNE', 'aFZJUE', 'aDESY', 'aGFZPO', 'aIFZ', 'aMBCB', 
@@ -86,12 +99,15 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
         recursion = 'noadue'
 
     if fullname in ezb2gnd:
+        affs = []
         for corp in ezb2gnd[fullname]:
             # 2017-03-07 TD : Working here with 'popen' instead regular expressions
             #                 due to different encodings in ezb2gnd and gndidx
             #                 Needs review though: Adopt to new subprocess module!
-            cmd = (u'grep "^%s\t" "%s" | cut -f2' % (corp,fname)).encode('utf-8')
-            ans = os.popen(cmd).read().split()
+            cmd = (u'grep "^%s\t" "%s"' % (corp,fname)).encode('utf-8')
+            ### cmd = (u'grep "^%s\t" "%s" | cut -f2' % (corp,fname)).encode('utf-8')
+            ans = os.popen(cmd).read().split('\n')
+            while len(ans[-1]) == 0: ans = ans[:-1]
             ##print "DEBUG: {d}".format(d=ans)
             #if ans:
             #    https = unicode( ','.join(ans), 'utf-8' )
@@ -99,11 +115,13 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
             #else:
             print (u" %7s => %s" % (ezbid, corp)).encode('utf-8')
 
-            for http in ans:
-                affs = find_affiliation(http, recursion=recursion)
+            for s in ans:
+                http = s.split('\t')
+                if http[0]: affs += [unicode(http[0],'utf-8')]
+                if http[1]: affs += find_affiliation(http[1], recursion=recursion)
 
-            for aff in sorted(affs):
-                print (u'%s' % aff).encode('utf-8')
+        for aff in sorted(set(affs)):
+            if aff: print (u'%s' % aff).encode('utf-8')
 
     print
     return
