@@ -121,7 +121,7 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
         recursion = 'noadue'
 
     if ezbid in ['aDLLR', 'aDZNE', 'aFZJUE', 'aDESY', 'aGFZPO', 'aIFZ', 'aMBCB', 
-                 'aDM', 'aZBW', 'aFAB', 'aUBWH', 'aDPMA', 'aSUBHH', 'aHDZ' ]:
+                 'aDM', 'aZBW', 'aFAB', 'aUBWH', 'aDPMA', 'aSUBHH', 'aHDZ', 'aIHP' ]:
         recursion = 'noadue'
 
     if fullname in ezb2gnd:
