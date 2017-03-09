@@ -21,13 +21,13 @@ import uuid, time, glob, lxml.html
 OA_PARTICIPANTS_GLOB = "OA_participants-EZB_current-NAL*.csv"
 """NAL*-lists of OA participants from EZB"""
 
-EZB2GND_FILE = os.path.realpath(__FILE__) + "/ezb_institution2gnd_corporate.csv"
+EZB2GND_FILE = os.path.realpath(__file__) + "/ezb_institution2gnd_corporate.csv"
 """Map from EZB institution fullnames to (possible multiple) GND tag110 (marcxml)"""
 
-GND_IDX_FILE = os.path.realpath(__FILE__) + "/gnd_corporate_tag110_idx.csv.gz"
+GND_IDX_FILE = os.path.realpath(__file__) + "/gnd_corporate_tag110_idx.csv.gz"
 """Map from GND tag110 (marcxml) to http-landing-pages at DNB (!!!compressed!!!)"""
 
-RESULTDIR = os.path.realpath(__FILE__) + "/Std_DeepGreen_Accounts"
+RESULTDIR = os.path.realpath(__file__) + "/Std_DeepGreen_Accounts"
 """Path to collect / find all the affiliation .csv files"""
 
 
