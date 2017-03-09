@@ -6,20 +6,28 @@ All records are put into possibly already existing alliance data.
 This means historical data will probably be overwritten/updated. 
 So be warned/informed now!
 """
-#from octopus.core import add_configuration, app
-#from service.models import License, Alliance
+from octopus.core import add_configuration, app
+from service.models import Account,RepositoryConfig
 ## from datetime import datetime
-import os, re, requests, csv
-import glob, lxml.html
+import os, errno, re, requests, csv
+import uuid, time, glob, lxml.html
 
-EZB_SEARCH_HOST = "http://rzbvm016.ur.de"
-"""EZB web service hostname"""
+OA_PARTICIPANTS_GLOB = "OA_participants-EZB_current-NAL*.csv"
+"""NAL*-lists of OA participants from EZB"""
 
-EZB_SEARCH_PAGE = "OA_participants"
-"""page name in the EZB instance"""
+EZB2GND_FILE = os.path.realpath(__FILE__) + "/ezb_institution2gnd_corporate.csv"
+"""Map from EZB institution fullnames to (possible multiple) GND tag110 (marcxml)"""
+
+GND_IDX_FILE = os.path.realpath(__FILE__) + "/gnd_corporate_tag110_idx.csv"
+"""Map from GND tag110 (marcxml) to http-landing-pages at DNB"""
+
+RESULTDIR = os.path.realpath(__FILE__) + "/Std_DeepGreen_Accounts"
+"""Path to collect / find all the affiliation .csv files"""
+
 
 AFF_XPATH = "//datafield[@tag='110' or @tag='410' and not(./subfield[contains(@code,'b')]) and not(./subfield[contains(@code,'9')]) and not(./subfield[contains(@code,'g')]) and not(./subfield[contains(@code,'x')])]/subfield[@code='a']"
 ADU_XPATH = "//datafield[@tag='510' and contains(./subfield[@code='9'],'4:adue')]/subfield[@code='0']"
+
 
 def find_affiliation(http,recursion="full"):
     ans = []
@@ -29,7 +37,7 @@ def find_affiliation(http,recursion="full"):
     if ae.status_code == 200:
         try:
             mrcxml = lxml.html.fromstring(ae.content)
-            addrs = [x.text for x in mrcxml.xpath(ADU_XPATH) if x.text.startswith("http")]
+            addrs = [x.text for x in mrcxml.xpath(ADU_XPATH) if x.text.startswith('http')]
 
             if recursion == "noadue" or len(addrs) == 0:
                return [x.text for x in mrcxml.xpath(AFF_XPATH)]
@@ -84,11 +92,21 @@ def grep(text,pattern):
     return re.findall(r'%s' % pattern, text, flags=re.M)
 
 
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
 
 def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
 
     print (u" %7s == %s ('%s')" % (ezbid, fullname, sigel)).encode('utf-8')
 
+    outfname = (u"%s/%s_template.csv" % (RESULTDIR, ezbid)).encode('utf-8')
     recursion = 'full'
 
     if 'Planck' in fullname or 'Fraunhofer' in fullname or 'Leibniz' in fullname or 'Helmholtz' in fullname:
@@ -120,11 +138,92 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
                 if http[0]: affs += [unicode(http[0],'utf-8')]
                 if http[1]: affs += find_affiliation(http[1], recursion=recursion)
 
-        for aff in sorted(set(affs)):
-            if aff: print (u'%s' % aff).encode('utf-8')
+        try:
+            with open(outfname,"w") as f:
+                f.write( "Name Variants,Domains,Postcodes,Grant Numbers,ORCIDs,Author Emails\n" )
+                for aff in sorted(set(affs)):
+                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut']): 
+                        print (u'%s' % aff).encode('utf-8')
+                        f.write( (u"%s,,,,,\n" % aff).encode('utf-8') )
+        except IOError:
+            print "WARNING: Could not write to file '{x}'.".format(x=outfname)
+            for aff in sorted(set(affs)):
+                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut']): 
+                    print (u'%s' % aff).encode('utf-8')
 
     print
     return
+
+
+def update_account(fullname, ezbid, sigel='', purge=False):
+
+    csvfname = (u"%s/%s_template.csv" % (RESULTDIR, ezbid)).encode('utf-8')
+    email = (u"%s@deepgreen.org" % ezbid).encode('utf-8')
+    pw = (u"%sDeepGreen%d" % ezbid,(len(ezbid)-1)).encode('utf-8')
+
+    acc = Account.pull_by_key('repository.bibid',ezbid)
+
+    if purge is True:
+        if acc is not None and acc.has_role('repository'):
+            rec = RepositoryConfig().pull_by_repo(acc.id)
+            if rec is not None:
+                rec.delete()
+            acc.remove()
+            time.sleep(1)
+            if rec is not None:
+                print "INFO: Both account *AND* match config for id='{x}' successfully removed!".format(x=ezbid)
+            else:
+                print "INFO: Repository account for id='{x}' successfully removed!".format(x=ezbid)
+        else:
+            print "WARNING: Repository account for id='{x}' not found; nothing removed...".format(x=ezbid)
+        return
+
+    #
+    if acc is None:
+        api_key = str(uuid.uuid4())
+        acc = Account()
+        acc.data['api_key'] = api_key
+        acc.data['packaging'] = [ 'http://purl.org/net/sword/package/SimpleZip' ]
+
+    acc.set_password(pw)
+    acc.data['email'] = email
+    acc.data['role'] = [ 'repository' ]
+
+    if 'sword' not in acc.data: acc.data['sword'] = {}
+    acc.data['sword']['username'] = ''
+    acc.data['sword']['password'] = ''
+    acc.data['sword']['collection'] = ''
+
+    if 'repository' not in acc.data: acc.data['repository'] = {}
+    acc.data['repository']['software'] =  ''
+    acc.data['repository']['url'] =  ''
+    acc.data['repository']['name'] = (u"%s" % fullname).encode('utf-8')
+    acc.data['repository']['bibid'] = (u"%s" % ezbid).encode('utf-8')
+    if len(sigel) > 0:
+        acc.data['repository']['sigel'] = [(u"%s" % sgl).encode('utf-8') for sgl in sigel.split(',')]
+
+    acc.save()
+    time.sleep(1)
+    print "INFO: Account for id='{x}' updated/created.".format(x=ezbid)
+
+    #
+    rec = RepositoryConfig().pull_by_repo(acc.id)
+
+    if rec is None:
+        rec = RepositoryConfig()
+        rec.repository = acc.id
+    try:
+        with open(csvfname,'r') as f:
+            saved = rec.set_repo_config(csvfile=f, repository=acc.id)
+            if saved:
+                print "INFO: Match config for id='{x}' updated.".format(x=ezbid)
+            else:
+                print "WARNING: Could not update match config for id='{x}'.".format(x=ezbid)
+    except:
+        print "WARNING: Could not upload repository config for id='{x}'.".format(x=ezbid)
+
+    return
+
 
 
 if __name__ == "__main__":
@@ -136,6 +235,9 @@ if __name__ == "__main__":
 
     # parser.add_argument("-f", "--from_date", help="date to run the report from")
     # parser.add_argument("-t", "--to_date", help="date to run the report to")
+    parser.add_argument("-o", "--output", help="folder for affiliation template files")
+    parser.add_argument("--net", action="store_true", help="do network requests for update")
+    parser.add_argument("--purge", action="store_true", help="purge instead of update (DANGER!)")
 
     args = parser.parse_args()
 
@@ -157,7 +259,10 @@ if __name__ == "__main__":
     #
     # reports.delivery_report(args.from_date, args.to_date, reportfile)
 
-    oalist = glob.glob('OA_participants-EZB_current-NAL*.csv')
+    if args.output is not None:
+        RESULTDIR = args.output
+
+    oalist = glob.glob(OA_PARTICIPANTS_GLOB)
 
     if oalist:
         part = {}
@@ -176,19 +281,24 @@ if __name__ == "__main__":
 
             print "INFO: Participant file '{x}' successfully read/parsed.".format(x=fname)
 
-        print "INFO: All participant files processed; a total of {y} institution(s) found.".format(y=len(part))
+        print "INFO: Participant files processed; a total of {y} institution(s) found.".format(y=len(part))
 
         # print "DEBUG: {d}".format(d=part)
         # print "DEBUG:"
-        idx = load_ezb2gnd('ezb_institution2gnd_corporate.csv')
-        txt = "" # load_gndidx('gnd_corporate_tag110_idx.csv')
+        idx = load_ezb2gnd(EZB2GND_FILE)
+        # txt = load_gndidx(GND_IDX_FILE)
+
+        mkdir_p(RESULTDIR)
 
         for ezbid,val in part.items():
            fullname, sigel = val
-           find_in_gndidx(fullname, ezbid, sigel, idx, 'gnd_corporate_tag110_idx.csv')
+           sigel = ",".join(set(sigel.split(',')))
+           if args.net is True:
+               find_in_gndidx(fullname, ezbid, sigel, idx, GND_IDX_FILE)
+           update_account(fullname, ezbid, sigel, args.purge)
 
     else:
-        print "ERROR: no flies 'OA_participants-EZB_current*.csv' found."
+        print "ERROR: no '{x}' files found.".format(x=OA_PARTICIPANTS_GLOB)
         print
         exit(-3)
 

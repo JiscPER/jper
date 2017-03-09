@@ -145,10 +145,16 @@ def route(unrouted):
     
     al_repos = []
     for bibid,aldata in part_albibids:
-        acc = models.Account.pull_by_key("repository.bibid",bibid)
-        if acc is not None and acc.has_role("repository"):
+        acc1 = models.Account.pull_by_key("repository.bibid",bibid)
+        if acc1 is not None and acc1.has_role("repository"):
             unrouted.embargo = aldata["embargo"]
-            al_repos.append((acc.id,aldata,bibid))
+            al_repos.append((acc1.id,aldata,bibid))
+
+        # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
+        acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
+        if acc2 is not None and acc2.has_role("repository"):
+            unrouted.embargo = aldata["embargo"]
+            al_repos.append((acc2.id,aldata,"a"+bibid))
 
     if len(al_repos) > 0:
         app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))

@@ -57,6 +57,28 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         super(RepositoryConfig, self).__init__(raw=raw)
 
     @property
+    def repo(self):
+        """
+        Get the id of the repository this config represents
+
+        :return: repository id
+        """
+        return self._get_single("repo", coerce=dataobj.to_unicode())
+        # return self._get_single("repository", coerce=dataobj.to_unicode())
+        # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
+
+    @repository.setter
+    def repo(self, val):
+        """
+        Set the id of the repository this config represents
+
+        :param val: the repository id
+        """
+        self._set_single("repo", val, coerce=dataobj.to_unicode())
+        # self._set_single("repository", val, coerce=dataobj.to_unicode())
+        # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
+
+    @property
     def repository(self):
         """
         Get the id of the repository this config represents
