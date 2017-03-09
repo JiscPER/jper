@@ -24,8 +24,8 @@ OA_PARTICIPANTS_GLOB = "OA_participants-EZB_current-NAL*.csv"
 EZB2GND_FILE = os.path.realpath(__FILE__) + "/ezb_institution2gnd_corporate.csv"
 """Map from EZB institution fullnames to (possible multiple) GND tag110 (marcxml)"""
 
-GND_IDX_FILE = os.path.realpath(__FILE__) + "/gnd_corporate_tag110_idx.csv"
-"""Map from GND tag110 (marcxml) to http-landing-pages at DNB"""
+GND_IDX_FILE = os.path.realpath(__FILE__) + "/gnd_corporate_tag110_idx.csv.gz"
+"""Map from GND tag110 (marcxml) to http-landing-pages at DNB (!!!compressed!!!)"""
 
 RESULTDIR = os.path.realpath(__FILE__) + "/Std_DeepGreen_Accounts"
 """Path to collect / find all the affiliation .csv files"""
@@ -108,7 +108,7 @@ def mkdir_p(path):
             raise
 
 
-def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
+def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
 
     print (u" %7s == %s ('%s')" % (ezbid, fullname, sigel)).encode('utf-8')
 
@@ -128,7 +128,8 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,fname):
             # 2017-03-07 TD : Working here with 'popen' instead regular expressions
             #                 due to different encodings in ezb2gnd and gndidx
             #                 Needs review though: Adopt to new subprocess module!
-            cmd = (u'grep "^%s\t" "%s"' % (corp,fname)).encode('utf-8')
+            # 2017-03-09 TD : Now using 'zgrep' due to github's 50.00 MB limit recommendation
+            cmd = (u'zgrep "^%s\t" "%s"' % (corp,gzfname)).encode('utf-8')
             ### cmd = (u'grep "^%s\t" "%s" | cut -f2' % (corp,fname)).encode('utf-8')
             ans = os.popen(cmd).read().split('\n')
             while len(ans[-1]) == 0: ans = ans[:-1]
