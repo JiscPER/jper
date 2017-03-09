@@ -6,8 +6,14 @@ All records are put into possibly already existing alliance data.
 This means historical data will probably be overwritten/updated. 
 So be warned/informed now!
 """
-from octopus.core import add_configuration, app
-from service.models import Account,RepositoryConfig
+try:
+    from octopus.core import add_configuration, app
+    from service.models import Account,RepositoryConfig
+except:
+    print "ERROR: Need to run from a virtualenv enabled setting, i.e."
+    print "ERROR: run 'source ../../bin/activate' in some DG installation root folder first!"
+    exit(-1)
+
 ## from datetime import datetime
 import os, errno, re, requests, csv
 import uuid, time, glob, lxml.html
