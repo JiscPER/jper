@@ -168,7 +168,7 @@ def update_account(fullname, ezbid, sigel='', purge=False):
 
     csvfname = (u"%s/%s_template.csv" % (RESULTDIR, ezbid)).encode('utf-8')
     email = (u"%s@deepgreen.org" % ezbid).encode('utf-8')
-    pw = (u"%sDeepGreen%d" % ezbid,(len(ezbid)-1)).encode('utf-8')
+    pw = (u"%sDeepGreen%d" % (ezbid,(len(ezbid)-1))).encode('utf-8')
 
     acc = Account.pull_by_key('repository.bibid',ezbid)
 
