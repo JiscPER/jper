@@ -67,7 +67,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         # return self._get_single("repository", coerce=dataobj.to_unicode())
         # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
 
-    @repository.setter
+    @repo.setter
     def repo(self, val):
         """
         Set the id of the repository this config represents
