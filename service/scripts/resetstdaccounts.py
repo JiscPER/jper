@@ -2,7 +2,7 @@
 This is a script to create (or delete!!) account data in a live system,
 as it is collected from a previous EZB service call.  
 
-All records are put into possibly already existing alliance data. 
+All records are put into possibly already existing match config / account data. 
 This means historical data will probably be overwritten/updated. 
 So be warned/informed now!
 """
@@ -18,16 +18,18 @@ except:
 import os, errno, re, requests, csv
 import uuid, time, glob, lxml.html
 
+ABS_PATH_FILE = os.path.abspath(__file__)
+
 OA_PARTICIPANTS_GLOB = "OA_participants-EZB_current-NAL*.csv"
 """NAL*-lists of OA participants from EZB"""
 
-EZB2GND_FILE = os.path.realpath(__file__) + "/ezb_institution2gnd_corporate.csv"
+EZB2GND_FILE = os.path.dirname(ABS_PATH_FILE) + "/ezb_institution2gnd_corporate.csv"
 """Map from EZB institution fullnames to (possible multiple) GND tag110 (marcxml)"""
 
-GND_IDX_FILE = os.path.realpath(__file__) + "/gnd_corporate_tag110_idx.csv.gz"
+GND_IDX_FILE = os.path.dirname(ABS_PATH_FILE) + "/gnd_corporate_tag110_idx.csv.gz"
 """Map from GND tag110 (marcxml) to http-landing-pages at DNB (!!!compressed!!!)"""
 
-RESULTDIR = os.path.realpath(__file__) + "/Std_DeepGreen_Accounts"
+RESULTDIR = os.path.dirname(ABS_PATH_FILE) + "/Std_DeepGreen_Accounts"
 """Path to collect / find all the affiliation .csv files"""
 
 
