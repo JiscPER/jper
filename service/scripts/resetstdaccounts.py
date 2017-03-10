@@ -149,16 +149,18 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
 
         try:
             with open(outfname,"w") as f:
-                f.write( "Name Variants,Domains,Postcodes,Grant Numbers,ORCIDs,Author Emails\n" )
+                f.write( '"Name Variants","Domains","Postcodes","Grant Numbers","ORCIDs","Author Emails"\n' )
                 for aff in sorted(set(affs)):
                     if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut']): 
-                        print (u'%s' % aff).encode('utf-8')
-                        f.write( (u"%s,,,,,\n" % aff).encode('utf-8') )
+                        tmp = aff.replace('"',"''")
+                        print (u"%s" % tmp).encode('utf-8')
+                        f.write( (u'"%s",,,,,\n' % tmp).encode('utf-8') )
         except IOError:
             print "WARNING: Could not write to file '{x}'.".format(x=outfname)
             for aff in sorted(set(affs)):
                 if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut']): 
-                    print (u'%s' % aff).encode('utf-8')
+                    tmp = aff.replace('"',"''")
+                    print (u"%s" % tmp).encode('utf-8')
 
     print
     return
