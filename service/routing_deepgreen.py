@@ -12,6 +12,7 @@ from flask import url_for
 from copy import deepcopy
 from datetime import datetime
 import uuid
+import unicodedata
 
 class RoutingException(Exception):
     """
@@ -793,6 +794,8 @@ def _normalise(s):
     2. cast to lower case
     3. Normalise all internal spacing
 
+    4. Normalise to NFD (normal form decompose) of unicode
+
     :param s: string to be normalised
     :return: normalised string
     """
@@ -801,6 +804,9 @@ def _normalise(s):
     s = s.strip().lower()
     while "  " in s:    # two spaces
         s = s.replace("  ", " ")    # reduce two spaces to one
+    # 2017-03-13 TD : Introduction of unicode normalisation to cope with
+    #                 all sorts of diacritical signs
+    s = unicodedata.normalize('NFD',s)
     return s
 
 
