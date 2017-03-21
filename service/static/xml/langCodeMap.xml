@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- langCodeMap.xml -->
+<langCodeMap>
+  <langCode iso639-1="" iso639-2="eng" iso639-3="eng"/>
+  <langCode iso639-1="en" iso639-2="eng" iso639-3="eng"/>
+  <langCode iso639-1="de" iso639-2="deu" iso639-3="deu"/>
+  <langCode iso639-1="nl" iso639-2="nld" iso639-3="nld"/>
+  <langCode iso639-1="fr" iso639-2="fra" iso639-3="fra"/>
+  <langCode iso639-1="es" iso639-2="spa" iso639-3="spa"/>
+  <langCode iso639-1="it" iso639-2="ita" iso639-3="ita"/>
+  <langCode iso639-1="el" iso639-2="ell" iso639-3="ell"/>
+  <langCode iso639-1="fi" iso639-2="fin" iso639-3="fin"/>
+  <langCode iso639-1="ru" iso639-2="rus" iso639-3="rus"/>
+  <langCode iso639-1="he" iso639-2="heb" iso639-3="heb"/>
+</langCodeMap>
+

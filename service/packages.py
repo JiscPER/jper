@@ -390,6 +390,53 @@ class SimpleZip(PackageHandler):
         """
         return "SimpleZip"
 
+
+############################################################################
+# 2017-03-21 TD : Additional PackageHandler for OPUS4Zip package format
+#
+class OPUS4Zip(PackageHandler):
+    """
+    Basic class for representing the OPUS4Zip package format
+
+    OPUS4Zip is identified by the format identifier http://purl.org/net/sword/package/OPUS4Zip
+    """
+
+    ################################################
+    ## methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+
+        In this case it is OPUS4Zip.zip
+
+        :return: filename
+        """
+        return "OPUS4Zip.zip"
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+
+        In this case there are none
+
+        :return: list of names
+        """
+        return []
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+
+        In this case OPUS4Zip
+
+        :return: url name
+        """
+        return "OPUS4Zip"
+#
+############################################################################
+
+
 class FilesAndJATS(PackageHandler):
     """
     Class for representing the FilesAndJATS format
@@ -530,11 +577,14 @@ class FilesAndJATS(PackageHandler):
         This handler currently supports the following conversion formats:
 
         * http://purl.org/net/sword/package/SimpleZip
+        * http://purl.org/net/sword/package/OPUS4Zip
 
         :param target_format: target format
         :return: True if in the above list, else False
         """
-        return target_format in ["http://purl.org/net/sword/package/SimpleZip"]
+        # 2017-03-21 TD : added another zip format (here: OPUS4Zip)
+        return target_format in ["http://purl.org/net/sword/package/SimpleZip",
+                                 "http://purl.org/net/sword/package/OPUS4Zip"]
 
     def convert(self, in_path, target_format, out_path):
         """
@@ -546,14 +596,19 @@ class FilesAndJATS(PackageHandler):
         This handler currently supports the following conversion formats:
 
         * http://purl.org/net/sword/package/SimpleZip
+        * http://purl.org/net/sword/package/OPUS4Zip
 
         :param in_path: locally accessible file path to the source package
         :param target_format: the format identifier for the format we want to convert to
         :param out_path: locally accessible file path for the output to be written
         :return: True/False on success/fail
         """
+        # 2017-03-21 TD : additional handling of a new format (here: OPUS4Zip)
         if target_format == "http://purl.org/net/sword/package/SimpleZip":
             self._simple_zip(in_path, out_path)
+            return True
+        elif target_format == "http://purl.org/net/sword/package/OPUS4Zip":
+            self._opus4_zip(in_path, out_path)
             return True
         return False
 
@@ -570,6 +625,25 @@ class FilesAndJATS(PackageHandler):
         """
         # files and jats are already basically a simple zip, so a straight copy
         shutil.copyfile(in_path, out_path)
+
+
+    # 2017-03-21 TD : added an internal method converting to OPUS4 zip format;
+    #                 basically by invoking an xslt transformation of the xml metadata 
+    def _opus4_zip(self, in_path, out_path):
+        """
+        convert to OPUS4 zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # 2017-03-21 TD :
+        # files and jats are already basically a OPUS4 zip, so a straight copy
+        # well, almost...
+        app.logger.debug("PackageHandler FilesAndJATS._opus4_zip(): ... copying {x} to {y}.".format(x=in_path,y=out_path))
+        parser = etree.XMLParser(load_dtd=True, no_network=False)
+        shutil.copyfile(in_path, out_path)
+
 
     def _merge_metadata(self, emd, jmd):
         """
