@@ -121,7 +121,7 @@ DELETE_ROUTED = True
 DELETE_UNROUTED = True
 
 # Scheduler can also do necessary reporting jobs
-REPORTSDIR = '/home/mark/jper_reports'
+REPORTSDIR = '/home/green/jper_reports'
 SCHEDULE_MONTHLY_REPORTING = False
 
 # Scheduler can also remove old routed indexes
@@ -129,7 +129,7 @@ SCHEDULE_DELETE_OLD_ROUTED = True
 SCHEDULE_KEEP_ROUTED_MONTHS = 3
 
 LOGLEVEL = 'debug'
-LOGFILE = '/home/mark/jperlog'
+LOGFILE = '/home/green/jperlog'
 
 STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 """implementation class of the temporary local filestore"""
