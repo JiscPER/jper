@@ -640,9 +640,32 @@ class FilesAndJATS(PackageHandler):
         # 2017-03-21 TD :
         # files and jats are already basically a OPUS4 zip, so a straight copy
         # well, almost...
-        app.logger.debug("PackageHandler FilesAndJATS._opus4_zip(): ... copying {x} to {y}.".format(x=in_path,y=out_path))
+        #shutil.copyfile(in_path, out_path)
+        app.logger.debug("PackageHandler FilesAndJATS._opus4_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
+        try:
+            zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        # 2017-03-22 TD : still missing correct 'document()' handling in XSLT string
+        #                 *and* MD5 calculation of all the wonderfull payload plus
+        #                 the corres. '<files/>' appendum as of 'add_files2opus_xml.xsl'
+        xslt_root = etree.XML(models.XSLT.jats2opus4) 
+        transform = etree.XSLT(xslt_root)
         parser = etree.XMLParser(load_dtd=True, no_network=False)
-        shutil.copyfile(in_path, out_path)
+
+        try:
+            with zipfile.ZipFile(out_path, "w") as zout:
+                for item in zin.infolist():
+                    data = zin.read(item.filename)
+                    if item.filename.endswith(".xml"):
+                        doc = transform( etree.fromstring(data, parser) )
+                        zout.writestr("opus4.xml", unicode(doc, 'utf-8'))
+                    else:
+                        zout.writestr(item, data)
+            zin.close()
+        except Exception:
+            raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
 
 
     def _merge_metadata(self, emd, jmd):

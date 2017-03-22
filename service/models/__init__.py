@@ -26,3 +26,4 @@ from service.models.api import MatchProvenanceList, FailedNotificationList
 from service.models.account import Account
 from service.models.contentlog import ContentLog
 from service.models.ezb import Alliance, License
+from service.models.xslt import XSLT
