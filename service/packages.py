@@ -647,9 +647,10 @@ class FilesAndJATS(PackageHandler):
         except zipfile.BadZipfile as e:
             raise PackageException("Zip file is corrupt - cannot read.")
 
-        # 2017-03-22 TD : still missing correct 'document()' handling in XSLT string
-        #                 *and* MD5 calculation of all the wonderfull payload plus
-        #                 the corres. '<files/>' appendum as of 'add_files2opus_xml.xsl'
+        # 2017-03-22 TD : still missing [Done: correct 'document()' handling in XSLT string]
+        #                 MD5 calculation of all the wonderfull payload plus the
+        #                 corres. '<files/>' appendum as of 'add_files2opus_xml.xsl'
+        #
         xslt_root = etree.XML(models.XSLT.jats2opus4) 
         transform = etree.XSLT(xslt_root)
         parser = etree.XMLParser(load_dtd=True, no_network=False)
@@ -1098,11 +1099,14 @@ class FilesAndRSC(PackageHandler):
         This handler currently supports the following conversion formats:
 
         * http://purl.org/net/sword/package/SimpleZip
+        * http://purl.org/net/sword/package/OPUS4Zip
 
         :param target_format: target format
         :return: True if in the above list, else False
         """
-        return target_format in ["http://purl.org/net/sword/package/SimpleZip"]
+        # 2017-04-20 TD : added another zip format (here: OPUS4Zip)
+        return target_format in ["http://purl.org/net/sword/package/SimpleZip",
+                                 "http://purl.org/net/sword/package/OPUS4Zip"]
 
     def convert(self, in_path, target_format, out_path):
         """
@@ -1114,14 +1118,19 @@ class FilesAndRSC(PackageHandler):
         This handler currently supports the following conversion formats:
 
         * http://purl.org/net/sword/package/SimpleZip
+        * http://purl.org/net/sword/package/OPUS4Zip
 
         :param in_path: locally accessible file path to the source package
         :param target_format: the format identifier for the format we want to convert to
         :param out_path: locally accessible file path for the output to be written
         :return: True/False on success/fail
         """
+        # 2017-04-20 TD : added another zip format (here: OPUS4Zip)
         if target_format == "http://purl.org/net/sword/package/SimpleZip":
             self._simple_zip(in_path, out_path)
+            return True
+        elif target_format == "http://purl.org/net/sword/package/OPUS4Zip":
+            self._opus4_zip(in_path, out_path)
             return True
         return False
 
@@ -1138,6 +1147,49 @@ class FilesAndRSC(PackageHandler):
         """
         # files and rsc are already basically a simple zip, so a straight copy
         shutil.copyfile(in_path, out_path)
+
+
+    # 2017-04-20 TD : added an internal method converting to OPUS4 zip format;
+    #                 basically by invoking an xslt transformation of the xml metadata 
+    def _opus4_zip(self, in_path, out_path):
+        """
+        convert to OPUS4 zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # 2017-04-20 TD :
+        # files and jats are already basically a OPUS4 zip, so a straight copy
+        # well, almost...
+        #shutil.copyfile(in_path, out_path)
+        app.logger.debug("PackageHandler FilesAndRSC._opus4_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
+        try:
+            zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        # 2017-04-20 TD : still missing: 
+        #                 MD5 calculation of all the wonderfull payload plus the
+        #                 corres. '<files/>' appendum as of 'add_files2opus_xml.xsl'
+        #
+        xslt_root = etree.XML(models.XSLT.rsc2opus4)
+        transform = etree.XSLT(xslt_root)
+        parser = etree.XMLParser(load_dtd=True, no_network=False)
+
+        try:
+            with zipfile.ZipFile(out_path, "w") as zout:
+                for item in zin.infolist():
+                    data = zin.read(item.filename)
+                    if item.filename.endswith(".xml"):
+                        doc = transform( etree.fromstring(data, parser) )
+                        zout.writestr("opus4.xml", unicode(doc, 'utf-8'))
+                    else:
+                        zout.writestr(item, data)
+            zin.close()
+        except Exception:
+            raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
+
 
     def _merge_metadata(self, emd, rmd):
         """
