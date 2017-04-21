@@ -8,7 +8,7 @@ Packages should then be configured through the PACKAGE_HANDLERS configuration op
 
 from octopus.core import app
 from octopus.lib import plugin
-import zipfile, os, shutil
+import zipfile, os, shutil, hashlib
 from lxml import etree
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
 # from octopus.modules.identifiers import postcode
@@ -350,6 +350,24 @@ class PackageHandler(object):
         """
         return False
 
+    # 2017-04-21 TD : borrow an idea of how to realise the md5sum functionality
+    #                 (see http://stackoverflow.com/questions/3431825
+    #                                            /generating-an-md5-checksum-of-a-file)
+    def md5sum(self, fname, blocksize=65536):
+        """
+        Calculate the MD5 checksum of a file
+
+        :param fname: the filename of the file to be opened and processed
+        :param blocksize: the size (in bytes) of the file buffer to be used (default: 65536)
+        :return: hexdigest of the md5sum
+        """
+        hsh = hashlib.md5()
+        with open(fname, "rb") as f:
+            for block in iter(lambda: f.read(blocksize), b""):
+                hsh.update(block)
+        return hsh.hexdigest()
+
+
 class SimpleZip(PackageHandler):
     """
     Very basic class for representing the SimpleZip package format
@@ -651,21 +669,39 @@ class FilesAndJATS(PackageHandler):
         #                 MD5 calculation of all the wonderfull payload plus the
         #                 corres. '<files/>' appendum as of 'add_files2opus_xml.xsl'
         #
+        # 2017-04-21 TD : all of the above missing list done!! (-:
+        #
         xslt_root = etree.XML(models.XSLT.jats2opus4) 
         transform = etree.XSLT(xslt_root)
+
+        xslt_addf = etree.XML(models.XSLT.addfiles2opus4)
+        addfile = etree.XSLT(xslt_addf)
+ 
         parser = etree.XMLParser(load_dtd=True, no_network=False)
 
         try:
             with zipfile.ZipFile(out_path, "w") as zout:
                 for item in zin.infolist():
-                    data = zin.read(item.filename)
                     if item.filename.endswith(".xml"):
-                        doc = transform( etree.fromstring(data, parser) )
-                        zout.writestr("opus4.xml", unicode(doc, 'utf-8'))
-                    else:
+                        data = zin.read(item.filename)
+                        opus4xml = transform( etree.fromstring(data, parser) )
+                        break  # only *one* .xml allowed per .zip
+
+                for item in zin.infolist():
+                    if not item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        md5sum = hashlib.md5(data).hexdigest()
+                        opus4xml = addfile( opus4xml, 
+                                            md5=etree.XSLT.strparam(md5sum), 
+                                            file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
+
+                zout.writestr("opus4.xml", unicode(opus4xml, 'utf-8'))
+
             zin.close()
+
         except Exception:
+            zin.close()
             raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
 
 
@@ -1173,21 +1209,39 @@ class FilesAndRSC(PackageHandler):
         #                 MD5 calculation of all the wonderfull payload plus the
         #                 corres. '<files/>' appendum as of 'add_files2opus_xml.xsl'
         #
-        xslt_root = etree.XML(models.XSLT.rsc2opus4)
+        # 2017-04-21 TD : all of the above missing list done!! (-:
+        #
+        xslt_root = etree.XML(models.XSLT.rsc2opus4) 
         transform = etree.XSLT(xslt_root)
+
+        xslt_addf = etree.XML(models.XSLT.addfiles2opus4)
+        addfile = etree.XSLT(xslt_addf)
+ 
         parser = etree.XMLParser(load_dtd=True, no_network=False)
 
         try:
             with zipfile.ZipFile(out_path, "w") as zout:
                 for item in zin.infolist():
-                    data = zin.read(item.filename)
                     if item.filename.endswith(".xml"):
-                        doc = transform( etree.fromstring(data, parser) )
-                        zout.writestr("opus4.xml", unicode(doc, 'utf-8'))
-                    else:
+                        data = zin.read(item.filename)
+                        opus4xml = transform( etree.fromstring(data, parser) )
+                        break  # only *one* .xml allowed per .zip
+
+                for item in zin.infolist():
+                    if not item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        md5sum = hashlib.md5(data).hexdigest()
+                        opus4xml = addfile( opus4xml, 
+                                            md5=etree.XSLT.strparam(md5sum), 
+                                            file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
+
+                zout.writestr("opus4.xml", unicode(opus4xml, 'utf-8'))
+
             zin.close()
+
         except Exception:
+            zin.close()
             raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
 
 
