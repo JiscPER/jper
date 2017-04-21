@@ -71,8 +71,8 @@
                         <xsl:when test="contains(xref/@ref-type,'aff') and string-length(xref/@rid)!=0">
                            <xsl:for-each select="./xref[@ref-type='aff']">
                              <organization:organization>
-                               <dc:title/>
-                               <eterms:address><xsl:copy-of select="key('kAffById', @rid)/text()"/></eterms:address>
+                               <dc:title><xsl:copy-of select="key('kAffById', @rid)/text()"/></dc:title>
+                               <!-- <eterms:address><xsl:copy-of select="key('kAffById', @rid)/text()"/></eterms:address> -->
                                <!--
                                <dc:title><xsl:value-of select="key('kAffById', @rid)/text()[normalize-space()][1]"/></dc:title>
                                -->
@@ -83,10 +83,18 @@
                              </organization:organization>
                           </xsl:for-each> 
                         </xsl:when>
+                        <xsl:when test="not(contains(xref/@ref-type,'aff')) and string-length(//article-meta/aff[position()=last()]/text())!=0">
+                          <xsl:for-each select="//article-meta/aff[not(@*)]">
+                            <organization:organization>
+                              <dc:title><xsl:copy-of select="./text()"/></dc:title>
+                              <!-- <eterms:address><xsl:copy-of select="./text()"/></eterms:address> -->
+                            </organization:organization>
+                          </xsl:for-each>
+                        </xsl:when>
                         <xsl:otherwise>
                            <organization:organization>
                              <dc:title><xsl:text>-</xsl:text></dc:title> 
-                             <eterms:address/>
+                             <!-- <eterms:address><xsl:text>-</xsl:text></eterms:address> -->
                            </organization:organization>
                         </xsl:otherwise>
                       </xsl:choose>
@@ -118,7 +126,14 @@
               <xsl:attribute name="xsi:type"><xsl:text>dcterms:W3CDTF</xsl:text></xsl:attribute>
               <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,'ppub')]/year"/>
               <xsl:text>-</xsl:text>
-              <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/month,'00')"/>
+              <xsl:choose>
+                <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/month">
+                  <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/month,'00')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>12</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
               <xsl:text>-</xsl:text>
               <xsl:choose>
                 <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/day">
@@ -136,7 +151,9 @@
               <eterms:issue><xsl:value-of select="//article-meta/issue"/></eterms:issue>
               <eterms:start-page><xsl:value-of select="//article-meta/fpage"/></eterms:start-page>
               <eterms:end-page><xsl:value-of select="//article-meta/lpage"/></eterms:end-page>
-              <eterms:total-number-of-pages></eterms:total-number-of-pages>
+              <xsl:if test="string-length(//article-meta/fpage/text())!=0 and string-length(//article-meta/lpage/text())!=0">
+                <eterms:total-number-of-pages><xsl:value-of select="//article-meta/lpage - //article-meta/fpage + 1"/></eterms:total-number-of-pages>
+              </xsl:if>
               <eterms:publishing-info>
                 <dc:publisher><xsl:value-of select="//journal-meta/publisher/publisher-name"/></dc:publisher>
                 <eterms:place><xsl:value-of select="//journal-meta/publisher/publisher-loc"/></eterms:place>

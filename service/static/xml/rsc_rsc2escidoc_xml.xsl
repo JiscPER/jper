@@ -90,6 +90,26 @@
                                     </xsl:if>
                                  </xsl:for-each>
                                </dc:title>
+                               <eterms:address>
+                                 <xsl:for-each select="address/addrelt">
+                                    <xsl:value-of select="normalize-space(text())"/>
+                                    <xsl:if test="position() != last()">
+                                       <xsl:text>, </xsl:text>
+                                    </xsl:if>
+                                 </xsl:for-each>
+                                 <xsl:if test="address/city">
+                                    <xsl:if test="string-length(address/addrelt[position()=last()]/text())!=0">
+                                       <xsl:text>, </xsl:text>
+                                    </xsl:if>
+                                    <xsl:value-of select="normalize-space(address/city/text())"/>
+                                 </xsl:if>
+                                 <xsl:if test="address/country">
+                                    <xsl:if test="string-length(address/addrelt[position()=last()]/text())!=0 or string-length(address/city/text())!=0">
+                                       <xsl:text>, </xsl:text>
+                                    </xsl:if>
+                                    <xsl:value-of select="normalize-space(address/country/text())"/>
+                                 </xsl:if>
+                               </eterms:address>
                                <!--
                                <eterms:address><xsl:copy-of select="key('kAffById', @rid)/text()"/></eterms:address>
                                <dc:title><xsl:value-of select="key('kAffById', @rid)/text()[normalize-space()][1]"/></dc:title>
@@ -104,7 +124,7 @@
                         <xsl:otherwise>
                            <organization:organization>
                              <dc:title><xsl:text>-</xsl:text></dc:title> 
-                             <eterms:address/>
+                             <eterms:address><xsl:text>-</xsl:text></eterms:address>
                            </organization:organization>
                         </xsl:otherwise>
                       </xsl:choose>
@@ -138,7 +158,14 @@
               <xsl:attribute name="xsi:type"><xsl:text>dcterms:W3CDTF</xsl:text></xsl:attribute>
               <xsl:value-of select="//published[@type='print']/pubfront/date/year"/>
               <xsl:text>-</xsl:text>
-              <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/month,'00')"/>
+              <xsl:choose>
+                <xsl:when test="//published[@type='print']/pubfront/date/month">
+                  <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/month,'00')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>12</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
               <xsl:text>-</xsl:text>
               <xsl:choose>
                 <xsl:when test="//published[@type='print']/pubfront/date/day">

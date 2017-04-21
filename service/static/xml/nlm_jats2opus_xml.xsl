@@ -148,7 +148,14 @@
              <xsl:attribute name="type"><xsl:text>published</xsl:text></xsl:attribute>
              <xsl:attribute name="monthDay">
                 <xsl:text>--</xsl:text>
-                <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/month,'00')"/>
+                <xsl:choose>
+                  <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/month">
+                    <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/month,'00')"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:text>12</xsl:text>
+                  </xsl:otherwise>
+                </xsl:choose>
                 <xsl:text>-</xsl:text>
                 <xsl:choose>
                   <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/day">
