@@ -8,7 +8,7 @@ Packages should then be configured through the PACKAGE_HANDLERS configuration op
 
 from octopus.core import app
 from octopus.lib import plugin
-import zipfile, os, shutil, hashlib
+import zipfile, os, shutil, hashlib, mimetypes
 from lxml import etree
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
 # from octopus.modules.identifiers import postcode
@@ -455,6 +455,97 @@ class OPUS4Zip(PackageHandler):
 ############################################################################
 
 
+############################################################################
+# 2017-05-15 TD : Additional PackageHandler for ESciDoc package format
+#
+class ESciDoc(PackageHandler):
+    """
+    Basic class for representing the ESciDoc package format
+
+    ESciDoc is identified by the format identifier http://purl.org/net/sword/package/ESciDoc
+    """
+
+    ################################################
+    ## methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+
+        In this case it is ESciDoc.zip
+
+        :return: filename
+        """
+        return "ESciDoc.zip"
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+
+        In this case there are none
+
+        :return: list of names
+        """
+        return []
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+
+        In this case ESciDoc
+
+        :return: url name
+        """
+        return "ESciDoc"
+#
+############################################################################
+
+
+############################################################################
+# 2017-05-15 TD : Additional PackageHandler for METSDSpaceSIP package format
+#
+class METSDSpaceSIP(PackageHandler):
+    """
+    Basic class for representing the METSDSpaceSIP package format
+
+    METSDSpaceSIP is identified by the format identifier http://purl.org/net/sword/package/METSDSpaceSIP
+    """
+
+    ################################################
+    ## methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+
+        In this case it is METSDSpaceSIP.zip
+
+        :return: filename
+        """
+        return "METSDSpaceSIP.zip"
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+
+        In this case there are none
+
+        :return: list of names
+        """
+        return []
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+
+        In this case METSDSpaceSIP
+
+        :return: url name
+        """
+        return "METSDSpaceSIP"
+#
+############################################################################
+
 class FilesAndJATS(PackageHandler):
     """
     Class for representing the FilesAndJATS format
@@ -596,13 +687,18 @@ class FilesAndJATS(PackageHandler):
 
         * http://purl.org/net/sword/package/SimpleZip
         * http://purl.org/net/sword/package/OPUS4Zip
+        * http://purl.org/net/sword/package/ESciDoc
+        * http://purl.org/net/sword/package/METSDSpaceSIP
 
         :param target_format: target format
         :return: True if in the above list, else False
         """
         # 2017-03-21 TD : added another zip format (here: OPUS4Zip)
+        # 2017-05-15 TD : added another two zip format (here: ESciDoc and METSDSpaceSIP)
         return target_format in ["http://purl.org/net/sword/package/SimpleZip",
-                                 "http://purl.org/net/sword/package/OPUS4Zip"]
+                                 "http://purl.org/net/sword/package/OPUS4Zip",
+                                 "http://purl.org/net/sword/package/ESciDoc",
+                                 "http://purl.org/net/sword/package/METSDSpaceSIP"]
 
     def convert(self, in_path, target_format, out_path):
         """
@@ -615,6 +711,8 @@ class FilesAndJATS(PackageHandler):
 
         * http://purl.org/net/sword/package/SimpleZip
         * http://purl.org/net/sword/package/OPUS4Zip
+        * http://purl.org/net/sword/package/ESciDoc
+        * http://purl.org/net/sword/package/METSDSpaceSIP
 
         :param in_path: locally accessible file path to the source package
         :param target_format: the format identifier for the format we want to convert to
@@ -622,11 +720,18 @@ class FilesAndJATS(PackageHandler):
         :return: True/False on success/fail
         """
         # 2017-03-21 TD : additional handling of a new format (here: OPUS4Zip)
+        # 2017-05-15 TD : added another two zip format (here: ESciDoc and METSDSpaceSIP)
         if target_format == "http://purl.org/net/sword/package/SimpleZip":
             self._simple_zip(in_path, out_path)
             return True
         elif target_format == "http://purl.org/net/sword/package/OPUS4Zip":
             self._opus4_zip(in_path, out_path)
+            return True
+        elif target_format == "http://purl.org/net/sword/package/ESciDoc":
+            self._escidoc_zip(in_path, out_path)
+            return True
+        elif target_format == "http://purl.org/net/sword/package/METSDSpaceSIP":
+            self._metsdspace_zip(in_path, out_path)
             return True
         return False
 
@@ -697,6 +802,128 @@ class FilesAndJATS(PackageHandler):
                         zout.writestr(item, data)
 
                 zout.writestr("opus4.xml", unicode(opus4xml, 'utf-8'))
+
+            zin.close()
+
+        except Exception:
+            zin.close()
+            raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
+
+
+    # 2017-05-15 TD : added an internal method converting to ESciDoc zip format;
+    #                 basically by invoking an xslt transformation of the xml metadata 
+    def _escidoc_zip(self, in_path, out_path):
+        """
+        convert to ESciDoc zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # 2017-05-15 TD :
+        # files and jats are already basically a ESciDoc zip, so a straight copy
+        # well, almost...
+        #shutil.copyfile(in_path, out_path)
+        app.logger.debug("PackageHandler FilesAndJATS._escidoc_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
+        try:
+            zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        # 2017-03-22 TD : still missing [Done: correct 'document()' handling in XSLT string]
+        # 2017-05-15 TD : all of the above missing list done!! (-:
+        #
+        xslt_root = etree.XML(models.XSLT.jats2escidoc) 
+        transform = etree.XSLT(xslt_root)
+
+        # xslt_addf = etree.XML(models.XSLT.addfiles2escidoc)
+        # addfile = etree.XSLT(xslt_addf)
+ 
+        parser = etree.XMLParser(load_dtd=True, no_network=False)
+
+        try:
+            with zipfile.ZipFile(out_path, "w") as zout:
+                for item in zin.infolist():
+                    if item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        escidoc = transform( etree.fromstring(data, parser) )
+                        break  # only *one* .xml allowed per .zip
+
+                for item in zin.infolist():
+                    if not item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        # md5sum = hashlib.md5(data).hexdigest()
+                        # escidoc = addfile( escidoc, 
+                        #                    md5=etree.XSLT.strparam(md5sum), 
+                        #                    file=etree.XSLT.strparam(item.filename) )
+                        zout.writestr(item, data)
+
+                zout.writestr("escidoc.xml", unicode(escidoc, 'utf-8'))
+
+            zin.close()
+
+        except Exception:
+            zin.close()
+            raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
+
+
+    # 2017-05-15 TD : added an internal method converting to METSDSpaceSIP zip format;
+    #                 basically by invoking an xslt transformation of the xml metadata 
+    def _metsdspace_zip(self, in_path, out_path):
+        """
+        convert to METSDSpaceSIP zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # 2017-05-15 TD :
+        # files and jats are already basically a METSDSpaceSIP, so a straight copy
+        # well, almost...
+        #shutil.copyfile(in_path, out_path)
+        app.logger.debug("PackageHandler FilesAndJATS._metsdspace_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
+        try:
+            zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        # 2017-03-22 TD : still missing [Done: correct 'document()' handling in XSLT string]
+        #                 MD5 calculation of all the wonderfull payload plus the
+        #                 corres. '<filesGrp/>' appendum as of 'add_files2METSDSpaceSIP_xml.xsl'
+        #
+        # 2017-05-15 TD : all of the above missing list done!! (-:
+        #
+        xslt_root = etree.XML(models.XSLT.jats2metsdspace) 
+        transform = etree.XSLT(xslt_root)
+
+        xslt_addf = etree.XML(models.XSLT.addfiles2metsdspace)
+        addfile = etree.XSLT(xslt_addf)
+ 
+        parser = etree.XMLParser(load_dtd=True, no_network=False)
+
+        try:
+            with zipfile.ZipFile(out_path, "w") as zout:
+                for item in zin.infolist():
+                    if item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        metsdspace = transform( etree.fromstring(data, parser) )
+                        break  # only *one* .xml allowed per .zip
+
+                count = 0
+                for item in zin.infolist():
+                    if not item.filename.endswith(".xml"):
+                        count = count + 1
+                        data = zin.read(item.filename)
+                        md5sum = hashlib.md5(data).hexdigest()
+                        mimetype = mimetypes.MimeTypes().guess_type(item.filename)
+                        metsdspace = addfile( metsdspace, 
+                                              md5=etree.XSLT.strparam(md5sum), 
+                                              file=etree.XSLT.strparam(item.filename),
+                                              mime=etree.XSLT.strparam(mimetype[0]),
+                                              cnt=etree.XSLT.strparam(count) )
+                        zout.writestr(item, data)
+
+                zout.writestr("mets.xml", unicode(metsdspace, 'utf-8'))
 
             zin.close()
 
@@ -1237,6 +1464,128 @@ class FilesAndRSC(PackageHandler):
                         zout.writestr(item, data)
 
                 zout.writestr("opus4.xml", unicode(opus4xml, 'utf-8'))
+
+            zin.close()
+
+        except Exception:
+            zin.close()
+            raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
+
+
+    # 2017-05-15 TD : added an internal method converting to ESciDoc zip format;
+    #                 basically by invoking an xslt transformation of the xml metadata 
+    def _escidoc_zip(self, in_path, out_path):
+        """
+        convert to ESciDoc zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # 2017-05-15 TD :
+        # files and jats are already basically a ESciDoc zip, so a straight copy
+        # well, almost...
+        #shutil.copyfile(in_path, out_path)
+        app.logger.debug("PackageHandler FilesAndRSC._escidoc_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
+        try:
+            zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        # 2017-03-22 TD : still missing [Done: correct 'document()' handling in XSLT string]
+        # 2017-05-15 TD : all of the above missing list done!! (-:
+        #
+        xslt_root = etree.XML(models.XSLT.rsc2escidoc) 
+        transform = etree.XSLT(xslt_root)
+
+        # xslt_addf = etree.XML(models.XSLT.addfiles2escidoc)
+        # addfile = etree.XSLT(xslt_addf)
+ 
+        parser = etree.XMLParser(load_dtd=True, no_network=False)
+
+        try:
+            with zipfile.ZipFile(out_path, "w") as zout:
+                for item in zin.infolist():
+                    if item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        escidoc = transform( etree.fromstring(data, parser) )
+                        break  # only *one* .xml allowed per .zip
+
+                for item in zin.infolist():
+                    if not item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        # md5sum = hashlib.md5(data).hexdigest()
+                        # escidoc = addfile( escidoc, 
+                        #                    md5=etree.XSLT.strparam(md5sum), 
+                        #                    file=etree.XSLT.strparam(item.filename) )
+                        zout.writestr(item, data)
+
+                zout.writestr("escidoc.xml", unicode(escidoc, 'utf-8'))
+
+            zin.close()
+
+        except Exception:
+            zin.close()
+            raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
+
+
+    # 2017-05-15 TD : added an internal method converting to METSDSpaceSIP zip format;
+    #                 basically by invoking an xslt transformation of the xml metadata 
+    def _metsdspace_zip(self, in_path, out_path):
+        """
+        convert to METSDSpaceSIP zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # 2017-05-15 TD :
+        # files and jats are already basically a METSDSpaceSIP, so a straight copy
+        # well, almost...
+        #shutil.copyfile(in_path, out_path)
+        app.logger.debug("PackageHandler FilesAndRSC._metsdspace_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
+        try:
+            zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        # 2017-03-22 TD : still missing [Done: correct 'document()' handling in XSLT string]
+        #                 MD5 calculation of all the wonderfull payload plus the
+        #                 corres. '<filesGrp/>' appendum as of 'add_files2METSDSpaceSIP_xml.xsl'
+        #
+        # 2017-05-15 TD : all of the above missing list done!! (-:
+        #
+        xslt_root = etree.XML(models.XSLT.rsc2metsdspace) 
+        transform = etree.XSLT(xslt_root)
+
+        xslt_addf = etree.XML(models.XSLT.addfiles2metsdspace)
+        addfile = etree.XSLT(xslt_addf)
+ 
+        parser = etree.XMLParser(load_dtd=True, no_network=False)
+
+        try:
+            with zipfile.ZipFile(out_path, "w") as zout:
+                for item in zin.infolist():
+                    if item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        metsdspace = transform( etree.fromstring(data, parser) )
+                        break  # only *one* .xml allowed per .zip
+
+                count = 0
+                for item in zin.infolist():
+                    if not item.filename.endswith(".xml"):
+                        count = count + 1
+                        data = zin.read(item.filename)
+                        md5sum = hashlib.md5(data).hexdigest()
+                        mimetype = mimetypes.MimeTypes().guess_type(item.filename)
+                        metsdspace = addfile( metsdspace, 
+                                              md5=etree.XSLT.strparam(md5sum), 
+                                              file=etree.XSLT.strparam(item.filename),
+                                              mime=etree.XSLT.strparam(mimetype[0]),
+                                              cnt=etree.XSLT.strparam(count) )
+                        zout.writestr(item, data)
+
+                zout.writestr("mets.xml", unicode(metsdspace, 'utf-8'))
 
             zin.close()
 
