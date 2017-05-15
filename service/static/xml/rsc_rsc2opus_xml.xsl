@@ -25,7 +25,7 @@
           </xsl:if>
           <xsl:if test="//published[@type='print']/pubfront/lpage">
             <xsl:attribute name="pageLast">
-              <xsl:value-of select="//article-meta/lpage"/>
+              <xsl:value-of select="//published[@type='print']/pubfront/lpage"/>
             </xsl:attribute>
           </xsl:if>
           <xsl:if test="//published[@type='print']/volumeref/link">

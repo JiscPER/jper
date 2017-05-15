@@ -3,7 +3,7 @@
 
   <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 
-  <xsl:param name="collection"><xsl:text>escidoc:persistent3</xsl:text></xsl:param>
+  <xsl:param name="contentmodel"><xsl:text>escidoc:persistent4</xsl:text></xsl:param>
 
   <xsl:variable name="langCodes" select="document('./langCodeMap.xml')/langCodeMap/langCode"/>
   <xsl:variable name="langIn" select="translate(/article/@xml:lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
@@ -38,7 +38,7 @@
     xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove">
       <escidocItem:properties>
         <srel:content-model>
-          <xsl:attribute name="objid"><xsl:value-of select="$collection"/></xsl:attribute>
+          <xsl:attribute name="objid"><xsl:value-of select="$contentmodel"/></xsl:attribute>
         </srel:content-model>
         <prop:content-model-specific xmlns:prop="http://escidoc.de/core/01/properties/"/> 
       </escidocItem:properties>
@@ -124,23 +124,19 @@
             </xsl:if>
             <dcterms:issued>
               <xsl:attribute name="xsi:type"><xsl:text>dcterms:W3CDTF</xsl:text></xsl:attribute>
-              <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,'ppub')]/year"/>
-              <xsl:text>-</xsl:text>
               <xsl:choose>
-                <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/month">
-                  <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/month,'00')"/>
+                <xsl:when test="//article-meta/pub-date[contains(@pub-type,'epub')]/year">
+                  <xsl:call-template name="compose-date">
+                    <xsl:with-param name="xpub" select="'epub'"/>
+                  </xsl:call-template>
+                </xsl:when>
+                <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/year">
+                  <xsl:call-template name="compose-date">
+                    <xsl:with-param name="xpub" select="'ppub'"/>
+                  </xsl:call-template>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:text>12</xsl:text>
-                </xsl:otherwise>
-              </xsl:choose>
-              <xsl:text>-</xsl:text>
-              <xsl:choose>
-                <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/day">
-                  <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/day,'00')"/>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:text>01</xsl:text>
+                  <xsl:text>1111-11-11</xsl:text>
                 </xsl:otherwise>
               </xsl:choose>
             </dcterms:issued>
@@ -187,6 +183,24 @@
         </escidocMetadataRecords:md-record>
       </escidocMetadataRecords:md-records>
     </escidocItem:item>
+  </xsl:template>
+
+  <xsl:template name="compose-date">
+    <xsl:param name="xpub" select="'epub'"/>
+    <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,$xpub)]/year"/>
+    <xsl:text>-</xsl:text>
+    <xsl:choose>
+      <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/month">
+        <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/month,'00')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>12</xsl:text>
+      </xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="//article-meta/pub-date[contains(@pub-type,$xpub)]/day">
+        <xsl:text>-</xsl:text>
+        <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/day,'00')"/>
+      </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>
