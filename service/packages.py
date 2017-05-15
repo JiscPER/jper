@@ -9,6 +9,7 @@ Packages should then be configured through the PACKAGE_HANDLERS configuration op
 from octopus.core import app
 from octopus.lib import plugin
 import zipfile, os, shutil, hashlib, mimetypes
+from datetime import datetime
 from lxml import etree
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
 # from octopus.modules.identifiers import postcode
@@ -694,7 +695,7 @@ class FilesAndJATS(PackageHandler):
         :return: True if in the above list, else False
         """
         # 2017-03-21 TD : added another zip format (here: OPUS4Zip)
-        # 2017-05-15 TD : added another two zip format (here: ESciDoc and METSDSpaceSIP)
+        # 2017-05-15 TD : added another two zip formats (here: ESciDoc and METSDSpaceSIP)
         return target_format in ["http://purl.org/net/sword/package/SimpleZip",
                                  "http://purl.org/net/sword/package/OPUS4Zip",
                                  "http://purl.org/net/sword/package/ESciDoc",
@@ -720,7 +721,7 @@ class FilesAndJATS(PackageHandler):
         :return: True/False on success/fail
         """
         # 2017-03-21 TD : additional handling of a new format (here: OPUS4Zip)
-        # 2017-05-15 TD : added another two zip format (here: ESciDoc and METSDSpaceSIP)
+        # 2017-05-15 TD : added another two zip formats (here: ESciDoc and METSDSpaceSIP)
         if target_format == "http://purl.org/net/sword/package/SimpleZip":
             self._simple_zip(in_path, out_path)
             return True
@@ -906,7 +907,9 @@ class FilesAndJATS(PackageHandler):
                 for item in zin.infolist():
                     if item.filename.endswith(".xml"):
                         data = zin.read(item.filename)
-                        metsdspace = transform( etree.fromstring(data, parser) )
+                        now = datetime.now().strftime("%FT%T.%f")
+                        metsdspace = transform( etree.fromstring(data, parser),
+                                                currdatetime=etree.XSLT.strparam(now) )
                         break  # only *one* .xml allowed per .zip
 
                 count = 0
@@ -1363,13 +1366,18 @@ class FilesAndRSC(PackageHandler):
 
         * http://purl.org/net/sword/package/SimpleZip
         * http://purl.org/net/sword/package/OPUS4Zip
+        * http://purl.org/net/sword/package/ESciDoc
+        * http://purl.org/net/sword/package/METSDSpaceSIP
 
         :param target_format: target format
         :return: True if in the above list, else False
         """
         # 2017-04-20 TD : added another zip format (here: OPUS4Zip)
+        # 2017-05-15 TD : added another two zip formats (here: ESciDoc and METSDSpaceSIP)
         return target_format in ["http://purl.org/net/sword/package/SimpleZip",
-                                 "http://purl.org/net/sword/package/OPUS4Zip"]
+                                 "http://purl.org/net/sword/package/OPUS4Zip",
+                                 "http://purl.org/net/sword/package/ESciDoc",
+                                 "http://purl.org/net/sword/package/METSDSpaceSIP"]
 
     def convert(self, in_path, target_format, out_path):
         """
@@ -1382,6 +1390,8 @@ class FilesAndRSC(PackageHandler):
 
         * http://purl.org/net/sword/package/SimpleZip
         * http://purl.org/net/sword/package/OPUS4Zip
+        * http://purl.org/net/sword/package/ESciDoc
+        * http://purl.org/net/sword/package/METSDSpaceSIP
 
         :param in_path: locally accessible file path to the source package
         :param target_format: the format identifier for the format we want to convert to
@@ -1389,11 +1399,18 @@ class FilesAndRSC(PackageHandler):
         :return: True/False on success/fail
         """
         # 2017-04-20 TD : added another zip format (here: OPUS4Zip)
+        # 2017-05-15 TD : added another two zip formats (here: ESciDoc and METSDSpaceSIP)
         if target_format == "http://purl.org/net/sword/package/SimpleZip":
             self._simple_zip(in_path, out_path)
             return True
         elif target_format == "http://purl.org/net/sword/package/OPUS4Zip":
             self._opus4_zip(in_path, out_path)
+            return True
+        elif target_format == "http://purl.org/net/sword/package/ESciDoc":
+            self._escidoc_zip(in_path, out_path)
+            return True
+        elif target_format == "http://purl.org/net/sword/package/METSDSpaceSIP":
+            self._metsdspace_zip(in_path, out_path)
             return True
         return False
 
@@ -1568,7 +1585,9 @@ class FilesAndRSC(PackageHandler):
                 for item in zin.infolist():
                     if item.filename.endswith(".xml"):
                         data = zin.read(item.filename)
-                        metsdspace = transform( etree.fromstring(data, parser) )
+                        now = datetime.now().strftime("%FT%T.%f")
+                        metsdspace = transform( etree.fromstring(data, parser),
+                                                currdatetime=etree.XSLT.strparam(now) )
                         break  # only *one* .xml allowed per .zip
 
                 count = 0
