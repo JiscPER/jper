@@ -509,6 +509,7 @@ def username(username):
             abort(401)
         else:
             # 2017-03-03 TD : kill also any match configs if a repository is deleted ...
+            repoconfig = None
             if acc.has_role('repository'):
                 repoconfig = models.RepositoryConfig().pull_by_repo(acc.id)
                 if repoconfig is not None:
