@@ -335,10 +335,12 @@ class TestPackager(TestCase):
         for e in emails:
             assert e in es
 
-        codes = rm.postcodes
-        assert len(codes) == len(postcodes)
-        for c in codes:
-            assert c in postcodes
+        # 2017-05-17 TD : disable test for postcodes (make no sense for DeepGreen)
+        #
+        #codes = rm.postcodes
+        #assert len(codes) == len(postcodes)
+        #for c in codes:
+        #    assert c in postcodes
 
     def test_09_epmc_metadata(self):
         """
@@ -647,10 +649,12 @@ class TestPackager(TestCase):
         for e in emails:
             assert e in es
 
-        codes = rm.postcodes
-        assert len(codes) == len(postcodes)
-        for c in codes:
-            assert c in postcodes
+        # 2017-05-17 TD : disable test for postcodes (make no sense for DeepGreen)
+        #
+        #codes = rm.postcodes
+        #assert len(codes) == len(postcodes)
+        #for c in codes:
+        #    assert c in postcodes
 
     def test_13_filesandjats_names(self):
         pm = packages.PackageFactory.incoming(PACKAGE)
