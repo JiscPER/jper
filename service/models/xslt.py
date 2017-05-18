@@ -7,20 +7,23 @@ class XSLT(object):
   # 2017-03-30 TD : snippet used for global xml injection needed as
   #                 iso639 code table for language codes mapping
   #                 (well, only the most likely are included so far...)
+  # 2017-05-18 TD : change of tag to <langCodes/> (silly glitch due to
+  #                 confusion between xsl:variable langCodes in original 
+  #                 langCodeMap.xml file and tag name here...)
   #
   iso639codes = '''
 <langCodeMap>
-  <langCode iso639-1="" iso639-2="eng" iso639-3="eng"/>
-  <langCode iso639-1="en" iso639-2="eng" iso639-3="eng"/>
-  <langCode iso639-1="de" iso639-2="deu" iso639-3="deu"/>
-  <langCode iso639-1="nl" iso639-2="nld" iso639-3="nld"/>
-  <langCode iso639-1="fr" iso639-2="fra" iso639-3="fra"/>
-  <langCode iso639-1="es" iso639-2="spa" iso639-3="spa"/>
-  <langCode iso639-1="it" iso639-2="ita" iso639-3="ita"/>
-  <langCode iso639-1="el" iso639-2="ell" iso639-3="ell"/>
-  <langCode iso639-1="fi" iso639-2="fin" iso639-3="fin"/>
-  <langCode iso639-1="ru" iso639-2="rus" iso639-3="rus"/>
-  <langCode iso639-1="he" iso639-2="heb" iso639-3="heb"/>
+  <langCodes iso639-1="" iso639-2="eng" iso639-3="eng"/>
+  <langCodes iso639-1="en" iso639-2="eng" iso639-3="eng"/>
+  <langCodes iso639-1="de" iso639-2="deu" iso639-3="deu"/>
+  <langCodes iso639-1="nl" iso639-2="nld" iso639-3="nld"/>
+  <langCodes iso639-1="fr" iso639-2="fra" iso639-3="fra"/>
+  <langCodes iso639-1="es" iso639-2="spa" iso639-3="spa"/>
+  <langCodes iso639-1="it" iso639-2="ita" iso639-3="ita"/>
+  <langCodes iso639-1="el" iso639-2="ell" iso639-3="ell"/>
+  <langCodes iso639-1="fi" iso639-2="fin" iso639-3="fin"/>
+  <langCodes iso639-1="ru" iso639-2="rus" iso639-3="rus"/>
+  <langCodes iso639-1="he" iso639-2="heb" iso639-3="heb"/>
 </langCodeMap>
   '''
 
@@ -1224,7 +1227,6 @@ class XSLT(object):
   <xsl:variable name="inject">
     {xmlinject}
   </xsl:variable>
-  <xsl:variable name="langCodes" select="document('langCodeMap.xml')/langCodeMap/langCode"/>
   <xsl:variable name="langIn" select="translate(/article/@xml:lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <!-- <xsl:variable name="langOut">eng</xsl:variable> -->
   <xsl:variable name="langOut" select="document('')//langCodeMap/langCodes[@iso639-1=$langIn]/@iso639-2"/>
