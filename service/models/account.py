@@ -25,7 +25,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
             "software" : "<name of the software>"
         },
 
-        "sword_repository" : {
+        # "sword_repository" : {
+        "sword" : {
             "username" : "<username for the router to authenticate with the repository>",
             "password" : "<reversibly encrypted password for the router to authenticate with the repository>",
             "collection" : "<url for deposit collection to receive content from the router>"
@@ -101,22 +102,30 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def add_packaging(self, val):
         self._add_to_list("packaging", val, coerce=self._utf8_unicode(), unique=True)
 
+    # 2017-05-18 TD : fixed an unnoticed inconsistency up to now: change of "sword_repository" to "sword"
+    # 
     def add_sword_credentials(self, username, password, collection):
-        self._set_single("sword_repository.username", username, coerce=self._utf8_unicode())
-        self._set_single("sword_repository.password", password, coerce=self._utf8_unicode())
-        self._set_single("sword_repository.collection", collection, coerce=self._utf8_unicode())
+        self._set_single("sword.username", username, coerce=self._utf8_unicode())
+        self._set_single("sword.password", password, coerce=self._utf8_unicode())
+        self._set_single("sword.collection", collection, coerce=self._utf8_unicode())
 
+    # 2017-05-18 TD : fixed an unnoticed inconsistency up to now: change of "sword_repository" to "sword"
+    # 
     @property
     def sword_collection(self):
-        return self._get_single("sword_repository.collection", coerce=self._utf8_unicode())
+        return self._get_single("sword.collection", coerce=self._utf8_unicode())
 
+    # 2017-05-18 TD : fixed an unnoticed inconsistency up to now: change of "sword_repository" to "sword"
+    # 
     @property
     def sword_username(self):
-        return self._get_single("sword_repository.username", coerce=self._utf8_unicode())
+        return self._get_single("sword.username", coerce=self._utf8_unicode())
 
+    # 2017-05-18 TD : fixed an unnoticed inconsistency up to now: change of "sword_repository" to "sword"
+    # 
     @property
     def sword_password(self):
-        return self._get_single("sword_repository.password", coerce=self._utf8_unicode())
+        return self._get_single("sword.password", coerce=self._utf8_unicode())
 
     @property
     def repository_software(self):
