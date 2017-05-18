@@ -23,7 +23,7 @@
              <xsl:attribute name="language"><xsl:value-of select="//opusDocument/@language"/></xsl:attribute>
              <xsl:attribute name="visibleInOai"><xsl:text>true</xsl:text></xsl:attribute>
              <comment>
-               <xsl:text>A component of the fulltext article</xsl:text>
+               <!-- <xsl:text>A component of the fulltext article</xsl:text> -->
              </comment>
              <checksum>
                <xsl:attribute name="type"><xsl:text>md5</xsl:text></xsl:attribute>
@@ -44,7 +44,7 @@
           <xsl:attribute name="language"><xsl:value-of select="//opusDocument/@language"/></xsl:attribute>
           <xsl:attribute name="visibleInOai"><xsl:text>true</xsl:text></xsl:attribute>
           <comment>
-            <xsl:text>A component of the fulltext article</xsl:text>
+            <!-- <xsl:text>A component of the fulltext article</xsl:text> -->
           </comment>
           <checksum>
             <xsl:attribute name="type"><xsl:text>md5</xsl:text></xsl:attribute>
