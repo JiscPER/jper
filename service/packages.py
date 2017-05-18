@@ -802,7 +802,7 @@ class FilesAndJATS(PackageHandler):
                                             file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
 
-                zout.writestr("opus4.xml", unicode(opus4xml, 'utf-8'))
+                zout.writestr("opus4.xml", str(opus4xml))
 
             zin.close()
 
@@ -859,7 +859,7 @@ class FilesAndJATS(PackageHandler):
                         #                    file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
 
-                zout.writestr("escidoc.xml", unicode(escidoc, 'utf-8'))
+                zout.writestr("escidoc.xml", str(escidoc))
 
             zin.close()
 
@@ -926,7 +926,7 @@ class FilesAndJATS(PackageHandler):
                                               cnt=etree.XSLT.strparam(count) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets.xml", unicode(metsdspace, 'utf-8'))
+                zout.writestr("mets.xml", str(metsdspace))
 
             zin.close()
 
@@ -1480,7 +1480,7 @@ class FilesAndRSC(PackageHandler):
                                             file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
 
-                zout.writestr("opus4.xml", unicode(opus4xml, 'utf-8'))
+                zout.writestr("opus4.xml", str(opus4xml))
 
             zin.close()
 
@@ -1537,7 +1537,7 @@ class FilesAndRSC(PackageHandler):
                         #                    file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
 
-                zout.writestr("escidoc.xml", unicode(escidoc, 'utf-8'))
+                zout.writestr("escidoc.xml", str(escidoc))
 
             zin.close()
 
@@ -1604,7 +1604,7 @@ class FilesAndRSC(PackageHandler):
                                               cnt=etree.XSLT.strparam(count) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets.xml", unicode(metsdspace, 'utf-8'))
+                zout.writestr("mets.xml", str(metsdspace))
 
             zin.close()
 
