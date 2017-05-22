@@ -802,7 +802,7 @@ class FilesAndJATS(PackageHandler):
                                             file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
 
-                zout.writestr("opus4.xml", str(opus4xml))
+                zout.writestr("opus.xml", str(opus4xml))
 
             zin.close()
 
@@ -1480,7 +1480,7 @@ class FilesAndRSC(PackageHandler):
                                             file=etree.XSLT.strparam(item.filename) )
                         zout.writestr(item, data)
 
-                zout.writestr("opus4.xml", str(opus4xml))
+                zout.writestr("opus.xml", str(opus4xml))
 
             zin.close()
 
