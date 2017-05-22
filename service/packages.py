@@ -894,12 +894,12 @@ class FilesAndJATS(PackageHandler):
         #
         # 2017-05-15 TD : all of the above missing list done!! (-:
         #
-        xslt_root = etree.XML(models.XSLT.jats2metsdspace) 
+        xslt_root = etree.XML(models.XSLT.jats2metsdspace)
         transform = etree.XSLT(xslt_root)
 
         xslt_addf = etree.XML(models.XSLT.addfiles2metsdspace)
         addfile = etree.XSLT(xslt_addf)
- 
+
         parser = etree.XMLParser(load_dtd=True, no_network=False)
 
         try:
@@ -908,8 +908,8 @@ class FilesAndJATS(PackageHandler):
                     if item.filename.endswith(".xml"):
                         data = zin.read(item.filename)
                         now = datetime.now().strftime("%FT%T.%f")
-                        metsdspace = transform( etree.fromstring(data, parser),
-                                                currdatetime=etree.XSLT.strparam(now) )
+                        mets = transform( etree.fromstring(data, parser),
+                                          currdatetime=etree.XSLT.strparam(now) )
                         break  # only *one* .xml allowed per .zip
 
                 count = 0
@@ -919,14 +919,14 @@ class FilesAndJATS(PackageHandler):
                         data = zin.read(item.filename)
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
-                        metsdspace = addfile( metsdspace, 
-                                              md5=etree.XSLT.strparam(md5sum), 
-                                              file=etree.XSLT.strparam(item.filename),
-                                              mime=etree.XSLT.strparam(mimetype[0]),
-                                              cnt=etree.XSLT.strparam(count) )
+                        mets = addfile( mets, 
+                                        md5=etree.XSLT.strparam(md5sum), 
+                                        file=etree.XSLT.strparam(item.filename),
+                                        mime=etree.XSLT.strparam(mimetype[0]),
+                                        cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets.xml", str(metsdspace))
+                zout.writestr("mets.xml", str(mets))
 
             zin.close()
 
@@ -1601,7 +1601,7 @@ class FilesAndRSC(PackageHandler):
                                               md5=etree.XSLT.strparam(md5sum), 
                                               file=etree.XSLT.strparam(item.filename),
                                               mime=etree.XSLT.strparam(mimetype[0]),
-                                              cnt=etree.XSLT.strparam(count) )
+                                              cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
 
                 zout.writestr("mets.xml", str(metsdspace))
