@@ -164,6 +164,7 @@ def processftp():
             # configure for sending anything for the user of this dir
             apiurl = app.config['API_URL']
             acc = models.Account().pull(dir)
+            if acc is None: continue
             apiurl += '?api_key=' + acc.data['api_key']
             # there is a uuid dir for each item moved in a given operation from the user jail
             for udir in os.listdir(userdir + '/' + dir):
