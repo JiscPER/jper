@@ -146,6 +146,10 @@ def route(unrouted):
     
     al_repos = []
     for bibid,aldata in part_albibids:
+        # 2017-06-06 TD : insert of this safeguard ;  
+        #                 although it would be *very* unlikely to be needed here.  Strange. 
+        if bibid is None: continue
+        #
         acc1 = models.Account.pull_by_key("repository.bibid",bibid)
         if acc1 is not None and acc1.has_role("repository"):
             unrouted.embargo = aldata["embargo"]
