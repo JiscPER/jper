@@ -221,6 +221,7 @@ if app.config.get('PROCESSFTP_SCHEDULE',10) != 0:
 def checkunrouted():
     urobjids = []
     robjids = []
+    counter = 0
     try:
         app.logger.debug("Scheduler - check for unrouted notifications")
         # query the service.models.unroutednotification index
@@ -233,17 +234,24 @@ def checkunrouted():
                 robjids.append(obj.id)
             else:
                 urobjids.append(obj.id)
-        app.logger.debug("Scheduler - routing sent " + str(counter) + " notifications for routing")
+
+        # 2017-06-06 TD : replace str() by .format() string interpolation
+        app.logger.debug("Scheduler - routing sent {cnt} notification(s) for routing".format(cnt=counter))
+
         if app.config.get("DELETE_ROUTED", False) and len(robjids) > 0:
-            app.logger.debug("Scheduler - routing deleting " + str(len(robjids)) + " of " + str(counter) + " unrouted notifications that have been processed and routed")
+            # 2017-06-06 TD : replace str() by .format() string interpolation
+            app.logger.debug("Scheduler - routing deleting {x} of {cnt} unrouted notification(s) that have been processed and routed".format(x=len(robjids),cnt=counter))
             models.UnroutedNotification.bulk_delete(robjids)
             # 2017-05-17 TD :
             time.sleep(2) # 2 seconds grace time
+
         if app.config.get("DELETE_UNROUTED", False) and len(urobjids) > 0:
-            app.logger.debug("Scheduler - routing deleting " + str(len(urobjids)) + " of " + str(counter) + " unrouted notifications that have been processed and were unrouted")
+            # 2017-06-06 TD : replace str() by .format() string interpolation
+            app.logger.debug("Scheduler - routing deleting {x} of {cnt} unrouted notifications that have been processed and were unrouted".format(x=len(urobjids),cnt=counter))
             models.UnroutedNotification.bulk_delete(urobjids)
             # 2017-05-17 TD :
             time.sleep(2) # again, 2 seconds grace
+
     except Exception as e:
         app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: '{x}'".format(x=e.message))
 
