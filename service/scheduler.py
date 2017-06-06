@@ -253,6 +253,7 @@ def checkunrouted():
             time.sleep(2) # again, 2 seconds grace
 
     except Exception as e:
+        app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: cnt={cnt}, len(robjids)={a}, len(urobjids)={b}".format(cnt=counter,a=len(robjids),b=len(urobjids)))
         app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: '{x}'".format(x=e.message))
 
 if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
