@@ -547,6 +547,54 @@ class METSDSpaceSIP(PackageHandler):
 #
 ############################################################################
 
+
+############################################################################
+# 2017-07-11 TD : Additional PackageHandler for METSMODS package format
+#
+class METSMODS(PackageHandler):
+    """
+    Basic class for representing the METSMODS package format
+    (METS: Metadata Encoding & Transmission Standard, MODS: Metadata Object Description Standard)
+
+    METSMODS is identified by the format identifier http://purl.org/net/sword/package/METSMODS
+    """
+
+    ################################################
+    ## methods for exposing naming information
+
+    def zip_name(self):
+        """
+        Get the name of the package zip file to be used in the storage layer
+
+        In this case it is METSMODS.zip
+
+        :return: filename
+        """
+        return "METSMODS.zip"
+
+    def metadata_names(self):
+        """
+        Get a list of the names of metadata files extracted and stored by this packager
+
+        In this case there are none
+
+        :return: list of names
+        """
+        return []
+
+    def url_name(self):
+        """
+        Get the name of the package as it should appear in any content urls
+
+        In this case METSMODS
+
+        :return: url name
+        """
+        return "METSMODS"
+#
+############################################################################
+
+
 class FilesAndJATS(PackageHandler):
     """
     Class for representing the FilesAndJATS format
@@ -690,16 +738,19 @@ class FilesAndJATS(PackageHandler):
         * http://purl.org/net/sword/package/OPUS4Zip
         * http://purl.org/net/sword/package/ESciDoc
         * http://purl.org/net/sword/package/METSDSpaceSIP
+        * http://purl.org/net/sword/package/METSMODS
 
         :param target_format: target format
         :return: True if in the above list, else False
         """
         # 2017-03-21 TD : added another zip format (here: OPUS4Zip)
         # 2017-05-15 TD : added another two zip formats (here: ESciDoc and METSDSpaceSIP)
+        # 2017-07-11 TD : added another zip format (here: METSMODS)
         return target_format in ["http://purl.org/net/sword/package/SimpleZip",
                                  "http://purl.org/net/sword/package/OPUS4Zip",
                                  "http://purl.org/net/sword/package/ESciDoc",
-                                 "http://purl.org/net/sword/package/METSDSpaceSIP"]
+                                 "http://purl.org/net/sword/package/METSDSpaceSIP",
+                                 "http://purl.org/net/sword/package/METSMODS"]
 
     def convert(self, in_path, target_format, out_path):
         """
@@ -714,6 +765,7 @@ class FilesAndJATS(PackageHandler):
         * http://purl.org/net/sword/package/OPUS4Zip
         * http://purl.org/net/sword/package/ESciDoc
         * http://purl.org/net/sword/package/METSDSpaceSIP
+        * http://purl.org/net/sword/package/METSDSpaceSIP
 
         :param in_path: locally accessible file path to the source package
         :param target_format: the format identifier for the format we want to convert to
@@ -722,6 +774,7 @@ class FilesAndJATS(PackageHandler):
         """
         # 2017-03-21 TD : additional handling of a new format (here: OPUS4Zip)
         # 2017-05-15 TD : added another two zip formats (here: ESciDoc and METSDSpaceSIP)
+        # 2017-07-11 TD : added another zip format (here: METSMODS)
         if target_format == "http://purl.org/net/sword/package/SimpleZip":
             self._simple_zip(in_path, out_path)
             return True
@@ -733,6 +786,9 @@ class FilesAndJATS(PackageHandler):
             return True
         elif target_format == "http://purl.org/net/sword/package/METSDSpaceSIP":
             self._metsdspace_zip(in_path, out_path)
+            return True
+        elif target_format == "http://purl.org/net/sword/package/METSMODS":
+            self._metsmods_zip(in_path, out_path)
             return True
         return False
 
@@ -897,7 +953,7 @@ class FilesAndJATS(PackageHandler):
         xslt_root = etree.XML(models.XSLT.jats2metsdspace)
         transform = etree.XSLT(xslt_root)
 
-        xslt_addf = etree.XML(models.XSLT.addfiles2metsdspace)
+        xslt_addf = etree.XML(models.XSLT.addfiles2mets)
         addfile = etree.XSLT(xslt_addf)
 
         parser = etree.XMLParser(load_dtd=True, no_network=False)
@@ -926,7 +982,74 @@ class FilesAndJATS(PackageHandler):
                                         cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets.xml", str(mets))
+                zout.writestr("mets_dspace.xml", str(mets))
+
+            zin.close()
+
+        except Exception:
+            zin.close()
+            raise PackageException("Unable to parse and/or transform XML file in package {x}".format(x=in_path))
+
+
+    # 2017-07-11 TD : added an internal method converting to METSMODS zip format;
+    #                 basically by invoking an xslt transformation of the xml metadata 
+    def _metsmods_zip(self, in_path, out_path):
+        """
+        convert to METSMODS zip
+
+        :param in_path:
+        :param out_path:
+        :return:
+        """
+        # 2017-07-11 TD :
+        # files and jats are already basically a METSMODS, so a straight copy
+        # eer, well, almost...
+        #shutil.copyfile(in_path, out_path)
+        app.logger.debug("PackageHandler FilesAndJATS._metsdspace_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
+        try:
+            zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
+        except zipfile.BadZipfile as e:
+            raise PackageException("Zip file is corrupt - cannot read.")
+
+        # 2017-03-22 TD : still missing [Done: correct 'document()' handling in XSLT string]
+        #                 MD5 calculation of all the wonderfull payload plus the
+        #                 corres. '<filesGrp/>' appendum as of 'add_files2METS_xml.xsl'
+        #
+        # 2017-07-12 TD : all of the above missing list done!! (-:
+        #
+        xslt_root = etree.XML(models.XSLT.jats2metsmods)
+        transform = etree.XSLT(xslt_root)
+
+        xslt_addf = etree.XML(models.XSLT.addfiles2mets)
+        addfile = etree.XSLT(xslt_addf)
+
+        parser = etree.XMLParser(load_dtd=True, no_network=False)
+
+        try:
+            with zipfile.ZipFile(out_path, "w") as zout:
+                for item in zin.infolist():
+                    if item.filename.endswith(".xml"):
+                        data = zin.read(item.filename)
+                        now = datetime.now().strftime("%FT%T.%f")
+                        mets = transform( etree.fromstring(data, parser),
+                                          currdatetime=etree.XSLT.strparam(now) )
+                        break  # only *one* .xml allowed per .zip
+
+                count = 0
+                for item in zin.infolist():
+                    if not item.filename.endswith(".xml"):
+                        count = count + 1
+                        data = zin.read(item.filename)
+                        md5sum = hashlib.md5(data).hexdigest()
+                        mimetype = mimetypes.MimeTypes().guess_type(item.filename)
+                        mets = addfile( mets, 
+                                        md5=etree.XSLT.strparam(md5sum), 
+                                        file=etree.XSLT.strparam(item.filename),
+                                        mime=etree.XSLT.strparam(mimetype[0]),
+                                        cnt=etree.XSLT.strparam(str(count)) )
+                        zout.writestr(item, data)
+
+                zout.writestr("mets_mods.xml", str(mets))
 
             zin.close()
 
@@ -1575,7 +1698,7 @@ class FilesAndRSC(PackageHandler):
         xslt_root = etree.XML(models.XSLT.rsc2metsdspace) 
         transform = etree.XSLT(xslt_root)
 
-        xslt_addf = etree.XML(models.XSLT.addfiles2metsdspace)
+        xslt_addf = etree.XML(models.XSLT.addfiles2mets)
         addfile = etree.XSLT(xslt_addf)
  
         parser = etree.XMLParser(load_dtd=True, no_network=False)
