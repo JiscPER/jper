@@ -124,7 +124,12 @@ class XSLT(object):
             </xsl:attribute>
           </xsl:if>
           <xsl:attribute name="publisherName">
-            <xsl:value-of select="//published[@type='print']/journalref/publisher/orgname/nameelt"/>
+            <xsl:for-each select="//published[@type='print']/journalref/publisher/orgname/nameelt">
+              <xsl:value-of select="normalize-space(text())"/>
+              <xsl:if test="position() != last()">
+                <xsl:text>, </xsl:text>
+              </xsl:if>
+            </xsl:for-each>
           </xsl:attribute>
           <!--
           <xsl:if test="//publisher//publisher-loc">
@@ -223,7 +228,7 @@ class XSLT(object):
               <xsl:attribute name="monthDay">
                 <xsl:text>--</xsl:text>
                 <xsl:choose>
-                  <xsl:when test="format-number(month,'00')!='NaN'"/>
+                  <xsl:when test="format-number(month,'00')!='NaN'">
                     <xsl:value-of select="format-number(month,'00')"/>
                   </xsl:when>
                   <xsl:when test="document('')//monthNameMap/monthNames[@text=$mnth]/@number">
@@ -552,13 +557,13 @@ class XSLT(object):
             <xsl:value-of select="format-number(month,'00')"/>
           </xsl:when>
           <xsl:when test="document('')//monthNameMap/monthNames[@text=$mnth]/@number">
-            <xsl:value-of select="document('')//monthNameMap/monthNames[@text=$mnth]/@number">
+            <xsl:value-of select="document('')//monthNameMap/monthNames[@text=$mnth]/@number"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>12</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="day">
+        <xsl:if test="format-number(day,'00')!='NaN'">
           <xsl:text>-</xsl:text>
           <xsl:value-of select="format-number(day,'00')"/>
         </xsl:if>
@@ -607,7 +612,7 @@ class XSLT(object):
       <agent>
         <xsl:attribute name="ROLE">CUSTODIAN</xsl:attribute>
         <xsl:attribute name="TYPE">ORGANIZATION</xsl:attribute>
-        <name>Green DeepGreen</name>
+        <name>DeepGreen</name>
       </agent>
     </metsHdr>
     <dmdSec>
@@ -822,13 +827,13 @@ class XSLT(object):
             <xsl:value-of select="format-number(month,'00')"/>
           </xsl:when>
           <xsl:when test="document('')//monthNameMap/monthNames[@text=$mnth]/@number">
-            <xsl:value-of select="document('')//monthNameMap/monthNames[@text=$mnth]/@number">
+            <xsl:value-of select="document('')//monthNameMap/monthNames[@text=$mnth]/@number"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>12</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="day">
+        <xsl:if test="format-number(day,'00')!='NaN'">
           <xsl:text>-</xsl:text>
           <xsl:value-of select="format-number(day,'00')"/>
         </xsl:if>
@@ -1142,7 +1147,7 @@ class XSLT(object):
                 <xsl:text>12</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="day">
+        <xsl:if test="format-number(day,'00')!='NaN'">
             <xsl:text>-</xsl:text>
             <xsl:value-of select="format-number(day,'00')"/>
         </xsl:if>

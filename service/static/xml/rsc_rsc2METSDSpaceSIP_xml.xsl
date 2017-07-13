@@ -6,6 +6,9 @@
 
   <xsl:param name="currdatetime">1970-01-01T00:00:00</xsl:param>
 
+  <!-- mapping names of month -->
+  <xsl:variable name="monthNames" select="document('monthNameMap.xml')/monthNameMap/monthName"/>
+
   <xsl:variable name="langCodes" select="document('langCodeMap.xml')/langCodeMap/langCode"/>
   <xsl:variable name="langIn" select="translate(/article/@xml:lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <!-- <xsl:variable name="langOut">eng</xsl:variable> -->
@@ -25,7 +28,7 @@
       <agent>
         <xsl:attribute name="ROLE">CUSTODIAN</xsl:attribute>
         <xsl:attribute name="TYPE">ORGANIZATION</xsl:attribute>
-        <name>Green DeepGreen</name>
+        <name>DeepGreen</name>
       </agent>
     </metsHdr>
     <dmdSec>
@@ -107,7 +110,7 @@
                       <xsl:value-of select="//published[@type='print']/pubfront/date/year"/>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:value-of select="//published[@type='online']/pubfront/date/year"/>
+                      <xsl:value-of select="//published[@type='web']/pubfront/date/year"/>
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:text>), </xsl:text>
@@ -135,9 +138,9 @@
                 <epdcx:valueString>
                   <xsl:attribute name="epdcx:sesURI">http://purl.org/dc/terms/W3CDTF</xsl:attribute>
                   <xsl:choose>
-                    <xsl:when test="//published[@type='online']/pubfront/date/year">
+                    <xsl:when test="//published[@type='web']/pubfront/date/year">
                       <xsl:call-template name="compose-date">
-                        <xsl:with-param name="xpub" select="'online'"/>
+                        <xsl:with-param name="xpub" select="'web'"/>
                       </xsl:call-template>
                     </xsl:when>
                     <xsl:when test="//published[@type='print']/pubfront/date/year">
@@ -180,7 +183,12 @@
               <epdcx:statement>
                 <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/publisher</xsl:attribute>
                 <epdcx:valueString>
-                  <xsl:value-of select="//published[@type='print']/journalref/publisher/orgname/nameelt"/>
+                  <xsl:for-each select="//published[@type='print']/journalref/publisher/orgname/nameelt">
+                    <xsl:value-of select="normalize-space(text())"/>
+                    <xsl:if test="position() != last()">
+                      <xsl:text>, </xsl:text>
+                    </xsl:if>
+                  </xsl:for-each>
                 </epdcx:valueString>
               </epdcx:statement>
             </epdcx:description>
@@ -229,21 +237,29 @@
   </xsl:template>
 
   <xsl:template name="compose-date">
-    <xsl:param name="xpub" select="'online'"/>
-    <xsl:value-of select="//published[@type=$xpub]/pubfront/date/year"/>
-    <xsl:text>-</xsl:text>
-    <xsl:choose>
-      <xsl:when test="//published[@type=$xpub]/pubfront/date/month">
-        <xsl:value-of select="format-number(//published[@type=$xpub]/pubfront/date/month,'00')"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>12</xsl:text>
-      </xsl:otherwise>
-      </xsl:choose>
-      <xsl:if test="//published[@type=$xpub]/pubfront/date/day">
+    <xsl:param name="xpub" select="'web'"/>
+    <xsl:for-each select="//published[@type=$xpub]/pubfront/date">
+      <xsl:if test="position() = last()">
+        <xsl:variable name="mnth" select="month"/>
+        <xsl:value-of select="year"/>
         <xsl:text>-</xsl:text>
-        <xsl:value-of select="format-number(//published[@type=$xpub]/pubfront/date/day,'00')"/>
+        <xsl:choose>
+          <xsl:when test="format-number(month,'00')!='NaN'">
+            <xsl:value-of select="format-number(month,'00')"/>
+          </xsl:when>
+          <xsl:when test="$monthNames[@text=$mnth]/@number">
+            <xsl:value-of select="$monthNames[@text=$mnth]/@number"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>12</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="format-number(day,'00')!='NaN'">
+          <xsl:text>-</xsl:text>
+          <xsl:value-of select="format-number(day,'00')"/>
+        </xsl:if>
       </xsl:if>
+    </xsl:for-each>
   </xsl:template>
 
 </xsl:stylesheet>

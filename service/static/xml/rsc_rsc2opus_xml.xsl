@@ -4,6 +4,9 @@
   <!-- <xsl:import href="outputTokens.xsl"/> -->
   <xsl:output method="xml" omit-xml-declaration="yes" indent="yes" encoding="utf-8"/>
 
+  <!-- mapping names of month -->
+  <xsl:variable name="monthNames" select="document('monthNameMap.xml')/monthNameMap/monthName"/>
+
   <xsl:variable name="langCodes" select="document('langCodeMap.xml')/langCodeMap/langCode"/>
   <xsl:variable name="langIn" select="translate(/article/@xml:lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <!-- <xsl:variable name="langOut">eng</xsl:variable> -->
@@ -39,7 +42,12 @@
             </xsl:attribute>
           </xsl:if>
           <xsl:attribute name="publisherName">
-            <xsl:value-of select="//published[@type='print']/journalref/publisher/orgname/nameelt"/>
+            <xsl:for-each select="//published[@type='print']/journalref/publisher/orgname/nameelt">
+              <xsl:value-of select="normalize-space(text())"/>
+              <xsl:if test="position() != last()">
+                <xsl:text>, </xsl:text>
+              </xsl:if>
+            </xsl:for-each>
           </xsl:attribute>
           <!--
           <xsl:if test="//publisher//publisher-loc">
@@ -97,8 +105,8 @@
           <xsl:for-each select="//art-front/authgrp/author">
             <person>
                 <xsl:attribute name="role"><xsl:text>author</xsl:text></xsl:attribute>
-                <xsl:attribute name="firstName"><xsl:value-of select="person/persname/fname"/></xsl:attribute>
-                <xsl:attribute name="lastName"><xsl:value-of select="person/persname/surname/text()"/></xsl:attribute>
+                <xsl:attribute name="firstName"><xsl:copy-of select="person/persname/fname/text()"/></xsl:attribute>
+                <xsl:attribute name="lastName"><xsl:copy-of select="person/persname/surname/text()"/></xsl:attribute>
                 <!--
                 role="advisor|author|contributor|editor|referee|translator|submitter|other"
                 firstName=""
@@ -130,25 +138,40 @@
       </dnbInstitutions>
       -->
       <dates>
-          <date>
-             <xsl:attribute name="type"><xsl:text>published</xsl:text></xsl:attribute>
-             <xsl:attribute name="monthDay">
+          <xsl:for-each select="//published[@type='web']/pubfront/date">
+          <xsl:if test="position() = last()">
+            <xsl:variable name="mnth" select="month"/>
+            <date>
+              <xsl:attribute name="type"><xsl:text>published</xsl:text></xsl:attribute>
+              <xsl:attribute name="monthDay">
                 <xsl:text>--</xsl:text>
-                <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/month,'00')"/>
+                <xsl:choose>
+                  <xsl:when test="format-number(month,'00')!='NaN'">
+                    <xsl:value-of select="format-number(month,'00')"/>
+                  </xsl:when>
+                  <xsl:when test="$monthNames[@text=$mnth]/@number">
+                    <xsl:value-of select="$monthNames[@text=$mnth]/@number"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:text>12</xsl:text>
+                  </xsl:otherwise>
+                </xsl:choose>
                 <xsl:text>-</xsl:text>
                 <xsl:choose>
-                  <xsl:when test="//published[@type='print']/pubfront/date/day">
-                     <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/day,'00')"/>
+                  <xsl:when test="format-number(day,'00')!='NaN'">
+                     <xsl:value-of select="format-number(day,'00')"/>
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:text>01</xsl:text>
                   </xsl:otherwise>
                 </xsl:choose>
-             </xsl:attribute>
-             <xsl:attribute name="year">
-                <xsl:value-of select="//published[@type='print']/pubfront/date/year"/>
-             </xsl:attribute>
-          </date>
+              </xsl:attribute>
+              <xsl:attribute name="year">
+                <xsl:value-of select="year"/>
+              </xsl:attribute>
+            </date>
+          </xsl:if>
+          </xsl:for-each>
       </dates>
       <identifiers>
           <identifier>

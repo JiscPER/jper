@@ -4,6 +4,9 @@
   <!-- <xsl:import href="outputTokens.xsl"/> -->
   <xsl:output method="xml" omit-xml-declaration="no" standalone="no" indent="yes" encoding="utf-8"/>
 
+  <!-- mapping names of month -->
+  <xsl:variable name="monthNames" select="document('monthNameMap.xml')/monthNameMap/monthName"/>
+
   <xsl:variable name="langCodes" select="document('langCodeMap.xml')/langCodeMap/langCode"/>
   <xsl:variable name="langIn" select="translate(/article/@xml:lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <!-- <xsl:variable name="langOut">eng</xsl:variable> -->
@@ -26,25 +29,11 @@
     <dcvalue>
       <xsl:attribute name="element"><xsl:text>date</xsl:text></xsl:attribute>
       <xsl:attribute name="qualifier"><xsl:text>issued</xsl:text></xsl:attribute>
-      <xsl:value-of select="//published[@type='print']/pubfront/date/year"/>
-      <xsl:text>-</xsl:text>
-      <xsl:choose>
-        <xsl:when test="//published[@type='print']/pubfront/date/month">
-          <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/month,'00')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>12</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>-</xsl:text>
-      <xsl:choose>
-        <xsl:when test="//published[@type='print']/pubfront/date/day">
-          <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/day,'00')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>01</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:for-each select="//published[@type='web']/pubfront/date">
+        <xsl:if test="position() = last()">
+          <xsl:call-template name="compose-date"></xsl:call-template>
+        </xsl:if>
+      </xsl:for-each>
     </dcvalue>
     <xsl:for-each select="//published[@type='print']/journalref/issn[@type='print']">
       <dcvalue>
@@ -71,7 +60,6 @@
     <dcvalue>
       <xsl:attribute name="element"><xsl:text>language</xsl:text></xsl:attribute>
       <xsl:attribute name="qualifier"><xsl:text>rfc3066</xsl:text></xsl:attribute>
-      
       <xsl:choose>
         <xsl:when test="string-length($langIn) > 0">
           <xsl:value-of select="$langIn"/>
@@ -101,9 +89,40 @@
     <dcvalue>
       <xsl:attribute name="element"><xsl:text>rights</xsl:text></xsl:attribute>
       <xsl:attribute name="qualifier"><xsl:text>holder</xsl:text></xsl:attribute>
-      <xsl:value-of select="//published[@type='print']/journalref/publisher/orgname/nameelt"/>
+      <xsl:for-each select="//published[@type='print']/journalref/publisher/orgname/nameelt">
+        <xsl:value-of select="normalize-space(text())"/>
+        <xsl:if test="position() != last()">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+      </xsl:for-each>
     </dcvalue>
   </dublin_core>
+  </xsl:template>
+
+  <xsl:template name="compose-date">
+      <xsl:variable name="mnth" select="month"/>
+      <xsl:value-of select="year"/>
+      <xsl:text>-</xsl:text>
+      <xsl:choose>
+          <xsl:when test="format-number(month,'00')!='NaN'">
+              <xsl:value-of select="format-number(month,'00')"/>
+          </xsl:when>
+          <xsl:when test="$monthNames[@text=$mnth]/@number">
+              <xsl:value-of select="$monthNames[@text=$mnth]/@number"/>
+          </xsl:when>
+          <xsl:otherwise>
+              <xsl:text>12</xsl:text>
+          </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>-</xsl:text>
+      <xsl:choose>
+          <xsl:when test="format-number(day,'00')!='NaN'">
+              <xsl:value-of select="format-number(day,'00')"/>
+          </xsl:when>
+          <xsl:otherwise>
+              <xsl:text>01</xsl:text>
+          </xsl:otherwise>
+      </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>

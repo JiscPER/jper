@@ -5,6 +5,9 @@
 
   <xsl:param name="contentmodel"><xsl:text>escidoc:persistent4</xsl:text></xsl:param>
 
+  <!-- mapping names of month -->
+  <xsl:variable name="monthNames" select="document('monthNameMap.xml')/monthNameMap/monthName"/>
+
   <xsl:variable name="langCodes" select="document('./langCodeMap.xml')/langCodeMap/langCode"/>
   <xsl:variable name="langIn" select="translate(/article/@xml:lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <xsl:variable name="langOut" select="$langCodes[@iso639-1=$langIn]/@iso639-3"/>
@@ -157,9 +160,9 @@
             <dcterms:issued>
               <xsl:attribute name="xsi:type"><xsl:text>dcterms:W3CDTF</xsl:text></xsl:attribute>
               <xsl:choose>
-                <xsl:when test="//published[@type='online']/pubfront/date/year">
+                <xsl:when test="//published[@type='web']/pubfront/date/year">
                   <xsl:call-template name="compose-date">
-                    <xsl:with-param name="xpub" select="'online'"/>
+                    <xsl:with-param name="xpub" select="'web'"/>
                   </xsl:call-template>
                 </xsl:when>
                 <xsl:when test="//published[@type='print']/pubfront/date/year">
@@ -181,9 +184,16 @@
               <eterms:end-page><xsl:value-of select="//published[@type='print']/pubfront/lpage"/></eterms:end-page>
               <eterms:total-number-of-pages><xsl:value-of select="//published[@type='print']/pubfront/no-of-pages"/></eterms:total-number-of-pages>
               <eterms:publishing-info>
-                <dc:publisher><xsl:value-of select="//published[@type='print']/publisher/orgname/nameelt"/></dc:publisher>
+                <dc:publisher>
+                  <xsl:for-each select="//published[@type='print']/journalref/publisher/orgname/nameelt">
+                    <xsl:value-of select="normalize-space(text())"/>
+                    <xsl:if test="position() != last()">
+                      <xsl:text>, </xsl:text>
+                    </xsl:if>
+                  </xsl:for-each>
+                </dc:publisher>
                 <!--
-                <eterms:place><xsl:value-of select="//published[@type='print']/publisher//orgname/locelt"/></eterms:place>
+                <eterms:place><xsl:value-of select="//published[@type='print']//publisher/orgname/locelt"/></eterms:place>
                 -->
               </eterms:publishing-info>
               <xsl:if test="//published[@type='print']/journalref/issn[@type='print']">
@@ -211,21 +221,29 @@
   </xsl:template>
 
   <xsl:template name="compose-date">
-    <xsl:param name="xpub" select="'online'"/>
-    <xsl:value-of select="//published[@type=$xpub]/pubfront/date/year"/>
-    <xsl:text>-</xsl:text>
-    <xsl:choose>
-      <xsl:when test="//published[@type=$xpub]/pubfront/date/month">
-        <xsl:value-of select="format-number(//published[@type=$xpub]/pubfront/date/month,'00')"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>12</xsl:text>
-      </xsl:otherwise>
-      </xsl:choose>
-      <xsl:if test="//published[@type=$xpub]/pubfront/date/day">
+    <xsl:param name="xpub" select="'web'"/>
+    <xsl:for-each select="//published[@type=$xpub]/pubfront/date">
+      <xsl:if test="position() = last()">
+        <xsl:variable name="mnth" select="month"/>
+        <xsl:value-of select="year"/>
         <xsl:text>-</xsl:text>
-        <xsl:value-of select="format-number(//published[@type=$xpub]/pubfront/date/day,'00')"/>
+        <xsl:choose>
+          <xsl:when test="format-number(month,'00')!='NaN'">
+            <xsl:value-of select="format-number(month,'00')"/>
+          </xsl:when>
+          <xsl:when test="$monthNames[@text=$mnth]/@number">
+            <xsl:value-of select="$monthNames[@text=$mnth]/@number"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>12</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="format-number(day,'00')!='NaN'">
+          <xsl:text>-</xsl:text>
+          <xsl:value-of select="format-number(day,'00')"/>
+        </xsl:if>
       </xsl:if>
+    </xsl:for-each>
   </xsl:template>
 
 </xsl:stylesheet>

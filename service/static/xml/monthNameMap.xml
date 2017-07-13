@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- monthNameMap.xml -->
+<monthNameMap>
+  <monthName text="" number="12"/>
+  <monthName text="January" number="01"/>
+  <monthName text="Jan" number="01"/>
+  <monthName text="jan" number="01"/>
+  <monthName text="February" number="02"/>
+  <monthName text="Feb" number="02"/>
+  <monthName text="feb" number="02"/>
+  <monthName text="March" number="03"/>
+  <monthName text="Mar" number="03"/>
+  <monthName text="mar" number="03"/>
+  <monthName text="April" number="04"/>
+  <monthName text="Apr" number="04"/>
+  <monthName text="apr" number="04"/>
+  <monthName text="May" number="05"/>
+  <monthName text="may" number="05"/>
+  <monthName text="June" number="06"/>
+  <monthName text="Jun" number="06"/>
+  <monthName text="jun" number="06"/>
+  <monthName text="July" number="07"/>
+  <monthName text="Jul" number="07"/>
+  <monthName text="jul" number="07"/>
+  <monthName text="August" number="08"/>
+  <monthName text="Aug" number="08"/>
+  <monthName text="aug" number="08"/>
+  <monthName text="September" number="09"/>
+  <monthName text="Sep" number="09"/>
+  <monthName text="sep" number="09"/>
+  <monthName text="October" number="10"/>
+  <monthName text="Oct" number="10"/>
+  <monthName text="oct" number="10"/>
+  <monthName text="November" number="11"/>
+  <monthName text="Nov" number="11"/>
+  <monthName text="nov" number="11"/>
+  <monthName text="December" number="12"/>
+  <monthName text="Dec" number="12"/>
+  <monthName text="dec" number="12"/>
+  <monthName text="Unassigned" number="12"/>
+  <monthName text="unassigned" number="12"/>
+</monthNameMap>

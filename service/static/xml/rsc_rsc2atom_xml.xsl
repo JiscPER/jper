@@ -6,6 +6,9 @@
 
   <xsl:param name="currdatetime">1970-01-01T00:00:00</xsl:param>
 
+  <!-- mapping names of month -->
+  <xsl:variable name="monthNames" select="document('monthNameMap.xml')/monthNameMap/monthName"/>
+
   <xsl:variable name="langCodes" select="document('langCodeMap.xml')/langCodeMap/langCode"/>
   <xsl:variable name="langIn" select="translate(/article/@xml:lang,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
   <!-- <xsl:variable name="langOut">eng</xsl:variable> -->
@@ -35,26 +38,12 @@
     </atom:id>
     <!-- <atom:source>Journal Title</atom:source> -->
     <atom:published>
-      <xsl:value-of select="//published[@type='print']/pubfront/date/year"/>
-      <xsl:text>-</xsl:text>
-      <xsl:choose>
-        <xsl:when test="//published[@type='print']/pubfront/date/month">
-          <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/month,'00')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>12</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>-</xsl:text>
-      <xsl:choose>
-        <xsl:when test="//published[@type='print']/pubfront/date/day">
-          <xsl:value-of select="format-number(///published[@type='print']/pubfront/date/day,'00')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>01</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>T00:00:00Z</xsl:text>
+      <xsl:for-each select="//published[@type='web']/pubfront/date">
+        <xsl:if test="position() = last()">
+          <xsl:call-template name="compose-date"></xsl:call-template>
+          <xsl:text>T00:00:00Z</xsl:text>
+        </xsl:if>
+      </xsl:for-each>
     </atom:published>
     <atom:summary>
       <xsl:value-of select="//art-front/abstract"/>
@@ -90,34 +79,20 @@
     </dcterms:bibliographicCitation>
     <!-- <dcterms:available>DatePublished</dcterms:available> -->
     <dcterms:issued>
-      <xsl:value-of select="//published[@type='print']/pubfront/date/year"/>
-      <xsl:text>-</xsl:text>
-      <xsl:choose>
-        <xsl:when test="//published[@type='print']/pubfront/date/month">
-          <xsl:value-of select="format-number(//published[@type='print']/pubfront/date/month,'00')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>12</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:text>-</xsl:text>
-      <xsl:choose>
-        <xsl:when test="//published[@type='print']/pubfront/date/day">
-          <xsl:value-of select="format-number(///published[@type='print']/pubfront/date/day,'00')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>01</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:for-each select="//published[@type='web']/pubfront/date">
+        <xsl:if test="position() = last()">
+          <xsl:call-template name="compose-date"></xsl:call-template>
+        </xsl:if>
+      </xsl:for-each>
     </dcterms:issued>
     <dcterms:title>
       <xsl:value-of select="//art-front/titlegrp/title"/>
     </dcterms:title>
     <xsl:for-each select="//art-front/authgrp/author">
       <dcterms:creator>
-        <xsl:value-of select="person/persname/surname/text()"/>
+        <xsl:copy-of select="person/persname/surname/text()"/>
         <xsl:text>, </xsl:text>
-        <xsl:value-of select="person/persname/fname/text()"/>
+        <xsl:copy-of select="person/persname/fname/text()"/>
       </dcterms:creator>
     </xsl:for-each>
     <!-- <dcterms:contributor>Affiliation</dcterms:contributor> -->
@@ -141,7 +116,12 @@
       </dcterms:source>
     </xsl:for-each>
     <dcterms:publisher>
-      <xsl:value-of select="//published[@type='print']/journalref/publisher/orgname/nameelt"/>
+      <xsl:for-each select="//published[@type='print']/journalref/publisher/orgname/nameelt">
+        <xsl:value-of select="normalize-space(text())"/>
+        <xsl:if test="position() != last()">
+          <xsl:text>, </xsl:text>
+        </xsl:if>
+      </xsl:for-each>
     </dcterms:publisher>
     <!--
     <dcterms:abstract>
@@ -154,6 +134,32 @@
     </dc:subject>
     -->
   </entry>
+  </xsl:template>
+
+  <xsl:template name="compose-date">
+      <xsl:variable name="mnth" select="month"/>
+      <xsl:value-of select="year"/>
+      <xsl:text>-</xsl:text>
+      <xsl:choose>
+          <xsl:when test="format-number(month,'00')!='NaN'">
+              <xsl:value-of select="format-number(month,'00')"/>
+          </xsl:when>
+          <xsl:when test="$monthNames[@text=$mnth]/@number">
+              <xsl:value-of select="$monthNames[@text=$mnth]/@number"/>
+          </xsl:when>
+          <xsl:otherwise>
+              <xsl:text>12</xsl:text>
+          </xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>-</xsl:text>
+      <xsl:choose>
+          <xsl:when test="format-number(day,'00')!='NaN'">
+              <xsl:value-of select="format-number(day,'00')"/>
+          </xsl:when>
+          <xsl:otherwise>
+              <xsl:text>01</xsl:text>
+          </xsl:otherwise>
+      </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>
