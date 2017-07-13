@@ -105,7 +105,8 @@ PACKAGE_HANDLERS = {
     "http://purl.org/net/sword/package/SimpleZip" : "service.packages.SimpleZip",
     "http://purl.org/net/sword/package/OPUS4Zip" : "service.packages.OPUS4Zip",
     "http://purl.org/net/sword/package/ESciDoc" : "service.packages.ESciDoc",
-    "http://purl.org/net/sword/package/METSDSpaceSIP" : "service.packages.METSDSpaceSIP"
+    "http://purl.org/net/sword/package/METSDSpaceSIP" : "service.packages.METSDSpaceSIP",
+    "http://purl.org/net/sword/package/METSMODS" : "service.packages.METSMODS"
 }
 """map from format identifiers to PackageHandler plugins that should be used in those cases"""
 
