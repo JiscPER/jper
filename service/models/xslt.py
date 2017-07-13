@@ -764,6 +764,17 @@ class XSLT(object):
                   </epdcx:statement>
                 </xsl:for-each>
               </xsl:if>
+              <xsl:if test="//published[@type='print']/journalref/coden">
+                <xsl:for-each select="//published[@type='print']/journalref/coden">
+                  <epdcx:statement>
+                    <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
+                    <epdcx:valueString>
+                      <xsl:text>CODEN:</xsl:text>
+                      <xsl:value-of select="normalize-space(text())"/>
+                    </epdcx:valueString>
+                  </epdcx:statement>
+                </xsl:for-each>
+              </xsl:if>
               <epdcx:statement>
                 <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/publisher</xsl:attribute>
                 <epdcx:valueString>
@@ -979,7 +990,7 @@ class XSLT(object):
                     <mods:identifier type="sercode"><xsl:value-of select="."/></mods:identifier>
                 </xsl:for-each>
                 <xsl:for-each select="//published[@type='print']/journalref/coden">
-                    <mods:identifier type="publisher-id"><xsl:value-of select="."/></mods:identifier>
+                    <mods:identifier type="coden"><xsl:value-of select="."/></mods:identifier>
                 </xsl:for-each>
                 <mods:part>
                     <xsl:if test="string-length(//published[@type='print']/volumeref/link/text()) > 0">

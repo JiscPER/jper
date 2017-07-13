@@ -129,7 +129,7 @@
                     <mods:identifier type="sercode"><xsl:value-of select="."/></mods:identifier>
                 </xsl:for-each>
                 <xsl:for-each select="//published[@type='print']/journalref/coden">
-                    <mods:identifier type="publisher-id"><xsl:value-of select="."/></mods:identifier>
+                    <mods:identifier type="coden"><xsl:value-of select="."/></mods:identifier>
                 </xsl:for-each>
                 <mods:part>
                     <xsl:if test="string-length(//published[@type='print']/volumeref/link/text()) > 0">

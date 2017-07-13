@@ -180,6 +180,17 @@
                   </epdcx:statement>
                 </xsl:for-each>
               </xsl:if>
+              <xsl:if test="//published[@type='print']/journalref/coden">
+                <xsl:for-each select="//published[@type='print']/journalref/coden">
+                  <epdcx:statement>
+                    <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
+                    <epdcx:valueString>
+                      <xsl:text>CODEN:</xsl:text>
+                      <xsl:value-of select="normalize-space(text())"/>
+                    </epdcx:valueString>
+                  </epdcx:statement>
+                </xsl:for-each>
+              </xsl:if>
               <epdcx:statement>
                 <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/publisher</xsl:attribute>
                 <epdcx:valueString>
