@@ -765,7 +765,7 @@ class FilesAndJATS(PackageHandler):
         * http://purl.org/net/sword/package/OPUS4Zip
         * http://purl.org/net/sword/package/ESciDoc
         * http://purl.org/net/sword/package/METSDSpaceSIP
-        * http://purl.org/net/sword/package/METSDSpaceSIP
+        * http://purl.org/net/sword/package/METSMODS
 
         :param in_path: locally accessible file path to the source package
         :param target_format: the format identifier for the format we want to convert to
