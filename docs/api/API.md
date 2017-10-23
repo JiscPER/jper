@@ -4,7 +4,7 @@ This document specifies the interface and data formats to be used by the DeepGre
 
 The current version of the API is v1, and it can be accessed at
 
-    https://oa-deepgreen.kobv.de/api/v1
+    https://www.oa-deepgreen.de/api/v1
 
 All URL paths provided in this document will extend from this base url.
 
@@ -384,13 +384,13 @@ In order to tell the difference between (1) and (2), compare the following two l
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content",
+            "url" : "https://www.oa-deepgreen.de/api/v1/notification/123456789/content",
             "packaging" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
         {
             "type" : "fulltext",
             "format" : "application/pdf",
-            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content/publisherpdf",
+            "url" : "https://www.oa-deepgreen.de/api/v1/notification/123456789/content/publisherpdf",
         }
     ]
 
@@ -417,13 +417,13 @@ The notification JSON may contain a section like:
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content",
+            "url" : "https://www.oa-deepgreen.de/api/v1/notification/123456789/content",
             "packaging" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content/SimpleZip",
+            "url" : "https://www.oa-deepgreen.de/api/v1/notification/123456789/content/SimpleZip",
             "packaging" : "http://purl.org/net/sword/package/SimpleZip"
         }
     ]

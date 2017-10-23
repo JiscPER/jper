@@ -38,13 +38,13 @@ JSON in the **links** section, for example:
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content",
+            "url" : "https://www.oa-deepgreen.de/api/v1/notification/123456789/content",
             "packaging" : "https://datahub.deepgreen.org/FilesAndJATS"
         },
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "https://oa-deepgreen.kobv.de/api/v1/notification/123456789/content/SimpleZip",
+            "url" : "https://www.oa-deepgreen.de/api/v1/notification/123456789/content/SimpleZip",
             "packaging" : "http://purl.org/net/sword/package/SimpleZip"
         }
     ]
