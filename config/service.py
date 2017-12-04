@@ -153,6 +153,13 @@ STORE_TMP_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store",
 """path to local directory for temp file store - specified relative to this file"""
 
 ############################################
+# Configuration patch for special DeepGreen routing via EZB data
+
+#DEEPGREEN_EZB_ROUTING = False
+DEEPGREEN_EZB_ROUTING = True
+"""start the app with DeepGreen Alliance Licensing routing"""
+
+############################################
 # Configuration for when the app is operated in functional testing mode
 
 FUNCTIONAL_TEST_MODE = False
