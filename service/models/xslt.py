@@ -1330,25 +1330,29 @@ class XSLT(object):
       </dnbInstitutions>
       -->
       <dates>
-          <date>
-             <xsl:attribute name="type"><xsl:text>published</xsl:text></xsl:attribute>
-             <xsl:attribute name="monthDay">
-                <xsl:text>--</xsl:text>
-                <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/month,'00')"/>
-                <xsl:text>-</xsl:text>
-                <xsl:choose>
-                  <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/day">
-                     <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,'ppub')]/day,'00')"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:text>01</xsl:text>
-                  </xsl:otherwise>
-                </xsl:choose>
-             </xsl:attribute>
-             <xsl:attribute name="year">
-                <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,'ppub')]/year"/>
-             </xsl:attribute>
-          </date>
+        <xsl:choose>
+          <xsl:when test="//article-meta/pub-date[contains(@pub-type,'epub')]/year">
+            <xsl:call-template name="compose-date">
+              <xsl:with-param name="xpub" select="'epub'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/year">
+            <xsl:call-template name="compose-date">
+              <xsl:with-param name="xpub" select="'ppub'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+            <date>
+              <xsl:attribute name="type"><xsl:text>completed</xsl:text></xsl:attribute>
+              <xsl:attribute name="monthDay">
+                <xsl:text>--11-11</xsl:text>
+              </xsl:attribute>
+              <xsl:attribute name="year">
+                <xsl:text>1111</xsl:text>
+              </xsl:attribute>
+            </date>
+          </xsl:otherwise>
+        </xsl:choose>
       </dates>
       <identifiers>
           <identifier>
@@ -1418,6 +1422,36 @@ class XSLT(object):
       -->
     </opusDocument>
   </import>
+  </xsl:template>
+
+  <xsl:template name="compose-date">
+    <xsl:param name="xpub" select="'epub'"/>
+          <date>
+             <xsl:attribute name="type"><xsl:text>published</xsl:text></xsl:attribute>
+             <xsl:attribute name="monthDay">
+                <xsl:text>--</xsl:text>
+                <xsl:choose>
+                  <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/month">
+                    <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/month,'00')"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:text>12</xsl:text>
+                  </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>-</xsl:text>
+                <xsl:choose>
+                  <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/day">
+                     <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/day,'00')"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:text>01</xsl:text>
+                  </xsl:otherwise>
+                </xsl:choose>
+             </xsl:attribute>
+             <xsl:attribute name="year">
+                <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,$xpub)]/year"/>
+             </xsl:attribute>
+          </date>
   </xsl:template>
 
 </xsl:stylesheet>
