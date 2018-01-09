@@ -3,12 +3,242 @@ Functions which generate reports from the JPER system
 
 """
 
-from service.models import RoutedNotification, Account
+from service.models import RoutedNotification, FailedNotification, Account
 import os
 from octopus.lib import clcsv
 from copy import deepcopy
 from datetime import datetime
 from octopus.core import app
+
+def publisher_report(from_date, to_date, reportfile):
+    """
+    Generate a monthly publisher report from from_date to to_date.  It is assumed that 
+    from_date is the start of a month, and to_date is the end of a month.
+
+    Dates must be strings of the form YYYY-MM-DDThh:mm:ssZ
+
+    :param from_date:   start of month date from which to generate the report
+    :param to_date: end of month date up to which to generate the report (if this is not specified, it will default to datetime.utcnow())
+    :param reportfile:  file path for existing/new report to be output
+    :return:
+    """
+    # work out the whole months that we're operating over
+    frstamp = datetime.strptime(from_date, "%Y-%m-%dT%H:%M:%SZ")
+    if to_date is None:
+        tostamp = datetime.utcnow()
+    else:
+        tostamp = datetime.strptime(to_date, "%Y-%m-%dT%H:%M:%SZ")
+    months = range(frstamp.month, tostamp.month + 1)
+
+    # prep the data structures where we're going to record the results
+    result = {}
+    uniques = {}
+    for m in months:
+        uniques[m] = {"md" : 0, "content" : 0, "failed": 0}
+    pubs = {}
+
+    # go through each routed *AND* failed notification and count against the publisher ids whether 
+    # something is a md-only or a with-content notification, and at the same time count the 
+    # unique md-only vs with-content notifications that were routed *OR* not
+    q = DeliveryReportQuery(from_date, to_date)
+    for note in RoutedNotification.scroll(q.query(), page_size=100, keepalive="5m"):
+        assert isinstance(note, RoutedNotification)
+        nm = note.analysis_datestamp.month
+
+        is_with_content = False
+        if len(note.links) > 0:
+            is_with_content = True
+            uniques[nm]["content"] += 1
+        else:
+            uniques[nm]["md"] += 1
+
+        for p in note.provider.id:
+            if p not in result:
+                result[p] = {}
+                for m in months:
+                    result[p][m] = {"md" : 0, "content" : 0, "failed": 0}
+
+            if is_with_content:
+                result[p][nm]["content"] += 1
+            else:
+                result[p][nm]["md"] += 1
+
+    # now (almost) the same procedure for the rejected notes (with NO delivery)
+    for note in FailedNotification.scroll(q.query(), page_size=500, keepalive="10m"):
+        assert isinstance(note, FailedNotification)
+        nm = note.analysis_datestamp.month
+
+        #is_with_content = False
+        #if len(note.links) > 0:
+        #    is_with_content = True
+        #    uniques[nm]["content"] += 1
+        #else:
+        #    uniques[nm]["md"] += 1
+        uniques[nm]["failed"] += 1
+
+        for p in note.provider.id:
+            if p not in result:
+                result[p] = {}
+                for m in months:
+                    result[p][m] = {"md" : 0, "content" : 0, "failed": 0}
+
+            #if is_with_content:
+            #    result[p][nm]["content"] += 1
+            #else:
+            #    result[p][nm]["md"] += 1
+            result[p][nm]["failed"] += 1
+
+
+    # now flesh out the report with account names and totals
+    for k in result.keys():
+        acc = Account.pull(k)
+        if acc is None:
+            pubs[k] = k
+        else:
+            if acc.email is not None:
+                pubs[k] = acc.email.split("@")[0]
+            else:
+                pubs[k] = k
+
+        for mon in result[k].keys():
+            result[k][mon]["total"] = result[k][mon]["md"] + 
+                                      result[k][mon]["content"] +
+                                      result[k][mon]["failed"]
+
+    for mon in uniques.keys():
+        uniques[mon]["total"] = uniques[mon]["md"] + 
+                                uniques[mon]["content"] + 
+                                uniques[mon]["failed"]
+
+    # some constant bits of information we're going to need to convert the results into a table
+    # suitable for a CSV
+
+    month_names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+    headers = ['Publisher','ID',
+               'Jan md-only', "Jan with-content", "Jan rejected", "Jan Total",
+               'Feb md-only', "Feb with-content", "Feb rejected", "Feb Total",
+               'Mar md-only', "Mar with-content", "Mar rejected", "Mar Total",
+               'Apr md-only', "Apr with-content", "Apr rejected", "Apr Total",
+               'May md-only', "May with-content", "May rejected", "May Total",
+               'Jun md-only', "Jun with-content", "Jun rejected", "Jun Total",
+               'Jul md-only', "Jul with-content", "Jul rejected", "Jul Total",
+               'Aug md-only', "Aug with-content", "Aug rejected", "Aug Total",
+               'Sep md-only', "Sep with-content", "Sep rejected", "Sep Total",
+               'Oct md-only', "Oct with-content", "Oct rejected", "Oct Total",
+               'Nov md-only', "Nov with-content", "Nov rejected", "Nov Total",
+               'Dec md-only', "Dec with-content", "Dec rejected", "Dec Total"]
+
+    template = {}
+    for k in headers:
+        template[k] = 0
+
+    # an interim data-structure that we'll use to store the objects to be written, which we
+    # can then order by the key (which will be the Pub name)
+    data = {}
+
+    # read any existing data in from the current spreadsheet
+    if os.path.exists(reportfile):
+        sofar = clcsv.ClCsv(file_path=reportfile)
+        for obj in sofar.objects():
+            # convert all the fields to integers as needed
+            for k in obj.keys():
+                if k not in ["Publisher", "ID"]:
+                    if obj[k] == "":
+                        obj[k] = 0
+                    else:
+                        try:
+                            obj[k] = int(obj[k])
+                        except:
+                            app.logger.warn(u"Unable to coerce existing report value '{x}' to an integer, so assuming it is 0".format(x=obj[k]))
+                            obj[k] = 0
+
+            data[obj.get("Publisher")] = obj
+
+
+    # now add any new data from the report
+    for id, res in result.iteritems():
+        pub = pubs.get(id)
+        if pub not in data:
+            data[pub] = deepcopy(template)
+        data[pub]["Publisher"] = pub
+        data[pub]["ID"] = id
+        for mon, info in res.iteritems():
+            mn = month_names[mon - 1]
+            mdk = mn + " md-only"
+            ctk = mn + " with-content"
+            rjk = mn + " rejected"
+            tk = mn + " Total"
+            data[pub][mdk] = info.get("md")
+            data[pub][ctk] = info.get("content")
+            data[pub][rjk] = info.get("failed")
+            data[pub][tk] = info.get("total")
+
+    # remove the "total" and "unique" entries, as we need to re-create them
+    if "Total" in data:
+        del data["Total"]
+    existing_unique = deepcopy(template)
+    existing_unique["Publisher"] = "Unique"
+    existing_unique["ID"] = ""
+    if "Unique" in data:
+        existing_unique = data["Unique"]
+        del data["Unique"]
+
+    # calculate the totals for all columns
+    totals = {}
+    for k in headers:
+        totals[k] = 0
+
+    totals["Publisher"] = "Total"
+    totals["ID"] = ""
+
+    for pub, obj in data.iteritems():
+        for k, v in obj.iteritems():
+            if k in ["Publisher", "ID"]:
+                continue
+            if isinstance(v, int):
+                totals[k] += v
+
+    data["Total"] = totals
+
+    # add the uniques
+    data["Unique"] = existing_unique
+    data["Unique"]["Publisher"] = "Unique"
+
+    for mon, info in uniques.iteritems():
+        mn = month_names[mon - 1]
+        mdk = mn + " md-only"
+        ctk = mn + " with-content"
+        rjk = mn + " rejected"
+        tk = mn + " Total"
+        data["Unique"][mdk] = info.get("md")
+        data["Unique"][ctk] = info.get("content")
+        data["Unique"][rjk] = info.get("failed")
+        data["Unique"][tk] = info.get("total")
+
+    orderedkeys = data.keys()
+    orderedkeys.remove('Unique')
+    orderedkeys.remove('Total')
+    orderedkeys.sort()
+    orderedkeys.append('Total')
+    orderedkeys.append('Unique')
+
+    # remove the old report file, so we can start with a fresh new one
+    try:
+        os.remove(reportfile)
+    except:
+        pass
+
+    out = clcsv.ClCsv(file_path=reportfile)
+    out.set_headers(headers)
+
+    for hk in orderedkeys:
+        pub = data[hk]
+        out.add_object(pub)
+
+    out.save()
+
+
 
 def delivery_report(from_date, to_date, reportfile):
     """
