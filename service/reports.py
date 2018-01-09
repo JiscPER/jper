@@ -52,7 +52,7 @@ def publisher_report(from_date, to_date, reportfile):
         else:
             uniques[nm]["md"] += 1
 
-        for p in note.provider_id:
+        for p in [note.provider_id,]:
             if p not in result:
                 result[p] = {}
                 for m in months:
@@ -76,7 +76,7 @@ def publisher_report(from_date, to_date, reportfile):
         #    uniques[nm]["md"] += 1
         uniques[nm]["failed"] += 1
 
-        for p in note.provider_id:
+        for p in [note.provider_id,]:
             if p not in result:
                 result[p] = {}
                 for m in months:
