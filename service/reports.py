@@ -52,16 +52,16 @@ def publisher_report(from_date, to_date, reportfile):
         else:
             uniques[nm]["md"] += 1
 
-        for p in [note.provider_id,]:
-            if p not in result:
-                result[p] = {}
-                for m in months:
-                    result[p][m] = {"md" : 0, "content" : 0, "failed": 0}
+        p = note.provider_id
+        if p not in result:
+            result[p] = {}
+            for m in months:
+                result[p][m] = {"md" : 0, "content" : 0, "failed": 0}
 
-            if is_with_content:
-                result[p][nm]["content"] += 1
-            else:
-                result[p][nm]["md"] += 1
+        if is_with_content:
+            result[p][nm]["content"] += 1
+        else:
+            result[p][nm]["md"] += 1
 
     # now (almost) the same procedure for the rejected notes (with NO delivery)
     for note in FailedNotification.scroll(q.query(), page_size=500, keepalive="10m"):
@@ -76,17 +76,18 @@ def publisher_report(from_date, to_date, reportfile):
         #    uniques[nm]["md"] += 1
         uniques[nm]["failed"] += 1
 
-        for p in [note.provider_id,]:
-            if p not in result:
-                result[p] = {}
-                for m in months:
-                    result[p][m] = {"md" : 0, "content" : 0, "failed": 0}
+        ##for p in [note.provider_id,]:
+        p = note.provider_id
+        if p not in result:
+            result[p] = {}
+            for m in months:
+                result[p][m] = {"md" : 0, "content" : 0, "failed": 0}
 
-            #if is_with_content:
-            #    result[p][nm]["content"] += 1
-            #else:
-            #    result[p][nm]["md"] += 1
-            result[p][nm]["failed"] += 1
+        #if is_with_content:
+        #    result[p][nm]["content"] += 1
+        #else:
+        #    result[p][nm]["md"] += 1
+        result[p][nm]["failed"] += 1
 
 
     # now flesh out the report with account names and totals
@@ -96,11 +97,11 @@ def publisher_report(from_date, to_date, reportfile):
             pubs[k] = k
         else:
             if acc.data["email"] is not None:
-                pubs[k] = acc.data["email"] # .split("@")[0]
+                pubs[k] = acc.data["email"].split("@")[0]
             else:
                 pubs[k] = k
 
-        print "Publisher '{name}' encountered.".format(name=pubs[k])
+        # print "Publisher '{name}' encountered.".format(name=pubs[k])
 
         for mon in result[k].keys():
             result[k][mon]["total"] = result[k][mon]["md"]
