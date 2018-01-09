@@ -101,14 +101,14 @@ def publisher_report(from_date, to_date, reportfile):
                 pubs[k] = k
 
         for mon in result[k].keys():
-            result[k][mon]["total"] = result[k][mon]["md"] + 
-                                      result[k][mon]["content"] +
-                                      result[k][mon]["failed"]
+            result[k][mon]["total"] = result[k][mon]["md"]
+            result[k][mon]["total"] += result[k][mon]["content"]
+            result[k][mon]["total"] += result[k][mon]["failed"] 
 
     for mon in uniques.keys():
-        uniques[mon]["total"] = uniques[mon]["md"] + 
-                                uniques[mon]["content"] + 
-                                uniques[mon]["failed"]
+        uniques[mon]["total"] = uniques[mon]["md"]
+        uniques[mon]["total"] += uniques[mon]["content"]
+        uniques[mon]["total"] += uniques[mon]["failed"]
 
     # some constant bits of information we're going to need to convert the results into a table
     # suitable for a CSV
