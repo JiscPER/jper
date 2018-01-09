@@ -96,9 +96,11 @@ def publisher_report(from_date, to_date, reportfile):
             pubs[k] = k
         else:
             if acc.data["email"] is not None:
-                pubs[k] = acc.data["email"].split("@")[0]
+                pubs[k] = acc.data["email"] # .split("@")[0]
             else:
                 pubs[k] = k
+
+        print "Publisher '{name}' encountered.".format(name=pubs[k])
 
         for mon in result[k].keys():
             result[k][mon]["total"] = result[k][mon]["md"]
@@ -232,8 +234,8 @@ def publisher_report(from_date, to_date, reportfile):
     out = clcsv.ClCsv(file_path=reportfile)
     out.set_headers(headers)
 
-    for hk in orderedkeys:
-        pub = data[hk]
+    for pk in orderedkeys:
+        pub = data[pk]
         out.add_object(pub)
 
     out.save()
