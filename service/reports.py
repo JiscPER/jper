@@ -95,8 +95,8 @@ def publisher_report(from_date, to_date, reportfile):
         if acc is None:
             pubs[k] = k
         else:
-            if acc.email is not None:
-                pubs[k] = acc.email.split("@")[0]
+            if acc.data["email"] is not None:
+                pubs[k] = acc.data["email"].split("@")[0]
             else:
                 pubs[k] = k
 
