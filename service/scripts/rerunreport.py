@@ -20,6 +20,8 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--from_date", help="date to run the report from")
     parser.add_argument("-t", "--to_date", help="date to run the report to")
 
+    parser.add_argument("-p", "--publisher", help="report the publishers' activities")
+
     args = parser.parse_args()
 
     if args.config:
@@ -43,8 +45,19 @@ if __name__ == "__main__":
     year = dt.year
 
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
-    reportfile = reportsdir + '/monthly_notifications_to_institutions_' + str(year) + '.csv'
-    if os.path.exists(reportfile):
-        os.remove(reportfile)
+    if not args.publisher:
+        reportfile = reportsdir + '/monthly_notifications_to_institutions_' + str(year) + '.csv'
+        if os.path.exists(reportfile):
+            os.remove(reportfile)
+        reports.delivery_report(args.from_date, args.to_date, reportfile)
+    else:
+        reportfile = reportsdir + '/monthly_items_from_publishers_' + str(year) + '.csv'
 
-    reports.delivery_report(args.from_date, args.to_date, reportfile)
+        #if os.path.exists(reportfile):
+        #    os.remove(reportfile)
+
+        reports.publisher_report(args.from_date, args.to_date, reportfile)
+
+    print "Done: Report written to `{f}´".format(f=reportfile)
+    print
+
