@@ -224,7 +224,9 @@ def publisher_report(from_date, to_date, reportfile):
     orderedkeys.remove('Total')
     orderedkeys.sort()
     orderedkeys.append('Total')
-    orderedkeys.append('Unique')
+    # 2018-01-09 TD : Unique row for publishing houses makes not really sense, so we better 
+    #                 leave it out (just to avoid endless discussions, justifications, headaches)
+    #orderedkeys.append('Unique')
 
     # remove the old report file, so we can start with a fresh new one
     try:
