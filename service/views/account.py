@@ -36,14 +36,15 @@ blueprint = Blueprint('account', __name__)
 #
 # Notification table/csv for repositories
 ntable = {
-         "screen" : ["Send Date", ["DOI","Publisher"], "Title", "Analysis Date"],
-         "header" : ["Analysis Date", "DOI", "Publisher", "Title", "Send Date", "Embargo"],
-  "Analysis Date" : "notifications[*].analysis_date",
-      "Send Date" : "notifications[*].created_date",
-        "Embargo" : "notifications[*].embargo.duration",
-            "DOI" : "notifications[*].metadata.identifier[?(@.type=='doi')].id",
-      "Publisher" : "notifications[*].metadata.publisher",
-          "Title" : "notifications[*].metadata.title"
+            "screen" : ["Send Date", ["DOI","Publisher"], "Title", "Analysis Date"],
+            "header" : ["Analysis Date", "DOI", "Publisher", "Title", "Send Date", "Embargo", "Publication Date"],
+     "Analysis Date" : "notifications[*].analysis_date",
+         "Send Date" : "notifications[*].created_date",
+           "Embargo" : "notifications[*].embargo.duration",
+               "DOI" : "notifications[*].metadata.identifier[?(@.type=='doi')].id",
+         "Publisher" : "notifications[*].metadata.publisher",
+             "Title" : "notifications[*].metadata.title",
+  "Publication Date" : "notifications[*].metadata.publication_date"
 }
 
 # Matching table/csv for providers (with detailed reasoning)
