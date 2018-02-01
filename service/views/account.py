@@ -299,7 +299,7 @@ def index():
     if not current_user.is_super:
         abort(401)
     ## users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
-    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000).get('hits',{}).get('hits',[])]
+    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=10000).get('hits',{}).get('hits',[])]
     return render_template('account/users.html', users=users)
 
 
