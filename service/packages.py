@@ -982,7 +982,9 @@ class FilesAndJATS(PackageHandler):
                                         cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets_dspace.xml", str(mets))
+                # 2018-02-21 TD : Strictly needs to be 'mets.xml' due to DSPACE requirements.
+                # zout.writestr("mets_dspace.xml", str(mets))
+                zout.writestr("mets.xml", str(mets))
 
             zin.close()
 
@@ -1049,7 +1051,9 @@ class FilesAndJATS(PackageHandler):
                                         cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets_mods.xml", str(mets))
+                # 2018-02-21 TD : Strictly needs to be 'mets.xml' due to DSPACE requirements.
+                # zout.writestr("mets_mods.xml", str(mets))
+                zout.writestr("mets.xml", str(mets))
 
             zin.close()
 
