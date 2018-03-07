@@ -37,7 +37,7 @@ blueprint = Blueprint('account', __name__)
 # Notification table/csv for repositories
 ntable = {
             "screen" : ["Send Date", ["DOI","Publisher"], "Title", "Analysis Date"],
-            "header" : ["Analysis Date", "DOI", "Publisher", "Title", "Send Date", "Embargo", "Publication Date"],
+            "header" : ["Send Date", "DOI", "Publisher", "Title", "Analysis Date", "Embargo", "Publication Date"],
      "Analysis Date" : "notifications[*].analysis_date",
          "Send Date" : "notifications[*].created_date",
            "Embargo" : "notifications[*].embargo.duration",
@@ -63,8 +63,8 @@ mtable = {
 
 # Rejected table/csv for providers
 ftable = {
-         "screen" : ["Analysis Date", "ISSN or EISSN", "DOI", "Reason"],
-         "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "Reason"],
+         "screen" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
+         "header" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
       "Send Date" : "failed[*].created_date",
   "Analysis Date" : "failed[*].analysis_date",
   "ISSN or EISSN" : "failed[*].issn_data",
@@ -339,7 +339,8 @@ def download(account_id):
 
     #
     # 2016-11-25 TD : FIXME: 'zip' command truncates *silently* to the shortest length! 
-    #                 Rows might therefore become really inconsistent here.  Indeed, very ugly!!!
+    #                 Rows might therefore become really inconsistent here.  Indeed, 
+    #                 very ugly!!!
     rows = zip(*rows)
     #
     #

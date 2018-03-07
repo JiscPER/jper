@@ -50,10 +50,11 @@
 
 <!--
 				<tr>
-					<th>Analysis&nbsp;Date</th>
+					<th>Send&nbsp;Date</th>
 					<th>ISSN&nbsp;or&nbsp;EISSN</th>
 					<th>DOI</th>
 					<th>Reason</th>
+					<th>Analysis&nbsp;Date</th>
 				</tr>
 -->
 
@@ -75,6 +76,7 @@
 		<th>'+tbl.header[1]+'</th> \
 		<th>'+tbl.header[2]+'</th> \
 		<th>'+tbl.header[3]+'</th> \
+		<th>'+tbl.header[4]+'</th> \
 		</tr>');
 
 	for (variable in ids) {
@@ -83,6 +85,7 @@
 			<td>'+out[tbl.header[1]][variable]+'</td> \
 			<td>'+out[tbl.header[2]][variable]+'</td> \
 			<td>'+out[tbl.header[3]][variable]+'</td> \
+			<td>'+out[tbl.header[4]][variable]+'</td> \
 			</tr>');
 	}
 
