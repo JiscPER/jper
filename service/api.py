@@ -429,7 +429,7 @@ class JPER(object):
                 }
             },
             "sort": [{"created_date":{"order":"desc"}}],
-            ##"sort": [{"analysis_date":{"order":"desc"}}],
+            ## "sort": [{"analysis_date":{"order":"desc"}}],
             ## 2018-03-07 TD : change of sort key to 'created_date', but still newest first
             # "sort": [{"analysis_date":{"order":"asc"}}],
             # 2016-09-06 TD : change of sort order newest first
@@ -577,8 +577,9 @@ class JPER(object):
                     }
                 }
             },
-            # "sort": [{"created_date":{"order":"desc"}}],
-            "sort": [{"analysis_date":{"order":"desc"}}],
+            "sort": [{"created_date":{"order":"desc"}}],
+            ## "sort": [{"analysis_date":{"order":"desc"}}],
+            ## 2018-03-07 TD : change of sort key to 'created_date', but still newest first
             # 2016-09-06 TD : change of sort order newest first
             "from": (page - 1) * page_size,
             "size": page_size
@@ -638,7 +639,9 @@ class JPER(object):
                     }
                 }
             },
-            "sort": [{"analysis_date":{"order":"desc"}}],
+            "sort": [{"created_date":{"order":"desc"}}],
+            ## "sort": [{"analysis_date":{"order":"desc"}}],
+            ## 2018-03-07 TD : change of sort key to 'created_date', but still newest first
             # "sort": [{"analysis_date":{"order":"asc"}}],
             # 2016-09-06 TD : change of sort order newest first
         }
@@ -770,8 +773,9 @@ class JPER(object):
                     }
                 }
             },
-            # "sort": [{"created_date":{"order":"desc"}}],
-            "sort": [{"analysis_date":{"order":"desc"}}],
+            "sort": [{"created_date":{"order":"desc"}}],
+            ## "sort": [{"analysis_date":{"order":"desc"}}],
+            ## 2018-03-07 TD : change of sort key to 'created_date', but still newest first
             # 2016-09-06 TD : change of sort order newest first
         }
         
