@@ -16,7 +16,7 @@
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
-    <xsl:attribute name="ID"><xsl:text>sort-mets_mets</xsl:text></xsl:attribute>
+    <xsl:attribute name="ID"><xsl:text>sword-mets_mets</xsl:text></xsl:attribute>
     <xsl:attribute name="OBJID"><xsl:text>sword-mets</xsl:text></xsl:attribute>
     <xsl:attribute name="LABEL"><xsl:text>DSpace SWORD Item</xsl:text></xsl:attribute>
     <xsl:attribute name="PROFILE"><xsl:text>DSpace METS SIP Profile 1.0</xsl:text></xsl:attribute>

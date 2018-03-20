@@ -12,7 +12,7 @@
               xmlns:xlink="http://www.w3.org/1999/xlink"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/mets/mets.xsd http://www.loc.gov/mods/v3 https://www.loc.gov/standards/mods/v3/mods.xsd">
-            <xsl:attribute name="ID"><xsl:text>sort-mets_mets</xsl:text></xsl:attribute>
+            <xsl:attribute name="ID"><xsl:text>sword-mets_mets</xsl:text></xsl:attribute>
             <xsl:attribute name="OBJID"><xsl:text>sword-mets</xsl:text></xsl:attribute>
             <xsl:attribute name="LABEL"><xsl:text>METS/MODS SWORD Item</xsl:text></xsl:attribute>
             <xsl:attribute name="PROFILE"><xsl:text>METS/MODS SIP Profile 1.0</xsl:text></xsl:attribute>

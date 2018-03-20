@@ -956,6 +956,10 @@ class FilesAndJATS(PackageHandler):
         xslt_addf = etree.XML(models.XSLT.addfiles2mets)
         addfile = etree.XSLT(xslt_addf)
 
+        # 2018-03-20 TD : Separate structMap part necessary in case of /no/ file addition
+        xslt_adds = etree.XML(models.XSLT.addstruct2mets)
+        addstruct = etree.XSLT(xslt_adds)
+
         parser = etree.XMLParser(load_dtd=True, no_network=False)
 
         try:
@@ -981,6 +985,9 @@ class FilesAndJATS(PackageHandler):
                                         mime=etree.XSLT.strparam(mimetype[0]),
                                         cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
+
+                # 2018-03-20 TD : closing the mets xml by adding the (final) structMap
+                mets = addstruct( mets )
 
                 # 2018-02-21 TD : Strictly needs to be 'mets.xml' due to DSPACE requirements.
                 # zout.writestr("mets_dspace.xml", str(mets))
@@ -1025,6 +1032,10 @@ class FilesAndJATS(PackageHandler):
         xslt_addf = etree.XML(models.XSLT.addfiles2mets)
         addfile = etree.XSLT(xslt_addf)
 
+        # 2018-03-20 TD : Separate structMap part necessary in case of /no/ file addition
+        xslt_adds = etree.XML(models.XSLT.addstruct2mets)
+        addstruct = etree.XSLT(xslt_adds)
+
         parser = etree.XMLParser(load_dtd=True, no_network=False)
 
         try:
@@ -1050,6 +1061,9 @@ class FilesAndJATS(PackageHandler):
                                         mime=etree.XSLT.strparam(mimetype[0]),
                                         cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
+
+                # 2018-03-20 TD : closing the mets xml by adding the (final) structMap
+                mets = addstruct( mets )
 
                 # 2018-02-21 TD : Strictly needs to be 'mets.xml' due to DSPACE requirements.
                 # zout.writestr("mets_mods.xml", str(mets))
@@ -1713,6 +1727,10 @@ class FilesAndRSC(PackageHandler):
         xslt_addf = etree.XML(models.XSLT.addfiles2mets)
         addfile = etree.XSLT(xslt_addf)
  
+        # 2018-03-20 TD : Separate structMap part necessary in case of /no/ file addition
+        xslt_adds = etree.XML(models.XSLT.addstruct2mets)
+        addstruct = etree.XSLT(xslt_adds)
+ 
         parser = etree.XMLParser(load_dtd=True, no_network=False)
 
         try:
@@ -1739,7 +1757,12 @@ class FilesAndRSC(PackageHandler):
                                               cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets_dspace.xml", str(metsdspace))
+                # 2018-03-20 TD : closing the mets xml by adding the (final) structMap
+                metsdspace = addstruct( metsdspace )
+
+                # 2018-03-20 TD : Strictly needs to be 'mets.xml' due to DSPACE requirements.
+                #zout.writestr("mets_dspace.xml", str(metsdspace))
+                zout.writestr("mets.xml", str(metsdspace))
 
             zin.close()
 
@@ -1780,6 +1803,10 @@ class FilesAndRSC(PackageHandler):
         xslt_addf = etree.XML(models.XSLT.addfiles2mets)
         addfile = etree.XSLT(xslt_addf)
 
+        # 2018-03-20 TD : Separate structMap part necessary in case of /no/ file addition
+        xslt_adds = etree.XML(models.XSLT.addstruct2mets)
+        addstruct = etree.XSLT(xslt_adds)
+
         parser = etree.XMLParser(load_dtd=True, no_network=False)
 
         try:
@@ -1806,7 +1833,12 @@ class FilesAndRSC(PackageHandler):
                                         cnt=etree.XSLT.strparam(str(count)) )
                         zout.writestr(item, data)
 
-                zout.writestr("mets_mods.xml", str(mets))
+                # 2018-03-20 TD : closing the mets xml by adding the (final) structMap
+                mets = addstruct( mets )
+
+                # 2018-03-20 TD : Strictly needs to be 'mets.xml' due to DSPACE requirements.
+                #zout.writestr("mets_mods.xml", str(mets))
+                zout.writestr("mets.xml", str(mets))
 
             zin.close()
 

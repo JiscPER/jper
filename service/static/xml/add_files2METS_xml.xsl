@@ -51,6 +51,7 @@
              </file>
           </fileGrp>
         </fileSec>
+        <!--
         <structMap xmlns="http://www.loc.gov/METS/">
           <xsl:attribute name="ID"><xsl:text>sword-mets-struct-1</xsl:text></xsl:attribute>
           <xsl:attribute name="LABEL"><xsl:text>structure</xsl:text></xsl:attribute>
@@ -76,11 +77,12 @@
              </div>
           </div>
         </structMap>
+        -->
       </xsl:if>
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="/mets:mets/fileSec/fileGrp">
+  <xsl:template match="/mets:mets/mets:fileSec/mets:fileGrp">
     <xsl:copy>
       <xsl:copy-of select="node()|@*"/>
       <xsl:if test="string-length($file)!=0 and string-length($md5)!=0">
@@ -115,7 +117,8 @@
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="/mets:mets/structMap/div">
+  <!--
+  <xsl:template match="/mets:mets/mets:structMap/div">
     <xsl:copy>
       <xsl:copy-of select="node()|@*"/>
       <xsl:if test="string-length($file)!=0 and string-length($md5)!=0">
@@ -137,6 +140,7 @@
       </xsl:if>
     </xsl:copy>
   </xsl:template>
+  -->
 
 </xsl:stylesheet>
 
