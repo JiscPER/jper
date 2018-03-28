@@ -1,7 +1,10 @@
 
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server ipv6only=on;
+# 2018-03-28 TD : parameter 'default_server' removed due to a failed nginx_config_check
+#    listen 80 default_server;
+#    listen [::]:80 default_server ipv6only=on;
+    listen 80;
+    listen [::]:80 ipv6only=on;
 
 	server_name	localhost;
 
