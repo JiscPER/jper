@@ -6,7 +6,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         "requests",
-        "elasticsearch",
+        # "elasticsearch",
+        "elasticsearch2",
         "python-dateutil"
     ],
     url='http://jisc.ac.uk/',
