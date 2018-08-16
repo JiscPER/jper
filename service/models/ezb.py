@@ -314,7 +314,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 "publisher" : "<name of publisher>", 
                 "identifier" : [ 
                     { 
-                        "type" : "<kind of journal id, e.g. issn|pissn|zdb|doi|...>", 
+                        "type" : "<kind of journal id, e.g. issn|eissn|zdb|doi|...>", 
                         "id" : "<actual journal identifier>" 
                     } 
                 ],
@@ -324,7 +324,8 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                         "url" : "<actual http(s) address string>"
                     }
                 ],
-                "subject" : [ "<keyword or subject of journal>", ... ]
+                "subject" : [ "<subject of journal>", ... ],
+                "keyword" : [ "<keyword of journal>", ... ]
                 "embargo" : { "duration" : int }
                 "period" : [ 
                     {
@@ -380,7 +381,9 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                         "identifier" : {"contains" : "object"},
                         "link" : {"contains" : "object"},
                         "period" : {"contains" : "object"},
-                        "subject" : {"contains" : "field", "coerce" : "unicode"}
+                        "subject" : {"contains" : "field", "coerce" : "unicode"},
+                        # 2018-08-08 TD : added field 'keyword' to the database structure
+                        "keyword" : {"contains" : "field", "coerce" : "unicode"}
                     },
                     "required" : [],
 
@@ -523,7 +526,9 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                     }
                 ],
                 "embargo" : { "duration" : integer },
-                "subject" : [ "keyword or subject", ...]
+                "subject" : [ "subject1", ...],
+                # 2018-08-08 TD : added field 'keyword' to the database structure
+                "keyword" : [ "keyword1", ...]
             }
 
         :return: List of python dict objects containing the participants information
@@ -558,14 +563,16 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                     }
                 ],
                 "embargo" : { "duration" : integer },
-                "subject" : [ "keyword or subject", ...]
+                "subject" : [ "subject1", ...],
+                # 2018-08-08 TD : added field 'keyword' to the database structure
+                "keyword" : [ "keyword1", ...]
             }
 
         :param objlist: list of journal objects
         :return: 
         """
         # validate the object structure on-the-fly
-        allowed = [ "title", "publisher", "identifier", "link", "period", "embargo", "subject" ]
+        allowed = [ "title", "publisher", "identifier", "link", "period", "embargo", "subject", "keyword" ]
         for obj in objlist:
             for k in obj.keys():
                 if k not in allowed:
@@ -607,7 +614,9 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                     }
                 ],
                 "embargo" : { "duration" : integer },
-                "subject" : [ "keyword or subject", ...]
+                "subject" : [ "subject1", ...],
+                # 2018-08-08 TD : added field 'keyword' to the database structure
+                "keyword" : [ "keyword1", ...],
             }
 
         :param part_object: journal object to add
@@ -652,6 +661,8 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                         journal['publisher'] = row[x].strip()
                     elif x == 'Fach':
                         journal['subject'] = row[x].strip().split(';')
+                    elif x == 'Schlagworte':
+                        journal['keyword'] = row[x].strip().split(';')
                     elif x == 'E-ISSN':
                         for eissn in row[x].strip().split(';'):
                             if len(eissn) > 0:

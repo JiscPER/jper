@@ -1,12 +1,13 @@
 
 server {
 # 2018-03-28 TD : parameter 'default_server' removed due to a failed nginx_config_check
-#    listen 80 default_server;
-#    listen [::]:80 default_server ipv6only=on;
-    listen 80;
-    listen [::]:80 ipv6only=on;
+#    listen      80;
+#    listen [::]:80 ipv6only=on;
+# 2018-08-15 TD : parameter 'default_server' reactivated as it seems to be vital!
+    listen      80 default_server;
+    listen [::]:80 default_server ipv6only=on;
 
-	server_name	localhost;
+    server_name localhost;
 
     client_max_body_size 1024M;
     proxy_read_timeout 600s;
