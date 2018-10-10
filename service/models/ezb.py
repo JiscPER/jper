@@ -672,7 +672,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                             if len(issn) > 0:
                                 journal['identifier'] = journal.get('identifier',[]) + [{"type":"issn","id":issn.strip()}]
                     elif x == 'ZDB-Nummer':
-                        journal['identifier'] = journal.get('identifier',[]) + [{"type":"zbd","id":row[x].strip()}]
+                        journal['identifier'] = journal.get('identifier',[]) + [{"type":"zdb","id":row[x].strip()}]
                     elif x == 'FrontdoorURL':
                         journal['link'] = journal.get('link',[]) + [{"type":"ezb","url":row[x].strip()}]
                     elif x == 'Link zur Zeitschrift':
