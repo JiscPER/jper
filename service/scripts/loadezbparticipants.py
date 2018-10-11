@@ -33,7 +33,7 @@ def upload_csv(newf,alid):
              else:
                  print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
     except Exception as e:
-         print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
+         print "WARNING: could not process .csv file '{x}' for database upload.".format(x=newf)
          print "WARNING: message: '{x}'".format(x=e.message)
 
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     if args.source:
         newf = args.source
-        t = newf.rfind('_')
+        t = newf.lfind('_')
         alid = newf[:t].upper()
         upload_csv(newf,alid)
         exit(0)
