@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     if args.source:
         newf = args.source
-        t = newf.lfind('_')
+        t = newf.find('_')
         alid = newf[:t].upper()
         upload_csv(newf,alid)
         exit(0)
