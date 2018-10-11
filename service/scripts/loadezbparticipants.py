@@ -20,6 +20,23 @@ EZB_SEARCH_PAGE = "OA_participants"
 """page name in the EZB instance"""
 
 
+def upload_csv(newf,alid):
+    try:
+         with open( newf, 'rb' ) as fd:
+             license = License.pull_by_key('identifier.id',alid)
+             if len(license)>0:
+                 alliance = Alliance.pull_by_key('identifier.id',alid)
+                 if not alliance:
+                     alliance = Alliance()
+                 alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
+                 print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
+             else:
+                 print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
+    except:
+         print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
+         print "WARNING: message: '{x}'".format(x=e.message)
+
+
 def close_and_upload_csv(csvfile,newf,alid):
     try:
         if csvfile and not csvfile.closed: 
@@ -48,6 +65,7 @@ if __name__ == "__main__":
 
     # parser.add_argument("-f", "--from_date", help="date to run the report from")
     # parser.add_argument("-t", "--to_date", help="date to run the report to")
+    parser.add_argument("-s", "--source", help="use this .csv file (e.g. 'EZB-*_OA_*.csv') for upload")
 
     args = parser.parse_args()
 
@@ -68,6 +86,14 @@ if __name__ == "__main__":
     #     os.remove(reportfile)
     #
     # reports.delivery_report(args.from_date, args.to_date, reportfile)
+
+    if args.source:
+        newf = args.source
+        t = newf.rfind('_')
+        alid = newf[:t].upper()
+        upload_csv(newf,alid)
+        exit(0)
+
 
     fname = app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE) # + "-EZB_current.csv"
     ia = app.config.get('EZB_SEARCH_HOST',EZB_SEARCH_HOST) + '/' + app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE)
