@@ -32,7 +32,7 @@ def upload_csv(newf,alid):
                  print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
              else:
                  print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
-    except:
+    except Exception as e:
          print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
          print "WARNING: message: '{x}'".format(x=e.message)
 
@@ -51,7 +51,7 @@ def close_and_upload_csv(csvfile,newf,alid):
                     print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
                 else:
                     print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
-    except:
+    except Exception as e:
          print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
          print "WARNING: message: '{x}'".format(x=e.message)
 
