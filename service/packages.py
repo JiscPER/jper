@@ -1142,10 +1142,16 @@ class FilesAndJATS(PackageHandler):
             name = author.get("given-names", "") + " " + author.get("surname", "")
             if name.strip() == "":
                 continue
+            # 2018-10-17 TD : add the author's ORCID if provided with the jats 
+            orcid = author.get("orcid", "")
             affs = "; ".join(author.get("affiliations", []))
             obj = {"name" : name}
             if affs is not None and affs != "":
                 obj["affiliation"] = affs
+            if orcid is not None and orcid != "":
+                obj["identifier"] = []
+                obj["identifier"].append({"type" : "orcid", "id" : orcid})
+            # 2018-10-17 TD
             md.add_author(obj)
 
         for kw in self.jats.categories:
@@ -1179,10 +1185,16 @@ class FilesAndJATS(PackageHandler):
             fn = author.get("fullName")
             if fn is None:
                 continue
+            # 2018-10-17 TD : add the author's ORCID if provided with the epmc xml
+            orcid = author.get("orcid", "")
             aff = author.get("affiliation")
             obj = {"name" : fn}
             if aff is not None:
                 obj["affiliation"] = aff
+            if orcid is not None and orcid != "":
+                obj["identifier"] = []
+                obj["identifier"].append({"type" : "orcid", "id" : orcid})
+            # 2018-10-17 TD
             md.add_author(obj)
 
         for grant in self.epmc.grants:
@@ -1913,10 +1925,16 @@ class FilesAndRSC(PackageHandler):
             name = author.get("fname", "") + " " + author.get("surname", "")
             if name.strip() == "":
                 continue
+            # 2018-10-17 TD : fetch author's ORCID if provided by the rsc xml
+            orcid = author.get("orcid", "")
             affs = "; ".join(author.get("affiliations", []))
             obj = {"name" : name}
             if affs is not None and affs != "":
                 obj["affiliation"] = affs
+            if orcid is not None and orcid != "":
+                obj["identifier"] = []
+                obj["identifier"].append({"type" : "orcid", "id" : orcid})
+            # 2018-10-17 TD
             md.add_author(obj)
 
         for kw in self.rsc_xml.categories:

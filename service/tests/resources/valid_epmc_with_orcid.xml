@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <resultList>
+    <result>
+      <id>28468825</id>
+      <source>MED</source>
+      <pmid>28468825</pmid>
+      <pmcid>PMC5481568</pmcid>
+      <doi>10.1074/jbc.M116.774083</doi>
+      <title>Small molecule-mediated inhibition of β-2-microglobulin-based amyloid fibril formation.</title>
+      <authorString>Marcinko TM, Dong J, LeBlanc R, Daborowski KV, Vachet RW.</authorString>
+      <authorList>
+        <author>
+          <fullName>Marcinko TM</fullName>
+          <firstName>Tyler M</firstName>
+          <lastName>Marcinko</lastName>
+          <initials>TM</initials>
+          <affiliation>From the Department of Chemistry, University of Massachusetts, Amherst, Massachusetts 01003.</affiliation>
+        </author>
+        <author>
+          <fullName>Dong J</fullName>
+          <firstName>Jia</firstName>
+          <lastName>Dong</lastName>
+          <initials>J</initials>
+          <affiliation>From the Department of Chemistry, University of Massachusetts, Amherst, Massachusetts 01003.</affiliation>
+        </author>
+        <author>
+          <fullName>LeBlanc R</fullName>
+          <firstName>Raquel</firstName>
+          <lastName>LeBlanc</lastName>
+          <initials>R</initials>
+          <affiliation>From the Department of Chemistry, University of Massachusetts, Amherst, Massachusetts 01003.</affiliation>
+        </author>
+        <author>
+          <fullName>Daborowski KV</fullName>
+          <firstName>Kate V</firstName>
+          <lastName>Daborowski</lastName>
+          <initials>KV</initials>
+          <affiliation>From the Department of Chemistry, University of Massachusetts, Amherst, Massachusetts 01003.</affiliation>
+        </author>
+        <author>
+          <fullName>Vachet RW</fullName>
+          <firstName>Richard W</firstName>
+          <lastName>Vachet</lastName>
+          <initials>RW</initials>
+          <authorId type="ORCID">0000-0003-4514-0210</authorId>
+          <affiliation>From the Department of Chemistry, University of Massachusetts, Amherst, Massachusetts 01003 rwvachet@chem.umass.edu.</affiliation>
+        </author>
+      </authorList>
+      <authorIdList>
+        <authorId type="ORCID">0000-0003-4514-0210</authorId>
+      </authorIdList>
+      <journalInfo>
+        <issue>25</issue>
+        <volume>292</volume>
+        <journalIssueId>2570713</journalIssueId>
+        <dateOfPublication>2017 Jun</dateOfPublication>
+        <monthOfPublication>6</monthOfPublication>
+        <yearOfPublication>2017</yearOfPublication>
+        <printPublicationDate>2017-06-01</printPublicationDate>
+        <journal>
+          <title>The Journal of biological chemistry</title>
+          <ISOAbbreviation>J. Biol. Chem.</ISOAbbreviation>
+          <medlineAbbreviation>J Biol Chem</medlineAbbreviation>
+          <NLMid>2985121R</NLMid>
+          <ISSN>0021-9258</ISSN>
+          <ESSN>1083-351X</ESSN>
+        </journal>
+      </journalInfo>
+      <pubYear>2017</pubYear>
+      <pageInfo>10630-10638</pageInfo>
+      <abstractText>In dialysis patients, β-2 microglobulin (β2m) can aggregate and eventually form amyloid fibrils in a condition known as dialysis-related amyloidosis, which deleteriously affects joint and bone function. Recently, several small molecules have been identified as potential inhibitors of β2m amyloid formation in vitro Here we investigated whether these molecules are more broadly applicable inhibitors of β2m amyloid formation by studying their effect on Cu(II)-induced β2m amyloid formation. Using a variety of biophysical techniques, we also examined their inhibitory mechanisms. We found that two molecules, doxycycline and rifamycin SV, can inhibit β2m amyloid formation in vitro by causing the formation of amorphous, redissolvable aggregates. Rather than interfering with β2m amyloid formation at the monomer stage, we found that doxycycline and rifamycin SV exert their effect by binding to oligomeric species both in solution and in gas phase. Their binding results in a diversion of the expected Cu(II)-induced progression of oligomers toward a heterogeneous collection of oligomers, including trimers and pentamers, that ultimately matures into amorphous aggregates. Using ion mobility mass spectrometry, we show that both inhibitors promote the compaction of the initially formed β2m dimer, which causes the formation of other off-pathway and amyloid-incompetent oligomers that are isomeric with amyloid-competent oligomers in some cases. Overall, our results suggest that doxycycline and rifamycin are general inhibitors of Cu(II)-induced β2m amyloid formation. Interestingly, the putative mechanism of their activity is different depending on how amyloid formation is initiated with β2m, which underscores the complexity of how these structures assemble in vitro.</abstractText>
+      <affiliation>From the Department of Chemistry, University of Massachusetts, Amherst, Massachusetts 01003.</affiliation>
+      <language>eng</language>
+      <pubModel>Print-Electronic</pubModel>
+      <pubTypeList>
+        <pubType>research-article</pubType>
+        <pubType>Journal Article</pubType>
+        <pubType>Research Support, N.I.H., Extramural</pubType>
+      </pubTypeList>
+      <grantsList>
+        <grant>
+          <grantId>R01 GM075092</grantId>
+          <agency>NIGMS NIH HHS</agency>
+          <acronym>GM</acronym>
+          <orderIn>0</orderIn>
+        </grant>
+      </grantsList>
+      <meshHeadingList>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>Humans</descriptorName>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>Amyloidosis</descriptorName>
+          <meshQualifierList>
+            <meshQualifier>
+              <abbreviation>ET</abbreviation>
+              <qualifierName>etiology</qualifierName>
+              <majorTopic_YN>N</majorTopic_YN>
+            </meshQualifier>
+            <meshQualifier>
+              <abbreviation>ME</abbreviation>
+              <qualifierName>metabolism</qualifierName>
+              <majorTopic_YN>N</majorTopic_YN>
+            </meshQualifier>
+          </meshQualifierList>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>Copper</descriptorName>
+          <meshQualifierList>
+            <meshQualifier>
+              <abbreviation>ME</abbreviation>
+              <qualifierName>metabolism</qualifierName>
+              <majorTopic_YN>N</majorTopic_YN>
+            </meshQualifier>
+            <meshQualifier>
+              <abbreviation>CH</abbreviation>
+              <qualifierName>chemistry</qualifierName>
+              <majorTopic_YN>Y</majorTopic_YN>
+            </meshQualifier>
+          </meshQualifierList>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>Rifampin</descriptorName>
+          <meshQualifierList>
+            <meshQualifier>
+              <abbreviation>CH</abbreviation>
+              <qualifierName>chemistry</qualifierName>
+              <majorTopic_YN>Y</majorTopic_YN>
+            </meshQualifier>
+          </meshQualifierList>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>Doxycycline</descriptorName>
+          <meshQualifierList>
+            <meshQualifier>
+              <abbreviation>CH</abbreviation>
+              <qualifierName>chemistry</qualifierName>
+              <majorTopic_YN>Y</majorTopic_YN>
+            </meshQualifier>
+          </meshQualifierList>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>Amyloid</descriptorName>
+          <meshQualifierList>
+            <meshQualifier>
+              <abbreviation>ME</abbreviation>
+              <qualifierName>metabolism</qualifierName>
+              <majorTopic_YN>N</majorTopic_YN>
+            </meshQualifier>
+            <meshQualifier>
+              <abbreviation>CH</abbreviation>
+              <qualifierName>chemistry</qualifierName>
+              <majorTopic_YN>Y</majorTopic_YN>
+            </meshQualifier>
+          </meshQualifierList>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>beta 2-Microglobulin</descriptorName>
+          <meshQualifierList>
+            <meshQualifier>
+              <abbreviation>ME</abbreviation>
+              <qualifierName>metabolism</qualifierName>
+              <majorTopic_YN>N</majorTopic_YN>
+            </meshQualifier>
+            <meshQualifier>
+              <abbreviation>CH</abbreviation>
+              <qualifierName>chemistry</qualifierName>
+              <majorTopic_YN>Y</majorTopic_YN>
+            </meshQualifier>
+          </meshQualifierList>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>N</majorTopic_YN>
+          <descriptorName>Renal Dialysis</descriptorName>
+          <meshQualifierList>
+            <meshQualifier>
+              <abbreviation>AE</abbreviation>
+              <qualifierName>adverse effects</qualifierName>
+              <majorTopic_YN>N</majorTopic_YN>
+            </meshQualifier>
+          </meshQualifierList>
+        </meshHeading>
+        <meshHeading>
+          <majorTopic_YN>Y</majorTopic_YN>
+          <descriptorName>Protein Aggregates</descriptorName>
+        </meshHeading>
+      </meshHeadingList>
+      <keywordList>
+        <keyword>Copper</keyword>
+        <keyword>Amyloid</keyword>
+        <keyword>HPLC</keyword>
+        <keyword>Inhibitor</keyword>
+        <keyword>MS</keyword>
+        <keyword>ion mobility</keyword>
+        <keyword>Β-2-microglobulin</keyword>
+      </keywordList>
+      <chemicalList>
+        <chemical>
+          <name>beta 2-Microglobulin</name>
+          <registryNumber>0</registryNumber>
+        </chemical>
+        <chemical>
+          <name>Amyloid</name>
+          <registryNumber>0</registryNumber>
+        </chemical>
+        <chemical>
+          <name>Copper</name>
+          <registryNumber>789U1901C5</registryNumber>
+        </chemical>
+        <chemical>
+          <name>Rifampin</name>
+          <registryNumber>VJT6J7R4TR</registryNumber>
+        </chemical>
+        <chemical>
+          <name>Doxycycline</name>
+          <registryNumber>N12000U13O</registryNumber>
+        </chemical>
+        <chemical>
+          <name>Protein Aggregates</name>
+          <registryNumber>0</registryNumber>
+        </chemical>
+      </chemicalList>
+      <subsetList>
+        <subset>
+          <code>IM</code>
+          <name>Index Medicus</name>
+        </subset>
+      </subsetList>
+      <fullTextUrlList>
+        <fullTextUrl>
+          <availability>Free</availability>
+          <availabilityCode>F</availabilityCode>
+          <documentStyle>pdf</documentStyle>
+          <site>Europe_PMC</site>
+          <url>http://europepmc.org/articles/PMC5481568?pdf=render</url>
+        </fullTextUrl>
+        <fullTextUrl>
+          <availability>Free</availability>
+          <availabilityCode>F</availabilityCode>
+          <documentStyle>html</documentStyle>
+          <site>Europe_PMC</site>
+          <url>http://europepmc.org/articles/PMC5481568</url>
+        </fullTextUrl>
+        <fullTextUrl>
+          <availability>Subscription required</availability>
+          <availabilityCode>S</availabilityCode>
+          <documentStyle>doi</documentStyle>
+          <site>DOI</site>
+          <url>https://doi.org/10.1074/jbc.M116.774083</url>
+        </fullTextUrl>
+      </fullTextUrlList>
+      <isOpenAccess>N</isOpenAccess>
+      <inEPMC>Y</inEPMC>
+      <inPMC>N</inPMC>
+      <hasPDF>Y</hasPDF>
+      <hasBook>N</hasBook>
+      <hasSuppl>Y</hasSuppl>
+      <citedByCount>2</citedByCount>
+      <hasReferences>Y</hasReferences>
+      <hasTextMinedTerms>Y</hasTextMinedTerms>
+      <hasDbCrossReferences>N</hasDbCrossReferences>
+      <hasLabsLinks>Y</hasLabsLinks>
+      <authMan>N</authMan>
+      <epmcAuthMan>N</epmcAuthMan>
+      <nihAuthMan>N</nihAuthMan>
+      <hasTMAccessionNumbers>Y</hasTMAccessionNumbers>
+      <tmAccessionTypeList>
+        <accessionType>pdb</accessionType>
+      </tmAccessionTypeList>
+      <dateOfCompletion>2017-07-05</dateOfCompletion>
+      <dateOfCreation>2017-05-05</dateOfCreation>
+      <dateOfRevision>2018-06-23</dateOfRevision>
+      <electronicPublicationDate>2017-05-03</electronicPublicationDate>
+      <firstPublicationDate>2017-05-03</firstPublicationDate>
+      <embargoDate>2018-06-23</embargoDate>
+    </result>
+  </resultList>
