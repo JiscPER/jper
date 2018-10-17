@@ -1233,6 +1233,12 @@ class FilesAndJATS(PackageHandler):
             if name.strip() != "":
                 match.add_author_id(name, "name")
 
+            # 2018-10-17 TD : include an ORCID value as well
+            # orcid
+            orcid = a.get("orcid", "")
+            if orcid.strip() != "":
+                match.add_author_id(orcid, "orcid")
+
             # email
             email = a.get("email")
             if email is not None:
@@ -1275,6 +1281,12 @@ class FilesAndJATS(PackageHandler):
             fn = a.get("fullName")
             if fn is not None:
                 match.add_author_id(fn, "name")
+
+            # 2018-10-17 TD : include an ORCID value as well
+            # orcid
+            orcid = a.get("orcid")
+            if orcid is not None:
+                match.add_author_id(orcid, "orcid")
 
             # affiliation (and postcode)
             aff = a.get("affiliation")
@@ -1961,6 +1973,12 @@ class FilesAndRSC(PackageHandler):
             name = a.get("fname", "") + " " + a.get("surname", "")
             if name.strip() != "":
                 match.add_author_id(name, "name")
+
+            # 2018-10-17 TD : include an ORCID value as well
+            # orcid
+            orcid = a.get("orcid", "")
+            if orcid.strip() != "":
+                match.add_author_id(orcid, "orcid")
 
             # email
             email = a.get("email")
