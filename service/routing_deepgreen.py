@@ -97,7 +97,7 @@ def route(unrouted):
         app.logger.debug(u"Routing - Notification:{y} includes no ISSN or no publ_year in metatdata".format(y=unrouted.id, x=issn_data))
         issn_data = []
 
-    part_albibids = []
+    part_bibids = []
     lic_data = []
     for issn in issn_data:
         # are (was: is) there licenses stored for this ISSN?
@@ -107,6 +107,45 @@ def route(unrouted):
             continue
         for lic in lics:
             lic_data = []
+            if lic.type == "gold":
+                #
+                # 2018-11-15 TD : introducing the case of /gold open access/ journals
+                #
+                # FIXED: !!! missing: check license period against publ_date here !!!
+                for jrnl in lic.journals:
+                    # check anew for each journal included in the license
+                    ys = "0000"
+                    yt = "9999"
+                    for i in jrnl["identifier"]:
+                        if (i.get("type") == "eissn" and i.get("id") == issn) or (i.get("type") == "issn" and i.get("id") == issn):
+                            for p in jrnl["period"]:
+                                if p.get("type") == "year":
+                                    if "start" in p.keys(): ys = str(p["start"])
+                                    if "end" in p.keys(): yt = str(p["end"])
+                                    break # so far, we are only interested in the year of publication 
+                                # elif p.get("type") == "volume":
+                                # elif p.get("type") == "issue":
+                            if ys <= publ_year <= yt:
+                                for l in jrnl["link"]:
+                                    if l.get("type") == "ezb": 
+                                        lic_data.append({   'name' : lic.name, 
+                                                              'id' : lic.id,
+                                                            'issn' : issn,
+                                                             'doi' : doi,
+                                                            'link' : l.get("url"), 
+                                                         'embargo' : jrnl["embargo"]["duration"]})
+                                break  # found a (the?!) ISSN for which the publ_date _is_ in the OA-enabled period!
+                if len(lic_data) == 0: # no journal in this license found that apply to ISSN _and_ publ_date,
+                    continue           # thus try next!
+                # FIXED: !!! checking license period with year of publication
+ 
+                bibids = list(set([ acc['_source']['repository'].get('bibid',u"*****").lstrip('a') for acc in models.Account.query(q='*',size=10000).get('hits',{}).get('hits',[]) if "repository" in acc['_source']['role'] ]))
+                # collect *all unique* current EZB-Ids currently registered in the router
+                for bibid in bibids:                          # note: only first ISSN record found 
+                    part_bibids.append( (bibid,lic_data[0]) ) # in current license will be considered!
+                #
+                # 2018-11-15 TD : that's it up to here (for the time being) for /gold open access/
+                #
             if lic.type == "alliance":
                 # 2016-10-12 TD
                 # FIXED: !!! missing: check license period against publ_date here !!!
@@ -142,10 +181,10 @@ def route(unrouted):
                 for part in al.participants:
                     for i in part["identifier"]:
                         if i.get("type") == "ezb":                            # note: only first ISSN record found 
-                            part_albibids.append( (i.get("id"),lic_data[0]) ) # in current license will be considered!
+                            part_bibids.append( (i.get("id"),lic_data[0]) ) # in current license will be considered!
     
     al_repos = []
-    for bibid,aldata in part_albibids:
+    for bibid,aldata in part_bibids:
         # 2017-06-06 TD : insert of this safeguard ;  
         #                 although it would be *very* unlikely to be needed here.  Strange. 
         if bibid is None: continue
