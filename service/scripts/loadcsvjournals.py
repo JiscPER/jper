@@ -26,6 +26,7 @@ if __name__ == "__main__":
     # parser.add_argument("-f", "--from_date", help="date to run the report from")
     # parser.add_argument("-t", "--to_date", help="date to run the report to")
     parser.add_argument("-t", "--table", help=".csv table data file")
+    parser.add_argument("-l", "--licence", help="licence type of .csv table data ('alliance' or 'gold')")
 
     args = parser.parse_args()
 
@@ -33,7 +34,11 @@ if __name__ == "__main__":
         add_configuration(app, args.config)
 
 
-    if not args.table:
+    if not args.table or not args.licence:
+        parser.print_help()
+        exit(0)
+
+    if not args.licence in ["alliance", "gold"]:
         parser.print_help()
         exit(0)
 
@@ -62,5 +67,5 @@ if __name__ == "__main__":
                ezbid = name[name.find('[')+1:name.find(']')].upper()
             if j == 4: break
 
-        license.set_license_data(ezbid,name,csvfile=csvfile)
+        license.set_license_data(ezbid,name,type=args.licence,csvfile=csvfile)
 
