@@ -20,7 +20,7 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--from_date", help="date to run the report from")
     parser.add_argument("-t", "--to_date", help="date to run the report to")
 
-    parser.add_argument("-p", "--publisher", help="report the publishers' activities")
+    parser.add_argument("-p", "--publisher", help="report the publishers' activities (switch: PUBLISHER='x' calls this report)")
 
     args = parser.parse_args()
 
