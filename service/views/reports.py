@@ -27,7 +27,7 @@ def index():
         #fls = os.listdir(reportsdir)
         # 2018-11-20 TD : adding time stamp of last modification date to file list
         fls = [] 
-        for f in os.listdir(reportsdir):
+        for f in os.listdir(reportsdir).sort():
             a = os.stat(os.path.join(reportsdir,f))
             fls.append( (f,time.ctime(a.st_mtime)) )
 
