@@ -41,7 +41,7 @@ def publisher_report(from_date, to_date, reportfile):
     # something is a md-only or a with-content notification, and at the same time count the 
     # unique md-only vs with-content notifications that were routed *OR* not
     q = DeliveryReportQuery(from_date, to_date)
-    for note in RoutedNotification.scroll(q.query(), page_size=100, keepalive="5m"):
+    for note in RoutedNotification.scroll(q.query(), page_size=200, keepalive="25m"):
         assert isinstance(note, RoutedNotification)
         nm = note.analysis_datestamp.month
 
@@ -64,7 +64,7 @@ def publisher_report(from_date, to_date, reportfile):
             result[p][nm]["md"] += 1
 
     # now (almost) the same procedure for the rejected notes (with NO delivery)
-    for note in FailedNotification.scroll(q.query(), page_size=500, keepalive="10m"):
+    for note in FailedNotification.scroll(q.query(), page_size=1500, keepalive="30m"):
         assert isinstance(note, FailedNotification)
         nm = note.analysis_datestamp.month
 
@@ -276,7 +276,7 @@ def delivery_report(from_date, to_date, reportfile):
     # a md-only or a with-content notification, and at the same time count the unique md-only vs with-content
     # notifications that were routed
     q = DeliveryReportQuery(from_date, to_date)
-    for note in RoutedNotification.scroll(q.query(), page_size=100, keepalive="5m"):
+    for note in RoutedNotification.scroll(q.query(), page_size=200, keepalive="25m"):
         assert isinstance(note, RoutedNotification)
         nm = note.analysis_datestamp.month
 
