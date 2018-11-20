@@ -6,9 +6,19 @@
 	<div class="col span-7 pull-1">
 		<h2><b>Download reports</b></h2>
 
-		{% for report in reports %}
-			<p><a href="/reports/{{report}}">{{report}}</a></p>
-		{% endfor %}
+		<table style="width:100%">
+			<tr>
+				<th>Date</th>
+				<th>File</th>
+			</tr>
+			{% for (report,mtime) in reports %}
+			<tr>
+				<td>{{mtime}}</td>
+				<td><a href="/reports/{{report}}">{{report}}</a></td>
+				<!-- <p><a href="/reports/{{report}}">{{report}}</a></p> -->
+			</tr>
+			{% endfor %}
+		</table>
 	</div>
 </div>
 {% endblock %}
