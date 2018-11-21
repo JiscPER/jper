@@ -2697,7 +2697,7 @@ input[type=email]:focus,input[type=password]:focus,input[type=text]:focus,textar
 		clear:both
 	}
 	.form-fields input[type=email],.form-fields input[type=password],.form-fields input[type=text],.form-fields textarea {
-		width:36%
+		width:60%
 	}
 	.form-fields div.selector,.form-fields select {
 		width:31%!important
