@@ -130,7 +130,7 @@
 {% endif %}
 {% if account.has_role('repository') %}
 		<div class="box box--padding-large box--brd-mgreyblue">
-	        <h3>Manage matching</h3>	
+	        <h3>Upload matching details</h3>	
 			<form class="form" method="POST" action="{{request.path}}/config" enctype="multipart/form-data">
 				<ul class="form-fields">
 					<li class="form-fields__item--text">
@@ -153,7 +153,7 @@
 						
 					</li>
 
-					<h3>View current matching</h3>
+					<p></p><h3>View matching details</h3>
 
 					<li class="form-fields__item--text">
 			   			<label>
