@@ -73,7 +73,7 @@
 			
 		</div>
 		<div class="box box--padding-large box--brd-mgreyblue">
-			<h3>License information</h3>
+			<h3>Default open access license (optional)</h3>
 			<p>These are fallback values if none are found in the metadata.</p>
 			<form method="post" action="{{request.path}}/pubinfo" class="form">
 				<input type="hidden" name="license_form" value="True">
@@ -101,10 +101,10 @@
 				       		<span class="form-fields__label-text">License version</span>
 				       		<input type="text" name="license_version" class="form-control"	value="{{account.data.get('license',{}).get('version','')}}">
 				   		
-		   				<button class="btn btn--3d" id="update_license" type="submit">Update details</button>
 				   	</li>
 			   	</ul>
 				
+				<button class="btn btn--3d" id="update_license" type="submit">Update license</button>
 	
 			</form>
 		</div>
