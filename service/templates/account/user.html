@@ -137,7 +137,7 @@
 						<!-- <h4>Or retrieve config file from URL</h4> -->
 						<label class="form-fields__item--text">
 				       			<span class="form-fields__label-text">Remote csv file (URL)</span>
-				       			<input type="text" name="url" id="url" class="input--large"/>
+				       			<input type="text" name="url" placeholder="(no URL specified)" id="url" class="input--large"/>
 							<br> <br>
 							<button class="btn btn--3d btnright" id="config_retrieve" type="submit">Retrieve new match config</button>
 				   		</label>
@@ -148,7 +148,7 @@
 				       			<span class="form-fields__label-text">Local csv file (this computer)</span>
 							<input type="file" name="file" id="file" class="input--large">
 							<br> <br>
-							<button class="btn btn--3d btnright" id="config_upload" type="submit">Upload new match config</button>
+							<button class="btn btn--3d btnright" id="config_upload" type="submit">Upload new match csv</button>
 						</label>
 						
 					</li>
@@ -159,7 +159,7 @@
 				       			<span class="form-fields__label-text">Remote csv file (URL)</span>
 				       			<input type="text" name="url" id="url" class="input--large"/>
 							<br> <br>
-							<button class="btn btn--3d btnright" id="config_retrieve" type="submit">Retrieve new match config</button>
+							<button class="btn btn--3d btnright" id="config_retrieve" type="submit">Retrieve new match csv</button>
 				   		</label>
 					</li>
 					-->
@@ -172,15 +172,15 @@
 			</form>
 			{% if repoconfig %} 
 			<div class="row">
-				<a target="_blank" href="/account/configview{% if current_user.has_role('admin') %}/{{account.id}}?api_key={{current_user.data['api_key']}}{% else %}?api_key={{account.data['api_key']}}{% endif %}">View
-				current JSON config for this repository</a> <br>
+				<a target="_blank" href="/account/configview{% if current_user.has_role('admin') %}/{{account.id}}?api_key={{current_user.data['api_key']}}{% else %}?api_key={{account.data['api_key']}}{% endif %}">View current JSON config for this repository</a>
+				<form method="POST" action="" class="form">
+					<button class="btn btn--3d btnright" id="download_match" type="submit">Download match csv</button>
+				</form>
 			</div>
 			
 			{% endif %}
 			
-		
-			
-		
+
 		</div>
 	
 	<div class="box box--padding-large box--brd-mgreyblue">
@@ -213,14 +213,14 @@
 						<input type="text" class="input--large" name="repository_name" 
 							value="{{account.data.get('repository',{}).get('name','')}}" />
 					</li>
-					<li class="form-fields__item--text"><span
-							class="form-fields__label-text">Repository URL</span> <input
-							type="text" class="input--large" name="repository_url"
+					<li class="form-fields__item--text">
+						<span class="form-fields__label-text">Repository URL</span>
+						<input type="text" class="input--large" name="repository_url"
 							value="{{account.data.get('repository',{}).get('url','')}}" />
 					</li>
-					<li class="form-fields__item--text"><span
-							class="form-fields__label-text">Repository software</span> <input
-							type="text" class="input--large" name="repository_software"
+					<li class="form-fields__item--text">
+						<span class="form-fields__label-text">Repository software</span>
+						<input type="text" class="input--large" name="repository_software"
 							value="{{account.data.get('repository',{}).get('software','')}}" />
 					</li>
   				</ul>
@@ -232,37 +232,34 @@
 		
 			
 			<ul class="form-fields">
-					<li class="form-fields__item--text"><span
-							class="form-fields__label-text">SWORD username</span> <input
-							type="text" class="input--large" name="sword_username"
+					<li class="form-fields__item--text">
+						<span class="form-fields__label-text">SWORD username</span> 
+						<input type="text" class="input--large" name="sword_username"
 							value="{{account.data.get('sword',{}).get('username','')}}" />
 					</li>
-					<li class="form-fields__item--text"><span
-							class="form-fields__label-text">SWORD password</span> <input
-							type="text" class="input--large" name="sword_password"
+					<li class="form-fields__item--text">
+						<span class="form-fields__label-text">SWORD password</span>
+						<input type="text" class="input--large" name="sword_password"
 							value="{{account.data.get('sword',{}).get('password','')}}" />
 					</li>
-					<li class="form-fields__item--text"><span
-							class="form-fields__label-text">Repository collection</span> <input
-							type="text" class="input--large" name="sword_collection"
+					<li class="form-fields__item--text">
+						<span class="form-fields__label-text">Repository collection</span>
+						<input type="text" class="input--large" name="sword_collection"
 							value="{{account.data.get('sword',{}).get('collection','')}}" />
 					</li>
-					<li class="form-fields__item--text"><span
-							class="form-fields__label-text">Packaging preferences</span> <input
-							type="text" class="input--large" name="packaging"
+					<li class="form-fields__item--text">
+						<span class="form-fields__label-text">Packaging preferences</span>
+						<input type="text" class="input--large" name="packaging"
 							placeholder="(comma separated)"
 							value="{{','.join(account.data.get('packaging',[]))}}" />
 					</li>
 				</ul>
 			
 			
-			
 			</form>
 			
 		</div>
-
 	
-		
 		
 	{% endif %}
 		<div class="box box--padding-large box--brd-mgreyblue">
