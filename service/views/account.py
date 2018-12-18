@@ -18,6 +18,8 @@ import math
 # import csv
 import unicodecsv 
 from jsonpath_rw_ext import parse
+# 2018-12-18 TD : Replacement for zip(...) which will _not_ truncate the result
+from itertools import izip_longest
 
 
 from service import models
@@ -70,6 +72,18 @@ ftable = {
   "ISSN or EISSN" : "failed[*].issn_data",
             "DOI" : "failed[*].metadata.identifier[?(@.type=='doi')].id",
          "Reason" : "failed[*].reason"
+}
+
+# Config table/csv for repositories
+ctable = {
+        "screen" : ["Name Variants", "Domains", "Postcodes", "Grant Numbers", "ORCIDs", "Author Emails"],
+        "header" : ["Name Variants", "Domains", "Postcodes", "Grant Numbers", "ORCIDs", "Author Emails"],
+ "Name Variants" : "repoconfig[0].name_variants[*]",
+       "Domains" : "repoconfig[0].domains[*]",
+     "Postcodes" : "repoconfig[0].postcodes[*]",
+ "Grant Numbers" : "repoconfig[0].grants[*]",
+        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
+ "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id"
 }
 
 
@@ -335,14 +349,17 @@ def download(account_id):
 
     rows=[]
     for hdr in xtable["header"]:
-        rows.append( (m.value for m in parse(xtable[hdr]).find(res)) )
+        rows.append( (m.value for m in parse(xtable[hdr]).find(res),) )
 
     #
     # 2016-11-25 TD : FIXME: 'zip' command truncates *silently* to the shortest length! 
     #                 Rows might therefore become really inconsistent here.  Indeed, 
     #                 very ugly!!!
-    rows = zip(*rows)
+    ## rows = zip(*rows)
     #
+    # 2018-12-18 TD : Here comes the solution: Using a tool in itertools: izip_longest
+    #
+    rows = list( izip_longest(*rows, fillvalue=u'') )
     #
 
     strm = StringIO()
@@ -661,7 +678,7 @@ def apikey(username):
     return redirect(url_for('.username', username=username))
 
 
-@blueprint.route('/<username>/config', methods=['POST'])
+@blueprint.route('/<username>/config', methods=['GET','POST'])
 def config(username):
     if current_user.id != username and not current_user.is_super:
         abort(401)
@@ -669,31 +686,65 @@ def config(username):
     if rec is None:
         rec = models.RepositoryConfig()
         rec.repository = username
-    try:
-        if len(request.values.get('url','')) > 1:
-            url = request.values['url']
-            fn = url.split('?')[0].split('#')[0].split('/')[-1]
-            r = requests.get(url)
-            try:
-                saved = rec.set_repo_config(jsoncontent=r.json(),repository=username)
-            except:
-                strm = StringIO(r.content)
-                if fn.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=strm,repository=username)
-                elif fn.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=strm,repository=username)
-        else:
-            if request.files['file'].filename.endswith('.csv'):
-                saved = rec.set_repo_config(csvfile=request.files['file'],repository=username)
-            elif request.files['file'].filename.endswith('.txt'):
-                saved = rec.set_repo_config(textfile=request.files['file'],repository=username)
-        if saved:
-            flash('Thank you. Your match config has been updated.', "success")        
-        else:
-            flash('Sorry, there was an error with your config upload. Please try again.', "error")        
-    except:
-        flash('Sorry, there was an error with your config upload. Please try again.', "error")
-    time.sleep(1)
+    if request.method == 'GET':
+        fprefix = "repoconfig"
+        xtable = ctable
+        res = { "repoconfig": [json.loads(rec.json())] }
+
+        rows = []
+        for hdr in xtable["header"]:
+            rows.append( (m.value for m in parse(xtable[hdr]).find(res),) )
+
+        rows = list( izip_longest(*rows, fillvalue=u'') )
+
+        strm = StringIO()
+        writer = unicodecsv.writer(strm, delimiter=',', quoting=unicodecsv.QUOTE_MINIMAL)
+        # writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
+        # 2016-12-14 TD : python's native 'csv'-module has encoding problems...
+        #
+        ## writer = csv.DictWriter(strm, fieldnames=ntable["header"],
+        ##                               delimiter=',', quoting=csv.QUOTE_ALL)
+
+        ## writer.writeheader()
+        writer.writerow(xtable["header"])
+        writer.writerows(rows)
+
+        fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=username, x=dates.now())
+        strm.reset()
+
+        #time.sleep(1)
+        #flash(" Saved {z} notifications as\n '{x}'".format(z=fprefix,x=fname), "success")
+        return send_file(strm, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
+        #
+        # 2018-12-18 TD : enable download option ("csv", for a start...)
+
+    elif request.method == 'POST':
+        try:
+            if len(request.values.get('url','')) > 1:
+                url = request.values['url']
+                fn = url.split('?')[0].split('#')[0].split('/')[-1]
+                r = requests.get(url)
+                try:
+                    saved = rec.set_repo_config(jsoncontent=r.json(),repository=username)
+                except:
+                    strm = StringIO(r.content)
+                    if fn.endswith('.csv'):
+                        saved = rec.set_repo_config(csvfile=strm,repository=username)
+                    elif fn.endswith('.txt'):
+                        saved = rec.set_repo_config(textfile=strm,repository=username)
+            else:
+                if request.files['file'].filename.endswith('.csv'):
+                    saved = rec.set_repo_config(csvfile=request.files['file'],repository=username)
+                elif request.files['file'].filename.endswith('.txt'):
+                    saved = rec.set_repo_config(textfile=request.files['file'],repository=username)
+            if saved:
+                flash('Thank you. Your match config has been updated.', "success")        
+            else:
+                flash('Sorry, there was an error with your config upload. Please try again.', "error")        
+        except:
+            flash('Sorry, there was an error with your config upload. Please try again.', "error")
+        time.sleep(1)
+
     return redirect(url_for('.username', username=username))
 
 
