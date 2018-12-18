@@ -166,7 +166,7 @@
 			{% if repoconfig %} 
 			<div class="row">
 				<a target="_blank" href="/account/configview{% if current_user.has_role('admin') %}/{{account.id}}?api_key={{current_user.data['api_key']}}{% else %}?api_key={{account.data['api_key']}}{% endif %}">View current JSON config for this repository</a>
-				<form method="POST" action="/account/configview/{{account.id}}?api_key={{account.data['api_key']}}" class="form">
+				<form method="GET" action="{{request.path}}/config" class="form">
 					<button class="btn btn--3d btnright" id="download_match" type="submit">Download match csv</button>
 				</form>
 			</div>

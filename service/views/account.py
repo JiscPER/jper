@@ -678,7 +678,7 @@ def apikey(username):
     return redirect(url_for('.username', username=username))
 
 
-@blueprint.route('/<username>/config', methods=['GET','POST'])
+@blueprint.route('/<username>/config', methods=["GET", "POST"])
 def config(username):
     if current_user.id != username and not current_user.is_super:
         abort(401)
@@ -686,7 +686,7 @@ def config(username):
     if rec is None:
         rec = models.RepositoryConfig()
         rec.repository = username
-    if request.method == 'GET':
+    if request.method == "GET":
         fprefix = "repoconfig"
         xtable = ctable
         res = { "repoconfig": [json.loads(rec.json())] }
@@ -718,7 +718,7 @@ def config(username):
         #
         # 2018-12-18 TD : enable download option ("csv", for a start...)
 
-    elif request.method == 'POST':
+    elif request.method == "POST":
         try:
             if len(request.values.get('url','')) > 1:
                 url = request.values['url']
