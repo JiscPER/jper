@@ -349,7 +349,7 @@ def download(account_id):
 
     rows=[]
     for hdr in xtable["header"]:
-        rows.append( (m.value for m in parse(xtable[hdr]).find(res),) )
+        rows.append( (m.value for m in parse(xtable[hdr]).find(res)), )
 
     #
     # 2016-11-25 TD : FIXME: 'zip' command truncates *silently* to the shortest length! 
@@ -693,7 +693,7 @@ def config(username):
 
         rows = []
         for hdr in xtable["header"]:
-            rows.append( (m.value for m in parse(xtable[hdr]).find(res),) )
+            rows.append( (m.value for m in parse(xtable[hdr]).find(res)), )
 
         rows = list( izip_longest(*rows, fillvalue=u'') )
 
