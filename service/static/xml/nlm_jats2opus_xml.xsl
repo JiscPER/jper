@@ -93,6 +93,7 @@
       </abstracts>
       <persons>
           <xsl:for-each select="//article-meta/contrib-group/contrib">
+            <xsl:if test="name/surname">
             <person>
                 <xsl:attribute name="role">
                   <xsl:choose>
@@ -121,7 +122,8 @@
                   <identifier type="orcid|gnd|intern">?????</identifier>
                 </identifiers>
                 -->
-            </person>
+	    </person>
+            </xsl:if>
           </xsl:for-each>
       </persons>
       <keywords>

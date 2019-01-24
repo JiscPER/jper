@@ -185,6 +185,7 @@ class XSLT(object):
       </abstracts>
       <persons>
           <xsl:for-each select="//art-front/authgrp/author">
+            <xsl:if test="person/persname/surname">
             <person>
                 <xsl:attribute name="role"><xsl:text>author</xsl:text></xsl:attribute>
                 <xsl:attribute name="firstName"><xsl:copy-of select="person/persname/fname/text()"/></xsl:attribute>
@@ -205,6 +206,7 @@ class XSLT(object):
                 </identifiers>
                 -->
             </person>
+            </xsl:if>
           </xsl:for-each>
       </persons>
       <keywords>
@@ -1279,6 +1281,7 @@ class XSLT(object):
       </abstracts>
       <persons>
           <xsl:for-each select="//article-meta/contrib-group/contrib">
+            <xsl:if test="name/surname">
             <person>
                 <xsl:attribute name="role">
                   <xsl:choose>
@@ -1308,6 +1311,7 @@ class XSLT(object):
                 </identifiers>
                 -->
             </person>
+            </xsl:if>
           </xsl:for-each>
       </persons>
       <keywords>
