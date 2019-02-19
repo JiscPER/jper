@@ -144,7 +144,7 @@ def moveftp():
                     uniqueid = uuid.uuid4().hex
                     uniquedir = tmpdir + '/' + dir + '/' + uniqueid
                     moveitem = userdir + '/' + dir + '/xfer/' + thisitem
-                    subprocess.call( [ 'sudo -S', fl, dir, newowner, tmpdir, uniqueid, uniquedir, moveitem ] )
+                    subprocess.call( [ 'sudo', fl, dir, newowner, tmpdir, uniqueid, uniquedir, moveitem ] )
             else:
                 app.logger.debug('Scheduler - found nothing to move for Account:' + dir)
     except:
