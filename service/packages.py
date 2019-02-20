@@ -1142,10 +1142,14 @@ class FilesAndJATS(PackageHandler):
             name = author.get("given-names", "") + " " + author.get("surname", "")
             if name.strip() == "":
                 continue
+            firstname = author.get("given-names","")
+            lastname = author.get("surname","")
+            if lastname.strip() == "":
+                continue
             # 2018-10-17 TD : add the author's ORCID if provided with the jats 
             orcid = author.get("orcid", "")
             affs = "; ".join(author.get("affiliations", []))
-            obj = {"name" : name}
+            obj = {"name" : name, "firstname" : firstname, "lastname" : lastname}
             if affs is not None and affs != "":
                 obj["affiliation"] = affs
             if orcid is not None and orcid != "":
@@ -1185,10 +1189,14 @@ class FilesAndJATS(PackageHandler):
             fn = author.get("fullName")
             if fn is None:
                 continue
+            first = author.get("firstName")
+            last = author.get("lastName")
+            if last is None:
+                continue
             # 2018-10-17 TD : add the author's ORCID if provided with the epmc xml
             orcid = author.get("orcid", "")
             aff = author.get("affiliation")
-            obj = {"name" : fn}
+            obj = {"name" : fn, "firstname" : first, "lastname" : last}
             if aff is not None:
                 obj["affiliation"] = aff
             if orcid is not None and orcid != "":
@@ -1232,6 +1240,12 @@ class FilesAndJATS(PackageHandler):
             name = a.get("given-names", "") + " " + a.get("surname", "")
             if name.strip() != "":
                 match.add_author_id(name, "name")
+            lastname = a.get("surname","")
+            if lastname.strip() != "":
+                match.add_author_id(lastname, "lastname")
+                firstname = a.get("given-names", "")
+                if firstname.strip() != "":
+                    match.add_author_id(firstname, "firstname")
 
             # 2018-10-17 TD : include an ORCID value as well
             # orcid
@@ -1281,6 +1295,12 @@ class FilesAndJATS(PackageHandler):
             fn = a.get("fullName")
             if fn is not None:
                 match.add_author_id(fn, "name")
+            last = a.get("lastName")
+            if last is not None:
+                match.add_author_id(last,"lastname")
+                first = a.get("firstName")
+                if first is not None:
+                    match.add_author_id(first,"firstname")
 
             # 2018-10-17 TD : include an ORCID value as well
             # orcid
@@ -1937,10 +1957,14 @@ class FilesAndRSC(PackageHandler):
             name = author.get("fname", "") + " " + author.get("surname", "")
             if name.strip() == "":
                 continue
+            firstname = author.get("fname", "")
+            lastname = author.get("surname", "")
+            if lastname.strip() == "":
+                continue
             # 2018-10-17 TD : fetch author's ORCID if provided by the rsc xml
             orcid = author.get("orcid", "")
             affs = "; ".join(author.get("affiliations", []))
-            obj = {"name" : name}
+            obj = {"name" : name, "firstname" : firstname, "lastname" : lastname}
             if affs is not None and affs != "":
                 obj["affiliation"] = affs
             if orcid is not None and orcid != "":
@@ -1973,6 +1997,13 @@ class FilesAndRSC(PackageHandler):
             name = a.get("fname", "") + " " + a.get("surname", "")
             if name.strip() != "":
                 match.add_author_id(name, "name")
+            # lastname (and firstname(s))
+            lastname = a.get("surname", "")
+            if lastname.strip() != "":
+                match.add_author_id(lastname, "lastname")
+                firstname = a.get("fname", "")
+                if firstname.strip() != "":
+                    match.add_author_id(firstname, "firstname")
 
             # 2018-10-17 TD : include an ORCID value as well
             # orcid

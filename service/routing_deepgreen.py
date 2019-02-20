@@ -471,7 +471,7 @@ def enhance(routed, metadata):
         merged = False
         # first run through all the existing authors, and see if any of them merge
         for ra in ras:
-            merged = _merge_entities(ra, ma, "name", other_properties=["affiliation"])
+            merged = _merge_entities(ra, ma, "name", other_properties=["affiliation","lastname","firstname"])
             # if one merges, don't continue
             if merged:
                 break

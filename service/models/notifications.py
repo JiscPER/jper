@@ -90,6 +90,10 @@ class NotificationMetadata(dataobj.DataObj):
                         "author" : {
                             "fields" : {
                                 "name" : {"coerce" : "unicode"},
+                                # 2019-02-20 TD : add name splitting into first and last 
+                                "firstname" : {"coerce" : "unicode"},
+                                "lastname" : {"coerce" : "unicode"},
+                                # 2019-02-20 TD
                                 "affiliation" : {"coerce" : "unicode"},
                             },
                             "lists" : {
@@ -332,6 +336,8 @@ class NotificationMetadata(dataobj.DataObj):
 
             {
                 "name" : "<author name>",
+                "firstname" : "<author firstnames>",
+                "lastname" : "<author lastname>",
                 "identifier" : [
                     {"type" : "<identifier type>", "id" : "<actual identifier>"}
                 ],
@@ -355,6 +361,8 @@ class NotificationMetadata(dataobj.DataObj):
 
             {
                 "name" : "<author name>",
+                "firstname" : "<author names>",
+                "lastname" : "<author lastname>",
                 "identifier" : [
                     {"type" : "<identifier type>", "id" : "<actual identifier>"}
                 ],
@@ -365,7 +373,7 @@ class NotificationMetadata(dataobj.DataObj):
         :return:
         """
         # validate the object structure quickly
-        allowed = ["name", "affiliation", "identifier"]
+        allowed = ["name", "firstname", "lastname", "affiliation", "identifier"]
         for obj in objlist:
             for k in obj.keys():
                 if k not in allowed:
@@ -373,7 +381,7 @@ class NotificationMetadata(dataobj.DataObj):
 
             # coerce the values of some of the keys
             uc = dataobj.to_unicode()
-            for k in ["name", "affiliation"]:
+            for k in ["name", "firstname", "lastname", "affiliation"]:
                 if k in obj:
                     obj[k] = self._coerce(obj[k], uc)
 
@@ -392,6 +400,8 @@ class NotificationMetadata(dataobj.DataObj):
 
             {
                 "name" : "<author name>",
+                "firstname" : "<author firstnames>",
+                "lastname" : "<author lastname>",
                 "identifier" : [
                     {"type" : "<identifier type>", "id" : "<actual identifier>"}
                 ],
@@ -832,13 +842,22 @@ class BaseNotification(NotificationMetadata):
             if "name" in a:
                 md.add_author_id(a.get("name"), "name")
 
+            # name
+            if "firstname" in a:
+                md.add_author_id(a.get("firstname"), "firstname")
+
+            # name
+            if "lastname" in a:
+                md.add_author_id(a.get("lastname"), "lastname")
+
             # affiliation (and postcode)
             if "affiliation" in a:
                 aff = a.get("affiliation")
                 md.add_affiliation(aff)
-                codes = postcode.extract_all(aff)
-                for code in codes:
-                    md.add_postcode(code)
+                # 2019-02-20 TD : postcodes are not applicable in Germany
+                # codes = postcode.extract_all(aff)
+                # for code in codes:
+                #     md.add_postcode(code)
 
             # other author ids
             for id in a.get("identifier", []):
