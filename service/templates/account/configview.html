@@ -74,9 +74,12 @@ print_table(obj.name_variants,'name_variants','Name Variants');
 print_table(obj.domains,'domains', 'Domains');
 // 2016-09-26 TD : Additional listing of grant numbers if provided
 print_table(obj.grants,'grants', 'Grants');
-// print_table(obj.author_ids,'author_ids', 'Author IDs (email,ORCID,...)');
+//print_table(obj.author_ids,'author_ids', 'Author IDs (email,ORCID,...)');
 // 2016-09-26 TD : Response time for this field _really_ unacceptable if 20000+ 
 //                 IDs are about to be listed...
+// 2019-02-25 TD : give it a new try; together with the keyword field!
+print_table(obj.author_ids,'author_ids', 'Author IDs (email,ORCID,...)');
+print_table(obj.keywords,'keywords', 'Keywords');
 
 $('#updated').append(obj.last_updated);
 $('#created').append(obj.created_date);
