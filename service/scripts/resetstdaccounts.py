@@ -20,7 +20,8 @@ import uuid, time, glob, lxml.html
 
 ABS_PATH_FILE = os.path.abspath(__file__)
 
-OA_PARTICIPANTS_GLOB = "OA_participants-EZB_current-NAL*.csv"
+#OA_PARTICIPANTS_GLOB = "OA_participants-EZB_current-NAL*.csv"
+OA_PARTICIPANTS_GLOB = "EZB-*-*_OA_participants_current.csv"
 """NAL*-lists of OA participants from EZB"""
 
 EZB2GND_FILE = os.path.dirname(ABS_PATH_FILE) + "/ezb_institution2gnd_corporate.csv"
@@ -149,16 +150,16 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
 
         try:
             with open(outfname,"w") as f:
-                f.write( '"Name Variants","Domains","Postcodes","Grant Numbers","ORCIDs","Author Emails"\n' )
+                f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
                 for aff in sorted(set(affs)):
-                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut']): 
+                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','ILS']): 
                         tmp = aff.replace('"',"''")
                         print (u"%s" % tmp).encode('utf-8')
                         f.write( (u'"%s",,,,,\n' % tmp).encode('utf-8') )
         except IOError:
             print "WARNING: Could not write to file '{x}'.".format(x=outfname)
             for aff in sorted(set(affs)):
-                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut']): 
+                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','ILS']): 
                     tmp = aff.replace('"',"''")
                     print (u"%s" % tmp).encode('utf-8')
 

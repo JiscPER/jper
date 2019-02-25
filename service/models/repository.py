@@ -232,8 +232,12 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 for x in row.keys():
                     if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant' and len(row[x].strip()) > 1:
                         self.data['grants'] = self.data.get('grants',[]) + [row[x].strip()]
-                    elif x.strip().lower().replace(' ','').strip('s') == 'postcode' and len(row[x].strip()) > 1:
-                        self.data['postcodes'] = self.data.get('postcodes',[]) + [row[x].strip()]
+                    # 2019-02-25 TD : Instead of 'postcode' we will support 'keywords' here!
+                    #elif x.strip().lower().replace(' ','').strip('s') == 'postcode' and len(row[x].strip()) > 1:
+                    #    self.data['postcodes'] = self.data.get('postcodes',[]) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ','').strip('s') == 'keyword' and len(row[x].strip()) > 1:
+                        self.data['keywords'] = self.data.get('keywords',[]) + [row[x].strip()]
+                    # 2019-02-25 TD
                     elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant' and len(row[x].strip()) > 1:
                         self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x].strip()]
                     elif x.strip().lower().replace(' ','').replace('s','') == 'domain' and len(row[x].strip()) > 1:
