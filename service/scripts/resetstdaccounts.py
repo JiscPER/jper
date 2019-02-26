@@ -155,14 +155,14 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
             with open(outfname,"w") as f:
                 f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
                 for aff in sorted(set(affs)):
-                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','ILS']): 
+                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','MPI','PH','ILS','DAI','UM','TU','ULB','SUB','CU','KU','UR','BH','ITV','UH','UD']): 
                         tmp = aff.replace('"',"''")
                         print (u"%s" % tmp).encode('utf-8')
                         f.write( (u'"%s",,,,,\n' % tmp).encode('utf-8') )
         except IOError:
             print "WARNING: Could not write to file '{x}'.".format(x=outfname)
             for aff in sorted(set(affs)):
-                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','ILS']): 
+                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','MPI','PH','ILS','DAI','UM','TU','ULB','SUB','CU','KU','UR','BH','ITV','UH','UD']): 
                     tmp = aff.replace('"',"''")
                     print (u"%s" % tmp).encode('utf-8')
 
