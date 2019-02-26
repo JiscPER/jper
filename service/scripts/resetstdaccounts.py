@@ -121,6 +121,9 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
     if 'Planck' in fullname or 'Fraunhofer' in fullname or 'Leibniz' in fullname or 'Helmholtz' in fullname:
         recursion = 'noadue'
 
+    if 'Gottfried Wilhelm Leibniz' in fullname:
+        recursion = 'full'
+
     if ezbid in ['aDLLR', 'aDZNE', 'aFZJUE', 'aDESY', 'aGFZPO', 'aIFZ', 'aMBCB', 
                  'aDM', 'aZBW', 'aFAB', 'aUBWH', 'aDPMA', 'aSUBHH', 'aHDZ', 'aIHP' ]:
         recursion = 'noadue'
