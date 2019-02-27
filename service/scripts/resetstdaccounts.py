@@ -156,14 +156,36 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
             with open(outfname,"w") as f:
                 f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
                 for aff in sorted(set(affs)):
-                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','MPI','PH','ILS','DAI','UM','TU','ULB','SUB','CU','KU','UR','BH','ITV','UH','UD']): 
+                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut',
+                        'Universität','University','Université','Universidad','Universitas',
+                        'Uniwersytet','Universitet','Gesamthochschule','Uni','Università',
+                        'Landes-Universität','Landesuniversität','Technische Universität',
+                        'Technical University','University of Technology',
+                        'Hochschule','Fachhochschule','Staatsbibliothek','Forschungszentrum',
+                        'Wissenschaftszentrum','Alma Mater','Rektorat','Präsident','Akademie',
+                        'University of Applied Sciences','Academia','Accademia','Open University',
+                        'Presse- und Informationsstelle','German Institute','Planck-Institut',
+                        'Landesbibliothek','Universitätsbibliothek','CAU','FAU','TIB','MIS',
+                        'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
+                        'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']): 
                         tmp = aff.replace('"',"''")
                         print (u"%s" % tmp).encode('utf-8')
                         f.write( (u'"%s",,,,,\n' % tmp).encode('utf-8') )
         except IOError:
             print "WARNING: Could not write to file '{x}'.".format(x=outfname)
             for aff in sorted(set(affs)):
-                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut','MPI','PH','ILS','DAI','UM','TU','ULB','SUB','CU','KU','UR','BH','ITV','UH','UD']): 
+                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut',
+                    'Universität','University','Université','Universidad','Universitas',
+                    'Uniwersytet','Universitet','Gesamthochschule','Uni','Università',
+                    'Landes-Universität','Landesuniversität','Technische Universität',
+                    'Technical University','University of Technology',
+                    'Hochschule','Fachhochschule','Staatsbibliothek','Forschungszentrum',
+                    'Wissenschaftszentrum','Alma Mater','Rektorat','Präsident','Akademie',
+                    'University of Applied Sciences','Academia','Accademia','Open University',
+                    'Presse- und Informationsstelle','German Institute','Planck-Institut',
+                    'Landesbibliothek','Universitätsbibliothek','CAU','FAU','TIB','MIS',
+                    'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
+                    'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']): 
                     tmp = aff.replace('"',"''")
                     print (u"%s" % tmp).encode('utf-8')
 
