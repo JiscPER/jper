@@ -157,8 +157,8 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
                 f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
                 for aff in sorted(set(affs)):
                     if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut',
-                        'Universität','University','Université','Universidad','Universitas',
-                        'Uniwersytet','Universitet','Gesamthochschule','Uni','Università',
+                        'Universität','University',u'Université','Universidad','Universitas',
+                        'Uniwersytet','Universitet','Gesamthochschule','Uni',u'Università',
                         'Landes-Universität','Landesuniversität','Technische Universität',
                         'Technical University','University of Technology',
                         'Hochschule','Fachhochschule','Staatsbibliothek','Forschungszentrum',
@@ -175,8 +175,8 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
             print "WARNING: Could not write to file '{x}'.".format(x=outfname)
             for aff in sorted(set(affs)):
                 if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut',
-                    'Universität','University','Université','Universidad','Universitas',
-                    'Uniwersytet','Universitet','Gesamthochschule','Uni','Università',
+                    'Universität','University',u'Université','Universidad','Universitas',
+                    'Uniwersytet','Universitet','Gesamthochschule','Uni',u'Università',
                     'Landes-Universität','Landesuniversität','Technische Universität',
                     'Technical University','University of Technology',
                     'Hochschule','Fachhochschule','Staatsbibliothek','Forschungszentrum',
