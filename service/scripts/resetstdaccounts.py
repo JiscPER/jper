@@ -51,7 +51,7 @@ def find_affiliation(http,recursion="full"):
             addrs = [x.text for x in mrcxml.xpath(ADU_XPATH) if x.text.startswith('http')]
 
             if recursion == "noadue" or len(addrs) == 0:
-               return [x.text for x in mrcxml.xpath(AFF_XPATH)]
+               return [unicode(x.text,'uft-8') for x in mrcxml.xpath(AFF_XPATH)]
             else:
                for ht in addrs:
                    ans += find_affiliation(ht,recursion)
