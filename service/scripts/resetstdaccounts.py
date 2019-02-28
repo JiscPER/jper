@@ -163,10 +163,11 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
                         'Landes-Universität','Landesuniversität','Technische Universität',
                         'Technical University','University of Technology',
                         'Hochschule','Fachhochschule','Staatsbibliothek','Forschungszentrum',
-                        'Wissenschaftszentrum','Alma Mater','Rektorat','Präsident','Akademie',
-                        'University of Applied Sciences','Academia','Accademia','Open University',
-                        'Presse- und Informationsstelle','German Institute','Planck-Institut',
-                        'Landesbibliothek','Universitätsbibliothek','CAU','FAU','TIB','MIS',
+                        'Wissenschaftszentrum','Alma Mater','Rektorat','Präsident',
+                        'Akademie','University of Applied Sciences','Academia','Accademia',
+                        'Open University','Presse- und Informationsstelle',
+                        'German Institute','Planck-Institut','Landesbibliothek',
+                        'Universitätsbibliothek','CAU','FAU','TIB','MIS','HAWK',
                         'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
                         'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']): 
                         tmp = aff.replace('"',"''")
@@ -181,10 +182,11 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
                     'Landes-Universität','Landesuniversität','Technische Universität',
                     'Technical University','University of Technology',
                     'Hochschule','Fachhochschule','Staatsbibliothek','Forschungszentrum',
-                    'Wissenschaftszentrum','Alma Mater','Rektorat','Präsident','Akademie',
-                    'University of Applied Sciences','Academia','Accademia','Open University',
-                    'Presse- und Informationsstelle','German Institute','Planck-Institut',
-                    'Landesbibliothek','Universitätsbibliothek','CAU','FAU','TIB','MIS',
+                    'Wissenschaftszentrum','Alma Mater','Rektorat','Präsident',
+                    'Akademie','University of Applied Sciences','Academia','Accademia',
+                    'Open University','Presse- und Informationsstelle',
+                    'German Institute','Planck-Institut','Landesbibliothek',
+                    'Universitätsbibliothek','CAU','FAU','TIB','MIS','HAWK',
                     'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
                     'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']): 
                     tmp = aff.replace('"',"''")
