@@ -18,6 +18,8 @@ except:
 ## from datetime import datetime
 import os, errno, re, requests, csv
 import uuid, time, glob, lxml.html
+# 2019-02-28 TD : add a normalising step for comparison of GND affs (see exlist below)
+import unicodedata
 
 ABS_PATH_FILE = os.path.abspath(__file__)
 
@@ -51,7 +53,7 @@ def find_affiliation(http,recursion="full"):
             addrs = [x.text for x in mrcxml.xpath(ADU_XPATH) if x.text.startswith('http')]
 
             if recursion == "noadue" or len(addrs) == 0:
-               return [unicode(x.text,'uft-8') for x in mrcxml.xpath(AFF_XPATH)]
+               return [x.text for x in mrcxml.xpath(AFF_XPATH)]
             else:
                for ht in addrs:
                    ans += find_affiliation(ht,recursion)
@@ -153,30 +155,8 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
                 if http[0]: affs += [unicode(http[0],'utf-8')]
                 if http[1]: affs += find_affiliation(http[1], recursion=recursion)
 
-        try:
-            with open(outfname,"w") as f:
-                f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
-                for aff in sorted(set(affs)):
-                    if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut',
-                        'Universität','University','Université','Universidad','Universitas',
-                        'Uniwersytet','Universitet','Gesamthochschule','Uni','Università',
-                        'Landes-Universität','Landesuniversität','Technische Universität',
-                        'Technical University','University of Technology',
-                        'Hochschule','Fachhochschule','Staatsbibliothek','Forschungszentrum',
-                        'Wissenschaftszentrum','Alma Mater','Rektorat','Präsident',
-                        'Akademie','University of Applied Sciences','Academia','Accademia',
-                        'Open University','Presse- und Informationsstelle',
-                        'German Institute','Planck-Institut','Landesbibliothek',
-                        'Universitätsbibliothek','CAU','FAU','TIB','MIS','HAWK',
-                        'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
-                        'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']): 
-                        tmp = aff.replace('"',"''")
-                        print (u"%s" % tmp).encode('utf-8')
-                        f.write( (u'"%s",,,,,\n' % tmp).encode('utf-8') )
-        except IOError:
-            print "WARNING: Could not write to file '{x}'.".format(x=outfname)
-            for aff in sorted(set(affs)):
-                if aff and not (aff in ['HH','Deutschland','Max-Planck-Institut',
+        exlist = [unicodedata.normalize('NFD',unicode(x,'utf-8')) for x in 
+                    ['HH','Deutschland','Max-Planck-Institut',
                     'Universität','University','Université','Universidad','Universitas',
                     'Uniwersytet','Universitet','Gesamthochschule','Uni','Università',
                     'Landes-Universität','Landesuniversität','Technische Universität',
@@ -188,7 +168,21 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
                     'German Institute','Planck-Institut','Landesbibliothek',
                     'Universitätsbibliothek','CAU','FAU','TIB','MIS','HAWK',
                     'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
-                    'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']): 
+                    'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']
+                 ]
+
+        try:
+            with open(outfname,"w") as f:
+                f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
+                for aff in sorted(set(affs)):
+                    if aff and not (aff in exlist):
+                        tmp = aff.replace('"',"''")
+                        print (u"%s" % tmp).encode('utf-8')
+                        f.write( (u'"%s",,,,,\n' % tmp).encode('utf-8') )
+        except IOError:
+            print "WARNING: Could not write to file '{x}'.".format(x=outfname)
+            for aff in sorted(set(affs)):
+                if aff and not (aff in exlist):
                     tmp = aff.replace('"',"''")
                     print (u"%s" % tmp).encode('utf-8')
 
