@@ -1,4 +1,4 @@
-# This Python file uses the following encoding: uft-8
+# This Python file uses the following encoding: utf-8
 """
 This is a script to create (or delete!!) account data in a live system,
 as it is collected from a previous EZB service call.  
