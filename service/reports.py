@@ -287,7 +287,8 @@ def delivery_report(from_date, to_date, reportfile):
         else:
             uniques[nm]["md"] += 1
 
-        for r in note.repositories:
+        # 2019-03-05 TD : we need to eliminate doubles here!!! Seriously.
+        for r in list(set(note.repositories)):
             if r not in result:
                 result[r] = {}
                 for m in months:
