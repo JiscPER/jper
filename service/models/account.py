@@ -146,6 +146,18 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def can_log_in(self):
         return True
 
+    # 2019-03-21 TD : Sometimes, ALL items of a 'key' are wanted ...
+    @classmethod
+    def pull_all_by_key(cls,key,value):
+        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
+        n = res.get('hits',{}).get('total',0)
+        return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in xrange(n) ]
+
+    @classmethod
+    def pull_all_by_email(cls,email):
+        return cls.pull_all_by_key('email',email)
+    # 2019-03-21 TD : (* end-of-addition *)
+
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
