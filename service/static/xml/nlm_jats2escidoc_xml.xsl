@@ -135,6 +135,12 @@
                     <xsl:with-param name="xpub" select="'ppub'"/>
                   </xsl:call-template>
                 </xsl:when>
+                <xsl:when test="//article-meta/pub-date[contains(@date-type,'pub')]/year">
+                  <xsl:call-template name="compose-date">
+                    <xsl:with-param name="xpub" select="'pub'"/>
+                    <xsl:with-param name="xtype" select="@date-type"/>
+                  </xsl:call-template>
+                </xsl:when>
                 <xsl:otherwise>
                   <xsl:text>1111-11-11</xsl:text>
                 </xsl:otherwise>
@@ -166,6 +172,18 @@
                   <xsl:value-of select="//journal-meta/issn[@pub-type='epub']"/><xsl:text> (eISSN)</xsl:text>
                 </dc:identifier>
               </xsl:if>
+              <xsl:if test="//journal-meta/issn[@publication-format='print']">
+                <dc:identifier>
+                  <xsl:attribute name="xsi:type"><xsl:text>eterms:ISSN</xsl:text></xsl:attribute>
+                  <xsl:value-of select="//journal-meta/issn[@publication-format='print']"/><xsl:text> (pISSN)</xsl:text>
+                </dc:identifier>
+              </xsl:if>
+              <xsl:if test="//journal-meta/issn[@publication-format='electronic']">
+                <dc:identifier>
+                  <xsl:attribute name="xsi:type"><xsl:text>eterms:ISSN</xsl:text></xsl:attribute>
+                  <xsl:value-of select="//journal-meta/issn[@publication-format='electronic']"/><xsl:text> (eISSN)</xsl:text>
+                </dc:identifier>
+              </xsl:if>
             </source:source>
             <dcterms:abstract><xsl:value-of select="//article-meta/abstract"/></dcterms:abstract>
             <dcterms:subject>
@@ -187,19 +205,20 @@
 
   <xsl:template name="compose-date">
     <xsl:param name="xpub" select="'epub'"/>
-    <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,$xpub)]/year"/>
+    <xsl:param name="xtype" select="@pub-type"/>
+    <xsl:value-of select="//article-meta/pub-date[contains($xtype,$xpub)]/year"/>
     <xsl:text>-</xsl:text>
     <xsl:choose>
-      <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/month">
-        <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/month,'00')"/>
+      <xsl:when test="//article-meta/pub-date[contains($xtype,$xpub)]/month">
+        <xsl:value-of select="format-number(//article-meta/pub-date[contains($xtype,$xpub)]/month,'00')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>12</xsl:text>
       </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="//article-meta/pub-date[contains(@pub-type,$xpub)]/day">
+      <xsl:if test="//article-meta/pub-date[contains($xtype,$xpub)]/day">
         <xsl:text>-</xsl:text>
-        <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/day,'00')"/>
+        <xsl:value-of select="format-number(//article-meta/pub-date[contains($xtype,$xpub)]/day,'00')"/>
       </xsl:if>
   </xsl:template>
 

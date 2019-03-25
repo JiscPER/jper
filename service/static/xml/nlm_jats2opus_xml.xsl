@@ -146,6 +146,10 @@
       </dnbInstitutions>
       -->
       <dates>
+        <!-- 
+        <xsl:for-each select="//article-meta/pub-date">
+	</xsl:for-each>
+        -->
         <xsl:choose>
           <xsl:when test="//article-meta/pub-date[contains(@pub-type,'epub')]/year">
             <xsl:call-template name="compose-date">
@@ -155,6 +159,11 @@
           <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/year">
             <xsl:call-template name="compose-date">
               <xsl:with-param name="xpub" select="'ppub'"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="//article-meta/pub-date[contains(@date-type,'pub')]/year">
+            <xsl:call-template name="compose-date">
+              <xsl:with-param name="xpub" select="'pub'"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
@@ -173,7 +182,7 @@
       <identifiers>
           <identifier>
              <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
-             <xsl:for-each select="//journal-meta/issn[@pub-type='ppub']">
+             <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @publication-format='print']">
                 <xsl:value-of select="normalize-space(text())"/>
                 <xsl:if test="position() != last()">
                    <xsl:text> , </xsl:text>
@@ -182,9 +191,9 @@
                    <xsl:text> (pISSN)</xsl:text>
                 </xsl:if>
              </xsl:for-each>
-             <xsl:if test="//journal-meta/issn[@pub-type='epub']">
+             <xsl:if test="//journal-meta/issn[@pub-type='epub' or @publication-format='electronic']">
                 <xsl:text> ; </xsl:text>
-                <xsl:for-each select="//journal-meta/issn[@pub-type='epub']">
+                <xsl:for-each select="//journal-meta/issn[@pub-type='epub' or @publication-format='electronic']">
                    <xsl:value-of select="normalize-space(text())"/>
                    <xsl:if test="position() != last()">
                       <xsl:text> , </xsl:text>
@@ -248,10 +257,10 @@
                 <xsl:text>--</xsl:text>
                 <xsl:choose>
                   <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/month">
-                    <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/month,'00')"/>
+                     <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/month,'00')"/>
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:text>12</xsl:text>
+                     <xsl:text>12</xsl:text>
                   </xsl:otherwise>
                 </xsl:choose>
                 <xsl:text>-</xsl:text>

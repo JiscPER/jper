@@ -70,7 +70,7 @@
                 <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/elements/1.1/identifier</xsl:attribute>
                 <epdcx:valueString>
                   <xsl:attribute name="epdcx:sesURI">http://purl.org/dc/terms/URI</xsl:attribute>
-                  <xsl:text>http://dx.doi.org/</xsl:text>
+                  <xsl:text>https://dx.doi.org/</xsl:text>
                   <xsl:value-of select="//article-meta/article-id[@pub-id-type='doi']"/>
                 </epdcx:valueString>
               </epdcx:statement>
@@ -106,8 +106,14 @@
                     <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/year">
                       <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,'ppub')]/year"/>
                     </xsl:when>
-                    <xsl:otherwise>
+                    <xsl:when test="//article-meta/pub-date[contains(@pub-type,'epub')]/year">
                       <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,'epub')]/year"/>
+                    </xsl:when>
+                    <xsl:when test="//article-meta/pub-date[contains(@publication-format,'electronic') and contains(@date-type,'pub')]/year">
+                      <xsl:value-of select="//article-meta/pub-date[contains(@publication-format,'electronic') and contains(@date-type,'pub')]/year"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="//article-meta/pub-date[contains(@date-type,'pub')]/year"/>
                     </xsl:otherwise>
                   </xsl:choose>
                   <xsl:text>), </xsl:text>
@@ -145,6 +151,12 @@
                         <xsl:with-param name="xpub" select="'ppub'"/>
                       </xsl:call-template>
                     </xsl:when>
+                    <xsl:when test="//article-meta/pub-date[contains(@date-type,'pub')]/year">
+                      <xsl:call-template name="compose-date">
+                        <xsl:with-param name="xpub" select="'pub'"/>
+                        <xsl:with-param name="xtype" select="@date-type"/>
+                      </xsl:call-template>
+                    </xsl:when>
                     <xsl:otherwise>
                       <xsl:text>1111-11-11</xsl:text>
                     </xsl:otherwise>
@@ -157,7 +169,7 @@
                   <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
                 </epdcx:valueString>
               </epdcx:statement>
-              <xsl:for-each select="//journal-meta/issn[@pub-type='ppub']">
+              <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @publication-format='print']">
                 <epdcx:statement>
                   <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
                   <epdcx:valueString>
@@ -166,7 +178,7 @@
                   </epdcx:valueString>
                 </epdcx:statement>
               </xsl:for-each>
-              <xsl:for-each select="//journal-meta/issn[@pub-type='epub']">
+              <xsl:for-each select="//journal-meta/issn[@pub-type='epub' or @publication-format='electronic']">
                 <epdcx:statement>
                   <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
                   <epdcx:valueString>
@@ -228,19 +240,20 @@
 
   <xsl:template name="compose-date">
     <xsl:param name="xpub" select="'epub'"/>
-    <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,$xpub)]/year"/>
+    <xsl:param name="xtype" select="@pub-type"/>
+    <xsl:value-of select="//article-meta/pub-date[contains($xtype,$xpub)]/year"/>
     <xsl:text>-</xsl:text>
     <xsl:choose>
-      <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/month">
-        <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/month,'00')"/>
+      <xsl:when test="//article-meta/pub-date[contains($xtype,$xpub)]/month">
+        <xsl:value-of select="format-number(//article-meta/pub-date[contains($xtype,$xpub)]/month,'00')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>12</xsl:text>
       </xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="//article-meta/pub-date[contains(@pub-type,$xpub)]/day">
+      <xsl:if test="//article-meta/pub-date[contains($xtype,$xpub)]/day">
         <xsl:text>-</xsl:text>
-        <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/day,'00')"/>
+        <xsl:value-of select="format-number(//article-meta/pub-date[contains($xtype,$xpub)]/day,'00')"/>
       </xsl:if>
   </xsl:template>
 

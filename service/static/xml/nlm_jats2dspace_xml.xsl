@@ -55,15 +55,15 @@
         </xsl:otherwise>
       </xsl:choose>
     </dcvalue>
-    <xsl:for-each select="//journal-meta/issn[@pub-type='ppub']">
+    <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @publication-format='print']">
       <dcvalue>
         <xsl:attribute name="element"><xsl:text>identifier</xsl:text></xsl:attribute>
         <xsl:attribute name="qualifier"><xsl:text>issn</xsl:text></xsl:attribute>
         <xsl:value-of select="normalize-space(text())"/>
       </dcvalue>
     </xsl:for-each>
-    <xsl:if test="//journal-meta/issn[@pub-type='epub']">
-      <xsl:for-each select="//journal-meta/issn[@pub-type='epub']">
+    <xsl:if test="//journal-meta/issn[@pub-type='epub' or @publication-format='electronic']">
+      <xsl:for-each select="//journal-meta/issn[@pub-type='epub' or @publication-format='electronic']">
         <dcvalue>
           <xsl:attribute name="element"><xsl:text>identifier</xsl:text></xsl:attribute>
           <xsl:attribute name="qualifier"><xsl:text>issn</xsl:text></xsl:attribute>

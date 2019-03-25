@@ -119,6 +119,12 @@
                 <xsl:if test="//journal-meta/issn[@pub-type='epub']">
                     <mods:identifier type="eIssn"><xsl:value-of select="//journal-meta/issn[@pub-type='epub']"/></mods:identifier>
                 </xsl:if>
+                <xsl:if test="//journal-meta/issn[@publication-format='print']">
+                    <mods:identifier type="issn"><xsl:value-of select="//journal-meta/issn[@publication-format='print']"/></mods:identifier>
+                </xsl:if>
+                <xsl:if test="//journal-meta/issn[@publication-format='electronic']">
+                    <mods:identifier type="eIssn"><xsl:value-of select="//journal-meta/issn[@publication-format='electronic']"/></mods:identifier>
+                </xsl:if>
                 <xsl:for-each select="//journal-meta/journal-id">
                     <mods:identifier>
                         <xsl:attribute name="type"><xsl:value-of select="@journal-id-type"/></xsl:attribute>
@@ -227,7 +233,8 @@
 
                 <!-- Publication date (= date available/issued) -->
                 <xsl:for-each select="//article-meta/pub-date">
-                    <xsl:if test="contains(@pub-type, 'epub') and year and month">
+                    <xsl:if test="(contains(@pub-type, 'epub') and year and month) or
+			    (contains(@publication-format, 'electronic') and contains(@date-type, 'pub') and year and month)">
                         <mods:dateIssued encoding="iso8601">
                             <xsl:call-template name="compose-date"></xsl:call-template>
                         </mods:dateIssued>
@@ -256,7 +263,15 @@
             <!-- License / Copyright -->
             <xsl:for-each select="//article-meta/permissions/license">
                 <mods:accessCondition type="use and reproduction">
-                    <xsl:value-of select="license-p"/>
+                    <xsl:choose>
+                        <xsl:when test="@xlink:href"> 
+                            <xsl:attribute name="description">uri</xsl:attribute>
+                            <xsl:value-of select="@xlink:href"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="license-p"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </mods:accessCondition>
             </xsl:for-each>
 
