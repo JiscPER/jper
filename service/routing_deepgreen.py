@@ -184,27 +184,52 @@ def route(unrouted):
                             part_bibids.append( (i.get("id"),lic_data[0]) ) # in current license will be considered!
     
     al_repos = []
-    for bibid,aldata in part_bibids:
-        # 2017-06-06 TD : insert of this safeguard ;  
-        #                 although it would be *very* unlikely to be needed here.  Strange. 
-        if bibid is None: continue
-        #
-        # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
-        #acc1 = models.Account.pull_by_key("repository.bibid",bibid)
-        for acc1 in models.Account.pull_all_by_key("repository.bibid",bibid):
+    if app.config.get("DEEPGREEN_ALLOW_EQUAL_REPOS", False):
+            #
+            # 2019-03-26 TD : case decision - handle multiple, equal accs vs. single accs only
+            #
+        for bibid,aldata in part_bibids:
+            # 2017-06-06 TD : insert of this safeguard ;  
+            #                 although it would be *very* unlikely to be needed here.  Strange. 
+            if bibid is None: continue
+            #
+            # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
+            #acc1 = models.Account.pull_by_key("repository.bibid",bibid)
+            for acc1 in models.Account.pull_all_by_key("repository.bibid",bibid):
+                if acc1 is not None and acc1.has_role("repository"):
+                    unrouted.embargo = aldata["embargo"]
+                    al_repos.append((acc1.id,aldata,bibid))
+
+            # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
+            #
+            # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
+            #acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
+            for acc2 in models.Account.pull_all_by_key("repository.bibid","a"+bibid):
+                if acc2 is not None and acc2.has_role("repository"):
+                    unrouted.embargo = aldata["embargo"]
+                    al_repos.append((acc2.id,aldata,"a"+bibid))
+
+    else:   # when DEEPGREEN_ALLOW_EQUAL_REPOS is *not* set - utilising 'pull_by_key()' instead!
+
+        for bibid,aldata in part_bibids:
+            # 2017-06-06 TD : insert of this safeguard ;  
+            #                 although it would be *very* unlikely to be needed here.  Strange. 
+            if bibid is None: continue
+            #
+            acc1 = models.Account.pull_by_key("repository.bibid",bibid)
             if acc1 is not None and acc1.has_role("repository"):
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc1.id,aldata,bibid))
 
-        # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
-        #
-        # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
-        #acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
-        for acc2 in models.Account.pull_all_by_key("repository.bibid","a"+bibid):
+            # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
+            #
+            acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
             if acc2 is not None and acc2.has_role("repository"):
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc2.id,aldata,"a"+bibid))
-
+    #
+    # 2019-03-26 TD : continue from here on with all the collected 'al_repos'
+    #
     if len(al_repos) > 0:
         app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
     else:

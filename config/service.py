@@ -153,11 +153,15 @@ STORE_TMP_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store",
 """path to local directory for temp file store - specified relative to this file"""
 
 ############################################
-# Configuration patch for special DeepGreen routing via EZB data
+# Configuration patch for special DeepGreen routing via EZB data, and multiple repo accounts
 
 #DEEPGREEN_EZB_ROUTING = False
 DEEPGREEN_EZB_ROUTING = True
 """start the app with DeepGreen Alliance Licensing routing"""
+
+#DEEPGREEN_ALLOW_EQUAL_REPOS = False
+DEEPGREEN_ALLOW_EQUAL_REPOS = True
+"""allow for more than one repository account per EZB-Id - if this flag is set to False, only unique repos will be considered for routing"""
 
 ############################################
 # Configuration for when the app is operated in functional testing mode
