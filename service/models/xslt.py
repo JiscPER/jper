@@ -1334,24 +1334,19 @@ class XSLT(object):
       </dnbInstitutions>
       -->
       <dates>
+        <xsl:for-each select="//article-meta/pub-date">
         <xsl:choose>
-          <xsl:when test="//article-meta/pub-date[contains(@pub-type,'epub')]/year">
-            <xsl:call-template name="compose-date">
-              <xsl:with-param name="xpub" select="'epub'"/>
-            </xsl:call-template>
+          <xsl:when test="contains(@pub-type,'epub') and year and month">
+            <xsl:call-template name="compose-date"> </xsl:call-template>
           </xsl:when>
-          <xsl:when test="//article-meta/pub-date[contains(@pub-type,'ppub')]/year">
-            <xsl:call-template name="compose-date">
-              <xsl:with-param name="xpub" select="'ppub'"/>
-            </xsl:call-template>
+          <xsl:when test="contains(@pub-type,'ppub') and year and month">
+            <xsl:call-template name="compose-date"> </xsl:call-template>
           </xsl:when>
-          <xsl:when test="//article-meta/pub-date[contains(@date-type,'pub')]/year">
-            <xsl:call-template name="compose-date">
-              <xsl:with-param name="xpub" select="'pub'"/>
-              <!-- <xsl:with-param name="xtype" select="@date-type"/> -->
-            </xsl:call-template>
+          <xsl:when test="contains(@date-type,'pub') and year and month">
+            <xsl:call-template name="compose-date"> </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
+            <xsl:if test="not(year)">
             <date>
               <xsl:attribute name="type"><xsl:text>completed</xsl:text></xsl:attribute>
               <xsl:attribute name="monthDay">
@@ -1361,8 +1356,10 @@ class XSLT(object):
                 <xsl:text>1111</xsl:text>
               </xsl:attribute>
             </date>
+            </xsl:if>
           </xsl:otherwise>
         </xsl:choose>
+        </xsl:for-each>
       </dates>
       <identifiers>
           <identifier>
@@ -1435,14 +1432,14 @@ class XSLT(object):
   </xsl:template>
 
   <xsl:template name="compose-date">
-    <xsl:param name="xpub" select="'epub'"/>
+    <xsl:param name="xpath" select="."/>
           <date>
              <xsl:attribute name="type"><xsl:text>published</xsl:text></xsl:attribute>
              <xsl:attribute name="monthDay">
                 <xsl:text>--</xsl:text>
                 <xsl:choose>
-                  <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/month">
-                    <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/month,'00')"/>
+                  <xsl:when test="$xpath/month">
+                    <xsl:value-of select="format-number($xpath/month,'00')"/>
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:text>12</xsl:text>
@@ -1450,8 +1447,8 @@ class XSLT(object):
                 </xsl:choose>
                 <xsl:text>-</xsl:text>
                 <xsl:choose>
-                  <xsl:when test="//article-meta/pub-date[contains(@pub-type,$xpub)]/day">
-                     <xsl:value-of select="format-number(//article-meta/pub-date[contains(@pub-type,$xpub)]/day,'00')"/>
+                  <xsl:when test="$xpath/day">
+                     <xsl:value-of select="format-number($xpath/day,'00')"/>
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:text>01</xsl:text>
@@ -1459,7 +1456,7 @@ class XSLT(object):
                 </xsl:choose>
              </xsl:attribute>
              <xsl:attribute name="year">
-                <xsl:value-of select="//article-meta/pub-date[contains(@pub-type,$xpub)]/year"/>
+                <xsl:value-of select="$xpath/year"/>
              </xsl:attribute>
           </date>
   </xsl:template>
