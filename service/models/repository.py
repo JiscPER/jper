@@ -221,6 +221,10 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     def set_repo_config(self,repository,csvfile=None,textfile=None,jsoncontent=None):
         repoid = repository
         # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
+        #
+        # 2019-02-25 TD : /German/ Postcodes are not sensible for DeepGreen, thus now disabled 
+        # 2019-03-27 TD : Due to data privacy issues, Author Emails and ORCIDs will not be read until further notice (see also the comment below)
+        #
         fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types','strings']
         for f in fields:
             if f in self.data: del self.data[f]
@@ -242,10 +246,14 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                         self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x].strip()]
                     elif x.strip().lower().replace(' ','').replace('s','') == 'domain' and len(row[x].strip()) > 1:
                         self.data['domains'] = self.data.get('domains',[]) + [row[x].strip()]
-                    elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author' and len(row[x].strip()) > 1:
-                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x].strip()}]
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'orcid' and len(row[x].strip()) > 1:
-                        self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x].strip()}]
+                    #
+                    # 2019-03-27 TD : !!!ATTENTION!!! Author Emails and ORCIDS will be disabled here. No such items will be taken up by DeepGreen now.
+                    # 
+                    #elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author' and len(row[x].strip()) > 1:
+                    #    self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x].strip()}]
+                    #elif x.strip().lower().replace(' ','').replace('s','') == 'orcid' and len(row[x].strip()) > 1:
+                    #    self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x].strip()}]
+                    # 2019-03-27 TD
             app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=repoid))
             # app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
             self.data['repo'] = repoid
