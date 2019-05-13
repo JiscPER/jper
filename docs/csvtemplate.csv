@@ -1,9 +1,9 @@
-Name Variants,Domains,Grant Numbers,ORCIDs,Author Emails,Keywords
+Name Variants,Domains,Grant Numbers,Dummy,Dummy,Keywords
 ,,,,,
-In this column place name variants your institution is known by,"In this column put all domain names that your institution owns or operates under, as may appear in URLs or email addresses",In this column place the grant numbers of any grants you wish to receive content for,In this column place the ORCIDs of any members of staff whose content you would like to receive,In this column place the email addresses (both institutional and non-institutional if you wish) of any authors you wish to receive content from,"In this column place keywords - if applicable at all - of a non-institutional repository on behalf you wish to receive content for" 
+In this column place name variants your institution is known by,"In this column put all domain names that your institution owns or operates under, as may appear in URLs or email addresses",In this column place the grant numbers of any grants you wish to receive content for,This column is left empty for the time being,"This applies to this fifth column as well, as it is also left empty for now","In this column place keywords - if applicable at all - of a non-institutional repository on behalf you wish to receive content for" 
 ,,,,,
-University of Edinburgh,ed.ac.uk,BB/34/abcd,aaaa-bbbb-cccc-dddd,richard@example.com,administrative law 
-Edinburgh University,edinburgh.ac.uk,WT/9845,1111-2222-3333-4444,mark@example.com,biology
+University of Edinburgh,ed.ac.uk,BB/34/abcd,,,administrative law 
+Edinburgh University,edinburgh.ac.uk,WT/9845,,,biology
 ,,,,,
 "In order to use this template, please remove all content except the headers in row 1, and then complete the columns for each type.  You do not have to complete all of the columns if you do not wish to.  You can have as many or as few entries in each column as you like.",,,,,
 "When exporting this CSV from your spreadsheet program, please ensure that you save it as a CSV with text encoding “UTF-8”",,,,,
