@@ -172,14 +172,15 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
                     'Lehrstuhl für Soziologie und Empirische Sozialforschung',
                     'Medical School','Open University','Presse- und Informationsstelle',
                     'German Institute','Planck-Institut','Landesbibliothek',
-                    'Universitätsbibliothek','CAU','FAU','TIB','MIS','HAWK','HAW','TUM',
+                    'Universitätsbibliothek','CAU','FAU','TIB','MIS','HAWK','HAW','TUM','TUD',
                     'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
                     'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']
                  ]
 
         try:
             with open(outfname,"w") as f:
-                f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
+                # f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
+                f.write( '"Name Variants","Domains","Grant Numbers","Dummy","Dummy","Keywords"\n' )
                 for aff in sorted(set(affs)):
                     if aff and not (aff in exlist):
                         tmp = aff.replace('"',"''")
