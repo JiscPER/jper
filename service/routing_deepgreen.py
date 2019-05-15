@@ -146,7 +146,7 @@ def route(unrouted):
                 #
                 # 2018-11-15 TD : that's it up to here (for the time being) for /gold open access/
                 #
-            if lic.type == "alliance":
+            if lic.type == "alliance" or lic.type == "national":
                 # 2016-10-12 TD
                 # FIXED: !!! missing: check license period against publ_date here !!!
                 for jrnl in lic.journals:

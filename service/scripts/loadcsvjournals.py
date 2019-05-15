@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # parser.add_argument("-f", "--from_date", help="date to run the report from")
     # parser.add_argument("-t", "--to_date", help="date to run the report to")
     parser.add_argument("-t", "--table", help=".csv table data file")
-    parser.add_argument("-l", "--licence", help="licence type of .csv table data ('alliance' or 'gold')")
+    parser.add_argument("-l", "--licence", help="licence type of .csv table data ('alliance','national' or 'gold')")
 
     args = parser.parse_args()
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         parser.print_help()
         exit(0)
 
-    if not args.licence in ["alliance", "gold"]:
+    if not args.licence in ["alliance", "national", "gold"]:
         parser.print_help()
         exit(0)
 
