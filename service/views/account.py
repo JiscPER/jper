@@ -76,14 +76,18 @@ ftable = {
 
 # Config table/csv for repositories
 ctable = {
-        "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
-        "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+        # "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+        # "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+        "screen" : ["Name Variants", "Domains", "Grant Numbers", "Keywords"],
+        "header" : ["Name Variants", "Domains", "Grant Numbers", "Dummy1", "Dummy2", "Keywords"],
  "Name Variants" : "repoconfig[0].name_variants[*]",
        "Domains" : "repoconfig[0].domains[*]",
 #     "Postcodes" : "repoconfig[0].postcodes[*]",
  "Grant Numbers" : "repoconfig[0].grants[*]",
-        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
- "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
+        "Dummy1" : "repoconfig[0].author_ids[?(@.type=='xyz1')].id",
+        "Dummy2" : "repoconfig[0].author_ids[?(@.type=='xyz2')].id",
+#        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
+# "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
       "Keywords" : "repoconfig[0].keywords[*]",
 }
 
