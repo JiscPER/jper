@@ -747,7 +747,7 @@ def config(username):
             else:
                 flash('Sorry, there was an error with your config upload. Please try again.', "error")        
         except:
-            flash('Sorry, there was an error with your config upload. Please try again.', "error")
+            flash('Sorry, there was an exception detected while your config upload was processed. Please try again.', "error")
         time.sleep(1)
 
     return redirect(url_for('.username', username=username))

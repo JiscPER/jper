@@ -234,6 +234,11 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             inp = csv.DictReader(csvfile)
             for row in inp:
                 for x in row.keys():
+                    # 2019-05-21 TD : A tiny safeguard with respect to forgotten commata
+                    #                 'None' appears if there are less than fields in row.keys()
+                    if None in row.values():
+                        continue
+                    # 2019-05-21 TD
                     if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant' and len(row[x].strip()) > 1:
                         self.data['grants'] = self.data.get('grants',[]) + [row[x].strip()]
                     # 2019-02-25 TD : Instead of 'postcode' we will support 'keywords' here!

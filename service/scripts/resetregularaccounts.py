@@ -180,7 +180,7 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
         try:
             with open(outfname,"w") as f:
                 # f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
-                f.write( '"Name Variants","Domains","Grant Numbers","Dummy","Dummy","Keywords"\n' )
+                f.write( '"Name Variants","Domains","Grant Numbers","Dummy1","Dummy2","Keywords"\n' )
                 for aff in sorted(set(affs)):
                     if aff and not (aff in exlist):
                         tmp = aff.replace('"',"''")
