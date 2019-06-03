@@ -17,7 +17,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         "contact_name" : "<name of key contact>",
         "password" : "<hashed password for ui login>",
         "api_key" : "<api key for api auth>",
-        "role" : ["<account role: repository, publisher, admin>"],
+        "role" : ["<account role: repository, publisher, admin, passive, active>"],
 
         "repository" : {
             "name" : "<name of the repository>",
@@ -73,6 +73,22 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
 
     def set_api_key(self, key):
         self._set_single("api_key", key, coerce=dataobj.to_unicode())
+
+    @property
+    def is_passive(self):
+        return self.has_role('passive')
+
+    def set_active(self):
+        if self.has_role('passive'):
+            self.remove_role('passive') 
+        if not self.has_role('active'):
+            self.add_role('active')
+
+    def set_passive(self):
+        if self.has_role('active'):
+            self.remove_role('active') 
+        if not self.has_role('passive'): 
+            self.add_role('passive')
 
     @property
     def is_super(self):

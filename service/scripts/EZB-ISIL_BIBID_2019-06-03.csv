@@ -1,0 +1,642 @@
+ISIL	EZB-Id	City	Name	Stocksize
+DE-A96         	FHBAA	Aachen	Hochschulbibliothek der Fachhochschule Aachen	100001-300000
+DE-82          	BTHAC	Aachen	Universitätsbibliothek der RWTH Aachen	1000001-
+DE-944         	FHAA	Aalen	Hochschulbibliothek Aalen	30001-100000
+               	KSA	Aarau	Kantonsspital Aarau AG	n/a
+DE-991         	HSASI	Albstadt	Hochschule Albstadt-Sigmaringen / Bibliothek	30001-100000
+DE-1046        	FHBAW	Amberg / Weiden	OTH-Bibliothek Amberg/Weiden	30001-100000
+               	DAIAM	Amman	Forschungsstelle Amman am Deutschen Evangelischen Institut (DEI)	n/a
+DE-1102        	FHBAN	Ansbach	Hochschulbibliothek Ansbach	30001-100000
+DE-1043        	FHBAB	Aschaffenburg	Bibliothek der Technischen Hochschule Aschaffenburg	30001-100000
+               	DAIAT	Athen	Deutsches Archäologisches Institut (DAI), Abteilung Athen	n/a
+DE-Aug4        	FHBA	Augsburg	Bibliothek der HS Augsburg	30001-100000
+               	KLIA	Augsburg	Med.-wiss. Bibliothek, Klinikum Augsburg	n/a
+DE-37          	SUSBA	Augsburg	Staats- und Stadtbibliothek Augsburg	300001-1000000
+DE-384         	UBA	Augsburg	Universitätsbibliothek Augsburg	1000001-
+               	KSZ	Baar	Zuger Kantonsspital AG	n/a
+DE-1278        	IUBH	Bad Honnef	IUBH Internationale Hochschule - Bibliothek	10001-30000
+DE-Nau1        	MPIPK	Bad Nauheim	Max-Planck-Institut für Herz- und Lungenforschung, W.G. Kerckhoff-Institut, Bad Nauheim	10001-30000
+DE-294-65      	HDZ	Bad Oeynhausen	Herz- und Diabeteszentrum NRW	-1000
+               	KSBA	Baden	Kantonsspital Baden AG	n/a
+               	PHNIE	Baden	Pädagogische Hochschule Niederösterreich	n/a
+DE-473         	UBB	Bamberg	Universitätsbibliothek Bamberg	1000001-
+               	SVKBB	Banská Bystrica	Wissenschaftliche Bibliothek in Banská Bystrica	n/a
+               	CSB	Basel	Claraspital Basel	n/a
+               	PZBS	Basel	Pädagogisches Zentrum Basel-Stadt	n/a
+DE-Bn3         	BAKS	Bautzen	Berufsakademie Sachsen. Staatliche Studienakademie Bautzen	10001-30000
+DE-703         	UBBAY	Bayreuth	Universitätsbibliothek Bayreuth	1000001-
+               	EOC	Bellinzona	Ente Ospedaliero Cantonale	n/a
+DE-B1533       	ASH	Berlin	Alice Salomon Hochschule Berlin	100001-300000
+DE-B4          	BBAW	Berlin	Berlin-Brandenburgische Akademie der Wissenschaften, Akademiebibliothek	300001-1000000
+DE-B768        	TFHB	Berlin	Beuth Hochschule für Technik Berlin	100001-300000
+DE-B16         	MFN	Berlin	Bibliothek am Museum für Naturkunde Berlin	100001-300000
+               	AKKON	Berlin	Bibliothek der Akkon-Hochschule	n/a
+DE-523         	HTW	Berlin	Bibliothek der HTW-Berlin	300001-1000000
+DE-1826        	IPU	Berlin	Bibliothek der International Psychoanalytic University (IPU) Berlin	10001-30000
+DE-B12         	BGVV	Berlin	Bundesinstitut für Risikobewertung	30001-100000
+               	DAIOA	Berlin	Deutsches Archäologisches Institut (DAI) Orientabteilung	n/a
+DE-B523        	DAIEA	Berlin	Deutsches Archäologisches Institut (DAI), Eurasien-Abteilung	30001-100000
+DE-B99         	DAI	Berlin	Deutsches Archäologisches Institut (DAI), Zentrale Berlin	30001-100000
+               	DHZB	Berlin	Deutsches Herzzentrum Berlin	n/a
+DE-B1547       	DIM	Berlin	Deutsches Institut für Menschenrechte - Bibliothek	5001-10000
+DE-B554        	DIW	Berlin	Deutsches Institut für Wirtschaftsforschung Berlin	30001-100000
+DE-B1531       	DRFZ	Berlin	Deutsches Rheuma-Forschungszentrum. Ein Institut der Leibniz-Gemeinschaft	1001-2000
+DE-B1562       	DZA	Berlin	Deutsches Zentrum für Altersfragen, Bibliothek, Berlin	10001-30000
+DE-B1556       	EHBER	Berlin	Evangelische Hochschule Berlin	30001-100000
+DE-B113        	FHI	Berlin	Fritz-Haber-Institut der Max-Planck-Gesellschaft, Berlin	30001-100000
+DE-B2138       	ZMO	Berlin	Geisteswissenschaftliche Zentren Berlin	30001-100000
+DE-B2018       	KB	Berlin	Helios Zentralbibliothek	30001-100000
+DE-B1505       	HMIB	Berlin	Helmholtz-Zentrum Berlin - Zentralbibliothek	300001-1000000
+DE-B1570       	HSG	Berlin	Hertie School of Governance	3001-5000
+DE-2070s       	FHW	Berlin	Hochschule für Wirtschaft und Recht Berlin	30001-100000
+DE-11-10       	UBHUB	Berlin	Humboldt-Universität zu Berlin	-1000
+DE-204         	IAI	Berlin	Ibero-Amerikanisches Institut, Berlin	1000001-
+DE-B259        	IGB	Berlin	Leibniz-Institut für Gewässerökologie und Binnenfischerei	10001-30000
+DE-B2225       	MDCB	Berlin	Max-Delbrück-Centrum für Molekulare Medizin (MDC), Berlin	30001-100000
+DE-B1532       	MPIBF	Berlin	Max-Planck-Institut für Bildungsforschung, Berlin	100001-300000
+               	MPIIB	Berlin	Max-Planck-Institut für Infektionsbiologie	n/a
+DE-B787        	MOLGE	Berlin	Max-Planck-Institut für molekulare Genetik, Berlin	30001-100000
+DE-B2226       	MPIWG	Berlin	Max-Planck-Institut für Wissenschaftsgeschichte, Berlin	10001-30000
+DE-578-e       	MBCB	Berlin	Medizinische Bibliothek der Charité	100001-300000
+               	RKI	Berlin	Robert Koch-Institut / Bibliothek	n/a
+DE-1a          	SBBPK	Berlin	Staatsbibliothek zu Berlin - Preußischer Kulturbesitz	1000001-
+DE-B1549       	BITOP	Berlin	Stiftung Topographie des Terrors - Bibliothek	30001-100000
+DE-B1567       	SWP	Berlin	Stiftung Wissenschaft und Politik Berlin	30001-100000
+DE-188-e       	FUB	Berlin	Universitätsbibliothek der Freien Universität Berlin	100001-300000
+DE-83          	TUBB	Berlin	Universitätsbibliothek der TU Berlin	1000001-
+DE-B513        	WIAS	Berlin	Weierstraß-Institut für Angewandte Analysis und Stochastik Leibniz-Institut im Forschungsverbund Berlin e.V. (WIAS)	30001-100000
+               	WIKO	Berlin	Wissenschaftskolleg zu Berlin	n/a
+DE-B1543       	WZB	Berlin	Wissenschaftszentrum Berlin für Sozialforschung, Berlin	100001-300000
+DE-109         	ZLB	Berlin	Zentral- und Landesbibliothek Berlin	1000001-
+DE-B1536       	ZUSE	Berlin	Zuse Institute Berlin (ZIB), Bibliothek	10001-30000
+DE-B43         	BAM	Berlin, Deutschland	Bundesanstalt für Materialforschung und -prüfung (BAM)	30001-100000
+               	BZPFL	Bern	Berner Bildungszentrum Pflege, Bibliothek	n/a
+               	BFHH	Bern	BFH, Bibliotheken der Berner Fachhochschule	n/a
+               	SECO	Bern	Staatssekretariat für Wirtschaft SECO	n/a
+DE-949         	FHBC	Biberach	Bibliothek der Hochschule Biberach	30001-100000
+DE-Bi10        	FHBI	Bielefeld	Hochschulbibliothek der FH Bielefeld	100001-300000
+DE-361         	UBBIE	Bielefeld	Universitätsbibliothek Bielefeld	1000001-
+DE-2059        	BSSB	Bielefeld	v. Bodelschwinghsche Stiftungen Bethel - Zentrale Bibliothek	10001-30000
+DE-Bin1        	THB	Bingen	Technische Hochschule Bingen - Bibliothek	30001-100000
+DE-956         	EFRWL	Bochum	Bochum, Evangelische Hochschule Rheinland-Westfalen-Lippe / Hochschulbibliothek	30001-100000
+DE-Bm40        	FHBO	Bochum	Hochschulbibliothek der Hochschule Bochum	100001-300000
+DE-1866        	HFG	Bochum	Hochschule für Gesundheit	10001-30000
+DE-294         	RUBO	Bochum	Ruhr-Universität Bochum	1000001-
+DE-B1512       	BFARM	Bonn	BfArM-Bibliothek, Bonn	30001-100000
+DE-B196        	BAFIN	Bonn	Bibliothek der Bundesanstalt für Finanzdienstleistungsaufsicht Bonn	100001-300000
+DE-Bo133       	FES	Bonn	Bibliothek der Friedrich-Ebert-Stiftung	300001-1000000
+               	BICC	Bonn	Bibliothek des Internationalen Konversionszentrums Bonn (BICC)	n/a
+DE-B219        	BFN	Bonn	Bundesamt für Naturschutz (BfN) / Bibliothek (Bonn/Leipzig/Vilm)	100001-300000
+DE-B1509       	BIB	Bonn	Bundesinstitut für Berufsbildung, Bibliothek, Bonn / Informationsverbund Berlin-Bonn (IVBB)	30001-100000
+DE-Bo405       	DAIBO	Bonn	Deutsches Archäologisches Institut (DAI), Kommission für Archäologie Außereuropäischer Kulturen (KAAK) Bonn	30001-100000
+               	DZNE	Bonn	Deutsches Zentrum für Neurodegenerative Erkrankungen	n/a
+DE-Bo410       	DIE	Bonn	DIE-Bibliothek für Erwachsenenbildung	30001-100000
+DE-1044        	FHBRS	Bonn	Hochschul- und Kreisbibliothek Bonn-Rhein-Sieg	100001-300000
+DE-Bo206       	MPIMA	Bonn	Max-Planck-Institut für Mathematik, Bonn	10001-30000
+DE-Bo146       	MPIFR	Bonn	Max-Planck-Institut für Radioastronomie, Bonn	10001-30000
+DE-Bo407       	MPPRG	Bonn	Max-Planck-Institut zur Erforschung von Gemeinschaftsgütern, Bonn	30001-100000
+DE-Bo408       	CAE	Bonn	Stiftung Caesar, Bonn	5001-10000
+DE-5           	ULBB	Bonn	Universitäts- und Landesbibliothek Bonn	1000001-
+               	VMBBZ	Bozen	Virtuelle Medizinische Bibliothek (VMB) Südtirol	n/a
+DE-522         	FHBRB	Brandenburg	Technische Hochschule Brandenburg, Hochschulbibliothek	30001-100000
+               	SKEBS	Bratislava	Konsortium Slowakei: EBSCO	n/a
+               	TBB	Bratislava	Slovak Centre of Scientific and Technical Information , Bratislava	n/a
+               	SLLK	Bratislava	Slowakische Medizinische Bibliothek	n/a
+               	SEK	Bratislava	Slowakische Wirtschaftsbibliothek der WU in Bratislava	n/a
+               	UKB	Bratislava	Universitätsbibliothek Bratislava	n/a
+               	SAV	Bratislava	Zentralbibliothek der Slowakischen Akademie der Wissenschaften	n/a
+DE-834         	HBKBS	Braunschweig	Bibliothek der Hochschule für Bildende Künste Braunschweig	30001-100000
+DE-Kn182       	DLLR	Braunschweig	DLR - Deutsches Zentrum für Luft- und Raumfahrt	n/a
+DE-Bs78        	GEI	Braunschweig	Georg-Eckert-Institut - Leibniz-Institut für Internationale Schulbuchforschung	100001-300000
+DE-Bs80        	GBF	Braunschweig	Helmholtz-Zentrum für Infektionsforschung, Braunschweig - Bibliothek	10001-30000
+               	DSMZ	Braunschweig	Leibniz-Institut DSMZ - Deutsche Sammlung von Mikroorganismen und Zellkulturen	n/a
+DE-253         	FAL	Braunschweig	Thünen-Institut	100001-300000
+DE-84          	TUBS	Braunschweig	Universitätsbibliothek Braunschweig	1000001-
+DE-Bs68        	PTB	Braunschweig und Berlin	Bibliothek der Physikalisch-Technischen Bundesanstalt, Braunschweig und Berlin	100001-300000
+               	VLB	Bregenz	Vorarlberger Landesbibliothek Bregenz	n/a
+DE-Brt1        	BABRE	Breitenbrunn	BA Sachsen, Bibliothek der Staatlichen Studienakademie Breitenbrunn	10001-30000
+DE-Bre2        	ISL	Bremen	Institut für Seeverkehrswirtschaft und Logistik, ISL InfoCenter/Bibliothek, Bremen	100001-300000
+DE-Bre4        	LBBEK	Bremen	Landeskirchliche Bibliothek Bremen	30001-100000
+DE-Bre14       	ZMT	Bremen	Leibniz-Zentrum für Marine Tropenökologie - MEDIA Unit	5001-10000
+DE-Bre11       	MPIMM	Bremen	Max-Planck-Institut für marine Mikrobiologie, Bremen	-1000
+DE-46          	SUUB	Bremen	Staats- und Universitätsbibliothek Bremen	1000001-
+DE-Bv2         	AWIPM	Bremerhaven	Alfred-Wegener-Institut Helmholtz-Zentrum für Polar- und Meeresforschung	30001-100000
+DE-Bv3         	BDSB	Bremerhaven	Bibliothek des Deutschen Schiffahrtsmuseums Bremerhaven	30001-100000
+               	MZK	Brünn	Mährische Landesbibliothek	n/a
+               	VFU	Brünn	Universität für Tiermedizin und Pharmazeutische Forschung, Brünn	n/a
+               	FHO	Buchs	FHO, Bibliotheken der Fachhochschule Ostschweiz	n/a
+               	JCU	Budweis	Bibliotheken der Universität von Südböhmen, Budweis	n/a
+               	HRC	Canton de Vaud	Fédération des hôpitaux vaudois FHV	n/a
+DE-Ch1         	TUCHE	Chemnitz	Universitätsbibliothek Chemnitz	300001-1000000
+               	BGS	CHUR	Bibliothek des Bildungszentrums Gesundheit und Soziales (BGS) Chur	n/a
+               	KSG	Chur	Kantonsspital Graubünden	n/a
+DE-104         	UBCL	Clausthal	Universitätsbibliothek Clausthal	300001-1000000
+DE-858         	FHBCO	Coburg	Bibliothek der HS Coburg	30001-100000
+DE-70          	LBCO	Coburg	Landesbibliothek Coburg	300001-1000000
+DE-Vol1        	MPIZ	Cologne	Max Planck Institute for Plant Breeding	10001-30000
+DE-Co2         	CTK	Cottbus	Bibliothek des Carl-Thiem-Klinikums Cottbus	10001-30000
+DE-634         	TUCB	Cottbus	Universitätsbibliothek Cottbus-Senftenberg	300001-1000000
+               	DAIDA	Damaskus	Deutsches Archäologisches Institut (DAI), Aussenstelle Damaskus der Orient-Abteilung	n/a
+DE-Ds200       	GSI	Darmstadt	GSI-Bibliothek	30001-100000
+DE-Ds114       	FHDA	Darmstadt	Medienzentrum der Hochschule Darmstadt	100001-300000
+DE-17          	TUDA	Darmstadt	Universitäts- und Landesbibliothek Darmstadt	1000001-
+DE-1050        	FHDEG	Deggendorf	Bibliothek der Technischen Hochschule Deggendorf	100001-300000
+DE-575         	HMD	Detmold	Hochschule für Musik Detmold	100001-300000
+DE-51          	LLD	Detmold	Lippische Landesbibliothek Detmold	300001-1000000
+               	FHV	Dornbirn	Fachhochschule Vorarlberg, Dornbirn	n/a
+DE-Dm13        	FHBDO	Dortmund	Fachhochschulbibliothek Dortmund	100001-300000
+DE-Dm21        	IFADO	Dortmund	IfADo - Leibniz-Institut für Arbeitsforschung an der TU Dortmund - Bibliothek	10001-30000
+               	ILS	Dortmund	ILS - Institut für Landes- und Stadtentwicklungsforschung, Bibliothek, Dortmund	n/a
+DE-Dm1         	EZBDO	Dortmund	Max-Planck-Institut für molekulare Physiologie, Dortmund	10001-30000
+DE-60          	STLB	Dortmund	Stadt- und Landesbibliothek Dortmund	1000001-
+DE-290         	UBDO	Dortmund	Universitätsbibliothek Dortmund	1000001-
+               	ISAS	Dortmund und Berlin	Leibniz-Institut für Analytische Wissenschaften - ISAS - e.V.	n/a
+               	FRIKT	Dresden	Fraunhofer-Institut für Keramische Technologien und Systeme IKTS, Dresden, Hermsdorf	n/a
+               	FRIWS	Dresden	Fraunhofer-Institut für Werkstoff- und Strahltechnik, IWS Dresden	n/a
+DE-D161        	BADD	Dresden	Gemeinsame Bibliothek der BA Dresden und der EHS Dresden	10001-30000
+DE-D120        	FZR	Dresden	Helmholtz-Zentrum Dresden-Rossendorf e.V.	30001-100000
+DE-520         	HTWDD	Dresden	Hochschule für Technik und Wirtschaft Dresden	100001-300000
+DE-D115        	LFADD	Dresden	Landesamt für Archäologie Sachsen, Bibliothek	100001-300000
+DE-D210        	CPFS	Dresden	Max-Planck-Institut für Chemische Physik fester Stoffe, Dresden	30001-100000
+DE-D267        	CBG	Dresden	Max-Planck-Institut für Molekulare Zellbiologie und Genetik, Dresden	10001-30000
+DE-D206        	PKS	Dresden	Max-Planck-Institut für Physik komplexer Systeme, Dresden	5001-10000
+DE-14          	SLUB	Dresden	Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden	1000001-
+DE-465         	UGHE	Duisburg-Essen	Universitätsbibliothek Duisburg-Essen	1000001-
+DE-464         	UBDU	Duisburg-Essen	Universitätsbibliothek Duisburg-Essen, Campus Duisburg	300001-1000000
+DE-R48         	FBN	Dummerstorf	Leibniz-Institut für Nutztierbiologie, Dummerstorf	30001-100000
+DE-Due62       	FHD	Düsseldorf	Hochschulbibliothek der Hochschule Düsseldorf	100001-300000
+DE-Due57       	MPIE	Düsseldorf	Max-Planck-Institut für Eisenforschung	5001-10000
+DE-61          	ULBD	Düsseldorf	Universitäts- und Landesbibliothek Düsseldorf	1000001-
+DE-Eb1         	HNEE	Eberswalde	Hochschule für nachhaltige Entwicklung Eberswalde	100001-300000
+DE-824         	UBE	Eichstätt	Universitätsbibliothek Eichstätt-Ingolstadt	1000001-
+DE-Ei6         	BBE	Eisenach	Bibliothek der Dualen Hochschule Gera-Eisenach, Campus Eisenach	10001-30000
+               	FHBEI	Eisenstadt	Fachhochschule Burgenland	n/a
+DE-755         	FHOOW	Emden	Hochschulbibliothek Emden/Leer	100001-300000
+DE-546         	FHEF	Erfurt	Bibliothek der Fachhochschule Erfurt	100001-300000
+DE-547         	UBERF	Erfurt	Universitätsbibliothek Erfurt / Forschungsbibliothek Gotha	1000001-
+DE-B567        	IRS	Erkner	Leibniz-Institut für Raumbezogene Sozialforschung (IRS)	30001-100000
+DE-29          	UBEN	Erlangen	Universitätsbibliothek der FAU Erlangen-Nürnberg	1000001-
+DE-753         	HBES	Esslingen	Hochschulbibliothek Esslingen	30001-100000
+DE-Ess5        	LDRS	Esslingen	Landesamt für Denkmalpflege im Regierungspräsidium Stuttgart, Bibliothek (Sitz: Esslingen)	30001-100000
+               	PHVOR	Feldkirch	Pädagogische Hochschule Vorarlberg	n/a
+DE-Fl3         	HDFL	Flensburg	Zentrale Hochschulbibliothek Flensburg	300001-1000000
+DE-Y3          	KHIFI	Florenz	Kunsthistorisches Institut in Florenz, Max-Planck-Institut	300001-1000000
+DE-30          	UBFM	Frankfurt	Bibliotheken der Universität Frankfurt am Main	1000001-
+DE-F36         	DAIRG	Frankfurt	Deutsches Archäologisches Institut (DAI), Römisch-Germanische Kommission (RGK)	100001-300000
+               	DIPF	Frankfurt	DIPF | Leibniz-Institut für Bildungsforschung und Bildungsinformation	n/a
+DE-F137        	MPIER	Frankfurt	Max-Planck-Institut für europäische Rechtsgeschichte, Frankfurt/Main	300001-1000000
+DE-946         	FHF	Frankfurt am Main	Bibliothek der Frankfurt UAS	100001-300000
+               	DBB	Frankfurt am Main	Deutsche Bundesbank - Bibliothek der Zentrale - Frankfurt am Main	n/a
+DE-F197        	HSFK	Frankfurt am Main	HSFK-Bibliothek Frankfurt am Main	30001-100000
+DE-2177        	MPIAE	Frankfurt am Main	Max-Planck-Institut für empirische Ästhetik	n/a
+DE-B2081       	IHP	Frankfurt Oder	IHP Bibliothek Frankfurt (Oder)	5001-10000
+DE-521         	EUV	Frankfurt/Oder	Universitätsbibliothek der Europa-Universität Viadrina Frankfurt/Oder	300001-1000000
+DE-105         	TUBFR	Freiberg	Universitätsbibliothek Freiberg	300001-1000000
+               	ABI	Freiburg	Arnold-Bergstraesser-Institut, Bibliothek, Freiburg i. Br.	n/a
+DE-Frei68      	BWL	Freiburg	Bibliothek der Forstlichen Versuchs- und Forschungsanstalt Baden-Württemberg	10001-30000
+DE-Frei129     	PHBFR	Freiburg	Bibliothek der Pädagogischen Hochschule Freiburg	300001-1000000
+DE-Frei26      	BDCFR	Freiburg	Caritas-Bibliothek Freiburg	100001-300000
+DE-Frei160     	EHF	Freiburg	Evangelische Hochschule Freiburg - Hochschulbibliothek	30001-100000
+DE-Frei50      	HMF	Freiburg	Hochschule für Musik Freiburg, Bibliothek	100001-300000
+DE-Frei106     	MPIIM	Freiburg	Max-Planck-Institut für Immunbiologie Freiburg	2001-3000
+DE-25          	UBFRE	Freiburg	Universitätsbibliothek Freiburg	1000001-
+DE-Frei85      	MPAI	Freiburg im Breisgau	Max-Planck-Institut für ausländisches und internationales Strafrecht, Freiburg i. Br.	300001-1000000
+               	KUBFR	Freiburg/Schweiz	Kantons- und Universitätsbibliothek Freiburg/Schweiz	n/a
+DE-Brg3        	THHFR	Friedensau	Hochschulbibliothek Friedensau	100001-300000
+DE-66          	FHFD	Fulda	Hochschul- und Landesbibliothek Fulda	300001-1000000
+               	MZBFD	Fulda	Med. Zentralbibliothek Klinikum Fulda	n/a
+               	WLH	Fürth	Wilhelm Löhe Hochschule	n/a
+DE-Fn1         	FHFU	Furtwangen	Hochschule Furtwangen - Die Bibliotheken	30001-100000
+DE-B161a       	MPAEP	Garching	Max-Planck-Institut für Astrophysik/extraterrestrische Physik, Garching	10001-30000
+DE-M359        	MPIPP	Garching	Max-Planck-Institut für Plasmaphysik	100001-300000
+DE-M484        	MPQUA	Garching	Max-Planck-Institut für Quantenoptik, Garching	10001-30000
+DE-Gat1        	IPK	Gatersleben	Leibniz-Institut für Pflanzengenetik und Kulturpflanzenforschung, Bibliothek	30001-100000
+DE-Gt1         	GKSS	Geesthacht	Helmholtz-Zentrum Geesthacht, Bibliothek	30001-100000
+               	HBG	Geisenheim	Hochschule Geisenheim	n/a
+DE-1010        	FHBGE	Gelsenkirchen	Bibliothek der Westfälischen Hochschule Gelsenkirchen Bocholt Recklinghausen	100001-300000
+DE-Ga20        	BBG	Gera	Bibliothek der Dualen Hochschule Gera-Eisenach, Campus Gera	10001-30000
+DE-Ga6         	WKG	Gera	SRH Wald-Klinikum Gera - Medizinische Bibliothek	10001-30000
+DE-26          	UBGIE	Gießen	Bibliothekssystem der Justus-Liebig-Universität Gießen	1000001-
+DE-974         	FHGF	Gießen	THM Hochschulbibliothek	100001-300000
+DE-Gla1        	BAG	Glauchau	Bibliothek der Staatlichen Studienakademie Glauchau, BA Sachsen	10001-30000
+DE-Po62        	AEI	Golm	Max-Planck-Institut für Gravitationsphysik, Golm	5001-10000
+DE-Po81        	MPIKG	Golm	Max-Planck-Institut für Kolloid- und Grenzflächenforschung, Golm	5001-10000
+DE-Po80        	MPIMP	Golm	Max-Planck-Institut für molekulare Pflanzenphysiologie, Golm	10001-30000
+DE-Goe116      	MPIBP	Göttingen	Max-Planck-Institut für biophysikalische Chemie, Göttingen	100001-300000
+               	MPISF	Göttingen	Max-Planck-Institut für Dynamik und Selbstorganisation, Göttingen	n/a
+DE-Goe134      	MPIEM	Göttingen	Max-Planck-Institut für experimentelle Medizin, Göttingen	30001-100000
+DE-Lin1b       	MPAE	Göttingen	Max-Planck-Institut für Sonnensystemforschung, Göttingen	10001-30000
+DE-Goe164      	MPIG	Göttingen	Max-Planck-Institut zur Erforschung multireligiöser und multiethnischer Gesellschaften	100001-300000
+DE-7           	SUBGO	Göttingen	Niedersächsische Staats- und Universitätsbibliothek Göttingen	1000001-
+               	KNTGR	Graubünden	Kantonsbibliothek Graubünden	n/a
+AT-UBMUG       	MEDUG	Graz	Bibliothek der Medizinischen Universität Graz	3001-5000
+               	FHWGR	Graz	CAMPUS 02 Fachhochschule der Wirtschaft GmbH	n/a
+AT-UBG-HB      	UBG	Graz	Karl-Franzens-Universität Graz	n/a
+               	PHSTE	Graz	Pädagogische Hochschule Steiermark	n/a
+AT-UBTUG-HB    	TUBG	Graz	Universitätsbibliothek der Technischen Universität Graz	n/a
+               	FHJO	Graz - Kapfenberg - Bad Gleichenberg	FH JOANNEUM Gesellschaft mbH, Bibliothek	n/a
+DE-9           	UBGRW	Greifswald	Universitätsbibliothek Greifswald	1000001-
+DE-Haar1       	BCDHS	Haar	Isar-Amper-Klinikum, Klinikum München-Ost, Haar	10001-30000
+DE-708         	FUH	Hagen	Universitätsbibliothek Hagen	300001-1000000
+DE-Hag4        	MFHB	Hagen, Iserlohn, Meschede, Soest	Fachhochschule Südwestfalen, Hochschulbibliothek	30001-100000
+DE-Ha118       	BGHAL	Halle	Berufsgenossenschaftliche Kliniken Bergmannstrost Halle, Medizinische Fachbibliothek	3001-5000
+DE-Ha125       	KDHAL	Halle	Bibliothek Burg Giebichenstein Kunsthochschule Halle	30001-100000
+DE-2575        	IAMO	Halle	Leibniz-Institut für Agrarentwicklung in Transformationsökonomien	30001-100000
+DE-Ha93        	IPB	Halle	Leibniz-Institut für Pflanzenbiochemie	10001-30000
+               	IWH	Halle	Leibniz-Institut für Wirtschaftsforschung Halle, IWH - Bibliothek	n/a
+DE-Ha94        	MPIMS	Halle	Max-Planck-Institut für Mikrostrukturphysik, Halle	10001-30000
+DE-Ha2         	DANL	Halle (Saale)	Bibliothek der Leopoldina, Halle (Saale)	100001-300000
+DE-3           	ULBH	Halle (Saale)	Universitäts- und Landesbibliothek Sachsen-Anhalt	1000001-
+DE-Ha163       	MPIEF	Halle/Saale	Max-Planck-Institut für Ethnologische Forschung, Halle	30001-100000
+DE-1373        	HCUHH	Hamburg	Bibliothek der HafenCity Universität Hamburg	30001-100000
+DE-18-26       	HFBK	Hamburg	Bibliothek der Hochschule für bildende Künste	10001-30000
+DE-830         	TUHH	Hamburg	Bibliothek der Technischen Universität Hamburg	300001-1000000
+DE-H357        	HIS	Hamburg	Bibliothek des Hamburger Instituts für Sozialforschung	30001-100000
+DE-205         	HKHH	Hamburg	Commerzbibliothek der Handelskammer Hamburg	100001-300000
+               	DESY	Hamburg	DESY-Bibliotheken Hamburg/Zeuthen	n/a
+DE-H256        	FAB	Hamburg	Führungsakademie der Bundeswehr: Fachinformationsstelle / Bibliothek	100001-300000
+DE-H221        	GIGA	Hamburg	GIGA German Institute of Global and Area Studies - Informationszentrum, Hamburg	100001-300000
+DE-H155        	HLI	Hamburg	Hamburger Lehrerbibliothek	100001-300000
+               	HAWHH	Hamburg	Hochschulinformations- und Bibliotheksservice (HIBS) der HAW-Hamburg	n/a
+DE-H140        	BFAFI	Hamburg	Johann Heinrich von Thünen-Institut (vTI), Bereich Fischerei	30001-100000
+DE-H105        	BFH	Hamburg	Johann Heinrich von Thünen-Institut, Bereich Wald	100001-300000
+DE-B212        	MPIPR	Hamburg	Max-Planck-Institut für ausländisches und internationales Privatrecht, Hamburg	300001-1000000
+               	MPIM	Hamburg	Max-Planck-Institut für Meteorologie, Hamburg	n/a
+DE-18          	SUBHH	Hamburg	Staats- und Universitätsbibliothek Hamburg und Fachbibliotheken	1000001-
+DE-705         	UBWH	Hamburg	UB der Helmut-Schmidt-Universität Hamburg	300001-1000000
+DE-18-64       	UKE	Hamburg	Universitätsklinikum Hamburg-Eppendorf	100001-300000
+DE-206H        	HWWA	Hamburg	ZBW - Leibniz-Informationszentrum Wirtschaft - Standort Hamburg	1000001-
+               	BSH	Hamburg / Rostock	Bundesamt für Seeschifffahrt und Hydrographie / Bibliothek	n/a
+               	HSHL	Hamm-Lippstadt	Hochschule Hamm-Lippstadt, Zentrum für Wissensmanagement	n/a
+DE-960-3       	HMT	Hannover	Bibliothek der Hochschule für Musik, Theater und Medien Hannover	30001-100000
+DE-960-1       	FHH	Hannover	Bibliothek der Hochschule Hannover	100001-300000
+DE-Hv112       	BGR	Hannover	Bibliothek des Geozentrums Hannover BGR - LBEG - LIAG	300001-1000000
+DE-Hv111       	BLH	Hannover	Bibliothek des Landeskirchenamts Hannover	100001-300000
+DE-35          	GWLB	Hannover	Gottfried Wilhelm Leibniz Bibliothek - Niedersächsische Landesbibliothek	1000001-
+DE-354         	MHH	Hannover	MHH-Bibliothek / Medizinische Hochschule Hannover	100001-300000
+DE-Hv131       	MLN	Hannover	Nds. Ministerium für Ernährung, Landwirtschaft und Verbraucherschutz, Bibliothek	10001-30000
+DE-Hv14        	LTN	Hannover	Niedersächsischer Landtag, Bibliothek	100001-300000
+DE-Hv4         	NLA	Hannover	Niedersächsisches Landesarchiv - Dienstbibliothek	30001-100000
+DE-89          	UBTIB	Hannover	Technische Informationsbibliothek (TIB)	1000001-
+DE-95          	TIHO	Hannover	Tierärztliche Hochschule Hannover - Bibliothek	100001-300000
+DE-1041        	HFW	Heide	Hochschulbibliothek der Fachhochschule Westküste	30001-100000
+DE-He76        	PHHD	Heidelberg	Bibliothek der Pädagogischen Hochschule Heidelberg	100001-300000
+DE-He81        	MPIAS	Heidelberg	Max-Planck-Institut für Astronomie, Heidelberg	10001-30000
+DE-B208        	MPIV	Heidelberg	Max-Planck-Institut für ausländisches öffentliches Recht und Völkerrecht	300001-1000000
+DE-He74        	MPIKP	Heidelberg	Max-Planck-Institut für Kernphysik, Heidelberg	10001-30000
+DE-He43        	MPIMF	Heidelberg	Max-Planck-Institut für medizinische Forschung, Heidelberg	30001-100000
+DE-16          	UBHE	Heidelberg	Universitätsbibliothek Heidelberg	1000001-
+DE-Hed2        	BAH	Heidenheim	Duale Hochschule Baden-Württemberg Heidenheim Bibliothek	30001-100000
+DE-2170        	CASH	Heilbronn	Bibliothek der Dualen Hochschule Baden-Württemberg CAS	10001-30000
+DE-840         	FHHN	Heilbronn	Hochschulbibliothek Heilbronn	30001-100000
+DE-Hil2        	UBHI	Hildesheim	Universitätsbibliothek Hildesheim	300001-1000000
+               	HAWK	Hildesheim/Holzminden/Göttingen	Bibliothek der HAWK -  Hildesheim/Holzminden/Göttingen	n/a
+DE-1051        	FHBHO	Hof	Hochschulbibliothek Hof	30001-100000
+DE-1126        	EFF	Idstein	Hochschule Fresenius, Idstein	10001-30000
+DE-Ilm1        	UBIL	Ilmenau	Universitätsbibliothek Ilmenau	300001-1000000
+               	KLIN	Ingolstadt	Klinikum Ingolstadt - Zentralbibliothek	n/a
+DE-573         	FHBIN	Ingolstadt	Technische Hochschule Ingolstadt	30001-100000
+               	MCI	Innsbruck	Management Center Innsbruck	n/a
+               	PHTIR	Innsbruck	Pädagogische Hochschule Tirol	n/a
+AT-UBI-HB      	UBI	Innsbruck	Universitäts- und Landesbibliothek Tirol	n/a
+               	DAIIN	Istanbul	Deutsches Archäologisches Institut (DAI), Abteilung Istanbul	n/a
+               	ORI	Istanbul	Orient-Institut Istanbul	n/a
+DE-J126        	ICE	Jena	Bibliothek der Max-Planck-Institute für Chemische Ökologie und Biogeochemie	5001-10000
+               	IOF	Jena	Fraunhofer-Institut für Angewandte Optik und Feinmechanik IOF Jena	n/a
+DE-J59         	FHJ	Jena	Hochschulbibliothek EAH Jena	300001-1000000
+DE-J152        	MPIEW	Jena	Max-Planck-Institut für  Menschheitsgeschichte, Jena	10001-30000
+DE-27          	THULB	Jena	Thüringer Universitäts- und Landesbibliothek Jena	1000001-
+               	DAIJE	Jerusalem	Forschungsstelle Jerusalem am Deutschen Evangelischen Institut (DEI)	n/a
+DE-Juel1       	FZJUE	Jülich	Forschungszentrum Jülich GmbH, Zentralbibliothek	300001-1000000
+               	DAIKA	Kairo	Deutsches Archäologisches Institut (DAI), Abteilung Kairo	n/a
+DE-1082        	FHKL	Kaiserslautern	Hochschule Kaiserslautern, Hochschulbibliothek	30001-100000
+DE-386         	UBKL	Kaiserslautern	Universitätsbibliothek Kaiserslautern	300001-1000000
+               	BZGCH	Kanton Solothurn	soH Solothurner Spitäler	n/a
+DE-31          	BLB	Karlsruhe	Badische Landesbibliothek Karlsruhe	1000001-
+DE-Ka23        	KUKA	Karlsruhe	Bibliothek der Staatlichen Kunsthalle Karlsruhe	100001-300000
+DE-208         	BGH	Karlsruhe	Bibliothek des Bundesgerichtshofs, Karlsruhe	300001-1000000
+DE-Ka26        	BVG	Karlsruhe	Bibliothek des Bundesverfassungsgerichts, Karlsruhe	300001-1000000
+               	ZKMKA	Karlsruhe	Bibliothek von ZKM und HfG Karlsruhe	n/a
+               	DHBW	Karlsruhe	Duale Hochschule Baden-Württemberg DHBW Karlsruhe	n/a
+DE-751         	HSBKA	Karlsruhe	Hochschulbibliothek Karlsruhe	100001-300000
+DE-90-4        	FBHKA	Karlsruhe	Hochschule Karlsruhe - Technik und Wirtschaft HsKA	30001-100000
+DE-90          	KIT	Karlsruhe	Karlsruher Institut für Technologie KIT	1000001-
+               	BFEL	Karlsruhe, Detmold, Kiel, Kulmbach	Max Rubner-Institut, Bundesforschungsinstitut für Ernährung und Lebensmittel	n/a
+DE-34          	UBKAS	Kassel	Universitätsbibliothek Kassel	1000001-
+DE-859         	FHBKA	Kempten	Hochschulbibliothek Kempten	30001-100000
+DE-Ki131       	FWGBW	Kiel	Bibliothek und Fachinformationsstelle der Wehrtechnischen Dienststelle für Schiffe und Marinewaffen, Maritime Technologie und Forschung, Kiel	10001-30000
+DE-Ki130       	IFMAR	Kiel	GEOMAR Bibliothek - Helmholtz-Zentrum für Ozeanforschung Kiel	30001-100000
+DE-Ki128       	IPN	Kiel	IPN Bibliothek, Kiel	30001-100000
+DE-8           	UBK	Kiel	Universitätsbibliothek Kiel	1000001-
+DE-206         	ZBW	Kiel	ZBW -  Leibniz-Informationszentrum Wirtschaft - Standort Kiel	1000001-
+DE-Ki95        	FHKI	Kiel	Zentralbibliothek der Fachhochschule Kiel	100001-300000
+               	PHKAE	Klagenfurt	Pädagogische Hochschule Kärnten	n/a
+AT-UBK         	UBKLU	Klagenfurt	Universitätsbibliothek Klagenfurt	n/a
+               	FHTK	Klagenfurt am Wörthersee, Villach, Spittal an der Drau, Feldkirchen in Kärnten (Österreich)	Fachhochschulbibliothek Kärnten (Österreich)	n/a
+               	HRW	Kleve/Kamp-Lintfort	Hochschule Rhein-Waal	n/a
+               	ISTAT	Klosterneuburg	Institute of Science and Technology Austria	n/a
+DE-987         	HKRMC	Koblenz	Hochschule Koblenz RheinMoselCampus	30001-100000
+               	LBZ	Koblenz	Landesbibliothekszentrum Rheinland-Pfalz	n/a
+               	BIBKO	Koblenz-Landau	Universitätsbibliothek Koblenz-Landau	n/a
+DE-Kn28        	DBK	Köln	Erzbischöfliche Diözesan- und Dombibliothek Köln mit Bibliothek Albertus Magnus	300001-1000000
+DE-832         	FHBK	Köln	Hochschulbibliothek der TH Köln	300001-1000000
+DE-Kn38        	MHS	Köln	Hochschule für Musik und Tanz Köln, Bibliothek	100001-300000
+DE-1032        	KHN	Köln	Katholische Hochschule Nordrhein-Westfalen (KatHO NRW) - Hochschulbibliothek	100001-300000
+DE-Kn188       	MPIFG	Köln	Max-Planck-Institut für Gesellschaftsforschung, Köln	30001-100000
+DE-38          	USBK	Köln	Universitäts- und Stadtbibliothek Köln	1000001-
+DE-38M         	ZBMED	Köln	ZB MED - Informationszentrum Lebenswissenschaften /  Medizinische Abteilung der USB Köln	300001-1000000
+DE-Kn41        	ZBSK	Köln	Zentralbibliothek der Sportwissenschaften der Deutschen Sporthochschule Köln	300001-1000000
+DE-587c        	ZUMA	Köln, Mannheim	GESIS  - Leibniz-Institut für Sozialwissenschaften	5001-10000
+DE-Kon4        	FHKN	Konstanz	Hochschulbibliothek der HTWG Konstanz	30001-100000
+DE-352         	UBKO	Konstanz	KIM Konstanz, IT- und Bibliotheksdienste	1000001-
+DE-Kt1         	HSB	Köthen	Hochschule Anhalt	100001-300000
+               	DUK	Krems	Donau-Universität Krems	n/a
+               	IMCKR	Krems	IMC Fachhochschule Krems	n/a
+               	BPHT	Kreuzlingen	Bibliothek der Pädagogischen Hochschule Thurgau, Kreuzlingen	n/a
+               	FHKTI	Kufstein	Bibliothek der FH Kufstein Tirol	n/a
+               	BIBLA	Landau	UB Landau der Universitätsbibliothek Koblenz-Landau	n/a
+DE-860         	FHBLA	Landshut	Bibliothek der Hochschule Landshut	30001-100000
+DE-F20         	PEI	Langen	Paul-Ehrlich-Institut, Bibliothek	30001-100000
+               	IIASA	Laxenburg	IIASA - International Institute for Applied Systems Analysis	n/a
+DE-L152        	HMTL	Leipzig	Bibliothek der Hochschule für Musik und Theater Leipzig	100001-300000
+DE-L229        	SSAL	Leipzig	Bibliothek Staatliche Studienakademie Leipzig	10001-30000
+               	DBFZ	Leipzig	DBFZ Deutsches Biomasseforschungszentrum gemeinnützige GmbH	n/a
+DE-L97         	UFZ	Leipzig	Helmholtz-Zentrum für Umweltforschung GmbH - UFZ	30001-100000
+DE-L189        	HTWK	Leipzig	Hochschulbibliothek der HTWK Leipzig	100001-300000
+DE-185         	GZB	Leipzig	Leibniz-Institut für Länderkunde, Geographische Zentralbibliothek, Leipzig	100001-300000
+DE-L321        	MPIEA	Leipzig	Max-Planck-Institut für evolutionäre Anthropologie, Leipzig	30001-100000
+DE-L322        	MPINF	Leipzig	Max-Planck-Institut für Kognitions- und Neurowissenschaften, Leipzig	30001-100000
+DE-L323        	MPIMN	Leipzig	Max-Planck-Institut für Mathematik in den Naturwissenschaften, Leipzig	10001-30000
+DE-15          	UBL	Leipzig	Universitätsbibliothek Leipzig	1000001-
+DE-743         	FHLH	Lemgo	S(KIM) - Technische Hochschule Ostwestfalen-Lippe	100001-300000
+AT-UBMUL-HB    	UBLEO	Leoben	Universitätsbibliothek der Montanuniversität Leoben	n/a
+               	BRUCK	Linz	Anton-Bruckner-Privatuniversität Linz / Bibliothek	n/a
+               	PHLI	Linz	Bibliothek der Privaten Pädagogischen Hochschule der Diözese Linz	n/a
+               	KTUL	Linz	Diözesan- und Universitätsbibliothek der Katholischen Privat-Universität Linz (DUB)	n/a
+               	KBSL	Linz	Medizinische Bibliothek der Vinzenz Gruppe	n/a
+               	OOE	Linz	Oberösterreichische Landesbibliothek, Linz	n/a
+               	PHOBE	Linz	Pädagogische Hochschule Oberösterreich	n/a
+AT-UBL-HB      	UBLI	Linz	Universitätsbibliothek der Johannes Kepler Universität Linz	n/a
+AT-UBGL        	UFG	Linz	Universitätsbibliothek der Kunstuniversität Linz	n/a
+               	FHOO	Linz - Ried - Steyr - Vöcklabruck - Wels	FH Gesundheitsberufe OÖ	n/a
+               	GHL	London	Deutsches Historisches Institut London	n/a
+DE-Loer2       	BALO	Lörrach	DHBW Lörrach, Bibliothek	30001-100000
+DE-841         	UBHL	Lübeck	Zentrale Hochschulbibliothek Lübeck	300001-1000000
+DE-1147        	FHLB	Ludwigsburg	Bibliothek der Hochschule für öff. Verwaltung und Finanzen	30001-100000
+DE-Lg3         	DFI	Ludwigsburg	Deutsch-Französisches Institut Ludwigsburg	30001-100000
+DE-Rt3         	EHLB	Ludwigsburg	Evangelische Hochschule Ludwigsburg	30001-100000
+DE-Lg1         	PHLB	Ludwigsburg	Pädagogische Hochschulbibliothek Ludwigsburg	300001-1000000
+DE-1116        	FHLU	Ludwigshafen	Bibliothek der Hochschule für Wirtschaft und Gesellschaft Ludwigshafen am Rhein	100001-300000
+DE-Luen4       	UBLUE	Lüneburg	Universitätsbibliothek Lüneburg	300001-1000000
+               	HSLU	Luzern	Bibliotheken der Hochschule Luzern	n/a
+               	KSLCH	Luzern	Luzerner Kantonsspital, Virtuelle Bibliothek	n/a
+               	SUVA	Luzern	Suva Bibliothek Rösslimatt, Luzern	n/a
+               	ZHBLU	Luzern	Zentral- und Hochschulbibliothek Luzern für Universität Luzern &amp; Pädagogische Hochschulen Luzern, Schwyz &amp; Zug	n/a
+               	DAIMA	Madrid	Deutsches Archäologisches Institut (DAI), Abteilung Madrid	n/a
+DE-551         	HBMST	Magdeburg	Hochschulbibliothek Magdeburg-Stendal	100001-300000
+DE-Ma45        	LIN	Magdeburg	Leibniz-Institut für Neurobiologie Magdeburg (LIN), Bibliothek	10001-30000
+DE-Ma54        	MPIDS	Magdeburg	Max-Planck-Institut für Dynamik komplexer technischer Systeme, Magdeburg	5001-10000
+DE-Ma9         	UBMD	Magdeburg	Universitätsbibliothek Magdeburg (einschl. Medizinische Zentralbibliothek)	300001-1000000
+DE-1053        	FHMZ	Mainz	Bibliothek der Hochschule Mainz	10001-30000
+DE-77          	UBMZ	Mainz	Bibliothekssystem der Universität Mainz	1000001-
+               	IMMMZ	Mainz	Fraunhofer ICT-IMM	n/a
+DE-Mz4         	MPICH	Mainz	Max-Planck-Institut für Chemie, Mainz	10001-30000
+DE-Mz116       	MPIP	Mainz	Max-Planck-Institut für Polymerforschung, Mainz	10001-30000
+DE-36          	SBM	Mainz	Stadtbibliothek Mainz	300001-1000000
+DE-Mh35        	BAMA	Mannheim	Bibliothek der Dualen Hochschule Baden-Württemberg Mannheim	30001-100000
+DE-1251        	HDBA	Mannheim	Bibliothek der Hochschule der Bundesagentur für Arbeit (HdBA), Mannheim	30001-100000
+DE-Mh32        	ZIM	Mannheim	Bibliothek des Zentralinstituts für Seelische Gesundheit Mannheim	30001-100000
+DE-953         	FHMA	Mannheim	Hochschulbibliothek Mannheim	100001-300000
+DE-Mh39        	IDS	Mannheim	Leibniz-Institut für Deutsche Sprache (IDS)	30001-100000
+DE-1933        	PAK	Mannheim	Mediathek der Popakademie Baden-Württemberg, Mannheim	5001-10000
+DE-Mh36        	ZEW	Mannheim	Spezialbibliothek des ZEW - Leibniz-Zentrum für Europäische Wirtschaftsforschung	5001-10000
+DE-Mh31        	MUHOM	Mannheim	Staatliche Hochschule für Musik und Darstellende Kunst Mannheim - Bibliothek	30001-100000
+DE-180         	UBMAN	Mannheim	Universitätsbibliothek Mannheim	1000001-
+DE-Mar1        	DLA	Marbach	Deutsches Literaturarchiv Marbach	300001-1000000
+               	MPITM	Marburg	Max-Planck-Institut für terrestrische Mikrobiologie, Marburg	n/a
+DE-4           	UBMA	Marburg	Universität Marburg	1000001-
+               	SNK	Martin	Slovak National Library, Martin	n/a
+DE-M411        	MPIBC	Martinsried	Max-Planck-Institute für Biochemie u. Neurobiologie, Martinsried	30001-100000
+DE-542         	FHMQ	Merseburg	Hochschulbibliothek Merseburg	100001-300000
+DE-Mit1        	HTWM	Mittweida	Hochschulbibliothek Mittweida	30001-100000
+DE-829         	HSNRH	Mönchengladbach	Hochschulbibliothek der Hochschule Niederrhein	100001-300000
+               	BAMOS	Mosbach	Duale Hochschule Baden-Württemberg	n/a
+               	DHIM	Moskau	Bibliothek des DHI Moskau	n/a
+               	MPIST	Mülheim	Max-Planck-Institut für Chemische Energiekonversion, Mülheim	n/a
+DE-1393        	HRWMB	Mülheim an der Ruhr	Bibliothek der Hochschule Ruhr West, Mülheim/Ruhr und Bottrop	30001-100000
+               	ZALF	Müncheberg	Leibniz-Zentrum für Agrarlandschaftsforschung (ZALF) e.V. Müncheberg	n/a
+DE-M339        	AHM	München	Amerika-Haus-Bibliothek, München	5001-10000
+DE-12          	BSB	München	Bayerische Staatsbibliothek München	1000001-
+DE-M347        	FHM	München	Bibliothek der Hochschule München	30001-100000
+DE-M124        	BFHB	München	Bibliothek des Bundesfinanzhofs, München	100001-300000
+DE-210         	DM	München	Bibliothek des Deutschen Museums München	300001-1000000
+DE-M352        	IFZ	München	Bibliothek des Instituts für Zeitgeschichte, München	100001-300000
+DE-M382        	IPMPG	München	Bibliothek des Max-Planck-Instituts für Innovation und Wettbewerb und des Max-Planck-Instituts für Steuerrecht und Öffentliche Finanzen	100001-300000
+DE-M491        	DAIAE	München	Deutsches Archäologisches Institut (DAI), Kommission für Alte Geschichte und Epigraphik München (AEK)	30001-100000
+DE-201         	DPMA	München	Deutsches Patent- und Markenamt / Bibliothek, München	1000001-
+               	FRAHG	München	Fraunhofer-Gesellschaft	n/a
+DE-M29         	HMTM	München	Hochschule für Musik und Theater München, Bibliothek	30001-100000
+DE-936         	KSFHD	München	Katholische Stiftungshochschule München/Benediktbeuern	30001-100000
+               	MHMK	München	Macromedia Library	n/a
+DE-M68         	MPGPS	München	Max-Planck-Institut für Psychiatrie	30001-100000
+DE-M477        	MPISR	München	Max-Planck-Institut für Sozialrecht und Sozialpolitik, München	30001-100000
+DE-91          	TUM	München	Technische Universität München - Universitätsbibliothek	1000001-
+DE-706         	UBWM	München	Universität der Bundeswehr München	300001-1000000
+DE-19          	UBM	München	Universitätsbibliothek der LMU München	1000001-
+DE-255         	ZIKG	München	Zentralinstitut für Kunstgeschichte - Bibliothek	300001-1000000
+               	DHPOL	Münster	Deutsche Hochschule der Polizei, Münster	n/a
+DE-836         	FHBMS	Münster	Fachhochschulbibliothek Münster	100001-300000
+DE-6           	ULBMS	Münster	Universitäts- und Landesbibliothek Münster	1000001-
+DE-1049        	FHBNU	Neu-Ulm	Hochschulbibliothek Neu-Ulm	30001-100000
+DE-519         	FHNB	Neubrandenburg	Hochschulbibliothek Neubrandenburg	100001-300000
+DE-150         	SBND	Neuburg an der Donau	Staatliche Bibliothek Neuburg an der Donau	30001-100000
+DE-Neud1       	AUGUS	Neuendettelsau	Augustana-Hochschule / Bibliothek Neuendettelsau	100001-300000
+               	GSF	Neuherberg bei München	Helmholtz Zentrum München - Zentralbibliothek	n/a
+DE-Y4          	MPIPL	Nijmegen	Max-Planck-Institut für Psycholinguistik, Nijmegen	10001-30000
+               	NDH	Nordhausen	Hochschule Nordhausen, Hochschulbibliothek	n/a
+DE-No6         	SHKN	Nordhausen	Südharz Klinikum Nordhausen gGmbH, Medizinische Fachbibliothek	5001-10000
+               	SPZ	Nottwil	Schweizer Paraplegiker Zentrum	n/a
+DE-1052        	EHS	Nürnberg	Bibliothek der Evangelischen Hochschule Nürnberg	30001-100000
+DE-1259        	HMN	Nürnberg	Bibliothek der Hochschule für Musik Nürnberg	30001-100000
+DE-92          	FHN	Nürnberg	Bibliothek der Technischen Hochschule Nürnberg Georg Simon Ohm	100001-300000
+               	BAMF	Nürnberg	Bundesamt für Migration und Flüchtlinge (BAMF), Bibliothek	n/a
+DE-N1          	GNM	Nürnberg	Germanisches Nationalmuseum Nürnberg, Bibliothek	300001-1000000
+               	IAB	Nürnberg	Institut für Arbeitsmarkt- und Berufsforschung, Nürnberg	n/a
+               	KLIIN	Nürnberg	Klinikum Nürnberg	n/a
+DE-950         	HFWU	Nürtingen	Hochschulbibliothek der HfWU Nürtingen-Geislingen	30001-100000
+DE-Frei3c      	MFO	Oberwolfach	Mathematisches Forschungsinstitut Oberwolfach gGmbH	30001-100000
+DE-B23         	DMB	Offenbach	Deutsche Meteorologische Bibliothek, Offenbach am Main	100001-300000
+DE-Ofb1        	FHBOG	Offenburg	Bibliothek der Hochschule Offenburg	30001-100000
+DE-715         	BISOL	Oldenburg	BIS - Bibliotheks- und Informationssystem der Universität Oldenburg	1000001-
+DE-45          	LBO	Oldenburg	Landesbibliothek Oldenburg	300001-1000000
+DE-959         	FHOS	Osnabrück	Hochschule Osnabrück - Bibliothek	100001-300000
+DE-700         	UBOS	Osnabrück	Universitätsbibliothek Osnabrück	1000001-
+DE-211         	EABPB	Paderborn	Erzbischöfliche Akademische Bibliothek Paderborn	300001-1000000
+DE-466         	UBPB	Paderborn	Universitätsbibliothek Paderborn	1000001-
+DE-Y7          	DFK	Paris	Bibliothek des Deutschen Forums für Kunstgeschichte Paris	100001-300000
+               	DHIP	Paris	Deutsches Historisches Institut Paris	n/a
+DE-739         	UBPA	Passau	Universitätsbibliothek Passau	1000001-
+               	FHPF	Pforzheim	Hochschulbibliothek Pforzheim	n/a
+DE-Pl11        	BAPL	Plauen	Bibliothek der Staatlichen Studienakademie Plauen, BA Sachsen	30001-100000
+DE-Pn1         	MPIL	Plön	Max-Planck-Institut für Evolutionsbiologie, Plön	10001-30000
+DE-B103        	GFZPO	Potsdam	Bibliothek des Wissenschaftsparks Albert Einstein, Potsdam	100001-300000
+DE-Po82        	ZZFPD	Potsdam	Bibliothek des Zentrums für Zeithistorische Forschung e.V., Potsdam	30001-100000
+DE-Po6         	DIFE	Potsdam	Deutsches Institut für Ernährungsforschung Potsdam-Rehbrücke	30001-100000
+DE-525         	FHPO	Potsdam	FH Potsdam, Hochschulbibliothek	100001-300000
+DE-Po75        	HFFP	Potsdam	Filmuniversität Babelsberg Konrad Wolf	100001-300000
+DE-B33         	AIP	Potsdam	Leibniz-Institut für Astrophysik Potsdam	30001-100000
+DE-517         	UBPO	Potsdam	Universitätsbibliothek Potsdam	1000001-
+               	CASCR	Prag	Bibliothek der Tschechischen Akademie der Wissenschaften	n/a
+               	UZPI	Prag	Institut für Agrarökonomic und Informationen, Landwirtschafts- und Nahrungsmittelbibliothek	n/a
+               	CUPLF	Prag	Karlsuniversität Prag, 1. Medizinische Fakultät	n/a
+               	UKLF	Prag	Karlsuniversität Prag, 2. Medizinische Fakultät	n/a
+               	NACUN	Prag	Karlsuniversität Prag, Naturwissenschaftliche Fakultät	n/a
+               	LF3	Prag	Karlsuniversität, 3. Medizinische Fakultät	n/a
+               	CSCAS	Prag	Library of the Institute of Computer Science CAS, Prague	n/a
+               	IMC	Prag	Library of the Institute of Macromolecular Chemistry, AS CR, Prague	n/a
+               	NKP	Prag	Nationalbibliothek der Tschechischen Republik, Prag	n/a
+               	IKEM	Prag	Scientific Medical Library IKEM, Prague	n/a
+               	NLK	Prag	Tschechische Nationalbibliothek für Medizin	n/a
+               	CAS	Prague	Library of the Institute of Hydrodynamics AS CR, Prague	n/a
+               	ASCR	Prague	Library of the Institute of Physiology CAS, Prague	n/a
+               	BBA	Quedlinburg / Braunschweig / Berlin / Kleinmachnow	Julius Kühn-Institut - Bundesforschungsinstitut für Kulturpflanzen	n/a
+DE-Rav1        	BARV	Ravensburg	Bibliothek der Dualen Hochschule Ravensburg	30001-100000
+               	OSRAV	Ravensburg	Oberschwaben Klinik gGmbH Ravensburg	n/a
+DE-898         	FHBR	Regensburg	Hochschulbibliothek OTH Regensburg	100001-300000
+DE-155         	STABI	Regensburg	Staatliche Bibliothek Regensburg	300001-1000000
+DE-355         	UBR	Regensburg	Universitätsbibliothek Regensburg	1000001-
+DE-1105        	HKRAC	Remagen	Hochschule Koblenz RheinAhrCampus Remagen	30001-100000
+DE-Rt2         	FHRT	Reutlingen	Hochschule Reutlingen - Lernzentrum	100001-300000
+DE-Bs90        	BFAV	Riems, Braunschweig, Celle, Jena, Mariensee	Friedrich-Loeffler-Institut / Bundesforschungsinstitut für Tiergesundheit	5001-10000
+DE-Rs1         	BARIE	Riesa	Bibliothek der Staatlichen Studienakademie Riesa, BA Sachsen	10001-30000
+DE-Y2          	HERTZ	Rom	Bibliotheca Hertziana - Max-Planck-Institut für Kunstgeschichte	100001-300000
+DE-2491        	DHIR	Rom	Bibliothek des Deutschen Historischen Instituts in Rom	100001-300000
+DE-Y1          	DAIRO	Rom	Deutsches Archäologisches Institut, Abteilung Rom - Bibliothek	100001-300000
+               	ICCR	Rom	ICCROM Library, Rome, Italy	n/a
+DE-861         	FHBRO	Rosenheim	Bibliothek der TH Rosenheim	30001-100000
+DE-563         	HMTRO	Rostock	Hochschule für Musik und Theater Rostock	30001-100000
+               	MPIDF	Rostock	Max-Planck-Institut für demographische Forschung, Rostock	n/a
+DE-28          	UBRO	Rostock	Universitätsbibliothek Rostock	1000001-
+DE-Wa1         	IOW	Rostock-Warnemünde	Leibniz-Institut fuer Ostseeforschung Warnemünde (IOW)	30001-100000
+               	SFJR	Rotenburg an der Fulda	Studienzentrum der Finanzverwaltung und Justiz Rotenburg a. d. Fulda	n/a
+DE-955         	HFR	Rottenburg	Hochschule für Forstwirtschaft Rottenburg, Bibliothek	30001-100000
+DE-Sa16        	HTWS	Saarbrücken	Hochschule für Technik und Wirtschaft des Saarlandes / Bibliothek	30001-100000
+DE-Sa18        	MPII	Saarbrücken	Max-Planck-Institut für Informatik Saarbrücken Max Planck Institute for Software Systems Kaiserslautern/Saarbrücken	30001-100000
+DE-291-415     	INM	Saarbrücken	NTNM-Bibliothek - Leibniz Institut für Neue Materialien gGmbH	10001-30000
+DE-291         	SULB	Saarbrücken	Saarländische Universitäts- und Landesbibliothek	1000001-
+               	FHSA	Salzburg	Fachhochschule Salzburg Bibliothek	n/a
+               	PHSAL	Salzburg	Pädagogische Hochschule Salzburg	n/a
+               	PMU	Salzburg	Paracelsus Medizinische Privatuniversität Salzburg	n/a
+AT-UBMS-HB     	UBMS	Salzburg	Universitätsbibliothek Mozarteum Salzburg	n/a
+AT-UBS-HB      	UBSBG	Salzburg	Universitätsbibliothek Salzburg	n/a
+DE-Sal2        	BFS	Salzgitter	Bundesamt für Strahlenschutz	10001-30000
+               	DAISA	Sana'a	Deutsches Archäologisches Institut (DAI), Außenstelle Sana'a der Orient-Abteilung	n/a
+DE-918         	KAS	Sankt Augustin	Bibliothek der Konrad-Adenauer-Stiftung	100001-300000
+DE-Shm2        	FHSM	Schmalkalden	Hochschule Schmalkalden / Bibliothek	100001-300000
+DE-984         	HFGG	Schwäbisch Gmünd	Hochschulbibliothek der HfG Schwäbisch Gmünd	10001-30000
+DE-752         	PHGD	Schwäbisch Gmünd	Pädagogische Hochschule Schwäbisch Gmünd - Bibliothek	300001-1000000
+DE-33          	LBMV	Schwerin	Landesbibliothek Mecklenburg-Vorpommern Schwerin	300001-1000000
+               	SCHWY	Schwyz	Spital Schwyz	n/a
+DE-Star1       	MPFO	Seewiesen	Max-Planck-Institut für Ornithologie, Seewiesen	30001-100000
+DE-467         	UBSI	Siegen	Universitätsbibliothek Siegen	1000001-
+               	HDV	Sion	Bibliothek des Spitals Wallis und der Clinique romande de réadaptation	n/a
+DE-Sp3         	DHV	Speyer	Bibliothek der Deutschen Universität für Verwaltungswissenschaften Speyer	300001-1000000
+               	PKHSG	St. Gallen	PHSG - medienverbund.phsg	n/a
+               	LSRNO	St. Pölten	Bildungsdirektion Niederösterreich	n/a
+               	FHSP	St. Pölten	Fachhochschule St. Pölten	n/a
+               	UBSG	St.Gallen	Bibliothek der Universität St.Gallen - HSG	n/a
+DE-Sra5        	FHSTR	Stralsund	Hochschulbibliothek Stralsund	10001-30000
+               	BIFEB	Strobl / Wolfgangssee	Bundesinstitut für Erwachsenenbildung	n/a
+DE-Stg258      	BAS	Stuttgart	Duale Hochschule Baden-Württemberg Stuttgart	10001-30000
+DE-Stg191      	FIAO	Stuttgart	Fraunhofer-Institut für Arbeitswirtschaft und Organisation	10001-30000
+DE-958         	HDM	Stuttgart	Hochschule der Medien (HdM)	30001-100000
+DE-1033        	HFTS	Stuttgart	Hochschule für Technik Stuttgart	30001-100000
+DE-93          	UBS	Stuttgart	IZUS / Universitätsbibliothek Stuttgart	1000001-
+               	KLIS	Stuttgart	Klinikum Stuttgart	n/a
+DE-100         	UBHOH	Stuttgart	Kommunikations-, Informations- und Medienzentrum Hohenheim (KIM)	300001-1000000
+DE-Stg117      	LKZBS	Stuttgart	Landeskirchliche Zentralbibliothek Stuttgart	100001-300000
+DE-Stg113      	MPIS	Stuttgart	Max-Planck-Institute Stuttgart	30001-100000
+DE-Stg265      	SMNS	Stuttgart	Staatliches Museum für Naturkunde Stuttgart	30001-100000
+DE-24          	WLB	Stuttgart	Württembergische Landesbibliothek Stuttgart	1000001-
+DE-Y5          	DIJ	Tokyo	Deutsches Institut für Japanstudien, Bibliothek	30001-100000
+DE-Tr2         	BPS	Trier	Bibliothek des Bischöflichen Priesterseminars Trier	300001-1000000
+DE-Tr5         	FHTR	Trier	Hochschule Trier / Bibliothek	30001-100000
+DE-385         	UBTR	Trier	Universitätsbibliothek Trier	1000001-
+               	BZGS	Trimbach	Berufsbildungszentrum Olten, Bibliothek Gesundheitlich-Soziale Berufsfachschule GSBS, Trimbach	n/a
+               	MTF	Trnava	Central Library - Study and Information Centre of the Faculty of Materials Science and Technology STU	n/a
+DE-Trs1        	MHTRO	Trossingen	Bibliothek der Staatlichen Hochschule für Musik Trossingen	30001-100000
+               	IWM	Tübingen	Leibniz-Institut für Wissensmedien - Bibliothek	n/a
+DE-B107        	MPIT	Tübingen	Max-Planck-Institute Tübingen	30001-100000
+DE-21          	UBTUE	Tübingen	Universitätsbibliothek Tübingen	1000001-
+DE-943         	FHUL	Ulm	Bibliothek der Technischen Hochschule Ulm	30001-100000
+DE-289         	UBU	Ulm	Universität Ulm / Kommunikations- und Informationszentrum (kiz)	300001-1000000
+               	ULIE	Vaduz	Universität Liechtenstein - Bibliothek	n/a
+               	PTHV	Vallendar	Philosophisch-Theologische Hochschule Vallendar, Pflegewissenschaftliche Fakultät	n/a
+DE-Va1         	UBVE	Vechta	Universitätsbibliothek Vechta	300001-1000000
+DE-Veh1        	LWG	Veitshöchheim	Bayerische Landesanstalt für Weinbau und Gartenbau - Bibliothek, Veitshöchheim	30001-100000
+DE-Vil2        	BAVS	Villingen-Schwenningen	Duale Hochschule Baden-Württemberg Villingen-Schwenningen, Bibliothek	30001-100000
+               	KLIVS	Villingen-Schwenningen	Schwarzwald-Baar Klinikum Villingen-Schwenningen GmbH	n/a
+DE-982         	DAG	Wadern,	Schloss Dagstuhl - Leibniz-Zentrum für Informatik, Bibliothek	30001-100000
+               	DHIW	Warschau	Deutsches Historisches Institut Warschau	n/a
+               	GHI	Washington	Deutsches Historisches Institut Washington	n/a
+               	LOC	Washington, DC	Library of Congress, Washington, DC	n/a
+DE-1028        	FHWEI	Weihenstephan	Bibliothek der Hochschule Weihenstephan-Triesdorf	100001-300000
+DE-32          	HAAB	Weimar	Herzogin Anna Amalia Bibliothek Weimar	300001-1000000
+               	TLDA	Weimar	Thüringisches Landesamt für Denkmalpflege und Archäologie	n/a
+DE-Wim2        	UBBUW	Weimar	Universitätsbibliothek der Bauhaus-Universität Weimar	300001-1000000
+DE-747         	HSBW	Weingarten	Hochschule Ravensburg-Weingarten (HRW)	100001-300000
+               	HBW	Weingarten	Pädagogische Hochschule Weingarten (PHW)	n/a
+               	FHOOE	Wels - Steyr - Linz - Hagenberg	FH Oberösterreich Studienbetriebs GmbH	n/a
+DE-527         	HSH	Wernigerode	Bibliothek der Hochschule Harz in Wernigerode und Halberstadt	100001-300000
+AT-AKW         	AKW	Wien	AK Bibliothek Wien für Sozialwissenschaften	n/a
+AT-OeAW-BA     	OEAW	Wien	Bibliothek der Österreichischen Akademie der Wissenschaften	n/a
+               	WIFO	Wien	Bibliothek des Österreichischen Instituts für Wirtschaftsforschung (WIFO)	n/a
+               	FBVA	Wien	Bundesforschungs- und Ausbildungszentrum für Wald, Naturgefahren und Landschaft (BFW)	n/a
+               	OEFSE	Wien	C3-Bibliothek für Entwicklungspolitik	n/a
+               	BFIVI	Wien	Fachhochschule des BFI Wien	n/a
+               	FHTWI	Wien	Fachhochschule Technikum Wien / Bibliothek	n/a
+               	FPFS	Wien	FernFH Bibliothek	n/a
+               	FHCAW	Wien	FH Campus Wien	n/a
+               	FKW	Wien	FHWien der Wirtschaftskammer Wien	n/a
+AT-GDAeW       	GAW	Wien	Gesellschaft der Ärzte in Wien (GDA)	n/a
+               	IHS	Wien	Institut für Höhere Studien (IHS) Wien	n/a
+               	IMP	Wien	Max Perutz Library, Wien	n/a
+AT-OeNB        	ONB	Wien	Österreichische Nationalbibliothek	n/a
+               	PHWIE	Wien	Pädagogische Hochschule Wien	n/a
+               	SFU	Wien	Sigmund Freud Privatuniversität - Bibliothek	n/a
+AT-UBTUW-HB    	UBTUW	Wien	TU Wien Bibliothek	n/a
+AT-UBBW-HB     	BOKU	Wien	Universitätsbibliothek Bodenkultur Wien	n/a
+AT-UBABW       	UABK	Wien	Universitätsbibliothek der Akademie der bildenden Künste Wien	n/a
+AT-UBVUW-UB    	VMUW	Wien	Universitätsbibliothek der Vetmeduni Vienna	n/a
+AT-UBWW-HB     	UBWUW	Wien	Universitätsbibliothek der Wirtschaftsuniversität Wien	n/a
+AT-UBMUW-100   	ZBMW	Wien	Universitätsbibliothek MedUni Wien	n/a
+AT-UBAW        	UBAKW	Wien	Universitätsbibliothek Universität für angewandte Kunst Wien	n/a
+AT-UBW-002     	UBWI	Wien	Universitätsbibliothek Wien	n/a
+               	FHWN	Wiener Neustadt	Fachhochschule Wiener Neustadt für Wirtschaft und Technik	n/a
+DE-2378        	BKZ	Wiesbaden	Bibliothek der Kriminologischen Zentralstelle e.V., Wiesbaden	10001-30000
+               	EBS	Wiesbaden	EBS Universität für Wirtschaft und Recht	n/a
+DE-282         	STATI	Wiesbaden	Statistisches Bundesamt, Bibliothek	1000001-
+DE-43          	HLB	Wiesbaden, Rüsselsheim	Hochschul- und Landesbibliothek RheinMain	300001-1000000
+DE-526         	TFHW	Wildau	Technische Hochschule Wildau - Bibliothek	30001-100000
+DE-839         	FHWOE	Wilhelmshaven	Jade Hochschule Wilhelmshaven/Oldenburg/Elsfleth, Hochschulbibliothek	30001-100000
+               	FHNW	Windisch	FHNW, Fachhochschule Nordwestschweiz	n/a
+               	KSWCH	Winterthur	Ärzte- und Pflegefachbibliothek Kantonsspital Winterthur	n/a
+               	ZHAW	Winterthur	ZHAW Hochschulbibliothek Winterthur / Zürich / Wädenswil	n/a
+DE-Wis1        	HSHWI	Wismar	Hochschulbibliothek Wismar	100001-300000
+DE-1018        	UNIWH	Witten/Herdecke	Universitätsbibliothek Witten/Herdecke	30001-100000
+DE-916         	FHWF	Wolfenbüttel	Bibliothek der Ostfalia Hochschule für angewandte Wissenschaften	100001-300000
+DE-23          	HAB	Wolfenbüttel	Herzog August Bibliothek, Wolfenbüttel	300001-1000000
+DE-1117        	FHWO	Worms	Hochschulbibliothek Worms	30001-100000
+DE-Ba4         	THZW	Wuppertal	Hochschul- und Landeskirchenbibliothek Wuppertal	100001-300000
+DE-468         	UBWUP	Wuppertal	Universitätsbibliothek Wuppertal	1000001-
+DE-W78S        	FRISC	Würzburg	Bibliothek des Fraunhofer-Instituts für Silicatforschung	5001-10000
+DE-20          	UBW	Würzburg	Universitätsbibliothek Würzburg	1000001-
+DE-863         	FHBWS	Würzburg-Schweinfurt	Hochschulbibliothek Würzburg-Schweinfurt	30001-100000
+DE-Zi4         	HZG	Zittau/Görlitz	Hochschulbibliothek der Hochschule Zittau/Görlitz	100001-300000
+               	EHB	Zollikofen	Bibliotheken EHB (Standorte Lausanne, Lugano und Zollikofen)	n/a
+               	SSWZ	Zürich	Bibliothek Stadtspital Waid Zürich	n/a
+               	IHH	Zürich	Interkantonale Hochschule für Heilpädagogik, Bibliothek, Zürich	n/a
+               	SSTZ	Zürich	Stadtspital Triemli Zürich, Medizinische Bibliothek	n/a
+               	UNIZH	Zürich	Universität Zürich / Zentralbibliothek Zürich	n/a
+               	ZHK	Zürich	Zürcher Hochschule der Künste - Medien- und Informationszentrum MIZ	n/a
+DE-Zwi2        	WHZ	Zwickau	Hochschulbibliothek der WH Zwickau	100001-300000

@@ -238,7 +238,7 @@ def update_account(fullname, ezbid, sigel='', purge=False):
 
     acc.set_password(pw)
     acc.data['email'] = email
-    acc.data['role'] = [ 'repository' ]
+    acc.data['role'] = [ 'repository', 'active' ]
 
     if 'sword' not in acc.data: acc.data['sword'] = {}
     acc.data['sword']['username'] = ''

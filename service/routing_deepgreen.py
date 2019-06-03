@@ -193,10 +193,13 @@ def route(unrouted):
             #                 although it would be *very* unlikely to be needed here.  Strange. 
             if bibid is None: continue
             #
+            # 2019-06-03 TD : yet a level more to differentiate between active and passive 
+            #                 accounts. A new reqiurement, at a /very/ early stage... gosh.
+            #
             # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
             #acc1 = models.Account.pull_by_key("repository.bibid",bibid)
             for acc1 in models.Account.pull_all_by_key("repository.bibid",bibid):
-                if acc1 is not None and acc1.has_role("repository"):
+                if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive():
                     unrouted.embargo = aldata["embargo"]
                     al_repos.append((acc1.id,aldata,bibid))
 
@@ -205,7 +208,7 @@ def route(unrouted):
             # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
             #acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
             for acc2 in models.Account.pull_all_by_key("repository.bibid","a"+bibid):
-                if acc2 is not None and acc2.has_role("repository"):
+                if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive():
                     unrouted.embargo = aldata["embargo"]
                     al_repos.append((acc2.id,aldata,"a"+bibid))
 
@@ -216,15 +219,18 @@ def route(unrouted):
             #                 although it would be *very* unlikely to be needed here.  Strange. 
             if bibid is None: continue
             #
+            # 2019-06-03 TD : yet a level more to differentiate between active and passive 
+            #                 accounts. A new reqiurement, at a /very/ early stage... gosh.
+            #
             acc1 = models.Account.pull_by_key("repository.bibid",bibid)
-            if acc1 is not None and acc1.has_role("repository"):
+            if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive():
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc1.id,aldata,bibid))
 
             # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
             #
             acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
-            if acc2 is not None and acc2.has_role("repository"):
+            if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive():
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc2.id,aldata,"a"+bibid))
     #
@@ -233,9 +239,9 @@ def route(unrouted):
     if len(al_repos) > 0:
         app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
     else:
-        routing_reason = "No qualified repositories."
-        app.logger.debug(u"Routing - Notification {y} No qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))
-    # 2016-09-08 TD : end of checking alliance license legitimation
+        routing_reason = "No (active!) qualified repositories."
+        app.logger.debug(u"Routing - Notification {y} No (active!) qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))
+    # 2016-09-08 TD : end of checking alliance (and probably other!) license legitimation(s)
 
     # iterate through all the repository configs, collecting match provenance and
     # id information
