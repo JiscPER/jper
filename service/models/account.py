@@ -81,8 +81,10 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def set_active(self):
         if self.has_role('passive'):
             self.remove_role('passive') 
-        if not self.has_role('active'):
-            self.add_role('active')
+        # 2019-06-04 TD : no active support of role 'active' 
+        #                 (so 'passive' will be more prominent on screen, for example) 
+        # if not self.has_role('active'):
+        #     self.add_role('active')
 
     def set_passive(self):
         if self.has_role('active'):
