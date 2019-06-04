@@ -23,7 +23,8 @@
 				{% for user in users %}
 				<tr>
 					<td>{{user[1]}}</td>
-					<td>{% for r in user[2] %}{{r}}{% endfor %}</td>
+					<!-- <td>{% for r in user[2] %} {{r}} {% endfor %}</td> -->
+					<td>{{user[2].join(';')}}</td>
 					<td>{{user[0]}}</td>
 					<td><a href="/account/{{user[0]}}">Manage</a></td>
 				</tr>
