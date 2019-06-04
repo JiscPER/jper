@@ -20,6 +20,7 @@ def activate_account(acc_id):
     # if there is one, turn it on
     if acc is not None and acc.has_role('repository'):
         acc.set_active()
+        acc.save()
 
 
 def deactivate_account(acc_id):
@@ -38,4 +39,5 @@ def deactivate_account(acc_id):
     # if there is one, switch if off (i.e. deactivate it for the time being)
     if acc is not None and acc.has_role('repository'):
         acc.set_passive()
+        acc.save()
 
