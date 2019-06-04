@@ -280,6 +280,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", help="folder for affiliation template files")
     parser.add_argument("--net", action="store_true", help="do network requests for update")
     parser.add_argument("--purge", action="store_true", help="purge instead of update (DANGER!)")
+    parser.add_argument("--glob", action="store_true", help="new globbing pattern for input .csv files")
 
     args = parser.parse_args()
 
@@ -300,6 +301,9 @@ if __name__ == "__main__":
     #     os.remove(reportfile)
     #
     # reports.delivery_report(args.from_date, args.to_date, reportfile)
+
+    if args.glob is not None:
+        OA_PARTICIPANTS_GLOB = args.glob
 
     if args.output is not None:
         RESULTDIR = args.output
