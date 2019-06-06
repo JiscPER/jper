@@ -199,7 +199,7 @@ def route(unrouted):
             # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
             #acc1 = models.Account.pull_by_key("repository.bibid",bibid)
             for acc1 in models.Account.pull_all_by_key("repository.bibid",bibid):
-                if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive():
+                if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive:
                     unrouted.embargo = aldata["embargo"]
                     al_repos.append((acc1.id,aldata,bibid))
 
@@ -208,7 +208,7 @@ def route(unrouted):
             # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
             #acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
             for acc2 in models.Account.pull_all_by_key("repository.bibid","a"+bibid):
-                if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive():
+                if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive:
                     unrouted.embargo = aldata["embargo"]
                     al_repos.append((acc2.id,aldata,"a"+bibid))
 
@@ -223,14 +223,14 @@ def route(unrouted):
             #                 accounts. A new reqiurement, at a /very/ early stage... gosh.
             #
             acc1 = models.Account.pull_by_key("repository.bibid",bibid)
-            if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive():
+            if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive:
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc1.id,aldata,bibid))
 
             # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
             #
             acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
-            if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive():
+            if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive:
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc2.id,aldata,"a"+bibid))
     #
