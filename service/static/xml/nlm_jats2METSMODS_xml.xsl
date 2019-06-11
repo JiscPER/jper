@@ -45,6 +45,7 @@
     
     <xsl:template match="/article">
         <mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+                   xmlns:xlink="http://www.w3.org/1999/xlink"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.loc.gov/mods/v3 https://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
 
