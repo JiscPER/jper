@@ -169,6 +169,9 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def pull_all_by_key(cls,key,value):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
         n = res.get('hits',{}).get('total',0)
+        # 2019-06-11 TD : re-query necessary as a precautionary measure because len(res) seems 
+        #                 to be restricted to 10 records only per default...
+        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
         return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in xrange(n) ]
 
     @classmethod
