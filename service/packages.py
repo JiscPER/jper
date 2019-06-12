@@ -973,12 +973,15 @@ class FilesAndJATS(PackageHandler):
                         break  # only *one* .xml allowed per .zip
 
                 count = 0
+                mimetypes.init()
                 for item in zin.infolist():
                     if not item.filename.endswith(".xml"):
                         count = count + 1
                         data = zin.read(item.filename)
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
+                        if mimetype[0] is None:
+                            mimetype[0] = "application/octet-stream"
                         mets = addfile( mets, 
                                         md5=etree.XSLT.strparam(md5sum), 
                                         file=etree.XSLT.strparam(item.filename),
@@ -1049,12 +1052,15 @@ class FilesAndJATS(PackageHandler):
                         break  # only *one* .xml allowed per .zip
 
                 count = 0
+                mimetypes.init()
                 for item in zin.infolist():
                     if not item.filename.endswith(".xml"):
                         count = count + 1
                         data = zin.read(item.filename)
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
+                        if mimetype[0] is None:
+                            mimetype[0] = "application/octet-stream"
                         mets = addfile( mets, 
                                         md5=etree.XSLT.strparam(md5sum), 
                                         file=etree.XSLT.strparam(item.filename),
@@ -1788,12 +1794,15 @@ class FilesAndRSC(PackageHandler):
                         break  # only *one* .xml allowed per .zip
 
                 count = 0
+                mimetypes.init()
                 for item in zin.infolist():
                     if not item.filename.endswith(".xml"):
                         count = count + 1
                         data = zin.read(item.filename)
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
+                        if mimetype[0] is None:
+                            mimetype[0] = "application/octet-stream"
                         metsdspace = addfile( metsdspace, 
                                               md5=etree.XSLT.strparam(md5sum), 
                                               file=etree.XSLT.strparam(item.filename),
@@ -1864,12 +1873,15 @@ class FilesAndRSC(PackageHandler):
                         break  # only *one* .xml allowed per .zip
 
                 count = 0
+                mimetypes.init()
                 for item in zin.infolist():
                     if not item.filename.endswith(".xml"):
                         count = count + 1
                         data = zin.read(item.filename)
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
+                        if mimetype[0] is None:
+                            mimetype[0] = "application/octet-stream"
                         mets = addfile( mets, 
                                         md5=etree.XSLT.strparam(md5sum), 
                                         file=etree.XSLT.strparam(item.filename),
