@@ -981,7 +981,7 @@ class FilesAndJATS(PackageHandler):
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
                         if mimetype[0] is None:
-                            mimetype[0] = "application/octet-stream"
+                            mimetype = ("application/octet-stream", None)
                         mets = addfile( mets, 
                                         md5=etree.XSLT.strparam(md5sum), 
                                         file=etree.XSLT.strparam(item.filename),
@@ -1060,7 +1060,7 @@ class FilesAndJATS(PackageHandler):
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
                         if mimetype[0] is None:
-                            mimetype[0] = "application/octet-stream"
+                            mimetype = ("application/octet-stream", None)
                         mets = addfile( mets, 
                                         md5=etree.XSLT.strparam(md5sum), 
                                         file=etree.XSLT.strparam(item.filename),
@@ -1802,7 +1802,7 @@ class FilesAndRSC(PackageHandler):
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
                         if mimetype[0] is None:
-                            mimetype[0] = "application/octet-stream"
+                            mimetype = ("application/octet-stream", None)
                         metsdspace = addfile( metsdspace, 
                                               md5=etree.XSLT.strparam(md5sum), 
                                               file=etree.XSLT.strparam(item.filename),
@@ -1881,7 +1881,7 @@ class FilesAndRSC(PackageHandler):
                         md5sum = hashlib.md5(data).hexdigest()
                         mimetype = mimetypes.MimeTypes().guess_type(item.filename)
                         if mimetype[0] is None:
-                            mimetype[0] = "application/octet-stream"
+                            mimetype = ("application/octet-stream", None)
                         mets = addfile( mets, 
                                         md5=etree.XSLT.strparam(md5sum), 
                                         file=etree.XSLT.strparam(item.filename),
