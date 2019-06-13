@@ -222,6 +222,9 @@ def checkunrouted():
     urobjids = []
     robjids = []
     counter = 0
+    limit = app.config.get('CHECKUNROUTED_SCHEDULE',10) * 10 
+    # 2019-06-13 TD : to cope with mass deliveries, we have to limit the next loop 
+    #                 (factor 10 times the time to the next call seems reasonable...)
     try:
         app.logger.debug("Scheduler - check for unrouted notifications")
         # query the service.models.unroutednotification index
@@ -234,6 +237,10 @@ def checkunrouted():
                 robjids.append(obj.id)
             else:
                 urobjids.append(obj.id)
+            # 2019-06-13 TD : to cope with mass deliveries, we have to limit 
+            #                 the loop over the unrouted notifs
+            if count >= limit:
+                break
 
         # 2017-06-06 TD : replace str() by .format() string interpolation
         app.logger.debug("Scheduler - routing sent {cnt} notification(s) for routing".format(cnt=counter))
