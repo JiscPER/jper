@@ -239,7 +239,7 @@ def checkunrouted():
                 urobjids.append(obj.id)
             # 2019-06-13 TD : to cope with mass deliveries, we have to limit 
             #                 the loop over the unrouted notifs
-            if count >= limit:
+            if counter >= limit:
                 break
 
         # 2017-06-06 TD : replace str() by .format() string interpolation
