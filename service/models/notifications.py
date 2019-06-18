@@ -1020,8 +1020,8 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
     Class which represents a notification that has been received into the system successfully
     but has not yet been routed to any repository accounts.
 
-    It extends the BaseNotification and does not add any additional information, so see that class's
-    documentation for details of the data model.
+    It extends the BaseNotification and does not add any additional information, so see 
+    that class's documentation for details of the data model.
 
     This class also extends a DAO, which means it can be persisted.
     """
@@ -1064,6 +1064,19 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
             del d["targets"]
         routed = RoutedNotification(d)
         return routed
+
+#    # 2019-06-18 TD : We need just another Notification type: Stalled.
+#    def make_stalled(self):
+#        """
+#        Create an instance of a StalledNotification from this object.
+#
+#        This can be done if the object causes an error in the routing process on analysis.
+#
+#        :return: StalledNotification
+#        """
+#        d = deepcopy(self.data)
+#        stalled = StalledNotification(d)
+#        return stalled
 
     def make_failed(self):
         """
@@ -1194,6 +1207,33 @@ class RoutedNotification(BaseNotification, RoutingInformation, dao.RoutedNotific
             return OutgoingNotification(d)
         else:
             return ProviderOutgoingNotification(d)
+
+
+# # 2019-06-18 TD : Here is just another Notification type: Stalled
+# class StalledNotification(BaseNotification, dao.StalledNotificationDAO):
+#     """
+#     Class which represents a notification that has been received into the system but has caused
+#     an error during the routing process on analysis.
+# 
+#     It extends the BaseNotification and does not add any additional information, so see 
+#     that class's documentation for details of the data model.
+# 
+#     This class also extends a DAO, which means it can be persisted.
+#     """
+# 
+#     def __init__(self, raw=None):
+#         """
+#         Create a new instance of the StalledNotification object, optionally around the
+#         raw python dictionary.
+# 
+#         If supplied, the raw dictionary will be validated against the allowed structure of this
+#         object, and an exception will be raised if it does not validate
+# 
+#         :param raw: python dict object containing the notification data
+#         """
+#         super(StalledNotification, self).__init__(raw=raw)
+# #
+# # 2019-06-18 TD : End of new class StalledNotification
 
 
 class FailedNotification(BaseNotification, RoutingInformation, dao.FailedNotificationDAO):

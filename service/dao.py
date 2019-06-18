@@ -48,6 +48,14 @@ class RoutedNotificationDAO(dao.TimeBoxedTypeESDAO):
         from service.tests import fixtures
         return cls(fixtures.NotificationFactory.routed_notification())
 
+# class StalledNotificationDAO(dao.ESDAO):
+#     """
+#     DAO for StalledNotifications
+#     """
+# 
+#     __type__ = "stalled"
+#     """ The index type to use to store these objects """
+
 class FailedNotificationDAO(dao.ESDAO):
     """
     DAO for FailedNotifications

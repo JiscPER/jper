@@ -20,7 +20,32 @@ class RoutingException(Exception):
     """
     pass
 
+# 2019-06-18 TD : a wrapper around the routing.route(obj) call in order to
+#                 be able to catch 'stalled' notifications
 def route(unrouted):
+    try:
+        rc = _route(unrouted)
+    except Exception as e:
+        urid = unrouted.id
+        routing_reason = "Stalled: " + e.message
+        # if config says so, convert the unrouted notification to a failed notification, 
+        # (enhance and) save for later diagnosis
+        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
+            failed = unrouted.make_failed()
+            failed.analysis_date = dates.now()
+            failed.reason = routing_reason
+            failed.issn_data = "None"
+            failed.save()
+            app.logger.debug(u"Routing - Notification:{y} stored as a (stalling) Failed Notification".format(y=urid))
+
+        app.logger.error(u"Routing - Notification:{y} failed with (stalling) error '{x}'".format(y=urid, x=e.message))
+        return False
+        # raise RoutingException(e.message)
+
+    return rc
+
+
+def _route(unrouted):
     """
     Route an UnroutedNotification to the appropriate repositories
 
