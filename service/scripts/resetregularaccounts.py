@@ -314,7 +314,7 @@ if __name__ == "__main__":
     if args.output is not None:
         RESULTDIR = args.output
 
-    if (args.input is not None:
+    if args.input is not None:
         OA_PARTICIPANTS_GLOB = args.input
 
     oalist = glob.glob(OA_PARTICIPANTS_GLOB)
