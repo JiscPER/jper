@@ -237,9 +237,16 @@ def retrieve_content(notification_id, filename=None):
 
     nt = None
     try:
+
         filestream = JPER.get_content(current_user, notification_id, filename)
         nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"store"})
-        return Response(stream_with_context(filestream))
+        return Response(stream_with_context(filestream), 
+                        mimetype="application/zip",
+                        headers={"Content-Disposition": "attachment;filename={x}".format(x=fn)}
+                       )
+        # 2019-07-09 TD : Inserted a default mimetype and apropriate header 
+        #                 when a binary is played out
+        # return Response(stream_with_context(filestream))
     except UnauthorisedException as e:
         nt = models.ContentLog({"user":current_user.id,"notification":notification_id,"filename":fn,"delivered_from":"unauthorised"})
         return _unauthorised()
