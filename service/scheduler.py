@@ -187,7 +187,7 @@ def copyftp():
                     shutil.rmtree(dst, ignore_errors=True) # target MUST NOT exist!
                     shutil.copytree(src, dst)
                     try:
-                        os.remove(scr) # try to take the pending link away
+                        os.remove(src) # try to take the pending symlink away
                     except Exception as e:
                         app.logger.error("Scheduler - failed to delete pending entry: '{x}'".format(x=e.message))
             else:
