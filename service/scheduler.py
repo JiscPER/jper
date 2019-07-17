@@ -180,6 +180,8 @@ def copyftp():
                 continue
             if len(os.listdir(pubstoredir + '/' + dir + '/pending')):
                 for transact in os.listdir(pubstoredir + '/' + dir + '/pending'):
+                    if len(os.listdir(tmpdir + '/' + dir)) > maxtransacts:
+                        break
                     app.logger.info('Scheduler - copying folder of transaction ' + transact + ' for Account:' + dir)
                     src = pubstoredir + '/' + dir + '/pending/' + transact
                     dst = tmpdir + '/' + dir + '/' + transact
