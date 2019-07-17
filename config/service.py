@@ -111,16 +111,19 @@ PACKAGE_HANDLERS = {
 """map from format identifiers to PackageHandler plugins that should be used in those cases"""
 
 
+PUBSTOREDIR = '/data/dg_storage'
 USERDIR = '/home/sftpusers' # this is ASSUMED in ssh config and possibly in shell scripts. So just don't change it
-API_URL = "https://datahub.deepgreen.org/api/v1/notification"
+API_URL = "https://www.oa-deepgreen.de/api/v1/notification"
 ## API_URL = "https://pubrouter.jisc.ac.uk/api/v1/notification"
 #API_URL = "http://test.cottagelabs.com:5998/api/v1/notification"
+MAX_TMPDIR_TRANSACTS_PER_ACC = 99
 TMP_DIR = "/home/green/ftptmp"
 ## TMP_DIR = "/home/mark/ftptmp"
 RUN_SCHEDULE = False
-MOVEFTP_SCHEDULE = 10
-PROCESSFTP_SCHEDULE = 10
-CHECKUNROUTED_SCHEDULE = 10
+MOVEFTP_SCHEDULE = 5
+COPYFTP_SCHEDULE = 10
+PROCESSFTP_SCHEDULE = 15
+CHECKUNROUTED_SCHEDULE = 20
 DELETE_ROUTED = True
 DELETE_UNROUTED = True
 

@@ -8,10 +8,12 @@
 # -------------------------------------------------------------------------
 username=$1 # get from script params
 newowner=$2
-tmpdir=$3
+targetdir=$3
 uniqueid=$4
 uniquedir=$5
 thefile=$6
+# 2019-07-17 TD : new param for directory indicating pending items (e.g. by symbolic links)
+pendingdir=$7
 egrep "^$username" /etc/passwd >/dev/null
 # only do if the username exists (just to check)
 if [ $? -eq 0 ]; then
@@ -29,8 +31,12 @@ if [ $? -eq 0 ]; then
 
 # check that the tmp processing dir for this user and for this unique move process exists
 mkdir -p $uniquedir
+# 2019-07-19 TD : check that the pending directory exists
+mkdir -p $pendingdir
 # move the specified file in the jail to the temp processing directory
 mv $thefile $uniquedir
-# set ownership from the user tmpdir down
-chown -R $newowner:$newowner $tmpdir
+# 2019-07-19 TD : create/overwrite symbolic link indicating the item as pending
+ln -sf $uniquedir $pendingdir/.
+# set ownership from the user targetdir down
+chown -R $newowner:$newowner $targetdir
 fi

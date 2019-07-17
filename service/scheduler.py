@@ -124,11 +124,14 @@ def pkgformat(src):
     app.logger.debug('Pkgformat returns ' + pkg_fmt)
     return pkg_fmt
 
-
+#
+# 2019-07-17 TD : change target of the move operation to the big dg_storage for all deliveries
+#
 def moveftp():
     try:
-        # move any files in the jail of ftp users into the temp directory for later processing
-        tmpdir = app.config.get('TMP_DIR','/tmp')
+        # # move any files in the jail of ftp users into the temp directory for later processing
+        # tmpdir = app.config.get('TMP_DIR','/tmp')
+        pubstoredir = app.config.get('PUBSTOREDIR','/data/dg_storage')
         userdir = app.config.get('USERDIR','/home/sftpusers')
         userdirs = os.listdir(userdir)
         app.logger.info("Scheduler - from FTP folders found " + str(len(userdirs)) + " user directories")
@@ -142,9 +145,14 @@ def moveftp():
                     except:
                         newowner = 'green'
                     uniqueid = uuid.uuid4().hex
-                    uniquedir = tmpdir + '/' + dir + '/' + uniqueid
+                    # targetdir = tmpdir + '/' + dir
+                    # uniquedir = tmpdir + '/' + dir + '/' + uniqueid
+                    targetdir = pubstoredir + '/' + dir
+                    # 2019-07-17 TD : introduce a new directory that will indicate pending items
+                    pendingdir = pubstoredir + '/' + dir + '/pending'
+                    uniquedir = pubstoredir + '/' + dir + '/' + uniqueid
                     moveitem = userdir + '/' + dir + '/xfer/' + thisitem
-                    subprocess.call( [ 'sudo', fl, dir, newowner, tmpdir, uniqueid, uniquedir, moveitem ] )
+                    subprocess.call( [ 'sudo', fl, dir, newowner, targetdir, uniqueid, uniquedir, moveitem, pendingdir ] )
             else:
                 app.logger.debug('Scheduler - found nothing to move for Account:' + dir)
     except:
@@ -153,7 +161,44 @@ def moveftp():
 if app.config.get('MOVEFTP_SCHEDULE',10) != 0:
     schedule.every(app.config.get('MOVEFTP_SCHEDULE',10)).minutes.do(moveftp)
 
-    
+
+#
+# 2019-07-17 TD : process the big delivery/publisher dg_storage for all pending items
+#
+def copyftp():
+    try:
+        # copy any files in the big delivery/publisher dg_storage into the temp dir for processing
+        tmpdir = app.config.get('TMP_DIR','/tmp')
+        maxtransacts = app.config.get('MAX_TMPDIR_TRANSACTS_PER_ACC',99)
+        pubstoredir = app.config.get('PUBSTOREDIR','/data/dg_storage')
+        pubstoredirs = os.listdir(pubstoredir)
+        app.logger.info("Scheduler - from DG-STORAGE folders found " + str(len(pubstoredirs)) + " user directories")
+        for dir in pubstoredirs:
+            # 2019-07-17 TD : limit temp dir to 100 transactions per account
+            if len(os.listdir(tmpdir + '/' + dir)) > maxtransacts:
+                app.logger.info('Scheduler - skipping this copy process because len(transactions)>' + str(maxtransacts) + ' in temp directory for Account:' + dir)
+                continue
+            if len(os.listdir(pubstoredir + '/' + dir + '/pending')):
+                for transact in os.listdir(pubstoredir + '/' + dir + '/pending'):
+                    app.logger.info('Scheduler - copying folder of transaction ' + transact + ' for Account:' + dir)
+                    src = pubstoredir + '/' + dir + '/pending/' + transact
+                    dst = tmpdir + '/' + dir + '/' + transact
+                    # subprocess.call( [ 'cp -R', ...] )
+                    shutil.rmtree(dst, ignore_errors=True) # target MUST NOT exist!
+                    shutil.copytree(src, dst)
+                    try:
+                        os.remove(scr) # try to take the pending link away
+                    except Exception as e:
+                        app.logger.error("Scheduler - failed to delete pending entry: '{x}'".format(x=e.message))
+            else:
+                app.logger.debug('Scheduler - currently, nothing to copy for Account:' + dir)
+    except:
+        app.logger.error("Scheduler - copy from DG-STORAGE failed")
+
+if app.config.get('COPYFTP_SCHEDULE',10) != 0:
+    schedule.every(app.config.get('COPYFTP_SCHEDULE',10)).minutes.do(copyftp)
+
+
 def processftp():
     try:
         # list all directories in the temp dir - one for each ftp user for whom files have been moved from their jail
