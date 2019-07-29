@@ -174,7 +174,7 @@ def copyftp():
         pubstoredirs = os.listdir(pubstoredir)
         app.logger.info("Scheduler - from DG-STORAGE folders found " + str(len(pubstoredirs)) + " user directories")
         for dir in pubstoredirs:
-            # 2019-07.29 TD : check if 'tmpdir/dir' exists at all
+            # 2019-07-29 TD : check if 'tmpdir/dir' exists at all
             if os.path.exists(tmpdir + '/' + dir) is False:
                 os.makedirs(tmpdir + '/' + dir)
             # 2019-07-17 TD : limit temp dir to 100 transactions per account
