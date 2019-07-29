@@ -272,7 +272,7 @@ def checkunrouted():
     urobjids = []
     robjids = []
     counter = 0
-    limit = app.config.get('CHECKUNROUTED_SCHEDULE',10) * 10 
+    limit = app.config.get('CHECKUNROUTED_SCHEDULE',10) * 5
     # 2019-06-13 TD : to cope with mass deliveries, we have to limit the next loop 
     #                 (factor 10 times the time to the next call seems reasonable...)
     try:
