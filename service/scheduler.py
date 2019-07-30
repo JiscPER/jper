@@ -136,24 +136,34 @@ def moveftp():
         userdirs = os.listdir(userdir)
         app.logger.info("Scheduler - from FTP folders found " + str(len(userdirs)) + " user directories")
         for dir in userdirs:
-            if len(os.listdir(userdir + '/' + dir + '/xfer')):
-                for thisitem in os.listdir(userdir + '/' + dir + '/xfer'):
-                    app.logger.info('Scheduler - moving file ' + thisitem + ' for Account:' + dir)
-                    fl = os.path.dirname(os.path.abspath(__file__)) + '/models/moveFTPfiles.sh'
-                    try:
-                        newowner = getpass.getuser()
-                    except:
-                        newowner = 'green'
-                    uniqueid = uuid.uuid4().hex
-                    # targetdir = tmpdir + '/' + dir
-                    # uniquedir = tmpdir + '/' + dir + '/' + uniqueid
-                    targetdir = pubstoredir + '/' + dir
-                    # 2019-07-17 TD : introduce a new directory that will indicate pending items
-                    pendingdir = pubstoredir + '/' + dir + '/pending'
-                    uniquedir = pubstoredir + '/' + dir + '/' + uniqueid
-                    moveitem = userdir + '/' + dir + '/xfer/' + thisitem
-                    subprocess.call( [ 'sudo', fl, dir, newowner, targetdir, uniqueid, uniquedir, moveitem, pendingdir ] )
-            else:
+            # 2019-07-30 TD : One more loop over possible subfolders of the user
+            #                 Please note: They are *exclusively* created by 'createFTPuser.sh' 
+            #                 At least, there should be the (old) 'xfer' folder
+            founditems = False
+            for xfer in os.listdir(userdir + '/' + dir):
+                # if len(os.listdir(userdir + '/' + dir + '/xfer')):
+                if len(os.listdir(userdir + '/' + dir + '/' + xfer)):
+                    founditems = True
+                    # for thisitem in os.listdir(userdir + '/' + dir + '/xfer'):
+                    for thisitem in os.listdir(userdir + '/' + dir + '/' + xfer):
+                        app.logger.info('Scheduler - moving file ' + thisitem + ' for Account:' + dir)
+                        fl = os.path.dirname(os.path.abspath(__file__)) + '/models/moveFTPfiles.sh'
+                        try:
+                            newowner = getpass.getuser()
+                        except:
+                            newowner = 'green'
+                        uniqueid = uuid.uuid4().hex
+                        # targetdir = tmpdir + '/' + dir
+                        # uniquedir = tmpdir + '/' + dir + '/' + uniqueid
+                        targetdir = pubstoredir + '/' + dir
+                        # 2019-07-17 TD : introduce a new directory that will indicate pending items
+                        pendingdir = pubstoredir + '/' + dir + '/pending'
+                        uniquedir = pubstoredir + '/' + dir + '/' + uniqueid
+                        # moveitem = userdir + '/' + dir + '/xfer/' + thisitem
+                        moveitem = userdir + '/' + dir + '/' + xfer + '/' + thisitem
+                        subprocess.call( [ 'sudo', fl, dir, newowner, targetdir, uniqueid, uniquedir, moveitem, pendingdir ] )
+
+            if founditems is False:
                 app.logger.debug('Scheduler - found nothing to move for Account:' + dir)
     except:
         app.logger.error("Scheduler - move from FTP failed")

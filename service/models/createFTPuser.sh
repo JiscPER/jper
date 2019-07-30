@@ -18,5 +18,9 @@ useradd -M -K UID_MIN=20000 -g sftpusers -p $encryptedPassword -d /xfer -s /sbin
 [ $? -eq 0 ] && echo "User has been added to system!" || echo "Failed to add a user!"
 mkdir /home/sftpusers/$username
 mkdir /home/sftpusers/$username/xfer
+mkdir /home/sftpusers/$username/xfer2
+mkdir /home/sftpusers/$username/xfer3
 chown $username:sftpusers /home/sftpusers/$username/xfer
+chown $username:sftpusers /home/sftpusers/$username/xfer2
+chown $username:sftpusers /home/sftpusers/$username/xfer3
 fi
