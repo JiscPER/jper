@@ -173,8 +173,11 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
                     'Medical School','Open University','Presse- und Informationsstelle',
                     'German Institute','Planck-Institut','Landesbibliothek',
                     'Universitätsbibliothek','CAU','FAU','TIB','MIS','HAWK','HAW','TUM','TUD',
-                    'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB',
-                    'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU']
+                    'MPI','MRI','PH','ILS','DAI','UM','TU','UDE','UKL','UKE','UBE','ULB','FH',
+                    'HS','SUB','FU','CU','KU','UR','BH','ITV','UH','UD','DHI','THA','FeU',
+                    'BO','LUH','IME','KIT','ZI','MUL','LIN','IRS','WH','GEI','FES','DIE',
+                    'BAM','BAF','EH','FLI','TUC','AWI','GHI','IHA','HsH','HAB','HM','CUT',
+                    'HAAB','IAI','cire','OSTA','ZIPE']
                  ]
 
         try:
