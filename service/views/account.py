@@ -628,7 +628,7 @@ def repoinfo(username):
     else:
             acc.data['repository']['software'] = ''
     if request.values.get('repository_url',False):
-            acc.data['repository']['url'] = request.values['repository_url']
+            acc.data['repository']['url'] = request.values['repository_url'].strip()
     else:
             acc.data['repository']['url'] = ''
     if request.values.get('repository_name',False):
@@ -640,7 +640,7 @@ def repoinfo(username):
     else:
             acc.data['repository']['sigel'] = []
     if request.values.get('repository_bibid',False):
-            acc.data['repository']['bibid'] = request.values['repository_bibid'].upper()
+            acc.data['repository']['bibid'] = request.values['repository_bibid'].strip().upper()
     else:
             acc.data['repository']['bibid'] = ''
         
@@ -656,12 +656,12 @@ def repoinfo(username):
     else:
             acc.data['sword']['password'] = ''
     if request.values.get('sword_collection',False):
-            acc.data['sword']['collection'] = request.values['sword_collection']
+            acc.data['sword']['collection'] = request.values['sword_collection'].strip()
     else:
             acc.data['sword']['collection'] = ''
         
     if request.values.get('packaging',False):
-            acc.data['packaging'] = request.values['packaging'].split(',')
+            acc.data['packaging'] = [s.strip() for s in request.values['packaging'].split(',')]
     else:
             acc.data['packaging'] = []
 
