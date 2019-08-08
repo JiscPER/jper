@@ -8,15 +8,15 @@
   <xsl:param name="mime"><xsl:text>application/octet-stream</xsl:text></xsl:param>
   <xsl:param name="cnt"><xsl:text>1</xsl:text></xsl:param>
 
-  <xsl:template match="node()|@*">
+  <xsl:template match="@*|node()">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="/mets:mets">
+  <xsl:template match="mets:mets">
     <xsl:copy>
-      <xsl:copy-of select="node()|@*"/>
+      <xsl:apply-templates select="@* | *"/>
       <xsl:if test="not(./fileSec/fileGrp) and string-length($file)!=0 and string-length($md5)!=0">
         <fileSec xmlns="http://www.loc.gov/METS/">
           <fileGrp>
@@ -82,9 +82,9 @@
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="/mets:mets/mets:fileSec/mets:fileGrp">
+  <xsl:template match="mets:fileGrp">
     <xsl:copy>
-      <xsl:copy-of select="node()|@*"/>
+      <xsl:apply-templates select="@* | *"/>
       <xsl:if test="string-length($file)!=0 and string-length($md5)!=0">
         <file>
           <xsl:attribute name="GROUPID">

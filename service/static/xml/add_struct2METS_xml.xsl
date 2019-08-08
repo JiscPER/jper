@@ -3,15 +3,15 @@
 
   <xsl:output method="xml" omit-xml-declaration="no" standalone="no" indent="yes" encoding="utf-8"/>
 
-  <xsl:template match="node()|@*">
+  <xsl:template match="@*|node()">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="/mets:mets">
+  <xsl:template match="mets:mets">
     <xsl:copy>
-      <xsl:copy-of select="node()|@*"/>
+      <xsl:apply-templates select="@* | *"/>
       <xsl:if test="not(./structMap/div)">
         <structMap xmlns="http://www.loc.gov/METS/">
           <xsl:attribute name="ID"><xsl:text>sword-mets-struct-1</xsl:text></xsl:attribute>

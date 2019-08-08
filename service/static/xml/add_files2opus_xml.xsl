@@ -6,15 +6,15 @@
   <xsl:param name="file"/>
   <xsl:param name="md5"/>
 
-  <xsl:template match="node()|@*">
+  <xsl:template match="@*|node()">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="/import/opusDocument">
+  <xsl:template match="opusDocument">
     <xsl:copy>
-      <xsl:copy-of select="node()|@*"/>
+      <xsl:apply-templates select="@* | *"/>
       <xsl:if test="not(./files) and string-length($file)!=0 and string-length($md5)!=0">
         <files>
            <xsl:attribute name="basedir"><xsl:text>.</xsl:text></xsl:attribute>
@@ -35,9 +35,9 @@
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="/import/opusDocument/files">
+  <xsl:template match="files">
     <xsl:copy>
-      <xsl:copy-of select="node()|@*"/>
+      <xsl:apply-templates select="@* | *"/>
       <xsl:if test="string-length($file)!=0 and string-length($md5)!=0">
         <file>
           <xsl:attribute name="name"><xsl:value-of select="$file"/></xsl:attribute>
