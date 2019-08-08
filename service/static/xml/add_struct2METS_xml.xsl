@@ -12,8 +12,8 @@
   <xsl:template match="mets:mets">
     <xsl:copy>
       <xsl:apply-templates select="@* | *"/>
-      <xsl:if test="not(./structMap/div)">
-        <structMap xmlns="http://www.loc.gov/METS/">
+      <xsl:if test="not(./mets:structMap/div)">
+        <mets:structMap xmlns="http://www.loc.gov/METS/">
           <xsl:attribute name="ID"><xsl:text>sword-mets-struct-1</xsl:text></xsl:attribute>
           <xsl:attribute name="LABEL"><xsl:text>structure</xsl:text></xsl:attribute>
           <xsl:attribute name="TYPE"><xsl:text>LOGICAL</xsl:text></xsl:attribute>
@@ -45,7 +45,7 @@
                 </div>
              </xsl:for-each>
           </div>
-        </structMap>
+        </mets:structMap>
       </xsl:if>
     </xsl:copy>
   </xsl:template>

@@ -2378,12 +2378,12 @@ class XSLT(object):
   <xsl:template match="mets:mets">
     <xsl:copy>
       <xsl:apply-templates select="@* | *"/>
-      <xsl:if test="not(./fileSec/fileGrp) and string-length($file)!=0 and string-length($md5)!=0">
-        <fileSec xmlns="http://www.loc.gov/METS/">
-          <fileGrp>
+      <xsl:if test="not(./mets:fileSec/mets:fileGrp) and string-length($file)!=0 and string-length($md5)!=0">
+        <mets:fileSec xmlns="http://www.loc.gov/METS/">
+          <mets:fileGrp>
              <xsl:attribute name="ID"><xsl:text>sword-mets-fgrp-1</xsl:text></xsl:attribute>
              <xsl:attribute name="USE"><xsl:text>CONTENT</xsl:text></xsl:attribute>
-             <file>
+             <mets:file>
                <xsl:attribute name="GROUPID">
                  <xsl:text>sword-mets-fgid-</xsl:text>
                  <xsl:value-of select="$cnt"/>
@@ -2401,17 +2401,17 @@ class XSLT(object):
                <xsl:attribute name="MIMETYPE">
                  <xsl:value-of select="$mime"/>
                </xsl:attribute>
-               <FLocat xmlns:xlink="http://www.w3.org/1999/xlink">
+               <mets:FLocat xmlns:xlink="http://www.w3.org/1999/xlink">
                  <xsl:attribute name="LOCTYPE">
                    <xsl:text>URL</xsl:text>
                  </xsl:attribute>
                  <xsl:attribute name="xlink:href">
                    <xsl:value-of select="$file"/>
                  </xsl:attribute>
-               </FLocat>
-             </file>
-          </fileGrp>
-        </fileSec>
+               </mets:FLocat>
+             </mets:file>
+          </mets:fileGrp>
+        </mets:fileSec>
         <!--
         <structMap xmlns="http://www.loc.gov/METS/">
           <xsl:attribute name="ID"><xsl:text>sword-mets-struct-1</xsl:text></xsl:attribute>
@@ -2443,11 +2443,11 @@ class XSLT(object):
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="mets:fileGrp">
+  <xsl:template match="mets:fileSec/mets:fileGrp">
     <xsl:copy>
       <xsl:apply-templates select="@* | *"/>
       <xsl:if test="string-length($file)!=0 and string-length($md5)!=0">
-        <file>
+        <mets:file>
           <xsl:attribute name="GROUPID">
             <xsl:text>sword-mets-fgid-</xsl:text>
             <xsl:value-of select="$cnt"/>
@@ -2465,15 +2465,15 @@ class XSLT(object):
           <xsl:attribute name="MIMETYPE">
             <xsl:value-of select="$mime"/>
           </xsl:attribute>
-          <FLocat xmlns:xlink="http://www.w3.org/1999/xlink">
+          <mets:FLocat xmlns:xlink="http://www.w3.org/1999/xlink">
             <xsl:attribute name="LOCTYPE">
               <xsl:text>URL</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="xlink:href">
               <xsl:value-of select="$file"/>
             </xsl:attribute>
-          </FLocat>
-        </file>
+          </mets:FLocat>
+        </mets:file>
       </xsl:if>
     </xsl:copy>
   </xsl:template>
@@ -2531,8 +2531,8 @@ class XSLT(object):
   <xsl:template match="mets:mets">
     <xsl:copy>
       <xsl:apply-templates select="@* | *"/>
-      <xsl:if test="not(./structMap/div)">
-        <structMap xmlns="http://www.loc.gov/METS/">
+      <xsl:if test="not(./mets:structMap/div)">
+        <mets:structMap xmlns="http://www.loc.gov/METS/">
           <xsl:attribute name="ID"><xsl:text>sword-mets-struct-1</xsl:text></xsl:attribute>
           <xsl:attribute name="LABEL"><xsl:text>structure</xsl:text></xsl:attribute>
           <xsl:attribute name="TYPE"><xsl:text>LOGICAL</xsl:text></xsl:attribute>
@@ -2564,7 +2564,7 @@ class XSLT(object):
                 </div>
              </xsl:for-each>
           </div>
-        </structMap>
+        </mets:structMap>
       </xsl:if>
     </xsl:copy>
   </xsl:template>
