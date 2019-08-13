@@ -190,8 +190,28 @@
         </xsl:for-each> 
       </dates>
       <identifiers>
+        <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @pub-type='epub' or @publication-format='print' or @publication-format='electronic']">
           <identifier>
              <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
+             <xsl:value-of select="normalize-space(text())"/>
+          </identifier>
+        </xsl:for-each>
+        <xsl:if test="//article-meta/article-id[@pub-id-type='doi']">
+          <identifier>
+             <xsl:attribute name="type"><xsl:text>doi</xsl:text></xsl:attribute>
+             <xsl:value-of select="//article-meta/article-id[@pub-id-type='doi']"/>
+          </identifier>
+        </xsl:if>
+        <xsl:if test="//article-meta/article-id[@pub-id-type='pmid']">
+          <identifier>
+             <xsl:attribute name="type"><xsl:text>pmid</xsl:text></xsl:attribute>
+             <xsl:value-of select="//article-meta/article-id[@pub-id-type='pmid']"/>
+          </identifier>
+        </xsl:if>
+      </identifiers>
+      <!--
+      <identifiers>
+          <identifier>
              <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @publication-format='print']">
                 <xsl:value-of select="normalize-space(text())"/>
                 <xsl:if test="position() != last()">
@@ -225,6 +245,7 @@
           </identifier>
         </xsl:if>
       </identifiers>
+      -->
       <!--
       <notes>
           <note visibility="private|public">?????</note>

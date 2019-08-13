@@ -78,6 +78,10 @@ class XSLT(object):
   #
   # 2017-07-12 TD : Some (beautifying?) bug fixes such as translating names of months
   #
+  # 2017-08-13 TD : Change of the output "issn" in the tag "identifiers": no distinction 
+  #                 between eISSN and pISSN anymore! In fact, OPUS4 article data model 
+  #                 does not support these subtypes as identifier.
+  #
   rsc2opus4 = '''
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -258,6 +262,27 @@ class XSLT(object):
           </xsl:for-each>
       </dates>
       <identifiers>
+        <xsl:for-each select="//published[@type='print']/journalref/issn[@type='print']">
+          <identifier>
+            <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
+            <xsl:value-of select="normalize-space(text())"/>
+          </identifier>
+        </xsl:for-each>
+        <xsl:for-each select="//published[@type='print']/journalref/issn[@type='online']">
+          <identifier>
+            <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
+            <xsl:value-of select="normalize-space(text())"/>
+          </identifier>
+        </xsl:for-each>
+        <xsl:if test="//art-admin/doi">
+          <identifier>
+            <xsl:attribute name="type"><xsl:text>doi</xsl:text></xsl:attribute>
+            <xsl:value-of select="//art-admin/doi"/>
+          </identifier>
+        </xsl:if>
+      </identifiers>
+      <!--
+      <identifiers>
           <identifier>
              <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
              <xsl:for-each select="//published[@type='print']/journalref/issn[@type='print']">
@@ -287,6 +312,7 @@ class XSLT(object):
              <xsl:value-of select="//art-admin/doi"/>
           </identifier>
       </identifiers>
+      -->
       <!--
       <notes>
           <note visibility="private|public">?????</note>
@@ -1184,6 +1210,10 @@ class XSLT(object):
   # 2017-03-22 TD : static(!!) strings containing the xsl code JATS --> OPUS4
   #                 Note that there MUST NOT be any kind of '<?xml ...?>' header!
   #
+  # 2017-08-13 TD : Change of the output "issn" in the tag "identifiers": no distinction 
+  #                 between eISSN and pISSN anymore! In fact, OPUS4 article data model 
+  #                 does not support these subtypes as identifier.
+  #
   jats2opus4 = '''
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -1362,6 +1392,27 @@ class XSLT(object):
         </xsl:for-each>
       </dates>
       <identifiers>
+        <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @pub-type='epub' or @publication-format='print' or @publication-format='electronic']">
+          <identifier>
+            <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
+            <xsl:value-of select="normalize-space(text())"/>
+          </identifier>
+        </xsl:for-each>
+        <xsl:if test="//article-meta/article-id[@pub-id-type='doi']">
+          <identifier>
+             <xsl:attribute name="type"><xsl:text>doi</xsl:text></xsl:attribute>
+             <xsl:value-of select="//article-meta/article-id[@pub-id-type='doi']"/>
+          </identifier>
+        </xsl:if>
+        <xsl:if test="//article-meta/article-id[@pub-id-type='pmid']">
+          <identifier>
+             <xsl:attribute name="type"><xsl:text>pmid</xsl:text></xsl:attribute>
+             <xsl:value-of select="//article-meta/article-id[@pub-id-type='pmid']"/>
+          </identifier>
+        </xsl:if>
+      </identifiers>
+      <!--
+      <identifiers>
           <identifier>
              <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
              <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @publication-format='print']">
@@ -1397,6 +1448,7 @@ class XSLT(object):
           </identifier>
         </xsl:if>
       </identifiers>
+      -->
       <!--
       <notes>
           <note visibility="private|public">?????</note>

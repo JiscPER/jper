@@ -103,7 +103,6 @@
       </abstracts>
       <persons>
           <xsl:for-each select="//art-front/authgrp/author">
-            <xsl:if test="person/persname/surname">
             <person>
                 <xsl:attribute name="role"><xsl:text>author</xsl:text></xsl:attribute>
                 <xsl:attribute name="firstName"><xsl:copy-of select="person/persname/fname/text()"/></xsl:attribute>
@@ -124,7 +123,6 @@
                 </identifiers>
                 -->
             </person>
-            </xsl:if>
           </xsl:for-each>
       </persons>
       <keywords>
@@ -176,6 +174,27 @@
           </xsl:for-each>
       </dates>
       <identifiers>
+        <xsl:for-each select="//published[@type='print']/journalref/issn[@type='print']">
+          <identifier>
+             <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
+             <xsl:value-of select="normalize-space(text())"/>
+          </identifier>
+        </xsl:for-each>
+        <xsl:for-each select="//published[@type='print']/journalref/issn[@type='online']">
+          <identifier>
+             <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
+             <xsl:value-of select="normalize-space(text())"/>
+          </identifier>
+        </xsl:for-each>
+	<xsl:if test="//art-admin/doi">
+          <identifier>
+             <xsl:attribute name="type"><xsl:text>doi</xsl:text></xsl:attribute>
+             <xsl:value-of select="//art-admin/doi"/>
+          </identifier>
+        </xsl:if>
+      </identifiers>
+      <!--
+      <identifiers>
           <identifier>
              <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
              <xsl:for-each select="//published[@type='print']/journalref/issn[@type='print']">
@@ -205,6 +224,7 @@
              <xsl:value-of select="//art-admin/doi"/>
           </identifier>
       </identifiers>
+      -->
       <!--
       <notes>
           <note visibility="private|public">?????</note>
