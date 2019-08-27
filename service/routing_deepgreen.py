@@ -871,7 +871,7 @@ def exact_substring(s1, s2):
     ##
     ## this version uses module 're', and checks for word boundaries as well
     ##
-    if re.search(r'\b' + s1 + r'\b', s2, re.UNICODE) is not None
+    if re.search(r'\b' + s1 + r'\b', s2, re.UNICODE) is not None:
         return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
 
     return False
