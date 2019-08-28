@@ -78,7 +78,7 @@ class XSLT(object):
   #
   # 2017-07-12 TD : Some (beautifying?) bug fixes such as translating names of months
   #
-  # 2017-08-13 TD : Change of the output "issn" in the tag "identifiers": no distinction 
+  # 2019-08-13 TD : Change of the output "issn" in the tag "identifiers": no distinction 
   #                 between eISSN and pISSN anymore! In fact, OPUS4 article data model 
   #                 does not support these subtypes as identifier.
   #
@@ -1210,9 +1210,11 @@ class XSLT(object):
   # 2017-03-22 TD : static(!!) strings containing the xsl code JATS --> OPUS4
   #                 Note that there MUST NOT be any kind of '<?xml ...?>' header!
   #
-  # 2017-08-13 TD : Change of the output "issn" in the tag "identifiers": no distinction 
+  # 2019-08-13 TD : Change of the output "issn" in the tag "identifiers": no distinction 
   #                 between eISSN and pISSN anymore! In fact, OPUS4 article data model 
   #                 does not support these subtypes as identifier.
+  #
+  # 2019-08-28 TD : Keywords are checked for string-length() > 0: 'empty' keywords are skipped! 
   #
   jats2opus4 = '''
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -1351,11 +1353,13 @@ class XSLT(object):
             <xsl:text>-</xsl:text>
           </keyword>
           <xsl:for-each select="//article-meta/kwd-group/kwd">
-            <keyword> 
-              <xsl:attribute name="language"><xsl:value-of select="$langOut"/></xsl:attribute>
-              <xsl:attribute name="type"><xsl:text>uncontrolled</xsl:text></xsl:attribute>
-              <xsl:value-of select="normalize-space(text())"/>
-            </keyword>
+            <xsl:if test="string-length(normalize-space(text()))>0">
+              <keyword> 
+                <xsl:attribute name="language"><xsl:value-of select="$langOut"/></xsl:attribute>
+                <xsl:attribute name="type"><xsl:text>uncontrolled</xsl:text></xsl:attribute>
+                <xsl:value-of select="normalize-space(text())"/>
+              </keyword>
+            </xsl:if>
           </xsl:for-each>
       </keywords>
       <!--

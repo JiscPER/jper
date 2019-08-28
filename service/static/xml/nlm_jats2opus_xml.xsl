@@ -133,11 +133,13 @@
             <xsl:text>-</xsl:text>
           </keyword>
           <xsl:for-each select="//article-meta/kwd-group/kwd">
-            <keyword> 
-              <xsl:attribute name="language"><xsl:value-of select="$langOut"/></xsl:attribute>
-              <xsl:attribute name="type"><xsl:text>uncontrolled</xsl:text></xsl:attribute>
-              <xsl:value-of select="normalize-space(text())"/>
-            </keyword>
+            <xsl:if test="string-length(normalize-space(text()))>0">
+              <keyword> 
+                <xsl:attribute name="language"><xsl:value-of select="$langOut"/></xsl:attribute>
+                <xsl:attribute name="type"><xsl:text>uncontrolled</xsl:text></xsl:attribute>
+                <xsl:value-of select="normalize-space(text())"/>
+              </keyword>
+	    </xsl:if>
           </xsl:for-each>
       </keywords>
       <!--
