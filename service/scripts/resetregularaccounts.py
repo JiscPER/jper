@@ -180,7 +180,7 @@ def find_in_gndidx(fullname,ezbid,sigel,ezb2gnd,gzfname):
         try:
             with open(outfname,"w") as f:
                 # f.write( '"Name Variants","Domains","Grant Numbers","ORCIDs","Author Emails","Keywords"\n' )
-                f.write( '"Name Variants","Domains","Grant Numbers","Dummy1","Dummy2","Keywords"\n' )
+                f.write( '"Name Variants","Domains","Grant Numbers","Dummy1","Institution IDs","Keywords"\n' )
                 for aff in sorted(set(affs)):
                     if aff and not (aff in exlist):
                         tmp = aff.replace('"',"''")
@@ -205,7 +205,7 @@ def get_pass(pw_len=12):
     return new_pw
 
 
-def update_account(fullname, ezbid, sigel='', purge=False):
+def update_account(fullname, ezbid, sigel='', purge=False, passive=False):
 
     csvfname = (u"%s/%s_template.csv" % (RESULTDIR, ezbid)).encode('utf-8')
     email = (u"%s@deepgreen.org" % ezbid).encode('utf-8')
@@ -252,6 +252,8 @@ def update_account(fullname, ezbid, sigel='', purge=False):
     acc.data['repository']['bibid'] = (u"%s" % ezbid).encode('utf-8')
     if len(sigel) > 0:
         acc.data['repository']['sigel'] = [(u"%s" % sgl).encode('utf-8') for sgl in sigel.split(',')]
+    if passive is True:
+        acc.set_passive()
 
     acc.save()
     time.sleep(1)
@@ -288,6 +290,7 @@ if __name__ == "__main__":
     # parser.add_argument("-t", "--to_date", help="date to run the report to")
     parser.add_argument("-i", "--input", help="CSV file name(s) of (regular!) repository accounts [cur.val.: `{x}´]".format(x=OA_PARTICIPANTS_GLOB))
     parser.add_argument("-o", "--output", help="folder for affiliation template files")
+    parser.add_argument("-passive", action="store_true", help="set account initially passive")
     parser.add_argument("--net", action="store_true", help="do network requests for update")
     parser.add_argument("--purge", action="store_true", help="purge instead of update (DANGER!)")
 
@@ -351,7 +354,7 @@ if __name__ == "__main__":
            sigel = ",".join(set(sigel.split(',')))
            if args.net is True:
                find_in_gndidx(fullname, ezbid, sigel, idx, GND_IDX_FILE)
-           update_account(fullname, ezbid, sigel, args.purge)
+           update_account(fullname, ezbid, sigel, args.purge, args.passive)
 
     else:
         print "ERROR: no '{x}' files found.".format(x=OA_PARTICIPANTS_GLOB)
