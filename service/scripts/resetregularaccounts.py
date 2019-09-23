@@ -257,7 +257,7 @@ def update_account(fullname, ezbid, sigel='', purge=False, passive=False):
 
     acc.save()
     time.sleep(1)
-    print "INFO: Account for id='{x}' (pw='{y}') updated/created.".format(x=ezbid,y=pw)
+    print "INFO: Account for id='{x}' (pw='{y}') updated/created; with passive={z}.".format(x=ezbid,y=pw,z=passive)
 
     #
     rec = RepositoryConfig().pull_by_repo(acc.id)
