@@ -290,7 +290,7 @@ if __name__ == "__main__":
     # parser.add_argument("-t", "--to_date", help="date to run the report to")
     parser.add_argument("-i", "--input", help="CSV file name(s) of (regular!) repository accounts [cur.val.: `{x}´]".format(x=OA_PARTICIPANTS_GLOB))
     parser.add_argument("-o", "--output", help="folder for affiliation template files")
-    parser.add_argument("-passive", action="store_true", help="set account initially passive")
+    parser.add_argument("--passive", action="store_true", help="set account initially passive")
     parser.add_argument("--net", action="store_true", help="do network requests for update")
     parser.add_argument("--purge", action="store_true", help="purge instead of update (DANGER!)")
 
