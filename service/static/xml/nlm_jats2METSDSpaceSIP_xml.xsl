@@ -98,8 +98,10 @@
                     <xsl:text> et al.</xsl:text>
                   </xsl:if>
                   <xsl:text>: </xsl:text>
-                  <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
-                  <xsl:text> </xsl:text>
+                  <xsl:for-each select="//journal-meta//journal-title">
+                    <xsl:value-of select="normalize-space(text())"/>
+		    <xsl:text> </xsl:text>
+                  </xsl:for-each>
                   <xsl:value-of select="//article-meta/volume"/>
                   <xsl:text> (</xsl:text>
                   <xsl:choose>
@@ -163,12 +165,14 @@
                   </xsl:choose>
                 </epdcx:valueString>
               </epdcx:statement>
-              <epdcx:statement>
-                <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
-                <epdcx:valueString>
-                  <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
-                </epdcx:valueString>
-              </epdcx:statement>
+              <xsl:for-each select="//journal-meta//journal-title">
+                <epdcx:statement>
+                  <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
+                  <epdcx:valueString>
+                    <xsl:value-of select="normalize-space(text())"/>
+                  </epdcx:valueString>
+                </epdcx:statement>
+              </xsl:for-each>
               <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @publication-format='print']">
                 <epdcx:statement>
                   <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>

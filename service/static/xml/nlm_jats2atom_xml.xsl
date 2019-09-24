@@ -76,8 +76,10 @@
         <xsl:text> et al.</xsl:text>
       </xsl:if>
       <xsl:text>: </xsl:text>
-      <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
-      <xsl:text> </xsl:text>
+      <xsl:for-each select="//journal-meta//journal-title">
+        <xsl:value-of select="normalize-space(text())"/>
+        <xsl:text> </xsl:text>
+      </xsl:for-each>
       <xsl:value-of select="//article-meta/volume"/>
       <xsl:text> (</xsl:text>
       <xsl:choose>
@@ -128,9 +130,11 @@
       <xsl:text>doi:</xsl:text>
       <xsl:value-of select="//article-meta/article-id[@pub-id-type='doi']"/>
     </dcterms:identifier>
-    <dcterms:source>
-      <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
-    </dcterms:source>
+    <xsl:for-each select="//journal-meta//journal-title">
+      <dcterms:source>
+        <xsl:value-of select="normalize-space(text())"/>
+      </dcterms:source>
+    </xsl:for-each>
     <xsl:for-each select="//journal-meta/issn[@pub-type='ppub']">
       <dcterms:source>
         <xsl:text>pISSN:</xsl:text>

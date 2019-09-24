@@ -1216,6 +1216,9 @@ class XSLT(object):
   #
   # 2019-08-28 TD : Keywords are checked for string-length() > 0: 'empty' keywords are skipped! 
   #
+  # 2019-09-24 TD : Eliminate the tag 'journal-title-group' in xpath since a publisher 
+  #                 (i.e. Frontiers) apparently is not using it
+  #
   jats2opus4 = '''
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -1295,13 +1298,13 @@ class XSLT(object):
           </titleMain>
       </titlesMain>
       <titles>
-          <xsl:if test="//journal-meta/journal-title-group/journal-title">
+          <xsl:for-each select="//journal-meta//journal-title">
             <title> 
               <xsl:attribute name="language"><xsl:value-of select="$langOut"/></xsl:attribute>
               <xsl:attribute name="type"><xsl:text>parent</xsl:text></xsl:attribute> 
-              <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
+              <xsl:value-of select="normalize-space(text())"/>
             </title>
-          </xsl:if>
+          </xsl:for-each>
       </titles>
       <abstracts>
           <xsl:if test="//article-meta/abstract">
@@ -1524,6 +1527,9 @@ class XSLT(object):
   # 2017-05-15 TD : static string containing the xsl code for JATS --> ESciDoc
   #                 Note that there MUST NOT be any kind of '<?xml ...?>' header!
   #
+  # 2019-09-24 TD : Eliminate the tag 'journal-title-group' in xpath since a publisher 
+  #                 (i.e. Frontiers) apparently is not using it
+  #
   jats2escidoc = '''
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -1676,7 +1682,7 @@ class XSLT(object):
             </dcterms:issued>
             <source:source>
               <xsl:attribute name="type"><xsl:text>http://purl.org/escidoc/metadata/ves/publication-types/journal</xsl:text></xsl:attribute>
-              <dc:title><xsl:value-of select="//journal-meta/journal-title-group/journal-title"/></dc:title>
+              <dc:title><xsl:value-of select="//journal-meta//journal-title"/></dc:title>
               <eterms:volume><xsl:value-of select="//article-meta/volume"/></eterms:volume>
               <eterms:issue><xsl:value-of select="//article-meta/issue"/></eterms:issue>
               <eterms:start-page><xsl:value-of select="//article-meta/fpage"/></eterms:start-page>
@@ -1755,6 +1761,9 @@ class XSLT(object):
 
   # 2017-05-15 TD : static string containing the xsl code for JATS --> METSDspaceSIP
   #                 Note that there MUST NOT be any kind of '<?xml ...?>' header!
+  #
+  # 2019-09-24 TD : Eliminate the tag 'journal-title-group' in xpath since a publisher 
+  #                 (i.e. Frontiers) apparently is not using it
   #
   jats2metsdspace = '''
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -1858,8 +1867,10 @@ class XSLT(object):
                     <xsl:text> et al.</xsl:text>
                   </xsl:if>
                   <xsl:text>: </xsl:text>
-                  <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
-                  <xsl:text> </xsl:text>
+                  <xsl:for-each select="//journal-meta//journal-title">
+                    <xsl:value-of select="normalize-space(text())"/>
+                    <xsl:text> </xsl:text>
+                  </xsl:for-each>
                   <xsl:value-of select="//article-meta/volume"/>
                   <xsl:text> (</xsl:text>
                   <xsl:choose>
@@ -1923,12 +1934,14 @@ class XSLT(object):
                   </xsl:choose>
                 </epdcx:valueString>
               </epdcx:statement>
-              <epdcx:statement>
-                <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
-                <epdcx:valueString>
-                  <xsl:value-of select="//journal-meta/journal-title-group/journal-title"/>
-                </epdcx:valueString>
-              </epdcx:statement>
+              <xsl:for-each select="//journal-meta//journal-title">
+                <epdcx:statement>
+                  <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
+                  <epdcx:valueString>
+                    <xsl:value-of select="normalize-space(text())"/>
+                  </epdcx:valueString>
+                </epdcx:statement>
+              </xsl:for-each>
               <xsl:for-each select="//journal-meta/issn[@pub-type='ppub' or @publication-format='print']">
                 <epdcx:statement>
                   <xsl:attribute name="epdcx:propertyURI">http://purl.org/dc/terms/source</xsl:attribute>
@@ -2022,6 +2035,9 @@ class XSLT(object):
 
   # 2017-07-11 TD : static string containing the xsl code for JATS --> METSMODS
   #                 Note that there MUST NOT be any kind of '<?xml ...?>' header!
+  #
+  # 2019-09-24 TD : Eliminate the tag 'journal-title-group' in xpath since a publisher 
+  #                 (i.e. Frontiers) apparently is not using it
   #
   jats2metsmods = '''
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -2136,7 +2152,7 @@ class XSLT(object):
             <!-- Appearance -->
             <mods:relatedItem type="host">
                 <mods:titleInfo>
-                    <xsl:for-each select="//journal-meta/journal-title-group/journal-title">
+                    <xsl:for-each select="//journal-meta//journal-title">
                         <mods:title>
                             <xsl:call-template name="insert-lang-attribute"/>
                             <xsl:value-of select="."/>

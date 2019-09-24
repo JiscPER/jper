@@ -107,7 +107,7 @@
             <!-- Appearance -->
             <mods:relatedItem type="host">
                 <mods:titleInfo>
-                    <xsl:for-each select="//journal-meta/journal-title-group/journal-title">
+                    <xsl:for-each select="//journal-meta//journal-title">
                         <mods:title>
                             <xsl:call-template name="insert-lang-attribute"/>
                             <xsl:value-of select="."/>

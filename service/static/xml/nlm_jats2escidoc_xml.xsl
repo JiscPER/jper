@@ -148,7 +148,7 @@
             </dcterms:issued>
             <source:source>
               <xsl:attribute name="type"><xsl:text>http://purl.org/escidoc/metadata/ves/publication-types/journal</xsl:text></xsl:attribute>
-              <dc:title><xsl:value-of select="//journal-meta/journal-title-group/journal-title"/></dc:title>
+              <dc:title><xsl:value-of select="//journal-meta//journal-title"/></dc:title>
               <eterms:volume><xsl:value-of select="//article-meta/volume"/></eterms:volume>
               <eterms:issue><xsl:value-of select="//article-meta/issue"/></eterms:issue>
               <eterms:start-page><xsl:value-of select="//article-meta/fpage"/></eterms:start-page>
