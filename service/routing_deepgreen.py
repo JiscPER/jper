@@ -871,7 +871,11 @@ def exact_substring(s1, s2):
     ##
     ## this version uses module 're', and checks for word boundaries as well
     ##
-    if re.search(r'\b' + s1 + r'\b', s2, re.UNICODE) is not None:
+    ## 2019-09-25 TD : insert the tiny (but most impacting) call re.escape(s1)
+    ##                 before, without escaping, s1 containing a single ')' or '('
+    ##                 caused an exception (and thus a stalled(!!) failure). Shite...
+    ##
+    if re.search(r'\b' + re.escape(s1) + r'\b', s2, re.UNICODE) is not None:
         return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
 
     return False
