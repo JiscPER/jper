@@ -11,7 +11,7 @@ newowner=$2
 targetdir=$3
 uniqueid=$4
 uniquedir=$5
-thefile=$6
+thefile="$6"
 # 2019-07-17 TD : new param for directory indicating pending items (e.g. by symbolic links)
 pendingdir=$7
 egrep "^$username" /etc/passwd >/dev/null
@@ -34,7 +34,7 @@ mkdir -p $uniquedir
 # 2019-07-19 TD : check that the pending directory exists
 mkdir -p $pendingdir
 # move the specified file in the jail to the temp processing directory
-mv $thefile $uniquedir
+mv "$thefile" $uniquedir
 # 2019-07-19 TD : create/overwrite symbolic link indicating the item as pending
 ln -sf $uniquedir $pendingdir/.
 # set ownership from the user targetdir down
