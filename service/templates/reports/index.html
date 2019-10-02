@@ -11,7 +11,7 @@
 				<th>Date</th>
 				<th>File</th>
 			</tr>
-			{% for (report,mtime) in reports %}
+			{% for report,mtime in reports %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{report}}">{{report}}</a></td>
