@@ -30,7 +30,7 @@ def index():
         for f in sorted(os.listdir(reportsdir)):
             a = os.stat(os.path.join(reportsdir,f))
             # fls.append( (f,time.ctime(a.st_mtime)) )
-            fls.append( (f,time.strftime('%a %F %T',a.st_mtime)) )
+            fls.append( (f,time.strftime('%a %F %T',time.localtime(a.st_mtime))) )
 
         reports = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg')]
     except:
