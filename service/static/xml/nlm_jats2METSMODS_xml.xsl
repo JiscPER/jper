@@ -164,26 +164,36 @@
                     <mods:role>
                         <mods:roleTerm type="text"><xsl:value-of select="@contrib-type"/></mods:roleTerm>
                     </mods:role>
+		    <!-- Identifier: So far, support of ORCIDs (and email adresses?) only -->
+		    <xsl:if test="contains(contrib-id/@contrib-id-type,'orcid')">
+                        <mods:nameIdentifier type="orcid">
+                            <xsl:copy-of select="contrib-id[@contrib-id-type='orcid']/text()"/>
+                        </mods:nameIdentifier>
+		    </xsl:if>
+		    <!--
+                    <mods:nameIdentifier type="email">
+		    </mods:nameIdentifier>
+                    -->
                     <!-- Affiliation: Need to deal with three different cases -->
                     <xsl:choose>
                         <xsl:when test="contains(xref/@ref-type,'aff') and string-length(xref/@rid) > 0">
                             <xsl:for-each select="xref[@ref-type='aff']">
                                 <mods:affiliation>
-                                    <xsl:copy-of select="key('kAffById',@rid)/text()"/>
+                                    <xsl:copy-of select="key('kAffById',@rid)//text()"/>
                                 </mods:affiliation>
                             </xsl:for-each> 
                         </xsl:when>
                         <xsl:when test="not(contains(xref/@ref-type,'aff')) and string-length(//article-meta/aff[position()=last()]/text()) > 0">
                             <xsl:for-each select="//article-meta/aff[not(@*)]">
                                 <mods:affiliation>
-                                    <xsl:copy-of select="./text()"/>
+                                    <xsl:copy-of select=".//text()"/>
                                 </mods:affiliation>
                             </xsl:for-each>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:if test="aff">
                                 <mods:affiliation>
-                                    <xsl:copy-of select="aff/text()"/>
+                                    <xsl:copy-of select="aff//text()"/>
                                 </mods:affiliation>
                             </xsl:if>
                         </xsl:otherwise>
