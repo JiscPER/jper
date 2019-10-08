@@ -3,12 +3,110 @@ Functions which generate reports from the JPER system
 
 """
 
-from service.models import RoutedNotification, FailedNotification, Account
+from service.models import RoutedNotification, FailedNotification, Account, MatchProvenance
 import os
+import unicodecsv
 from octopus.lib import clcsv
 from copy import deepcopy
 from datetime import datetime
 from octopus.core import app
+
+# 2019-10-08 TD : adding an overall admin report statistics 
+#
+def admin_routed_report(from_date, to_date, reportfile):
+    """
+    Generate a (monthly) routed report from from_date to to_date.  It is assumed that 
+    from_date is the start of a month, and to_date is the end of a month.
+
+    Dates must be strings of the form YYYY-MM-DDThh:mm:ssZ
+
+    :param from_date:   start of month date from which to generate the report
+    :param to_date: end of month date up to which to generate the report (if this is not specified, it will default to datetime.utcnow())
+    :param reportfile:  file path for existing/new report to be output
+    :return:
+    """
+    # work out the whole months that we're operating over
+    frstamp = datetime.strptime(from_date, "%Y-%m-%dT%H:%M:%SZ")
+    if to_date is None:
+        tostamp = datetime.utcnow()
+    else:
+        tostamp = datetime.strptime(to_date, "%Y-%m-%dT%H:%M:%SZ")
+    months = range(frstamp.month, tostamp.month + 1)
+
+    with open(reportfile,'wb') as f:
+        writer = unicodecsv.writer(f,delimiter=',',quoting=unicodecsv.QUOTE_ALL,encoding='utf-8')
+        writer.writerow( ('Send Date','Analysis Date','Publisher','ISSN','DOI','Repository','Reason','Match Date','Id') )
+        # go through each routed notification 
+        q = AdminReportQuery(from_date, to_date)
+        for note in RoutedNotification.scroll(q.query(), page_size=2000, keepalive="25m"):
+            assert isinstance(note, RoutedNotification)
+            nid = note.id
+            created = note.created_date
+            analysis = note.analysis_date
+            publisher = note.publisher
+            repos = list(set(note.repositories)) # trick to kill duplicate entries
+ 
+            for match in MatchProvenance.pull_by_notification(nid):
+                assert isinstance(match, MatchProvenance)
+                matched = match.created_date
+                bibid = match.bibid
+                doi = match.alliance.get('doi')
+                issn = match.alliance.get('issn')
+                reason = match.provenance[0].get('explanation')
+                repo = match.repository
+                if repo in repos:
+                    row = (created,analysis,publisher,issn,doi,bibid,reason,matched,nid)
+                    writer.writerow(row)
+
+def admin_failed_report(from_date, to_date, reportfile):
+    """
+    Generate a (monthly) failed report from from_date to to_date.  It is assumed that 
+    from_date is the start of a month, and to_date is the end of a month.
+
+    Dates must be strings of the form YYYY-MM-DDThh:mm:ssZ
+
+    :param from_date:   start of month date from which to generate the report
+    :param to_date: end of month date up to which to generate the report (if this is not specified, it will default to datetime.utcnow())
+    :param reportfile:  file path for existing/new report to be output
+    :return:
+    """
+    # work out the whole months that we're operating over
+    frstamp = datetime.strptime(from_date, "%Y-%m-%dT%H:%M:%SZ")
+    if to_date is None:
+        tostamp = datetime.utcnow()
+    else:
+        tostamp = datetime.strptime(to_date, "%Y-%m-%dT%H:%M:%SZ")
+    months = range(frstamp.month, tostamp.month + 1)
+
+    with open(reportfile,'wb') as f:
+        writer = unicodecsv.writer(f,delimiter=',',quoting=unicodecsv.QUOTE_ALL,encoding='utf-8')
+        writer.writerow( ('Send Date','Analysis Date','Publisher','ISSN','DOI','Reason','Id') )
+        # go through each failed notification 
+        q = AdminReportQuery(from_date, to_date)
+        for note in FailedNotification.scroll(q.query(), page_size=2000, keepalive="25m"):
+            assert isinstance(note, FailedNotification)
+            nid = note.id
+            created = note.created_date
+            analysis = note.analysis_date
+            reason = note.reason
+            if 'stalled' in reason.lower():
+                publisher = note.provider_id
+                issns = ['n/a']
+                dois = ['n/a']
+            else:
+                publisher = note.publisher
+                issns = [ k['id'] for k in note.identifiers if k['type']=='issn' ]
+                dois = [ k['id'] for k in note.identifiers if k['type']=='doi' ]
+                if len(dois) < 1:
+                    dois = ['n/a']
+
+            for issn in issns:
+                for doi in dois:
+                    row = (created,analysis,publisher,issn,doi,reason,nid)
+                    writer.writerow(row)
+
+#
+# 2019-10-08 TD : end addition
 
 def publisher_report(from_date, to_date, reportfile):
     """
@@ -453,6 +551,32 @@ class DeliveryReportQuery(object):
                         {
                             "range" : {
                                 "analysis_date" : {
+                                    "gte" : self.from_date,
+                                    "lt" : self.to_date
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "sort" : [
+                {"analysis_date" : {"order" :  "asc"}}
+            ]
+        }
+
+class AdminReportQuery(object):
+    def __init__(self, from_date, to_date):
+        self.from_date = from_date
+        self.to_date = to_date
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {
+                            "range" : {
+                                "created_date" : {
                                     "gte" : self.from_date,
                                     "lt" : self.to_date
                                 }
