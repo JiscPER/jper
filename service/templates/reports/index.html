@@ -16,12 +16,14 @@
 			<tr>
 				<th>Date</th>
 				<th>File</th>
+				<th>Size</th>
 			</tr>
-			{% for fname,mtime in detailedlists %}
+			{% for fname,mtime,bytes in detailedlists %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
+				<td>{{bytes}}</td>
 			</tr>
 			{% endfor %}
 		</table>
@@ -30,12 +32,14 @@
 			<tr>
 				<th>Date</th>
 				<th>File</th>
+				<th>Size</th>
 			</tr>
-			{% for fname,mtime in grandtotals %}
+			{% for fname,mtime,bytes in grandtotals %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
+				<td>{{bytes}}</td>
 			</tr>
 			{% endfor %}
 		</table>

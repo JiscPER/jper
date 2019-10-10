@@ -406,11 +406,11 @@ def details(repo_id):
     link = '/account/details'
     date = request.args.get('since')
     if date == '':
-        date = '01/08/2015'
+        date = '01/06/2019'
     if current_user.has_role('admin'): 
         link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
     else:
-        link += '/' + acc.id + '?since=01/08/2015&api_key='+acc.data['api_key']
+        link += '/' + acc.id + '?since=01/06/2019&api_key='+acc.data['api_key']
              
     results = json.loads(data.response[0])      
                         
@@ -436,11 +436,11 @@ def matching(repo_id):
     link = '/account/matching'
     date = request.args.get('since')
     if date == '':
-        date = '01/08/2015'
+        date = '01/06/2019'
     if current_user.has_role('admin'): 
         link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
     else:
-        link += '/' + acc.id + '?since=01/08/2015&api_key='+acc.data['api_key']
+        link += '/' + acc.id + '?since=01/06/2019&api_key='+acc.data['api_key']
              
     results = json.loads(data.response[0])      
                         
@@ -461,11 +461,11 @@ def failing(provider_id):
     link = '/account/failing'
     date = request.args.get('since')
     if date == '':
-        date = '01/08/2015'
+        date = '01/06/2019'
     if current_user.has_role('admin'): 
         link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
     else:
-        link += '/' + acc.id +'?since=01/08/2015&api_key='+acc.data['api_key']
+        link += '/' + acc.id +'?since=01/06/2019&api_key='+acc.data['api_key']
              
     results = json.loads(data.response[0])      
                         
