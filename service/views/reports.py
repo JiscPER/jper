@@ -59,7 +59,7 @@ def serve(filename):
 def refresh():
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
     try:
-        flash('Updating reports, please be patient.','info')
+        # flash('Updating reports, please be patient','info')
         # reports.admin_[routed|failed]_reports(frm_date,to_date,fname)
         year = int(time.strftime('%Y'))
         for tmth in xrange(1,13):
@@ -78,4 +78,4 @@ def refresh():
         flash("Updating process encountered an error: {x}".format(x=e.message),"error")
         time.sleep(4)
 
-    return redirect('/')
+    return redirect(url_for('.index'))
