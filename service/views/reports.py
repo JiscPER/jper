@@ -32,8 +32,10 @@ def index():
         for f in sorted(os.listdir(reportsdir)):
             # 2019-10-10 TD : count the lines of .csv files
             # see: https://stackoverflow.com/questions/845058/how-to-get-line-count-cheaply-in-python#1019572
-            lns = sum(1 for line in open(f))
-            a = os.stat(os.path.join(reportsdir,f))
+            fname = os.path.join(reportsdir,f))
+            lns = sum(1 for line in open(fname))
+            a = os.stat(fname)
+            # a = os.stat(os.path.join(reportsdir,f))
             # fls.append( (f, time.ctime(a.st_mtime)) )
             fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime)), lns) )
 
