@@ -27,14 +27,18 @@ def index():
     try:
         #fls = os.listdir(reportsdir)
         # 2018-11-20 TD : adding time stamp of last modification date to file list
+        # 2019-10-10 TD : adding line numbers (basically #records, since we have .csv)
         fls = [] 
         for f in sorted(os.listdir(reportsdir)):
+            # 2019-10-10 TD : count the lines of .csv files
+            # see: https://stackoverflow.com/questions/845058/how-to-get-line-count-cheaply-in-python#1019572
+            lns = sum(1 for line in open(f))
             a = os.stat(os.path.join(reportsdir,f))
             # fls.append( (f, time.ctime(a.st_mtime)) )
-            fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime)), a.st_size) )
+            fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime)), lns) )
 
-        overall = [(fl,mt,sz) for (fl,mt,sz) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
-        details = [(fl,mt,sz) for (fl,mt,sz) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
+        overall = [(fl,mt,nl) for (fl,mt,nl) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
+        details = [(fl,mt,nl) for (fl,mt,nl) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
     except:
         overall = []
         details = []

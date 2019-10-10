@@ -3,7 +3,7 @@
 {% block content %}
 <h1 class="visuallyhidden">Reports</h1>
 <div class="row cms">
-	<div class="col span-8 pull-1">
+	<div class="col span-9 pull-1">
 		<h2><b>Download reports</b></h2>
 		{% if current_user.is_super %} 
 		<a href="/reports/update">
@@ -16,14 +16,14 @@
 			<tr>
 				<th>Date</th>
 				<th>File</th>
-				<th>Size</th>
+				<th>#Lines (header incl.)</th>
 			</tr>
-			{% for fname,mtime,bytes in detailedlists %}
+			{% for fname,mtime,nline in detailedlists %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
-				<td>{{bytes}}</td>
+				<td>{{nline}}</td>
 			</tr>
 			{% endfor %}
 		</table>
@@ -32,14 +32,14 @@
 			<tr>
 				<th>Date</th>
 				<th>File</th>
-				<th>Size</th>
+				<th>#Lines (header incl.)</th>
 			</tr>
-			{% for fname,mtime,bytes in grandtotals %}
+			{% for fname,mtime,nline in grandtotals %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
-				<td>{{bytes}}</td>
+				<td>{{nline}}</td>
 			</tr>
 			{% endfor %}
 		</table>
