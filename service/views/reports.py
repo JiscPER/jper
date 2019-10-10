@@ -32,7 +32,7 @@ def index():
             # fls.append( (f, time.ctime(a.st_mtime)) )
             fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime))) )
 
-        overall = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg') and fl.startswith('monthly']
+        overall = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
         details = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
     except:
         reports = []
