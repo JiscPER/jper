@@ -35,9 +35,9 @@ def index():
         overall = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
         details = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
     except:
-        reports = []
+        overall = []
         details = []
-    if len(reports) == 0 and len(details) == 0:
+    if len(overall) == 0 and len(details) == 0:
         flash('There are currently no reports available','info')
     return render_template('reports/index.html', detailedlists=details, grandtotals=overall)
 
