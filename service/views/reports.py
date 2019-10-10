@@ -4,7 +4,7 @@ Blueprint for providing reports UI
 
 import os, time
 
-from flask import Blueprint, request, render_template, redirect, send_from_directory, flash
+from flask import Blueprint, request, url_for, render_template, redirect, send_from_directory, flash
 from flask.ext.login import current_user
 
 from service import reports
