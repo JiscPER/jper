@@ -7,7 +7,7 @@
 		<h2><b>Download reports</b></h2>
 		{% if current_user.is_super %} 
 		<a href="/reports/update">
-			<button type="button" class="btn btn--3d btn--primary">Update&nbsp;reports</button>
+			<button type="button" class="btn btn--3d btn--primary">Update&nbsp;detailed&nbsp;reports</button>
 		</a> 
 		<p></p>
 		{% endif %}
@@ -23,7 +23,7 @@
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
-				<td>{{nline}}</td>
+				<td align="right">{{nline}}</td>
 			</tr>
 			{% endfor %}
 		</table>
@@ -39,7 +39,7 @@
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
-				<td>{{nline}}</td>
+				<td align="right">{{nline}}</td>
 			</tr>
 			{% endfor %}
 		</table>
