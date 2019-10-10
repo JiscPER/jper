@@ -31,7 +31,7 @@ def index():
         for f in sorted(os.listdir(reportsdir)):
             a = os.stat(os.path.join(reportsdir,f))
             # fls.append( (f, time.ctime(a.st_mtime)) )
-            fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime))), a.st_size )
+            fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime)), a.st_size) )
 
         overall = [(fl,mt,sz) for (fl,mt,sz) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
         details = [(fl,mt,sz) for (fl,mt,sz) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
