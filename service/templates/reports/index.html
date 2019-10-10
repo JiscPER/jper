@@ -5,17 +5,38 @@
 <div class="row cms">
 	<div class="col span-8 pull-1">
 		<h2><b>Download reports</b></h2>
+		{% if current_user.is_super %} 
+		<a href="/reports/update">
+			<button type="button" class="btn btn--3d btn--primary">Update&nbsp;reports</button>
+		</a>
+		{% endif %}
 
+		<h3><b>Detailed reports</b></h3>
 		<table>
 			<tr>
 				<th>Date</th>
 				<th>File</th>
 			</tr>
-			{% for report,mtime in reports %}
+			{% for fname,mtime in detailedlists %}
 			<tr>
 				<td>{{mtime}}</td>
-				<td><a href="/reports/{{report}}">{{report}}</a></td>
-				<!-- <p><a href="/reports/{{report}}">{{report}}</a></p> -->
+				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
+				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
+			</tr>
+			{% endfor %}
+		</table>
+
+		<h3><b>Overall reports</b></h3>
+		<table>
+			<tr>
+				<th>Date</th>
+				<th>File</th>
+			</tr>
+			{% for fname,mtime in grandtotals %}
+			<tr>
+				<td>{{mtime}}</td>
+				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
+				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
 			</tr>
 			{% endfor %}
 		</table>

@@ -30,15 +30,27 @@ def index():
         for f in sorted(os.listdir(reportsdir)):
             a = os.stat(os.path.join(reportsdir,f))
             # fls.append( (f, time.ctime(a.st_mtime)) )
-            fls.append( (f, time.strftime('%a %F %T',time.localtime(a.st_mtime))) )
+            fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime))) )
 
-        reports = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg')]
+        overall = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg') and fl.startswith('monthly']
+        details = [(fl,mt) for (fl,mt) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
     except:
         reports = []
-    if len(reports) == 0: flash('There are currently no reports available','info')
-    return render_template('reports/index.html', reports=reports)
+        details = []
+    if len(reports) == 0 and len(details) == 0:
+        flash('There are currently no reports available','info')
+    return render_template('reports/index.html', detailedlists=details, grandtotals=overall)
+
 
 @blueprint.route('/<filename>')
 def serve(filename):
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
     return send_from_directory(reportsdir, filename)
+
+
+@blueprint.route('/update')
+def refresh():
+    reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
+    flash('Updating reports, please be patient.','info')
+    # admin_[routed|failed]_reports(frm_date,to_date,fname)
+    return index()
