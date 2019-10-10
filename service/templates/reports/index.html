@@ -8,9 +8,9 @@
 		{% if current_user.is_super %} 
 		<a href="/reports/update">
 			<button type="button" class="btn btn--3d btn--primary">Update&nbsp;reports</button>
-		</a> <br>
+		</a> 
+		<p></p>
 		{% endif %}
-
 		<h3><b>Detailed reports</b></h3>
 		<table>
 			<tr>
@@ -25,7 +25,6 @@
 			</tr>
 			{% endfor %}
 		</table>
-
 		<h3><b>Overall reports</b></h3>
 		<table>
 			<tr>
