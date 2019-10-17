@@ -8,7 +8,7 @@ if __name__ == "__main__":
     # some general script running features
     parser.add_argument("-d", "--debug", action="store_true", help="pycharm debug support enable")
     parser.add_argument("-c", "--config", help="additional configuration to load (e.g. for testing)")
-    parser.add_argument("-i", "--input", help="provide a .txt file (or .csv file with one column) of ids")
+    parser.add_argument("-i", "--input", help="provide a .txt (or .csv with one column) file of ids")
     parser.add_argument("-r", "--repo", help="id of the repository account to affect")
     parser.add_argument("-a", "--activate", help="activate this account (e.g. if it has been suspended)", action="store_true")
     parser.add_argument("-s", "--stop", help="stop/deactivate this account", action="store_true")
