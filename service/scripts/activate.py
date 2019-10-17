@@ -1,6 +1,8 @@
 from octopus.core import app, add_configuration
 from service import control
 
+import sys
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -44,13 +46,21 @@ if __name__ == "__main__":
 
     if args.input:
         try:
-            with open(args.input,'r') as f:
+            if args.input == '-':
                 if args.stop:
-                    for line_repo_id in f:
-                        control.deactivate_account(line_repo_id)
+                    for line in sys.stdin:
+                        control.deactivate_account(line)
                 elif args.activate:
-                    for line_repo_id in f:
-                        control.activate_account(line_repo_id)
+                    for line in sys.stdin:
+                        control.activate_account(line)
+            else:
+                with open(args.input,'r') as f:
+                    if args.stop:
+                        for line_repo_id in f:
+                            control.deactivate_account(line_repo_id)
+                    elif args.activate:
+                        for line_repo_id in f:
+                            control.activate_account(line_repo_id)
         except Exception as e:
             pass
     else:
