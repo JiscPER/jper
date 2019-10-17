@@ -49,22 +49,26 @@ if __name__ == "__main__":
             if args.input == '-':
                 if args.stop:
                     for line in sys.stdin:
-                        print "stop {repo}".format(repo=line)
-                        control.deactivate_account(str(line))
+                        repo = line.rstrip()
+                        print "stop {repo}".format(repo=repo)
+                        control.deactivate_account(repo)
                 elif args.activate:
                     for line in sys.stdin:
-                        print "activate {repo}".format(repo=line)
-                        control.activate_account(str(line))
+                        repo = line.rstrip()
+                        print "activate {repo}".format(repo=repo)
+                        control.activate_account(repo)
             else:
                 with open(args.input,'r') as f:
                     if args.stop:
-                        for line_repo_id in f:
-                            print "stop {repo}".format(repo=line_repo_id)
-                            control.deactivate_account(line_repo_id)
+                        for line in f:
+                            repo = line.rstrip()
+                            print "stop {repo}".format(repo=repo)
+                            control.deactivate_account(repo)
                     elif args.activate:
-                        for line_repo_id in f:
-                            print "activate {repo}".format(repo=line_repo_id)
-                            control.activate_account(line_repo_id)
+                        for line in f:
+                            repo = line.rstrip()
+                            print "activate {repo}".format(repo=repo)
+                            control.activate_account(repo)
         except Exception as e:
             print "ERROR: exception '{s}'".format(s=e.message)
             pass
