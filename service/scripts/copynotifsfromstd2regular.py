@@ -40,7 +40,7 @@ def assign_hidnotes2regular(hid2reg={}, page_size=1000):
 
     for page in xrange(pages):
         frm = page*page_size
-        print "% 8d\r" % frm,
+        print "% 8d" % frm
         for raw in RoutedNotification.query(_from=frm,size=page_size).get('hits',{}).get('hits',[]):
             if '_source' in raw:
                 typ = raw['_type']
