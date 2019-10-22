@@ -155,6 +155,14 @@ STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "tmp")
 """path to local directory for temp file store - specified relative to this file"""
 
+# found deep in the magnificent-octopus jungle: 
+# maximum amount of time to wait for an ack from the server on an HTTP request (in seconds)
+# NOTE: this setting goes hand in hand with nginx's "proxy_[read|send]_timeout" in files
+#       placed in '/etc/nginx/conf.d/*.conf': the lower number takes in all!
+#HTTP_TIMEOUT = 300
+HTTP_TIMEOUT = 1200
+
+
 ############################################
 # Configuration patch for special DeepGreen routing via EZB data, and multiple repo accounts
 
