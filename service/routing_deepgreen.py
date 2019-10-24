@@ -783,6 +783,16 @@ def domain_email(domain, email):
     if len(bits) > 1:
         email = bits[1]
 
+    # 2019-10-24 TD : Some mad publishers (not to name one, but Frontiers seems a candidate)
+    #                 are convinced that it would be a great idea to use the xml <email> tag 
+    #                 twice: one for the first part upto "@", and one for the email domain part.  
+    #                 How stupid can you be??!? Plonkers! (Sorry my language, but it is still
+    #                 completely insane...)
+
+    # in case the email is broken
+    if len(email) <= 0:
+        return False
+
     # now do the standard normalisation
     domain = _normalise(domain)
     email = _normalise(email)
