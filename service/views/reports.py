@@ -35,12 +35,15 @@ def index():
             fname = os.path.join(reportsdir,f)
             lns = sum(1 for line in open(fname))
             a = os.stat(fname)
+            mth = 0
+            if f[-7] == '-':
+                mth = int(f[-6:-4])
             # a = os.stat(os.path.join(reportsdir,f))
             # fls.append( (f, time.ctime(a.st_mtime)) )
-            fls.append( (f, time.strftime('%F (%a) %T',time.localtime(a.st_mtime)), lns) )
+            fls.append( (f, time.strftime( '%F (%a) %T', time.localtime(a.st_mtime) ), lns, mth) )
 
-        overall = [(fl,mt,nl) for (fl,mt,nl) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
-        details = [(fl,mt,nl) for (fl,mt,nl) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
+        overall = [(fl,mt,nl,mn) for (fl,mt,nl,mn) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
+        details = [(fl,mt,nl,mn) for (fl,mt,nl,mn) in fls if not fl.endswith('.cfg') and fl.startswith('detailed')]
     except:
         overall = []
         details = []
@@ -55,14 +58,16 @@ def serve(filename):
     return send_from_directory(reportsdir, filename)
 
 
-@blueprint.route('/update')
-def refresh():
+@blueprint.route('/update/<month>')
+def refresh(month):
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
     try:
         # flash('Updating reports, please be patient','info')
         # reports.admin_[routed|failed]_reports(frm_date,to_date,fname)
         year = int(time.strftime('%Y'))
-        for tmth in xrange(1,13):
+        tmth = int(month)
+        ##for tmth in xrange(1,13):
+        if 0 < tmth and tmth < 13:
             nxmth = (tmth+1) % 13
             frm_date = "%04d-%02d-01T00:00:00Z" % (year,tmth)
             fstem = "%04d-%02d.csv" % (year,tmth)

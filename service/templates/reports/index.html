@@ -7,9 +7,11 @@
 	<div class="col span-9">
 		<h2><b>Download reports</b></h2>
 		{% if current_user.is_super %} 
+		<!--
 		<a href="/reports/update">
 			<button type="button" class="btn btn--3d btn--primary">Update&nbsp;detailed&nbsp;reports</button>
-		</a> 
+		</a>
+		-->
 		<p></p>
 		{% endif %}
 		<h3><b>Detailed reports</b></h3>
@@ -18,13 +20,17 @@
 				<th>Date</th>
 				<th>File</th>
 				<th>#Lines (header incl.)</th>
+				<th>Action</th>
 			</tr>
-			{% for fname,mtime,nline in detailedlists %}
+			{% for fname,mtime,nline,month in detailedlists %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
 				<td align="right">{{nline}}</td>
+				<td><a href="/reports/update/{{month}}">
+						<button type="button" class="btn btn--3d">Update</button>
+					</a></td>
 			</tr>
 			{% endfor %}
 		</table>
