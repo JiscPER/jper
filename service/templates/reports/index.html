@@ -29,7 +29,7 @@
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
 				<td align="right">{{nline}}</td>
 				<td><a href="/reports/update/{{month}}">
-						<button type="button" class="btn btn--3d">Update</button>
+						<button type="button" class="btn btn--3d btn--primary">Update</button>
 					</a></td>
 			</tr>
 			{% endfor %}
@@ -41,7 +41,7 @@
 				<th>File</th>
 				<th>#Lines (header incl.)</th>
 			</tr>
-			{% for fname,mtime,nline in grandtotals %}
+			{% for fname,mtime,nline,mth in grandtotals %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
