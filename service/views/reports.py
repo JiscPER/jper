@@ -24,7 +24,7 @@ def restrict():
 @blueprint.route('/')
 def index():
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
-    tyear = int(time.strftime('%Y')
+    tyear = int(time.strftime('%Y'))
     try:
         #fls = os.listdir(reportsdir)
         # 2018-11-20 TD : adding time stamp of last modification date to file list
