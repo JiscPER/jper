@@ -22,13 +22,13 @@
 				<th style="width:15%">#Lines (header incl.)</th>
 				<th style="width:10%">Action</th>
 			</tr>
-			{% for fname,mtime,nline,month in detailedlists %}
+			{% for fname,mtime,nline,yrmth in detailedlists %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
 				<!-- <p><a href="/reports/{{fname}}">{{fname}}</a></p> -->
 				<td align="right">{{nline}}</td>
-				<td><a href="/reports/update/{{month}}">
+				<td><a href="/reports/update/{{yrmth}}">
 						<button type="button" class="btn btn--3d btn--primary">Update</button>
 					</a></td>
 			</tr>
@@ -41,7 +41,7 @@
 				<th>File</th>
 				<th>#Lines (header incl.)</th>
 			</tr>
-			{% for fname,mtime,nline,mth in grandtotals %}
+			{% for fname,mtime,nline,yrmth in grandtotals %}
 			<tr>
 				<td>{{mtime}}</td>
 				<td><a href="/reports/{{fname}}">{{fname}}</a></td>
