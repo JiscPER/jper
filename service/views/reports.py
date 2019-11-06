@@ -8,7 +8,6 @@ from flask import Blueprint, request, url_for, render_template, redirect, send_f
 from flask.ext.login import current_user
 
 from service import reports
-from service.views.webapi import _bad_request
 from octopus.core import app
 
 blueprint = Blueprint('reports', __name__)
@@ -40,12 +39,10 @@ def index():
             a = os.stat(fname)
             # 2019-11-04 TD : extract date string '%Y-%m' (i.e. YYYY-mm) from file name (in f !)
             yrm = re.findall(r'[12][0-9]{3}-[01][0-9]', f)
-            if not yrm:
-                yrm = '1900-00'
+            yrm.append('1900-00')
             # a = os.stat(os.path.join(reportsdir,f))
             # fls.append( (f, time.ctime(a.st_mtime)) )
-            fls.append( (f, time.strftime( '%F (%a) %T', time.localtime(a.st_mtime) ), lns, yrm) )
-
+            fls.append( (f, time.strftime( '%F (%a) %T', time.localtime(a.st_mtime) ), lns, yrm[0]) )
         overall = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
         details = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('detailed') and int(ym.split('-')[0]) == tyear]
         if len(details) == 0:
@@ -53,15 +50,11 @@ def index():
                 fstem = "%04d-%02d.csv" % (tyear,tmth)
                 open(os.path.join(reportsdir,"detailed_routed_notifications_"+fstem), 'w').close()
                 open(os.path.join(reportsdir,"detailed_failed_notifications_"+fstem), 'w').close()
-
             flash("Empty files for year {y} generated".format(y=tyear),'info')
             return redirect(url_for('.index'))
-
     except Exception as e:
         overall = []
         details = []
-        return _bad_request(e.message)
-
     if len(overall) == 0 and len(details) == 0:
         flash('There are currently no reports available','info')
     return render_template('reports/index.html', detailedlists=details, grandtotals=overall)
