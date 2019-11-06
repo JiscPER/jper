@@ -8,6 +8,7 @@ from flask import Blueprint, request, url_for, render_template, redirect, send_f
 from flask.ext.login import current_user
 
 from service import reports
+from service.views.webapi import _bad_request
 from octopus.core import app
 
 blueprint = Blueprint('reports', __name__)
@@ -46,20 +47,21 @@ def index():
             fls.append( (f, time.strftime( '%F (%a) %T', time.localtime(a.st_mtime) ), lns, yrm) )
 
         overall = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
-        details = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('detailed') and ym.split('-')[0] == tyear]
-
+        details = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('detailed') and int(ym.split('-')[0]) == tyear]
         if len(details) == 0:
             for tmth in xrange(1,13):
                 fstem = "%04d-%02d.csv" % (tyear,tmth)
-                open(reportsdir + "/detailed_routed_notifications_" + fstem, 'w').close()
-                open(reportsdir + "/detailed_failed_notifications_" + fstem, 'w').close()
+                open(os.path.join(reportsdir,"detailed_routed_notifications_"+fstem), 'w').close()
+                open(os.path.join(reportsdir,"detailed_failed_notifications_"+fstem), 'w').close()
 
-            flash('Empty files for year {y} generated'.format(y=tyear),'info')
+            flash("Empty files for year {y} generated".format(y=tyear),'info')
             return redirect(url_for('.index'))
 
-    except:
+    except Exception as e:
         overall = []
         details = []
+        return _bad_request(e.message)
+
     if len(overall) == 0 and len(details) == 0:
         flash('There are currently no reports available','info')
     return render_template('reports/index.html', detailedlists=details, grandtotals=overall)
@@ -81,8 +83,8 @@ def refresh(yearmonth):
         #year = int(time.strftime('%Y'))
         #tmth = int(month)
         st = time.strptime(yearmonth,'%Y-%m')
-        year = st.tm_year
-        tmth = st.tm_mon
+        year = int(st.tm_year)
+        tmth = int(st.tm_mon)
         ##for tmth in xrange(1,13):
         if 0 < tmth and tmth < 13 and 1900 < year:
             nxmth = (tmth+1) % 13
