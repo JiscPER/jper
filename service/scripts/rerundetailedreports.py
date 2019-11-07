@@ -7,8 +7,8 @@ Could take its time, so be informed by now!
 """
 from octopus.core import add_configuration, app
 from service import reports
-from datetime import datetime
-import os
+#from datetime import datetime
+import os, time
 
 if __name__ == "__main__":
     import argparse
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     #     parser.print_help()
     #     exit(0)
     if not args.year:
-        year = int(datetime.strftime('%Y'))
+        year = int(time.strftime('%Y'))
     
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
 
