@@ -58,13 +58,14 @@ if __name__ == "__main__":
         fname = os.path.join(reportsdir,"detailed_routed_notifications_" + fstem)
         reports.admin_routed_report(from_date, to_date, fname)
         lines = sum(1 for l in open(fname))
-        print "Report written to '{f}', size: {s} lines.".format(f=fname,s=lines)
+        print "Report written to '{f}',\nsize: {s} lines.".format(f=fname,s=lines)
         #
         fname = os.path.join(reportsdir,"detailed_failed_notifications_" + fstem)
         reports.admin_failed_report(from_date, to_date, fname)
         lines = sum(1 for l in open(fname))
-        print "Report written to '{f}', size: {s} lines.".format(f=fname,s=lines)
+        print "Report written to '{f}',\nsize: {s} lines.".format(f=fname,s=lines)
         #
-    print
+        print
+
     print "All done."
     print
