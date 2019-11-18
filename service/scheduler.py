@@ -292,7 +292,7 @@ def processftp():
                     for singlepub in os.listdir(pdir):
                         # 2016-11-30 TD : Since there are (at least!?) 2 formats now available, we have to find out
                         ## 2019-11-18 TD : original path without loop where zip file is packed
-                        ##                 from  source folder ``thisdir + '/' + pub´´  
+                        ##                 from  source folder "thisdir + '/' + pub" 
                         ## pkg_fmt = pkgformat(thisdir + '/' + pub)
                         ## #
                         ## pkg = thisdir + '/' + pub + '.zip'
