@@ -48,48 +48,81 @@ def extract(fl,path):
     try:
         # TODO the tar method has not yet been tested...
         tar = tarfile.open(fl)
-        tar.extractall()
+        # 2019-11-18 TD : add the actual path for extraction here
+        tar.extractall(path=path)
+        #tar.extractall()
         tar.close()
         app.logger.debug('Extracted tar ' + fl)
         return True
     except:
         try:
             with zipfile.ZipFile(fl) as zf:
-                for member in zf.infolist():
-                    # Path traversal defense copied from
-                    # http://hg.python.org/cpython/file/tip/Lib/http/server.py#l789
-                    words = member.filename.split('/')
-                    for word in words[:-1]:
-                        drive, word = os.path.splitdrive(word)
-                        head, word = os.path.split(word)
-                        if word in (os.curdir, os.pardir, ''): continue
-                        path = os.path.join(path, word)
-                    zf.extract(member, path)
+                # 2019-11-18 TD : replace the 'hand made' routine by the libary call
+                zf.extractall(path=path)
+                # 2019-11-18 TD : this loop apparently does not work with nested folder 
+                #                 structures, so we discard it
+                # for member in zf.infolist():
+                #     # Path traversal defense copied from
+                #     # http://hg.python.org/cpython/file/tip/Lib/http/server.py#l789
+                #     words = member.filename.split('/')
+                #     for word in words[:-1]:
+                #         drive, word = os.path.splitdrive(word)
+                #         head, word = os.path.split(word)
+                #         if word in (os.curdir, os.pardir, ''): continue
+                #         path = os.path.join(path, word)
+                #     zf.extract(member, path)
             app.logger.debug('Extracted zip ' + fl)
             return True
-        except:
-            app.logger.debug('Extraction could not be done for ' + fl)
+        except Expection as e:
+            app.logger.debug('Extraction could not be done for ' + fl + ' : "{x}"'.format(x=e.message))
             return False
 
 def flatten(destination, depth=None):
     if depth is None:
         depth = destination
     app.logger.debug('Flatten depth set ' + destination + ' ' + depth)
+    #
+    # 2019-11-18 TD : Introducing the '.xml' file as recursion stop. 
+    #                 If an .xml file is found in a folder in the .zip file then this 
+    #                 *is* a single publication to be separated from the enclosing .zip file
+    has_xml = False
+    for fl in os.listdir(depth):
+        if 'article_metadata.xml' in fl: # De Gruyter provides a second .xml sometimes, sigh.
+            os.remove(depth + '/' + fl)
+            continue
+        if not has_xml and '.xml' in fl:
+            app.logger.debug('Flatten ' + fl + ' found in folder')
+            has_xml = True
+            words = destination.split('/')
+            stem = words[-1] + '/' + os.path.splitext(fl)[0]
+            os.makedirs(destination + '/' + stem)
+            app.logger.debug('Flatten new ' + destination + '/' + stem + ' created')
+    # 2019-11-18 TD : end of recursion stop marker search
+    #
     for fl in os.listdir(depth):
         app.logger.debug('Flatten at ' + fl)
-        if '.zip' in fl: # or '.tar' in fl:
+        # 2019-11-18 TD : Additional check for 'has_xml' (the stop marker)
+        # if '.zip' in fl: # or '.tar' in fl:
+        if not has_xml and '.zip' in fl: # or '.tar' in fl:
             app.logger.debug('Flatten ' + fl + ' is an archive')
             extracted = extract(depth + '/' + fl, depth)
             if extracted:
                 app.logger.debug('Flatten ' + fl + ' is extracted')
                 os.remove(depth + '/' + fl)
                 flatten(destination,depth)
-        elif os.path.isdir(depth + '/' + fl):
+        # 2019-11-18 TD : Additional check for 'has_xml' (the stop marker)
+        # elif os.path.isdir(depth + '/' + fl):
+        elif os.path.isdir(depth + '/' + fl) and not has_xml:
             app.logger.debug('Flatten ' + fl + ' is not a file, flattening')
             flatten(destination, depth + '/' + fl)
         else:
             try:
-                shutil.move(depth + '/' + fl, destination)
+                # shutil.move(depth + '/' + fl, destination)
+                # 2019-11-18 TD : Some 'new' +stem dst place to move all the single pubs into
+                if has_xml and os.path.isdir(destination + '/' + stem):
+                    shutil.move(depth + '/' + fl, destination + '/' + stem)
+                else:
+                    shutil.move(depth + '/' + fl, destination)
             except:
                 pass
 
@@ -247,28 +280,45 @@ def processftp():
                     # but we don't know the hierarchy of the content, so we have to unpack and flatten it all
                     # unzip and pull all docs to the top level then zip again. Should be jats file at top now
                     flatten(thisdir + '/' + pub)
-                    # 2016-11-30 TD : Since there are (at least!?) 2 formats now available, we have to find out
-                    pkg_fmt = pkgformat(thisdir + '/' + pub)
-                    #
-                    pkg = thisdir + '/' + pub + '.zip'
-                    zip(thisdir + '/' + pub, pkg)
 
-                    # create a notification and send to the API to join the unroutednotification index
-                    notification = {
-                        "content": { "packaging_format": pkg_fmt }
-                        #"content": {"packaging_format": "https://datahub.deepgreen.org/FilesAndJATS"}
-                        ## "content": {"packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"}
-                    }
-                    files = [
-                        ("metadata", ("metadata.json", json.dumps(notification), "application/json")),
-                        ("content", ("content.zip", open(pkg, "rb"), "application/zip"))
-                    ]
-                    app.logger.debug('Scheduler - processing POSTing ' + pkg + ' ' + json.dumps(notification))
-                    resp = requests.post(apiurl, files=files, verify=False)
-                    if str(resp.status_code).startswith('4') or str(resp.status_code).startswith('5'):
-                        app.logger.error('Scheduler - processing completed with POST failure to ' + apiurl + ' - ' + str(resp.status_code) + ' - ' + resp.text)
-                    else:
-                        app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
+                    # 2019-11-18 TD : 'flatten' has been modified to process bulk deliveries
+                    #                 (i.e. more then one pub per zip file!) as well.
+                    #                 If it is bulk, there maybe a lot of zip files, and 
+                    #                 we need a loop:
+                    pdir = thisdir
+                    if os.path.isdir(thisdir + '/' + pub + '/' + pub):
+                        pdir = thisdir + '/' + pub + '/' + pub
+                    #
+                    for singlepub in os.listdir(pdir):
+                        # 2016-11-30 TD : Since there are (at least!?) 2 formats now available, we have to find out
+                        ## 2019-11-18 TD : original path without loop where zip file is packed
+                        ##                 from  source folder ``thisdir + '/' + pub´´  
+                        ## pkg_fmt = pkgformat(thisdir + '/' + pub)
+                        ## #
+                        ## pkg = thisdir + '/' + pub + '.zip'
+                        ## zip(thisdir + '/' + pub, pkg)
+                        ##
+                        pkg_fmt = pkgformat(pdir + '/' + singlepub)
+                        #
+                        pkg = pdir + '/' + singlepub + '.zip'
+                        zip(pdir + '/' + singlepub, pkg)
+
+                        # create a notification and send to the API to join the unroutednotification index
+                        notification = {
+                            "content": { "packaging_format": pkg_fmt }
+                            #"content": {"packaging_format": "https://datahub.deepgreen.org/FilesAndJATS"}
+                            ## "content": {"packaging_format": "https://pubrouter.jisc.ac.uk/FilesAndJATS"}
+                        }
+                        files = [
+                            ("metadata", ("metadata.json", json.dumps(notification), "application/json")),
+                            ("content", ("content.zip", open(pkg, "rb"), "application/zip"))
+                        ]
+                        app.logger.debug('Scheduler - processing POSTing ' + pkg + ' ' + json.dumps(notification))
+                        resp = requests.post(apiurl, files=files, verify=False)
+                        if str(resp.status_code).startswith('4') or str(resp.status_code).startswith('5'):
+                            app.logger.error('Scheduler - processing completed with POST failure to ' + apiurl + ' - ' + str(resp.status_code) + ' - ' + resp.text)
+                        else:
+                            app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
                                             
                 shutil.rmtree(userdir + '/' + dir + '/' + udir)
     except Exception as e:
