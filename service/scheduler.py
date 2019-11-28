@@ -73,7 +73,7 @@ def extract(fl,path):
                 #     zf.extract(member, path)
             app.logger.debug('Extracted zip ' + fl)
             return True
-        except Expection as e:
+        except Exception as e:
             app.logger.debug('Extraction could not be done for ' + fl + ' : "{x}"'.format(x=e.message))
             return False
 
