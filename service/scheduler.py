@@ -257,7 +257,8 @@ def processftp():
             # configure for sending anything for the user of this dir
             apiurl = app.config['API_URL']
             acc = models.Account().pull(dir)
-            if acc is None: continue
+            if acc is None: 
+                continue
             apiurl += '?api_key=' + acc.data['api_key']
             # there is a uuid dir for each item moved in a given operation from the user jail
             for udir in os.listdir(userdir + '/' + dir):
@@ -320,7 +321,8 @@ def processftp():
                         else:
                             app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
                                             
-                shutil.rmtree(userdir + '/' + dir + '/' + udir)
+                shutil.rmtree(userdir + '/' + dir + '/' + udir, ignore_errors=True) # 2019-12-02 TD : kill "udir" folder no matter what status
+
     except Exception as e:
         app.logger.error("Scheduler - failed scheduled process for FTP temp directories: '{x}'".format(x=e.message))
 
