@@ -74,7 +74,7 @@ def extract(fl,path):
             app.logger.debug('Extracted zip ' + fl)
             return True
         except Exception as e:
-            app.logger.debug('Extraction could not be done for ' + fl + ' : "{x}"'.format(x=e.message))
+            app.logger.error('Scheduler - Extraction could not be done for ' + fl + ' : "{x}"'.format(x=e.message))
             return False
 
 def flatten(destination, depth=None):
@@ -257,14 +257,15 @@ def processftp():
             # configure for sending anything for the user of this dir
             apiurl = app.config['API_URL']
             acc = models.Account().pull(dir)
-            if acc is None: 
+            if acc is None:
                 continue
             apiurl += '?api_key=' + acc.data['api_key']
             # there is a uuid dir for each item moved in a given operation from the user jail
             for udir in os.listdir(userdir + '/' + dir):
                 thisdir = userdir + '/' + dir + '/' + udir
                 app.logger.debug('Scheduler - processing ' + thisdir + ' for Account:' + dir)
-                for pub in os.listdir(thisdir):
+                for xpub in os.listdir(thisdir):
+                    pub = xpub
                     # should be a dir per publication notification - that is what they are told to provide
                     # and at this point there should just be one pub in here, whether it be a file or directory or archive
                     # if just a file, even an archive, dump it into a directory so it can be zipped easily
@@ -293,7 +294,7 @@ def processftp():
                     for singlepub in os.listdir(pdir):
                         # 2016-11-30 TD : Since there are (at least!?) 2 formats now available, we have to find out
                         ## 2019-11-18 TD : original path without loop where zip file is packed
-                        ##                 from  source folder "thisdir + '/' + pub" 
+                        ##                 from  source folder "thisdir + '/' + pub"
                         ## pkg_fmt = pkgformat(thisdir + '/' + pub)
                         ## #
                         ## pkg = thisdir + '/' + pub + '.zip'
@@ -320,11 +321,11 @@ def processftp():
                             app.logger.error('Scheduler - processing completed with POST failure to ' + apiurl + ' - ' + str(resp.status_code) + ' - ' + resp.text)
                         else:
                             app.logger.info('Scheduler - processing completed with POST to ' + apiurl + ' - ' + str(resp.status_code))
-                                            
+
                 shutil.rmtree(userdir + '/' + dir + '/' + udir, ignore_errors=True) # 2019-12-02 TD : kill "udir" folder no matter what status
 
     except Exception as e:
-        app.logger.error("Scheduler - failed scheduled process for FTP temp directories: '{x}'".format(x=e.message))
+        app.logger.error('Scheduler - failed scheduled process for FTP temp directories: "{x}"'.format(x=e.message))
 
 if app.config.get('PROCESSFTP_SCHEDULE',10) != 0:
     schedule.every(app.config.get('PROCESSFTP_SCHEDULE',10)).minutes.do(processftp)
