@@ -95,7 +95,7 @@ def flatten(destination, depth=None):
             has_xml = True
             words = destination.split('/')
             stem = words[-1] + '/' + os.path.splitext(fl)[0]
-            if not os.path.exists(destition + '/' + stem):
+            if not os.path.exists(destination + '/' + stem):
                 os.makedirs(destination + '/' + stem)
                 app.logger.debug('Flatten new ' + destination + '/' + stem + ' created')
     # 2019-11-18 TD : end of recursion stop marker search
