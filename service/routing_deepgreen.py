@@ -777,11 +777,17 @@ def domain_email(domain, email):
 
     # strip everything after a path separator
     domain = domain.split("/")[0]
-
+ 
     # strip everything before @
     bits = email.split("@")
     if len(bits) > 1:
         email = bits[1]
+
+    # 2019-12-05 TD : Here we go again: Some providing parties deliver /empty/ <email>
+    #                 tags, containing nevertheless some white-space, e.g. '\n'. Gosh!
+
+    # in case the email is (almost!) empty
+    email = email.strip()
 
     # 2019-10-24 TD : Some mad publishers (not to name one, but Frontiers seems a candidate)
     #                 are convinced that it would be a great idea to use the xml <email> tag 
