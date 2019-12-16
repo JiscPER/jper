@@ -661,14 +661,21 @@ def repackage(unrouted, repo_ids):
             app.logger.warn(u"Repackaging - no account with id {x}; carrying on regardless".format(x=rid))
             continue
         for pack in acc.packaging:
-            # if it's already in the conversion list, job done
+            # if it's already in the conversion list, get this job done, and check next pack!
             if pack in conversions:
-                break
+                continue
+                # break
+                # 2019-12-12 TD : replace 'break' because there might still be other packs in acc
 
-            # otherwise, if the package manager can convert it, also job done
+            # otherwise, if the package manager can convert it, also get this job done, and next!
             if pm.convertible(pack):
                 conversions.append(pack)
-                break
+                continue
+                # break
+                # 2019-12-12 TD : replace 'break' because there might still be other packs in acc
+
+    # 2019-12-12 TD : pure safety measure of de-duplication here
+    conversions = list(set(conversions))
 
     if len(conversions) == 0:
         return []

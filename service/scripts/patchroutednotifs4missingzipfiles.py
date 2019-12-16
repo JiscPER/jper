@@ -1,13 +1,16 @@
 # This Python file uses the following encoding: utf-8
 """
-This script copies (i.e. reassigns) each routed notifications so far collected
+This script copies (i.e. reassigns) each routed notifications collected so far
 for standard accounts (i.e. hidden accounds in the background) to the corresponding
 regular account if it exists (i.e. is registered with DeepGreen!).
 
 """
 try:
-    from octopus.core import add_configuration, app
+    from octopus.core import add_configuration
     from service.models import Account,RoutedNotification
+    from service.web import app
+    from service import packages
+    from flask import url_for
 except:
     print "ERROR: Need to run from a virtualenv enabled setting, i.e."
     print "ERROR: run 'source ../../bin/activate' in some DG installation root folder first!"
@@ -16,32 +19,77 @@ except:
 import os
 
 
+
 def repair_notes4missing_zip_files(packageprefs, page_size=1000):
+    #
     total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
     if total <= 0:
         print "ERROR: No routed notifications found."
         return False
-
+    #
     pages = (total / page_size) + 1
-
+    #
     for page in xrange(pages):
         frm = page*page_size
         print "% 8d" % frm
         for raw in RoutedNotification.query(_from=frm,size=page_size).get('hits',{}).get('hits',[]):
             if '_source' in raw:
+                note_id = raw['_id']
                 typ = raw['_type']
                 note = RoutedNotification(raw['_source'])
+                if note.packaging_format is None:
+                    continue
+                # get the package manager for this notification
+                pm = packages.PackageFactory.converter(note.packaging_format)
                 repos = note.repositories
                 npkgs = [lnk['packaging'] for lnk in note.links]
-                for rid in note.repositories:
+                conversions = []
+                for rid in repos:
                     if rid in packageprefs:
                         prefs = packageprefs[rid]
                         for pref in prefs:
                             #
-                            # ... still missing a considerable bit here ...
-                            #
+                            if (not pref in npkgs) and (pm.convertible(pref)):
+                                # add 'new' package format to notification's packaging list
+                                conversions.append(pref)
+                #
+                # make list of missing conversions unique
+                #
+                conversions = list(set(conversions))
+                if len(conversions) == 0:
+                    continue
 
-
+                # at this point we have a de-duplicated list of missing formats that we 
+                # need to additionally convert the note to, that the package is capable 
+                # of converting itself into
+                #
+                # this pulls everything from remote storage, runs the conversion, and 
+                # then synchronises back to remote storage
+                done = packages.PackageManager.convert(note_id, 
+                                                       note.packaging_format, 
+                                                       conversions)
+                #
+                for d in done:
+                    with app.test_request_context():
+                        burl = app.config.get("BASE_URL")
+                        if burl.endswith("/"):
+                            burl = burl[:-1]
+                        url = burl + url_for("webapi.retrieve_content", 
+                                             notification_id=note_id, 
+                                             filename=d[2])
+                    nl = {
+                        "type": "package",
+                        "format": "application/zip",
+                        "access": "router",
+                        "url": url,
+                        "packaging": d[0]
+                    }
+                    note.add_link( nl.get("url"),
+                                   nl.get("type"),
+                                   nl.get("format"),
+                                   nl.get("access"),
+                                   nl.get("packaging") )
+                # ... and, finally, save the notification that includes all new links
                 note.save(type=typ)
 
     print
@@ -75,7 +123,7 @@ if __name__ == "__main__":
     if args.pagesize is not None:
         page_size = int(args.pagesize)
 
-    repos = Account.pull_all_by_key(key='role',value='repository')
+    repos = Account.pull_all_by_key(key='role', value='repository')
     packageprefs = { r.id: [ pref.split('/')[-1] for pref in r.data['packaging'] if len(pref.split('/') > 2 ] for r in repos if not r.data['repository']['bibid'].startswith('a') }
 
 
