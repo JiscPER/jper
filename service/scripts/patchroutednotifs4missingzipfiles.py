@@ -24,7 +24,8 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
     #
     total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
     if total <= 0:
-        print "ERROR: No routed notifications found."
+        app.logger.error("PatchRouted4MissingZips - No routed notifications found.")
+        # print "ERROR: No routed notifications found."
         return False
     #
     pages = (total / page_size) + 1
@@ -59,7 +60,7 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
                 if len(conversions) == 0:
                     continue
 
-                app.logger.info("Repackaging - Notification:{x} needs also '{y}'".format(x=note_id,y=conversions)) 
+                app.logger.info("PatchRouted4MissingZips - Notification:{x} needs also the format(s) '{y}'".format(x=note_id,y=conversions)) 
                 # at this point we have a de-duplicated list of missing formats that we 
                 # need to additionally convert the note to, that the package is capable 
                 # of converting itself into
@@ -93,8 +94,9 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
                 # ... and, finally, save the notification that includes all new links
                 note.save(type=typ)
 
-    print
-    print "INFO: {total} routed notifications processed and adjusted.".format(total=total)
+    app.logger.info("PatchRouted4MissingZips - {total} routed notifications processed in total".format(total=total)
+    # print
+    # print "INFO: {total} routed notifications processed and adjusted.".format(total=total)
 
     return True
 
@@ -113,6 +115,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.run is not True:
+        app.logger.error("PatchRouted4MissingZips - Switch '--run' is missing! Stop.")
+        print
         print "ERROR: '--run switch is needed!"
         print
         exit(-1)
@@ -132,7 +136,8 @@ if __name__ == "__main__":
     if len(packageprefs) > 0:
         rc = repair_notes4missing_zip_files(packageprefs=packageprefs, page_size=page_size)
     else:
-        print "INFO: No packaging tags at all found in regular accounts -- somehow confused; stop."
+        app.logger.error("PatchRouted4MissingZips - No packaging tags at all found in regular accounts -- somehow confused; stop.")
+        # print "INFO: No packaging tags at all found in regular accounts -- somehow confused; stop."
 
     print
     exit(0)
