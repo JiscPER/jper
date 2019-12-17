@@ -22,6 +22,7 @@ import os
 
 def repair_notes4missing_zip_files(packageprefs, page_size=1000):
     #
+    modified = 0
     total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
     if total <= 0:
         app.logger.error("PatchRouted4MissingZips - No routed notifications found.")
@@ -93,10 +94,11 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
                                    nl.get("packaging") )
                 # ... and, finally, save the notification that includes all new links
                 note.save(type=typ)
+                modified += 1
 
-    app.logger.info("PatchRouted4MissingZips - {total} routed notifications processed in total".format(total=total))
+    app.logger.info("PatchRouted4MissingZips - Finally, {modified}/{total} routed notification(s) modified.".format(modified=modified,total=total))
     # print
-    # print "INFO: {total} routed notifications processed and adjusted.".format(total=total)
+    # print "INFO: {modified}/{total} routed notifications adjusted.".format(modified=modified,total=total)
 
     return True
 
