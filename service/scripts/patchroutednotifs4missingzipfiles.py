@@ -94,7 +94,7 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
                 # ... and, finally, save the notification that includes all new links
                 note.save(type=typ)
 
-    app.logger.info("PatchRouted4MissingZips - {total} routed notifications processed in total".format(total=total)
+    app.logger.info("PatchRouted4MissingZips - {total} routed notifications processed in total".format(total=total))
     # print
     # print "INFO: {total} routed notifications processed and adjusted.".format(total=total)
 
