@@ -59,6 +59,7 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
                 if len(conversions) == 0:
                     continue
 
+                app.logger.info("Repackaging - Notification:{x} needs also '{y}'".format(x=note_id,y=conversions)) 
                 # at this point we have a de-duplicated list of missing formats that we 
                 # need to additionally convert the note to, that the package is capable 
                 # of converting itself into
