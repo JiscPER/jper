@@ -125,7 +125,8 @@ if __name__ == "__main__":
         page_size = int(args.pagesize)
 
     repos = Account.pull_all_by_key(key='role', value='repository')
-    packageprefs = { r.id: [ pref.split('/')[-1] for pref in r.data.get('packaging',[]) if len(pref.split('/')) > 2 ] for r in repos if not r.data['repository']['bibid'].startswith('a') }
+    packageprefs = { r.id: [ pref for pref in r.data.get('packaging',[]) if len(pref.split('/')) > 2 ] for r in repos if not r.data['repository']['bibid'].startswith('a') }
+    ## packageprefs = { r.id: [ pref.split('/')[-1] for pref in r.data.get('packaging',[]) if len(pref.split('/')) > 2 ] for r in repos if not r.data['repository']['bibid'].startswith('a') }
 
 
     if len(packageprefs) > 0:
