@@ -2,8 +2,8 @@
 """
 This script copies (i.e. reassigns) each routed notifications so far collected
 for standard accounts (i.e. hidden accounds in the background) to the corresponding
-regular account if it exists (i.e. is registered with DeepGreen!).
-
+regular account if it exists (i.e. is registered with DeepGreen!) **AND** is given 
+in some input CSV file (the same as for 'resetregularaccounts.py').
 """
 try:
     from octopus.core import add_configuration, app
@@ -13,7 +13,11 @@ except:
     print "ERROR: run 'source ../../bin/activate' in some DG installation root folder first!"
     exit(-1)
 
-import os
+import os, csv, glob
+
+OA_PARTICIPANTS_GLOB = "OA_participants*.csv"
+"""Lists of OA participants (as already determined from EZB)"""
+
 
 def make_hidden2regular(hidden, regular={}):
     hid2reg = {}
@@ -69,7 +73,7 @@ if __name__ == "__main__":
     # some general script running features
     parser.add_argument("-c", "--config", help="additional configuration to load (e.g. for testing)")
 
-    #parser.add_argument("-i", "--input", help="input .csv file")
+    parser.add_argument("-i", "--input", help="CSV file name(s) of (regular!) repository accounts [cur.val.: `{x}´]".format(x=OA_PARTICIPANTS_GLOB))
     parser.add_argument("-p", "--pagesize", help="page size of ES response to queries")
     parser.add_argument("--run", action="store_true", help="a tiny but effective(!!) security switch")
 
@@ -87,11 +91,41 @@ if __name__ == "__main__":
     if args.pagesize is not None:
         page_size = int(args.pagesize)
 
-    repos = Account.pull_all_by_key(key='role',value='repository')
+    if args.input is not None:
+        OA_PARTICIPANTS_GLOB = args.input
+
+    oa_plist = glob.glob(OA_PARTICIPANTS_GLOB)
+
+    repos = Account.pull_all_by_key(key='role', value='repository')
     hidden = { r.id: r.data['repository']['bibid'] for r in repos if r.data['repository']['bibid'].startswith('a') }
     regular = { r.id: r.data['repository']['bibid'].upper() for r in repos if not r.data['repository']['bibid'].startswith('a') }
 
-    hid2reg = make_hidden2regular(hidden,regular)
+    filtered_reg = {}
+    if oa_plist:
+        part = []
+        for fname in oa_plist:
+            try:
+                with open(fname, 'r') as f:
+                    reader = csv.DictReader(f, fieldnames=['Institution','EZB-Id','Sigel'],
+                                               quoting=csv.QUOTE_ALL,
+                                               delimiter='\t')
+                    for row in reader:
+                        if 'EZB-Id' in row and 'Institution' in row:
+                            if 'Institution' in row['Institution']: continue
+                            part.append( unicode(row['EZB-Id'], 'utf-8') )
+            except IOError:
+                print "ERROR: Could not read/parse '{x}' (IOError).".format(x=fname)
+
+            print "INFO: Participant file '{x}' successfully read/parsed.".format(x=fname)
+
+        part = list(set(part))
+        filtered_reg = { rid : bibid for rid,bibid in regular.items() if bibid in part }
+        print "INFO: Participant files processed; total of {y} institution(s) listed.".format(y=len(part))
+
+    print "INFO: Filter step with input CSV files left {y} receiving repository account(s) (of {z}).".format(y=len(filtered_reg), z=len(regular))
+
+    ### hid2reg = make_hidden2regular(hidden,regular)
+    hid2reg = make_hidden2regular(hidden,filtered_reg)
 
     if len(hid2reg) > 0:
         rc = assign_hidnotes2regular(hid2reg=hid2reg, page_size=page_size)
