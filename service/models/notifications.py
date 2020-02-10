@@ -37,6 +37,13 @@ class NotificationMetadata(dataobj.DataObj):
                 "metadata" : {
                     "fields" : {
                         "title" : {"coerce" :"unicode"},
+                        # 2020-02-10 TD : additional bibliographic fields
+                        "journal" : {"coerce" :"unicode"},
+                        "volume" : {"coerce" :"unicode"},
+                        "issue" : {"coerce" :"unicode"},
+                        "fpage" : {"coerce" :"unicode"},
+                        "lpage" : {"coerce" :"unicode"},
+                        #
                         "version" : {"coerce" :"unicode"},
                         "publisher" : {"coerce" :"unicode"},
                         "type" : {"coerce" :"unicode"},
@@ -150,6 +157,102 @@ class NotificationMetadata(dataobj.DataObj):
         :param val: the title
         """
         self._set_single("metadata.title", val, coerce=dataobj.to_unicode(), allow_none=False, ignore_none=True)
+
+    #
+    # 2020-02-10 TD : additional bibliographic fields ("@property" as well as "@...setter")
+    #
+    @property
+    def journal(self):
+        """
+        The journal name of the work represented by this metadata
+
+        :return: The journal name
+        """
+        return self._get_single("metadata.journal", coerce=dataobj.to_unicode())
+
+    @journal.setter
+    def journal(self, val):
+        """
+        Set the journal name of the work represented by this metadata
+
+        :param val: the journal name
+        """
+        self._set_single("metadata.journal", val, coerce=dataobj.to_unicode())
+
+    @property
+    def volume(self):
+        """
+        The volume (number) of the work represented by this metadata
+
+        :return: The volume (number)
+        """
+        return self._get_single("metadata.volume", coerce=dataobj.to_unicode())
+
+    @volume.setter
+    def volume(self, val):
+        """
+        Set the volume (number) of the work represented by this metadata
+
+        :param val: the volume (number)
+        """
+        self._set_single("metadata.volume", val, coerce=dataobj.to_unicode())
+
+    @property
+    def issue(self):
+        """
+        The issue (number) of the work represented by this metadata
+
+        :return: The issue (number)
+        """
+        return self._get_single("metadata.issue", coerce=dataobj.to_unicode())
+
+    @issue.setter
+    def issue(self, val):
+        """
+        Set the issue (number) of the work represented by this metadata
+
+        :param val: the issue (number)
+        """
+        self._set_single("metadata.issue", val, coerce=dataobj.to_unicode())
+
+    @property
+    def fpage(self):
+        """
+        The first page (number) of the work represented by this metadata
+
+        :return: The first page (number)
+        """
+        return self._get_single("metadata.fpage", coerce=dataobj.to_unicode())
+
+    @fpage.setter
+    def fpage(self, val):
+        """
+        Set the first page (number) of the work represented by this metadata
+
+        :param val: the first page (number)
+        """
+        self._set_single("metadata.fpage", val, coerce=dataobj.to_unicode())
+
+    @property
+    def lpage(self):
+        """
+        The last page (number) of the work represented by this metadata
+
+        :return: The last page (number)
+        """
+        return self._get_single("metadata.lpage", coerce=dataobj.to_unicode())
+
+    @lpage.setter
+    def lpage(self, val):
+        """
+        Set the last page (number) of the work represented by this metadata
+
+        :param val: the last page (number)
+        """
+        self._set_single("metadata.lpage", val, coerce=dataobj.to_unicode())
+    #
+    # 2020-02-10 TD : end of additional bibliographic fields
+    #
 
     @property
     def version(self):
