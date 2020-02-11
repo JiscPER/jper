@@ -1098,6 +1098,13 @@ class FilesAndJATS(PackageHandler):
         md = models.NotificationMetadata()
 
         md.title = jmd.title if jmd.title is not None else emd.title
+        # 2020-02-11 TD : additional bibliographic items from EMPC and JATS metadata
+        md.journal = jmd.journal if jmd.journal is not None else emd.journal
+        md.volume = jmd.volume
+        md.issue = jmd.issue
+        md.fpage = jmd.fpage
+        md.lpage = jmd.lpage
+        # 2020-02-11 TD : end of additional bibliographic items from EMPC and JATS metadata
         md.publisher = jmd.publisher
         md.type = emd.type
         md.language = emd.language
@@ -1130,6 +1137,13 @@ class FilesAndJATS(PackageHandler):
         md = models.NotificationMetadata()
 
         md.title = self.jats.title
+        # 2020-02-11 TD : additional bibliographic items from JATS metadata
+        md.journal = self.jats.journal 
+        md.volume = self.jats.volume
+        md.issue = self.jats.issue
+        md.fpage = self.jats.fpage
+        md.lpage = self.jats.lpage
+        # 2020-02-11 TD : end of additional bibliographic items from JATS metadata
         md.publisher = self.jats.publisher
         md.publication_date = self.jats.publication_date
         md.date_accepted = self.jats.date_accepted
@@ -1180,6 +1194,13 @@ class FilesAndJATS(PackageHandler):
         md = models.NotificationMetadata()
 
         md.title = self.epmc.title
+        # 2020-02-11 TD : additional bibliographic items from EMPC metadata
+        md.journal = self.epmc.journal 
+        md.volume = self.epmc.volume
+        md.issue = self.epmc.issue
+        md.fpage = self.epmc.fpage
+        md.lpage = self.epmc.lpage
+        # 2020-02-11 TD : end of additional bibliographic items from EMPC metadata
         md.type = self.epmc.publication_type
         md.language = self.epmc.language
         md.publication_date = self.epmc.publication_date
@@ -1919,6 +1940,13 @@ class FilesAndRSC(PackageHandler):
         md = models.NotificationMetadata()
 
         md.title = rmd.title if rmd.title is not None else emd.title
+        # 2020-02-11 TD : additional bibliographic items from None (==EMPC) and RSC metadata
+        md.journal = rmd.journal if rmd.journal is not None else emd.journal
+        md.volume = rmd.volume
+        md.issue = rmd.issue
+        md.fpage = rmd.fpage
+        md.lpage = rmd.lpage
+        # 2020-02-11 TD : end of additional bibliographic items from None (==EMPC) and RSC metadata
         md.publisher = rmd.publisher
         md.type = emd.type
         md.language = emd.language
@@ -1951,6 +1979,13 @@ class FilesAndRSC(PackageHandler):
         md = models.NotificationMetadata()
 
         md.title = self.rsc_xml.title
+        # 2020-02-11 TD : additional bibliographic items from RSC metadata
+        md.journal = self.rsc_xml.journal 
+        md.volume = self.rsc_xml.volume
+        md.issue = self.rsc_xml.issue
+        md.fpage = self.rsc_xml.fpage
+        md.lpage = self.rsc_xml.lpage
+        # 2020-02-11 TD : end of additional bibliographic items from RSC metadata
         md.publisher = self.rsc_xml.publisher
         md.publication_date = self.rsc_xml.publication_date
         md.date_accepted = self.rsc_xml.date_accepted
