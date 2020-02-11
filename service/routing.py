@@ -243,6 +243,9 @@ def enhance(routed, metadata):
     # some of the fields are easy - we just want to accept the existing
     # value if it is set, otherwise take the value from the other metadata
     accept_existing = [
+        # 2020-02-11 TD : adding some more bibliographic fields
+        "journal", "volume", "issue", "fpage", "lpage",
+        #
         "title", "version", "publisher", "source_name", "type",
         "language", "publication_date", "date_accepted", "date_submitted",
         "license"
