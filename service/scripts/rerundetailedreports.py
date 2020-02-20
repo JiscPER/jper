@@ -43,6 +43,8 @@ if __name__ == "__main__":
     #     exit(0)
     if not args.year:
         year = int(time.strftime('%Y'))
+    else:
+        year = args.year
     
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
 

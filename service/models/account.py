@@ -25,6 +25,11 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
             "software" : "<name of the software>"
         },
 
+        "publisher" : {
+            "name" : "<name of the publisher>",
+            "url" : "<url for the main publisher weg page>"
+        },
+
         # "sword_repository" : {
         "sword" : {
             "username" : "<username for the router to authenticate with the repository>",
@@ -160,6 +165,24 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     @repository_name.setter
     def repository_name(self, val):
         self._set_single("repository.name", val, coerce=self._utf8_unicode())
+
+    # 2020-02-20 TD : add convenience setter and getter for extra pub infos
+    @property
+    def publisher_name(self):
+        return self._get_single("publisher.name", coerce=self._utf8_unicode())
+
+    @publisher_name.setter
+    def publisher_name(self, val):
+        self._set_single("publisher.name", val, coerce=self._utf8_unicode())
+
+    @property
+    def publisher_url(self):
+        return self._get_single("publisher.url", coerce=self._utf8_unicode())
+
+    @publisher_url.setter
+    def publisher_url(self, val):
+        self._set_single("publisher.url", val, coerce=self._utf8_unicode())
+    # 2020-02-20 TD : end of convenience setter and getter for extra pub infos
 
     def can_log_in(self):
         return True
