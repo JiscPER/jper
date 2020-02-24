@@ -17,8 +17,8 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--debug", action="store_true", help="pycharm debug support enable")
     parser.add_argument("-c", "--config", help="additional configuration to load (e.g. for testing)")
 
-    parser.add_argument("-f", "--from_date", help="(format: yyyy-mm-ddThh:mm:ssZ) date to run the report from\nthe year yyyy is also taken as a part of the .csv report file name")
-    parser.add_argument("-t", "--to_date", help="(format: yyyy-mm-ddThh:mm:ssZ) date to run the report to")
+    parser.add_argument("-f", "--from_date", help="(format: yyyy-mm-ddThh:mm:ssZ) date to run the report from (the year yyyy is also taken as a part of the .csv report file name)")
+    parser.add_argument("-t", "--to_date", help="(format: yyyy-mm-ddThh:mm:ssZ) date to run the report to (the total time period 'from-to' shall not be strict lesser than one year!).")
 
     parser.add_argument("-p", "--publisher", help="report the publishers' activities (switch: PUBLISHER='x' calls this report)")
 
