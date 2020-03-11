@@ -84,7 +84,7 @@
 		$('#dataAOTable tr:last').after('<tr>\
 				<td class="toggle">'+out[tbl.header[0]][variable]+'</td> \
 				<td>'+out[tbl.header[1]][variable]+'<br>'+"("+out[tbl.header[2]][variable]+")"+'</td> \
-				<td>'+out[tbl.header[2]][variable]+'<br>'+"(+"+out[tbl.header[3]][variable]+"M)"+'</td> \
+				<td>'+out[tbl.header[3]][variable].substr(0,10)+'<br>'+"(+"+out[tbl.header[4]][variable]+"M)"+'</td> \
 				<td>'+out[tbl.header[5]][variable]+'</td> \
 				<td>'+out[tbl.header[6]][variable]+'</td> \
 				</tr> \
@@ -114,8 +114,6 @@
 	$('.toggle').on('click',function(){
 		$(this).parent().next().toggle();
 	});
-	
-        
 </script>
 <!--	<script>
 		var tbl = document.getElementById("dataAOTable");
