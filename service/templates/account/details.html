@@ -97,7 +97,8 @@
 		node[id] = new PrettyJSON.view.Node({
 			el : $('#'+id),
 			data : obj.notifications[variable]
-		});	
+		});
+			window.alert(node[id]);
 	}
 	
 	$('.expand').on('click', function() {
@@ -112,5 +113,12 @@
 		$(this).parent().next().toggle();
 	});
 	
+        
 </script>
+<!--	<script>
+		var tbl = document.getElementById("dataAOTable");
+		var x = tbl.getElementsByClassName("leaf-container");
+		
+	</script>
+-->
 {% endblock %}
