@@ -32,14 +32,15 @@ except:
 
 blueprint = Blueprint('account', __name__)
 
-
+# 2020-03-11 TD : including column(s) of publication_date and embargo for both srceen and file
+#
 # 2016-11-22 TD : global definition of output table by making use of jsonpath query strings;
 #                 applicable to both screen *and* file (e.g. csv) output simultanously
 #
 # Notification table/csv for repositories
 ntable = {
-            "screen" : ["Send Date", ["DOI","Publisher"], "Title", "Analysis Date"],
-            "header" : ["Send Date", "DOI", "Publisher", "Title", "Analysis Date", "Embargo", "Publication Date"],
+            "screen" : ["Send Date", ["DOI","Publisher"], ["Publication Date", "Embargo"], "Title", "Analysis Date"],
+            "header" : ["Send Date", "DOI", "Publisher", "Publication Date", "Embargo", "Title", "Analysis Date", "Embargo", "Publication Date"],
      "Analysis Date" : "notifications[*].analysis_date",
          "Send Date" : "notifications[*].created_date",
            "Embargo" : "notifications[*].embargo.duration",

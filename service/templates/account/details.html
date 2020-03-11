@@ -74,8 +74,9 @@
         $('#dataAOTable').prepend('<tr>\
 		<th>'+tbl.header[0]+'</th> \
 		<th>'+tbl.header[1]+" / "+tbl.header[2]+'</th> \
-		<th>'+tbl.header[3]+'</th> \
-		<th>'+tbl.header[4]+'</th> \
+		<th>'+tbl.header[3]+" / "+tbl.header[4]+'</th> \
+		<th>'+tbl.header[5]+'</th> \
+		<th>'+tbl.header[6]+'</th> \
 		</tr>');
 
 	for (variable in ids) {
@@ -83,8 +84,9 @@
 		$('#dataAOTable tr:last').after('<tr>\
 				<td class="toggle">'+out[tbl.header[0]][variable]+'</td> \
 				<td>'+out[tbl.header[1]][variable]+'<br>'+"("+out[tbl.header[2]][variable]+")"+'</td> \
-				<td>'+out[tbl.header[3]][variable]+'</td> \
-				<td>'+out[tbl.header[4]][variable]+'</td> \
+				<td>'+out[tbl.header[2]][variable]+'<br>'+"(+"+out[tbl.header[3]][variable]+"M)"+'</td> \
+				<td>'+out[tbl.header[5]][variable]+'</td> \
+				<td>'+out[tbl.header[6]][variable]+'</td> \
 				</tr> \
 				<tr style="display: none;"> <td colspan="4"><div class="col span-1 expand" data="'+id+'"> \
 					<span class="down-arrow"></span> \
