@@ -100,12 +100,11 @@
 			el : $('#'+id),
 			data : obj.notifications[variable]
 		});
-		// window.alert(node[id]);
 	}
 	
 	$('.expand').on('click', function() {
-			node[$(this).attr('data')].expandAll();
-		});
+		node[$(this).attr('data')].expandAll();
+	});
 	
 	$('.collapse').on('click', function() {
 		node[$(this).attr('data')].collapseAll();
@@ -114,11 +113,6 @@
 	$('.toggle').on('click',function(){
 		$(this).parent().next().toggle();
 	});
+
 </script>
-<!--	<script>
-		var tbl = document.getElementById("dataAOTable");
-		var x = tbl.getElementsByClassName("leaf-container");
-		
-	</script>
--->
 {% endblock %}
