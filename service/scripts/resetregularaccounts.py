@@ -293,8 +293,16 @@ if __name__ == "__main__":
     parser.add_argument("--passive", action="store_true", help="set account initially passive")
     parser.add_argument("--net", action="store_true", help="do network requests for update")
     parser.add_argument("--purge", action="store_true", help="purge instead of update (DANGER!)")
+    parser.add_argument("--run", action="store_true", help="a tiny but effective(!!) security switch")
 
     args = parser.parse_args()
+
+    if args.run is not True:
+        print
+        print "ERROR: '--run switch is needed!"
+        print
+        parser.print_help()
+        exit(-1)
 
     if args.config:
         add_configuration(app, args.config)
