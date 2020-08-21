@@ -76,7 +76,6 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input", help="CSV file name(s) of (regular!) repository accounts [cur.val.: `{x}´]".format(x=OA_PARTICIPANTS_GLOB))
     parser.add_argument("-p", "--pagesize", help="page size of ES response to queries")
     parser.add_argument("--run", action="store_true", help="a tiny but effective(!!) security switch")
-    parser.add_argument("-e", "--ezbid", help="EZB-Id of Repo ")
 
     args = parser.parse_args()
 
@@ -85,11 +84,6 @@ if __name__ == "__main__":
         print
         exit(-1)
 
-    if args.ezbid is not None and args.input is not None:
-        print "ERROR: 'either use switch --ezbid or --input'"
-        print
-        exit (-1
-) 
     if args.config:
         add_configuration(app, args.config)
     
@@ -97,36 +91,17 @@ if __name__ == "__main__":
     if args.pagesize is not None:
         page_size = int(args.pagesize)
 
-    #if args.input is not None:
-    #    OA_PARTICIPANTS_GLOB = args.input
-    #
-    #oa_plist = glob.glob(OA_PARTICIPANTS_GLOB)
-    #
-    #print "INFO: %s" % oa_plist
+    if args.input is not None:
+        OA_PARTICIPANTS_GLOB = args.input
 
-    
-        
+    oa_plist = glob.glob(OA_PARTICIPANTS_GLOB)
+
     repos = Account.pull_all_by_key(key='role', value='repository')
     hidden = { r.id: r.data['repository']['bibid'] for r in repos if r.data['repository']['bibid'].startswith('a') }
     regular = { r.id: r.data['repository']['bibid'].upper() for r in repos if not r.data['repository']['bibid'].startswith('a') }
 
-    print """INFO:
-        hidden:  %s 
-        regular: %s""" % (hidden, regular)
-
-
     filtered_reg = {}
-
-    if args.ezbid:
-        part = [ unicode(args.ezbid) ]
-        filtered_reg = { rid : bibid for rid,bibid in regular.items() if bibid in part }
-    
-    
-
-
-    
-    if False:
-        # if oa_plist:
+    if oa_plist:
         part = []
         for fname in oa_plist:
             try:
@@ -137,28 +112,21 @@ if __name__ == "__main__":
                     for row in reader:
                         if 'EZB-Id' in row and 'Institution' in row:
                             if 'Institution' in row['Institution']: continue
-                            print "DEBUG: EZB-ID: %s" % row['EZB-Id']
                             part.append( unicode(row['EZB-Id'], 'utf-8') )
             except IOError:
                 print "ERROR: Could not read/parse '{x}' (IOError).".format(x=fname)
 
             print "INFO: Participant file '{x}' successfully read/parsed.".format(x=fname)
-        
-        print "DEBUG: part %s" % (part)
-        
+
         part = list(set(part))
         filtered_reg = { rid : bibid for rid,bibid in regular.items() if bibid in part }
         print "INFO: Participant files processed; total of {y} institution(s) listed.".format(y=len(part))
 
-    
     print "INFO: Filter step with input CSV files left {y} receiving repository account(s) (of {z}).".format(y=len(filtered_reg), z=len(regular))
 
     ### hid2reg = make_hidden2regular(hidden,regular)
     hid2reg = make_hidden2regular(hidden,filtered_reg)
 
-    print "hid2reg: %s" % hid2reg
-    # exit(-1) 
-    
     if len(hid2reg) > 0:
         rc = assign_hidnotes2regular(hid2reg=hid2reg, page_size=page_size)
     else:
