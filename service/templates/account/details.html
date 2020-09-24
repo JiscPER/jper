@@ -81,9 +81,25 @@
 
 	for (variable in ids) {
 		var id = ids[variable];
+        // STL 2020-09-26 Work around for missing field publisher in Wiley data
+		//  $('#dataAOTable tr:last').after('<tr>\
+		//  		<td class="toggle">'+out[tbl.header[0]][variable]+'</td> \
+		//  		<td>'+out[tbl.header[1]][variable]+'<br>'+"("+out[tbl.header[2]][variable]+")"+'</td> \
+		//  		<td>'+out[tbl.header[3]][variable].substr(0,10)+'<br>'+"(+"+out[tbl.header[4]][variable]+"M)"+'</td> \
+		//  		<td>'+out[tbl.header[5]][variable]+'</td> \
+		//  		<td>'+out[tbl.header[6]][variable]+'</td> \
+		//  		</tr> \
+		//  		<tr style="display: none;"> <td colspan="5"><div class="col span-1 expand" data="'+id+'"> \
+		//  			<span class="down-arrow"></span> \
+		//  		</div> \
+		//  		<div class="col span-1 collapse" data="'+id+'"> \
+		//  			<span class="up-arrow"></span> \
+		//  		</div> \
+		//  		<div class="col span-12" id="'+id+'"></div> \
+		//  		</td></tr>');		
 		$('#dataAOTable tr:last').after('<tr>\
 				<td class="toggle">'+out[tbl.header[0]][variable]+'</td> \
-				<td>'+out[tbl.header[1]][variable]+'<br>'+"("+out[tbl.header[2]][variable]+")"+'</td> \
+				<td>'+out[tbl.header[1]][variable]+'<br>'+'</td> \
 				<td>'+out[tbl.header[3]][variable].substr(0,10)+'<br>'+"(+"+out[tbl.header[4]][variable]+"M)"+'</td> \
 				<td>'+out[tbl.header[5]][variable]+'</td> \
 				<td>'+out[tbl.header[6]][variable]+'</td> \
