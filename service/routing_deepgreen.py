@@ -877,6 +877,7 @@ def postcode_match(pc1, pc2):
 
     return False
 
+
 def exact_substring(s1, s2):
     """
     normalised s1 must be an exact substring of normalised s2
@@ -884,7 +885,14 @@ def exact_substring(s1, s2):
     :param s1: first string
     :param s2: second string
     :return: True if match, False if not
+    
+    Special for FIDs:
+    -----------------
+    if string "s1" (coming from repo_config) is "IGNORE-AFFILIATION"
+    then ignore affiliation matching
     """
+    app.logger.debug(u"stl: Match exact_substring s1:{x} s2:{y}".format(x=s1, y=s2))
+
     # keep a copy of these for the provenance reporting
     os1 = s1
     os2 = s2
@@ -906,6 +914,14 @@ def exact_substring(s1, s2):
     ##
     if re.search(r'\b' + re.escape(s1) + r'\b', s2, re.UNICODE) is not None:
         return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
+
+    if os1=="IGNORE-AFFILIATION":
+        app.logger.debug(u"stl: Match exact_substring s1:{x} found".format(x=os1))
+        return u"'{a}' appears in 'repo_config'".format(a=os1)
+
+    if os2=="IGNORE-AFFILIATION":
+        app.logger.debug(u"stl: Match exact_substring s2:{x} found".format(x=os2))
+        return u"'{a}' appears in 'metadata'".format(a=os2)
 
     return False
 
