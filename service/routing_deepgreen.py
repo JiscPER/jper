@@ -136,6 +136,7 @@ def _route(unrouted):
                 #
                 # 2018-11-15 TD : introducing the case of /gold open access/ journals
                 # 2020-04-03 TD : ... and DEAL journals; handled as if they were gold 
+                # 2020-09-29 STL: ... and DEAL journals; handled as if they were alliance
                 #
                 # FIXED: !!! missing: check license period against publ_date here !!!
                 for jrnl in lic.journals:
@@ -893,7 +894,7 @@ def exact_substring(s1, s2):
     if string "s1" (coming from repo_config) is "IGNORE-AFFILIATION"
     then ignore affiliation matching
     """
-    app.logger.debug(u"stl: Match exact_substring s1:{x} s2:{y}".format(x=s1, y=s2))
+    # app.logger.debug(u"stl: Match exact_substring s1:{x} s2:{y}".format(x=s1, y=s2))
 
     # keep a copy of these for the provenance reporting
     os1 = s1
@@ -915,6 +916,8 @@ def exact_substring(s1, s2):
     ##                 caused an exception (and thus a stalled(!!) failure). Shite...
     ##
     if re.search(r'\b' + re.escape(s1) + r'\b', s2, re.UNICODE) is not None:
+        app.logger.debug(u"stl: Match exact_substring s1:{x} s2:{y}".format(x=os1, y=os2))
+        app.logger.debug(u"stl: '{a}' appears in '{b}'".format(a=s1, b=s2))
         return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
 
     if os1=="IGNORE-AFFILIATION":
