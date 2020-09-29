@@ -132,7 +132,7 @@ def _route(unrouted):
             continue
         for lic in lics:
             lic_data = []
-            if lic.type == "gold" or lic.type == "deal":
+            if lic.type == "gold":
                 #
                 # 2018-11-15 TD : introducing the case of /gold open access/ journals
                 # 2020-04-03 TD : ... and DEAL journals; handled as if they were gold 
@@ -172,11 +172,13 @@ def _route(unrouted):
                 #
                 # 2018-11-15 TD : that's it up to here (for the time being) for /gold open access/
                 #
-            if lic.type == "alliance" or lic.type == "national" or lic.type == "fid":
+            if lic.type == "alliance" or lic.type == "national" or lic.type == "deal" or lic.type == "fid":
                 # 2016-10-12 TD
                 # FIXED: !!! missing: check license period against publ_date here !!!
                 # 2020-05-28 STL
                 # License type 'fid' added
+                # 2020-09-29 STL
+                # License type 'deal' also to be handeled like "alliance"
                 for jrnl in lic.journals:
                     # check anew for each journal included in the license
                     ys = "0000"
