@@ -1,6 +1,8 @@
 #! /bin/bash
 
-ES="http://sl64.kobv.de:9200"
+ESHOST=`hostname|sed -e 's/1\./4./'` 
+ES="http://${ESHOST}:9200"
+echo $ES
 
 if [ -z "$1" ]
 then
