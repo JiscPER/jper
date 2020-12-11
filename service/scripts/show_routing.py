@@ -2,11 +2,14 @@
 
 #! /home/green/jper/bin/python
 
-import requests, json, re, argparse, os, unicodedata
+import requests, json, re, argparse, os, unicodedata, sys
 
+ES_BASES  = {
+    'li11.int.zib.de' : 'http://li14.int.zib.de:9200/jper',
+    'sl61.kobv.de':     'http://sl64.kobv.de:9200/jper'
+    }
 
-BASEURL = 'http://li14.int.zib.de:9200/jper'
-SEARCH  = BASEURL + '/%s/_search?q="%s"'
+SEARCH = ''
 
 
 def _normalise(s):
@@ -94,6 +97,7 @@ def get_name_variants(id):
         return []
 
 
+
 # Command Line Parser
 parser = argparse.ArgumentParser(description="Shows routing information of unrouted notifications")
 parser.add_argument("-n", "--notification", required=True,  default=None,     help="ID or date stamp of notification")
@@ -101,6 +105,14 @@ parser.add_argument("-e", "--ezbid",        required=False, default=None,     he
 parser.add_argument("-i", "--index",        required=False, default='failed', help="index: routeYYYYMM, default is failed")
 parser.add_argument("-v", "--verbose",      required=False, default=False,    help="DEBUG Flag", action='store_true')
 
+# Elastic Search Hostname
+hostname = os.environ['HOSTNAME']
+try:
+    SEARCH = '%s/%%s/_search?q="%%s"' % ES_BASES[hostname]
+except:
+    print "unknown Elsatic Search Server for host '%s'" % hostname
+    sys.exit(1)    
+# print 'Elastic Search Host: %s' % SEARCH
 
 args  = parser.parse_args()
 DEBUG = args.verbose
