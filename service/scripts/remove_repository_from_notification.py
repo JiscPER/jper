@@ -73,11 +73,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.run is not True:
-        print "ERROR: '--run switch is needed!"
-        print
-        exit(-1)
-
     if args.licid is None:
         print "ERROR: '--licid parameter required (DeepGreen License ID)'"
         print
@@ -87,7 +82,12 @@ if __name__ == "__main__":
         print "ERROR: '--repid parameter required (DeepGreen Repository ID)'"
         print
         exit (-1)    
-        
+ 
+    if args.run is not True:
+        print "ERROR: '--run switch is needed!"
+        print
+        exit(-1)
+       
     #if args.config:
     #    add_configuration(app, args.config)
     
