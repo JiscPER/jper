@@ -18,6 +18,8 @@ import os
 
 #def process_notes (provider_id = '2316c44c4a504b489f20df170c1762da', repo_id = '16f01467d20c4e9484f8aeb6db25bf21', page_size=1000):
 def process_notes (provider_id, repo_id, page_size=1000):
+    print 'Provider ID:   %s' % provider_id
+    print 'Repository ID: %s' % repo_id
     total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
     if total <= 0:
         print "ERROR: No routed notifications found."
