@@ -15,10 +15,16 @@ except:
 
 import os
 
+def sublist_element_in_list(sublist, list):
+    for element in sublist:
+        if element in list:
+            return True
+    return False
 
-def process_notes (provider_id, repo_id, page_size=1000):
-    print 'Provider ID  (DeepGreen Account):  %s' % provider_id
-    print 'Repository ID (DeepGreen Account): %s' % repo_id
+def process_notes (provider_id, repo_ids, page_size=1000):
+    repo_list = repo_ids.split(",")
+    print 'Provider ID    (DeepGreen Account): %s' % provider_id
+    print 'Repository IDs (DeepGreen Account): %s' % repo_ids
     total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
     if total <= 0:
         print "ERROR: No routed notifications found."
@@ -38,10 +44,10 @@ def process_notes (provider_id, repo_id, page_size=1000):
                 note_provider_id = note.provider_id
                 repos = []
                 
-                if provider_id==note.provider_id and repo_id in note.repositories:
+                if provider_id==note.provider_id and sublist_element_in_list(repo_list,note.repositories):
                     number_matched_notfications = number_matched_notfications + 1
                     for rid in note.repositories:
-                        if rid<>repo_id:
+                        if rid not in repo_list:
                             repos.append(rid)
                     print 'Type:  %s' % typ
                     print 'Notif: %s' % note.id
@@ -71,7 +77,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--pagesize", help="page size of ES response to queries")
     parser.add_argument("--show", action="store_true", help="a tiny but effective(!!) security switch")
 
-    parser.add_argument("-r", "--repoid",    help="DeepGreen Repository ID")
+    parser.add_argument("-r", "--repoids",   help="DeepGreen Repository IDs (comma separated  list)")
     parser.add_argument("-a", "--accountid", help="DeepGreen Publisher's Account ID")
 
     args = parser.parse_args()
@@ -81,8 +87,8 @@ if __name__ == "__main__":
         print
         exit (-1) 
     
-    if args.repoid is None:
-        print "ERROR: '--repid parameter required (DeepGreen Repository ID)'"
+    if args.repoids is None:
+        print "ERROR: '--repoids parameter required (DeepGreen Repository IDs (comma separated  list))'"
         print
         exit (-1)    
  
