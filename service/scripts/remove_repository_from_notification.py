@@ -52,7 +52,7 @@ def process_notes (provider_id, repo_ids, page_size=1000):
                     print 'Type:  %s' % typ
                     print 'Notif: %s' % note.id
                     print 'Prov:  %s' % note_provider_id
-                    print 'Repo:  %s' % repo_id
+                    print 'Repo:  %s' % repo_ids
                     print 'REPOS: %s' % note.repositories
                     print 'REPOS: %s' % repos
                     print
