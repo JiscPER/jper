@@ -16,10 +16,9 @@ except:
 import os
 
 
-#def process_notes (provider_id = '2316c44c4a504b489f20df170c1762da', repo_id = '16f01467d20c4e9484f8aeb6db25bf21', page_size=1000):
 def process_notes (provider_id, repo_id, page_size=1000):
-    print 'Provider ID:   %s' % provider_id
-    print 'Repository ID: %s' % repo_id
+    print 'Provider ID  (DeepGreen Account):  %s' % provider_id
+    print 'Repository ID (DeepGreen Account): %s' % repo_id
     total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
     if total <= 0:
         print "ERROR: No routed notifications found."
@@ -28,6 +27,7 @@ def process_notes (provider_id, repo_id, page_size=1000):
     pages = (total / page_size) + 1
     print 'Pages: %s, %s ' % (pages, page_size)
     
+    number_matched_notfications  = 0
     for page in xrange(pages):
         frm = page*page_size
         print "% 8d" % frm
@@ -39,6 +39,7 @@ def process_notes (provider_id, repo_id, page_size=1000):
                 repos = []
                 
                 if provider_id==note.provider_id and repo_id in note.repositories:
+                    number_matched_notfications = number_matched_notfications + 1
                     for rid in note.repositories:
                         if rid<>repo_id:
                             repos.append(rid)
@@ -56,7 +57,7 @@ def process_notes (provider_id, repo_id, page_size=1000):
                 # note.save(type=typ)
 
     print
-    print "INFO: {total} routed notifications processed and adjusted.".format(total=total)
+    print "INFO: %s routed notifications processed and %s need to be adjusted." % (total, number_matched_notfications)
 
     return True
 
@@ -68,15 +69,15 @@ if __name__ == "__main__":
     # some general script running features
     # parser.add_argument("-c", "--config", help="additional configuration to load (e.g. for testing)")
     parser.add_argument("-p", "--pagesize", help="page size of ES response to queries")
-    parser.add_argument("--run", action="store_true", help="a tiny but effective(!!) security switch")
+    parser.add_argument("--show", action="store_true", help="a tiny but effective(!!) security switch")
 
-    parser.add_argument("-r", "--repoid", help="DeepGreen Repository ID")
-    parser.add_argument("-l", "--licid", help="DeepGreen License ID")
+    parser.add_argument("-r", "--repoid",    help="DeepGreen Repository ID")
+    parser.add_argument("-a", "--accountid", help="DeepGreen Publisher's Account ID")
 
     args = parser.parse_args()
 
-    if args.licid is None:
-        print "ERROR: '--licid parameter required (DeepGreen License ID)'"
+    if args.accountid is None:
+        print "ERROR: '--accountid parameter required (DeepGreen Publisher's Account ID)'"
         print
         exit (-1) 
     
@@ -85,8 +86,8 @@ if __name__ == "__main__":
         print
         exit (-1)    
  
-    if args.run is not True:
-        print "ERROR: '--run switch is needed!"
+    if args.show is not True:
+        print "ERROR: '--show switch is needed!"
         print
         exit(-1)
        
@@ -97,6 +98,6 @@ if __name__ == "__main__":
     if args.pagesize is not None:
         page_size = int(args.pagesize)
     print 'running ...'
-    rc = process_notes(args.licid, args.repoid, page_size)
+    rc = process_notes(args.accountid, args.repoid, page_size)
     exit(0)
     
