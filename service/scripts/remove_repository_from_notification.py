@@ -104,6 +104,6 @@ if __name__ == "__main__":
     if args.pagesize is not None:
         page_size = int(args.pagesize)
     print 'running ...'
-    rc = process_notes(args.accountid, args.repoid, page_size)
+    rc = process_notes(args.accountid, args.repoids, page_size)
     exit(0)
     
