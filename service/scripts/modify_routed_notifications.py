@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     if args.file is not None:
         with open(args.file) as f:
-        notification_list = f.readlines()
+            notification_list = f.readlines()
     
     if args.update is True and args.run is not True:
         print "ERROR: '--run switch is needed when running update!"
