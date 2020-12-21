@@ -87,12 +87,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     notification_list = []
     
-    if (args.show is None and args.update is None) or (args.show is not None and args.update is not None)
+    if (args.show is None and args.update is None) or (args.show is not None and args.update is not None):
         print "ERROR: 'either --show or --update switch must be used!"
         print
         exit(-1)
 
-    if (args.accountid is None and args.file is None) or (args.accountid is not None and args.file is not None)
+    if (args.accountid is None and args.file is None) or (args.accountid is not None and args.file is not None):
         print "ERROR: 'either parameter --accountid or --file parameter must be used!"
         print
         exit(-1)
