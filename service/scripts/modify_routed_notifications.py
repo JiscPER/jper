@@ -68,6 +68,7 @@ def process_notes (provider_id, repo_ids, page_size=1000):
     return True
 
 
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -75,35 +76,49 @@ if __name__ == "__main__":
     # some general script running features
     # parser.add_argument("-c", "--config", help="additional configuration to load (e.g. for testing)")
     parser.add_argument("-p", "--pagesize", help="page size of ES response to queries")
-    parser.add_argument("--show", action="store_true", help="a tiny but effective(!!) security switch")
+    parser.add_argument("--run",    action="run_true",  help="a tiny but effective(!!) security switch")
+    parser.add_argument("--show",   action="store_true",  help="show matching notifications only")
+    parser.add_argument("--update", action="update_true", help="update matching notifications")
 
+    parser.add_argument("-f", "--file",      help="File containing notification IDs")
     parser.add_argument("-r", "--repoids",   help="DeepGreen Repository IDs (comma separated  list)")
     parser.add_argument("-a", "--accountid", help="DeepGreen Publisher's Account ID")
 
     args = parser.parse_args()
-
-    if args.accountid is None:
-        print "ERROR: '--accountid parameter required (DeepGreen Publisher's Account ID)'"
-        print
-        exit (-1) 
+    notification_list = []
     
+    if (args.show is None and args.update is None) or (args.show is not None and args.update is not None)
+        print "ERROR: 'either --show or --update switch must be used!"
+        print
+        exit(-1)
+
+    if (args.accountid is None and args.file is None) or (args.accountid is not None and args.file is not None)
+        print "ERROR: 'either parameter --accountid or --file parameter must be used!"
+        print
+        exit(-1)
+     
     if args.repoids is None:
         print "ERROR: '--repoids parameter required (DeepGreen Repository IDs (comma separated  list))'"
         print
         exit (-1)    
- 
-    if args.show is not True:
-        print "ERROR: '--show switch is needed!"
+
+    if args.file is not None:
+        with open(args.file) as f:
+        notification_list = f.readlines()
+    
+    if args.update is True and args.run is not True:
+        print "ERROR: '--run switch is needed when running update!"
         print
         exit(-1)
-       
-    #if args.config:
-    #    add_configuration(app, args.config)
-    
+        
     page_size = 1000
     if args.pagesize is not None:
         page_size = int(args.pagesize)
     print 'running ...'
-    rc = process_notes(args.accountid, args.repoids, page_size)
+    
+    print "Account:%s\nRepos: %s\nNotifs: %s" % (args.accountid, args.repoids, notification_list)
+    exit(-1)
+    
+    rc = process_notes(args.accountid, args.repoids, notification_list, page_size)
     exit(0)
     
