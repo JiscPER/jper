@@ -957,10 +957,12 @@ class BaseNotification(NotificationMetadata):
             if "affiliation" in a:
                 aff = a.get("affiliation")
                 md.add_affiliation(aff)
-                # 2019-02-20 TD : postcodes are not applicable in Germany
-                # codes = postcode.extract_all(aff)
-                # for code in codes:
-                #     md.add_postcode(code)
+                # 2019-02-20 TD : postcodes are not applicable in Germany AR: Rather than comment out, I have added a
+                # config option and set the default to false, as tests were failing
+                if app.config.get("EXTRACT_POSTCODES", False):
+                    codes = postcode.extract_all(aff)
+                    for code in codes:
+                        md.add_postcode(code)
 
             # other author ids
             for id in a.get("identifier", []):

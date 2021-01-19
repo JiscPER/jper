@@ -41,6 +41,7 @@ class TestRouting(ESTestCase):
 
         self.keep_failed = app.config.get("KEEP_FAILED_NOTIFICATIONS")
         app.config["KEEP_FAILED_NOTIFICATIONS"] = True
+        self.extract_postcodes = app.config.get("EXTRACT_POSTCODES")
 
     def tearDown(self):
         super(TestRouting, self).tearDown()
@@ -48,6 +49,7 @@ class TestRouting(ESTestCase):
         app.config["STORE_IMPL"] = self.store_impl
         app.config["RUN_SCHEDULE"] = self.run_schedule
         app.config["KEEP_FAILED_NOTIFICATIONS"] = self.keep_failed
+        app.config["EXTRACT_POSTCODES"] = self.extract_postcodes
 
         if os.path.exists(self.custom_zip_path):
             os.remove(self.custom_zip_path)
@@ -425,7 +427,102 @@ class TestRouting(ESTestCase):
                 assert len(n.get("identifier", [])) == 1
 
 
+    def test_40_match_success_no_postcode(self):
+        # example routing metadata from a notification
+        if app.config.get("EXTRACT_POSTCODES", None) == True:
+            app.config["EXTRACT_POSTCODES"] = False
+        source = fixtures.NotificationFactory.routing_metadata()
+        md = models.RoutingMetadata(source)
+
+        # example repo config data, with the keywords and content_types removed for these tests
+        # (they may be the subject of a later test)
+        source2 = fixtures.RepositoryFactory.repo_config()
+        del source2["keywords"]
+        del source2["content_types"]
+        rc = models.RepositoryConfig(source2)
+
+        prov = models.MatchProvenance()
+
+        m = routing.match(md, rc, prov)
+        assert m is True
+        assert len(prov.provenance) == 13
+        check = [0] * 13
+
+        for p in prov.provenance:
+            # check that there's an explanation in all of them
+            assert "explanation" in p
+            assert len(p.get("explanation")) > 0    # a non-zero length string
+
+            # run through each match that we know should have happened
+            if p.get("source_field") == "domains":                          # domains
+                if p.get("notification_field") == "urls":                   ## URLs
+                    assert p.get("term") == "ucl.ac.uk"
+                    assert p.get("matched") == "http://www.ucl.ac.uk"
+                    check[0] = 1
+                elif p.get("notification_field") == "emails":               ## Emails
+                    assert p.get("term") == "ucl.ac.uk"
+                    assert p.get("matched") == "someone@sms.ucl.ac.uk"
+                    check[1] = 1
+
+            elif p.get("source_field") == "name_variants":                  # Name Variants
+                if p.get("notification_field") == "affiliations":           ## Affiliations
+                    assert p.get("term") == "UCL"
+                    assert p.get("matched") == "UCL"
+                    check[2] = 1
+
+            elif p.get("source_field") == "author_emails":                  # Author ID: Email
+                if p.get("notification_field") == "emails":                 ## Emails
+                    assert p.get("term") == "someone@sms.ucl.ac.uk"
+                    assert p.get("matched") == "someone@sms.ucl.ac.uk"
+                    check[3] = 1
+
+            elif p.get("source_field") == "author_ids":                     # All Author IDs
+                if p.get("notification_field") == "author_ids":             ## All Author IDs
+                    assert p.get("term") in ["name: Richard Jones", "name: Mark MacGillivray", "email: someone@sms.ucl.ac.uk"]
+                    assert p.get("matched") in ["name: Richard Jones", "name: Mark MacGillivray", "email: someone@sms.ucl.ac.uk"]
+                    if check[4] == 0:
+                        check[4] = 1
+                    elif check[5] == 0:
+                        check[5] = 1
+                    elif check[6] == 0:
+                        check[6] = 1
+
+            elif p.get("source_field") == "grants":                         # Grants
+                if p.get("notification_field") == "grants":                 ## Grants
+                    assert p.get("term") == "BB/34/juwef"
+                    assert p.get("matched") == "BB/34/juwef"
+                    check[7] = 1
+
+            elif p.get("source_field") == "strings":                        # Strings
+                if p.get("notification_field") == "urls":                   ## URLs
+                    assert p.get("term") == "https://www.ed.ac.uk/"
+                    assert p.get("matched") == "http://www.ed.ac.uk"
+                    check[8] = 1
+
+                elif p.get("notification_field") == "emails":               ## Emails
+                    assert p.get("term") == "richard@EXAMPLE.com"
+                    assert p.get("matched") == "richard@example.com"
+                    check[9] = 1
+
+                elif p.get("notification_field") == "affiliations":         ## Affiliations
+                    assert p.get("term") == "cottage labs"
+                    assert p.get("matched") == "Cottage Labs"
+                    check[10] = 1
+
+                elif p.get("notification_field") == "author_ids":           ## All Author IDs
+                    assert p.get("term") == "AAAA-0000-1111-BBBB"
+                    assert p.get("matched") == "orcid: aaaa-0000-1111-bbbb"
+                    check[11] = 1
+
+                elif p.get("notification_field") == "grants":               ## Grants
+                    assert p.get("term") == "bb/34/juwef"
+                    assert p.get("matched") == "BB/34/juwef"
+                    check[12] = 1
+
+        assert 0 not in check
+
     def test_50_match_success(self):
+        app.config["EXTRACT_POSTCODES"] = True
         # example routing metadata from a notification
         source = fixtures.NotificationFactory.routing_metadata()
         md = models.RoutingMetadata(source)

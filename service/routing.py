@@ -121,7 +121,7 @@ def route(unrouted):
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} as stored as a Failed Notification".format(y=unrouted.id))
+            app.logger.debug(u"Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
         return False
 
@@ -157,10 +157,6 @@ def match(notification_data, repository_config, provenance):
         "author_ids" : {
             "author_ids" : author_match
         },
-        # 2018-08-18 TD : take out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
-        #"postcodes" : {
-        #    "postcodes" : postcode_match
-        #},
         "grants" : {
             "grants" : exact
         },
@@ -169,11 +165,17 @@ def match(notification_data, repository_config, provenance):
             "emails" : exact,
             "affiliations" : exact_substring,
             "author_ids" : author_string_match,
-            # 2016-08-18 TD : take out postcodes. See also comment just above.
-            # "postcodes" : postcode_match,
             "grants" : exact
         }
     }
+    # 2016-08-18 and 2018-08-18 TD : take out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
+    # AR: Rather than comment out postcodes from models,
+    # I have added a config option and set the default to false, as tests were failing
+    if app.config.get("EXTRACT_POSTCODES", False):
+        match_algorithms["postcodes"] = {
+            "postcodes" : postcode_match
+        }
+        match_algorithms["strings"]["postcodes"] = postcode_match
 
     repo_property_values = {
         "author_ids" : author_id_string

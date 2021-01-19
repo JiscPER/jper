@@ -12,12 +12,13 @@ class TestModels(ESTestCase):
     def setUp(self):
         self.run_schedule = app.config.get("RUN_SCHEDULE")
         app.config["RUN_SCHEDULE"] = False
-
+        self.extract_postcodes = app.config.get("EXTRACT_POSTCODES")
         super(TestModels, self).setUp()
 
     def tearDown(self):
         super(TestModels, self).tearDown()
         app.config["RUN_SCHEDULE"] = self.run_schedule
+        app.config["EXTRACT_POSTCODES"] = self.extract_postcodes
 
     def test_01_unrouted(self):
         # just try making one from scratch
@@ -172,6 +173,7 @@ class TestModels(ESTestCase):
 
     def test_13_unrouted_match_data(self):
         source = fixtures.NotificationFactory.unrouted_notification()
+        app.config["EXTRACT_POSTCODES"] = True
         urn = models.UnroutedNotification(source)
         md = urn.match_data()
 
@@ -200,7 +202,20 @@ class TestModels(ESTestCase):
         assert "HP3 9AA" in md.postcodes
         assert "EH9 5TP" in md.postcodes
 
-    def test_14_match_merge(self):
+    def test_14_unrouted_match_data_no_postcode(self):
+        source = fixtures.NotificationFactory.unrouted_notification()
+        if app.config.get("EXTRACT_POSTCODES", None) == True:
+            app.config["EXTRACT_POSTCODES"] = False
+        urn = models.UnroutedNotification(source)
+        md = urn.match_data()
+
+        assert len(md.affiliations) == 2
+        assert "Cottage Labs, HP3 9AA" in md.affiliations
+        assert "Cottage Labs, EH9 5TP" in md.affiliations
+        assert len(md.postcodes) == 0
+
+    def test_15_match_merge(self):
+        app.config["EXTRACT_POSTCODES"] = True
         source1 = fixtures.NotificationFactory.routing_metadata()
         rm1 = models.RoutingMetadata(source1)
 
@@ -241,7 +256,3 @@ class TestModels(ESTestCase):
         assert len(rm1.postcodes) == 4
         for c in ["HP3 9AA", "EH9 5TP", "SW1 0AA", "EH23 5TZ"]:
             assert c in rm1.postcodes
-
-
-
-
