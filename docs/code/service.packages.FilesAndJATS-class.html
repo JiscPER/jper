@@ -60,20 +60,21 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class FilesAndJATS</h1><p class="nomargin-top"><span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS">source&nbsp;code</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_service__32" name="uml_class_diagram_for_service__32">
-<area shape="rect" id="node1_9" href="service.packages.FilesAndJATS-class.html#__init__" title="Construct a new PackageHandler around the zip file and/or the metadata files." alt="" coords="16,104,325,124"/>
-<area shape="rect" id="node1_10" href="service.packages.FilesAndJATS-class.html#zip_name" title="Get the name of the package zip file to be used in the storage layer" alt="" coords="16,124,325,144"/>
-<area shape="rect" id="node1_11" href="service.packages.FilesAndJATS-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this packager" alt="" coords="16,144,325,164"/>
-<area shape="rect" id="node1_12" href="service.packages.FilesAndJATS-class.html#url_name" title="Get the name of the package as it should appear in any content urls" alt="" coords="16,164,325,184"/>
-<area shape="rect" id="node1_13" href="service.packages.FilesAndJATS-class.html#metadata_streams" title="A generator which yields tuples of metadata file names and data streams" alt="" coords="16,184,325,204"/>
-<area shape="rect" id="node1_14" href="service.packages.FilesAndJATS-class.html#notification_metadata" title="Get the notification metadata as extracted from the package" alt="" coords="16,204,325,224"/>
-<area shape="rect" id="node1_15" href="service.packages.FilesAndJATS-class.html#match_data" title="Get the match data as extracted from the package" alt="" coords="16,224,325,244"/>
-<area shape="rect" id="node1_16" href="service.packages.FilesAndJATS-class.html#convertible" title="Checks whether this handler can do the conversion to the target format." alt="" coords="16,244,325,264"/>
-<area shape="rect" id="node1_17" href="service.packages.FilesAndJATS-class.html#convert" title="Convert the file at the specified in_path to a package file of the specified target_format at the out_path." alt="" coords="16,264,325,284"/>
-<area shape="rect" id="node1" href="service.packages.FilesAndJATS-class.html" title="Class for representing the FilesAndJATS format" alt="" coords="4,70,337,290"/>
-<area shape="rect" id="node2" href="service.packages.PackageHandler-class.html" title="Interface/Parent class for all objects wishing to provide package handling" alt="" coords="109,5,232,51"/>
+<center>  <map id="uml_class_diagram_for_service__40" name="uml_class_diagram_for_service__40">
+<area shape="rect" id="node1_10" href="service.packages.FilesAndJATS-class.html#__init__" title="Construct a new PackageHandler around the zip file and/or the metadata files." alt="" coords="18,115,366,135"/>
+<area shape="rect" id="node1_11" href="service.packages.FilesAndJATS-class.html#zip_name" title="Get the name of the package zip file to be used in the storage layer" alt="" coords="18,135,366,155"/>
+<area shape="rect" id="node1_12" href="service.packages.FilesAndJATS-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this packager" alt="" coords="18,155,366,175"/>
+<area shape="rect" id="node1_13" href="service.packages.FilesAndJATS-class.html#url_name" title="Get the name of the package as it should appear in any content urls" alt="" coords="18,175,366,195"/>
+<area shape="rect" id="node1_14" href="service.packages.FilesAndJATS-class.html#metadata_streams" title="A generator which yields tuples of metadata file names and data streams" alt="" coords="18,195,366,215"/>
+<area shape="rect" id="node1_15" href="service.packages.FilesAndJATS-class.html#notification_metadata" title="Get the notification metadata as extracted from the package" alt="" coords="18,215,366,235"/>
+<area shape="rect" id="node1_16" href="service.packages.FilesAndJATS-class.html#match_data" title="Get the match data as extracted from the package" alt="" coords="18,235,366,255"/>
+<area shape="rect" id="node1_17" href="service.packages.FilesAndJATS-class.html#convertible" title="Checks whether this handler can do the conversion to the target format." alt="" coords="18,255,366,275"/>
+<area shape="rect" id="node1_18" href="service.packages.FilesAndJATS-class.html#convert" title="Convert the file at the specified in_path to a package file of the specified target_format at the out_path." alt="" coords="18,275,366,295"/>
+<area shape="rect" id="node1" href="service.packages.FilesAndJATS-class.html" title="Class for representing the FilesAndJATS format" alt="" coords="5,83,377,301"/>
+<area shape="rect" id="node2_19" href="service.packages.PackageHandler-class.html#md5sum" title="Calculate the MD5 checksum of a file" alt="" coords="59,37,326,57"/>
+<area shape="rect" id="node2" href="service.packages.PackageHandler-class.html" title="Interface/Parent class for all objects wishing to provide package handling" alt="" coords="47,5,338,64"/>
 </map>
-  <img src="uml_class_diagram_for_service__32.gif" alt='' usemap="#uml_class_diagram_for_service__32" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_service__40.gif" alt='' usemap="#uml_class_diagram_for_service__40" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
@@ -277,6 +278,82 @@ specified target_format at the out_path.</td>
       convert to simple zip</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._simple_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndJATS-class.html#_opus4_zip" class="summary-sig-name" onclick="show_private();">_opus4_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to OPUS4 zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._opus4_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndJATS-class.html#_escidoc_zip" class="summary-sig-name" onclick="show_private();">_escidoc_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to ESciDoc zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._escidoc_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndJATS-class.html#_metsdspace_zip" class="summary-sig-name" onclick="show_private();">_metsdspace_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to METSDSpaceSIP zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._metsdspace_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndJATS-class.html#_metsmods_zip" class="summary-sig-name" onclick="show_private();">_metsmods_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to METSMODS zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._metsmods_zip">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -495,6 +572,28 @@ specified target_format at the out_path.</td>
       <code>__str__</code>,
       <code>__subclasshook__</code>
       </p>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.packages.PackageHandler-class.html">PackageHandler</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#md5sum" class="summary-sig-name">md5sum</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fname</span>,
+        <span class="summary-sig-arg">blocksize</span>=<span class="summary-sig-default">65536</span>)</span><br />
+      Calculate the MD5 checksum of a file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.md5sum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
     </td>
   </tr>
 </table>
@@ -747,6 +846,10 @@ and merge them before responding.</p>
 <p>This handler currently supports the following conversion formats:</p>
 <ul class="rst-simple">
 <li><a class="rst-reference external" href="http://purl.org/net/sword/package/SimpleZip" target="_top">http://purl.org/net/sword/package/SimpleZip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/OPUS4Zip" target="_top">http://purl.org/net/sword/package/OPUS4Zip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/ESciDoc" target="_top">http://purl.org/net/sword/package/ESciDoc</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSDSpaceSIP" target="_top">http://purl.org/net/sword/package/METSDSpaceSIP</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSMODS" target="_top">http://purl.org/net/sword/package/METSMODS</a></li>
 </ul>
   <dl class="fields">
     <dt>Parameters:</dt>
@@ -784,6 +887,10 @@ specified target_format at the out_path.</p>
 <p>This handler currently supports the following conversion formats:</p>
 <ul class="rst-simple">
 <li><a class="rst-reference external" href="http://purl.org/net/sword/package/SimpleZip" target="_top">http://purl.org/net/sword/package/SimpleZip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/OPUS4Zip" target="_top">http://purl.org/net/sword/package/OPUS4Zip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/ESciDoc" target="_top">http://purl.org/net/sword/package/ESciDoc</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSDSpaceSIP" target="_top">http://purl.org/net/sword/package/METSDSpaceSIP</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSMODS" target="_top">http://purl.org/net/sword/package/METSMODS</a></li>
 </ul>
   <dl class="fields">
     <dt>Parameters:</dt>
@@ -817,6 +924,110 @@ specified target_format at the out_path.</p>
   </tr></table>
   
   convert to simple zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_opus4_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_opus4_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._opus4_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to OPUS4 zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_escidoc_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_escidoc_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._escidoc_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to ESciDoc zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_metsdspace_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_metsdspace_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._metsdspace_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to METSDSpaceSIP zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_metsmods_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_metsmods_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndJATS._metsmods_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to METSMODS zip
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -1067,7 +1278,7 @@ specified target_format at the out_path.</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:08 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:51 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

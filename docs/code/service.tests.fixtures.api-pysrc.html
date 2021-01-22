@@ -65,12 +65,13 @@
 <a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
 <a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
 <a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">copy</tt> <tt class="py-keyword">import</tt> <tt class="py-name">deepcopy</tt> </tt>
-<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">paths</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">standalone_octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">paths</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
 <a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
-<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.tests.fixtures.api.RESOURCES=service.tests.fixtures.api-module.html#RESOURCES,Variable service.tests.fixtures.packages.RESOURCES=service.tests.fixtures.packages-module.html#RESOURCES,Variable service.tests.unit.test_report.RESOURCES=service.tests.unit.test_report-module.html#RESOURCES"><a title="service.tests.fixtures.api.RESOURCES
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable service.tests.fixtures.api.RESOURCES=service.tests.fixtures.api-module.html#RESOURCES,Variable service.tests.fixtures.packages.RESOURCES=service.tests.fixtures.packages-module.html#RESOURCES,Variable service.tests.unit.test_report.RESOURCES=service.tests.unit.test_report-module.html#RESOURCES,Variable service.tests.unit.test_report_debug.RESOURCES=service.tests.unit.test_report_debug-module.html#RESOURCES"><a title="service.tests.fixtures.api.RESOURCES
 service.tests.fixtures.packages.RESOURCES
-service.tests.unit.test_report.RESOURCES" class="py-name" href="#" onclick="return doclink('link-0', 'RESOURCES', 'link-0');">RESOURCES</a></tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
+service.tests.unit.test_report.RESOURCES
+service.tests.unit.test_report_debug.RESOURCES" class="py-name" href="#" onclick="return doclink('link-0', 'RESOURCES', 'link-0');">RESOURCES</a></tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"resources"</tt><tt class="py-op">)</tt> </tt>
 <a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-string">"""Path to the test resources directory, calculated relative to this file"""</tt> </tt>
 <a name="APIFactory"></a><div id="APIFactory-def"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
 <a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
@@ -97,7 +98,8 @@ service.tests.unit.test_report.RESOURCES" class="py-name" href="#" onclick="retu
 <a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
 <a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-2" class="py-name"><a title="service.tests.fixtures.api.RESOURCES
 service.tests.fixtures.packages.RESOURCES
-service.tests.unit.test_report.RESOURCES" class="py-name" href="#" onclick="return doclink('link-2', 'RESOURCES', 'link-0');">RESOURCES</a></tt><tt class="py-op">,</tt> <tt class="py-string">"example.zip"</tt><tt class="py-op">)</tt> </tt>
+service.tests.unit.test_report.RESOURCES
+service.tests.unit.test_report_debug.RESOURCES" class="py-name" href="#" onclick="return doclink('link-2', 'RESOURCES', 'link-0');">RESOURCES</a></tt><tt class="py-op">,</tt> <tt class="py-string">"example.zip"</tt><tt class="py-op">)</tt> </tt>
 </div><a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
 <a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
 <a name="APIFactory.outgoing"></a><div id="APIFactory.outgoing-def"><a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="APIFactory.outgoing-toggle" onclick="return toggle('APIFactory.outgoing');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="service.tests.fixtures.api.APIFactory-class.html#outgoing">outgoing</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">provider</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
@@ -352,7 +354,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:09 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:52 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -62,20 +62,21 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class TestPackageHandler</h1><p class="nomargin-top"><span class="codelink"><a href="service.tests.fixtures.packages-pysrc.html#TestPackageHandler">source&nbsp;code</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_service__45" name="uml_class_diagram_for_service__45">
-<area shape="rect" id="node1_9" href="service.tests.fixtures.packages.TestPackageHandler-class.html#zip_name" title="Get the name of the package zip file to be used in the storage layer" alt="" coords="103,219,239,239"/>
-<area shape="rect" id="node1_10" href="service.tests.fixtures.packages.TestPackageHandler-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this packager" alt="" coords="103,239,239,259"/>
-<area shape="rect" id="node1_11" href="service.tests.fixtures.packages.TestPackageHandler-class.html#url_name" title="Get the name of the package as it should appear in any content urls" alt="" coords="103,259,239,279"/>
-<area shape="rect" id="node1" href="service.tests.fixtures.packages.TestPackageHandler-class.html" title="Class which implements the PackageHandler interface for the purposes of mocks" alt="" coords="91,185,251,285"/>
-<area shape="rect" id="node2_12" href="service.packages.PackageHandler-class.html#__init__" title="Construct a new PackageHandler around the zip file and/or the metadata files." alt="" coords="16,39,325,59"/>
-<area shape="rect" id="node2_13" href="service.packages.PackageHandler-class.html#metadata_streams" title="A generator which yields tuples of metadata file names and data streams" alt="" coords="16,59,325,79"/>
-<area shape="rect" id="node2_14" href="service.packages.PackageHandler-class.html#notification_metadata" title="Get the notification metadata as extracted from the package" alt="" coords="16,79,325,99"/>
-<area shape="rect" id="node2_15" href="service.packages.PackageHandler-class.html#match_data" title="Get the match data as extracted from the package" alt="" coords="16,99,325,119"/>
-<area shape="rect" id="node2_16" href="service.packages.PackageHandler-class.html#convertible" title="Can this handler convert to the specified format" alt="" coords="16,119,325,139"/>
-<area shape="rect" id="node2_17" href="service.packages.PackageHandler-class.html#convert" title="Convert the file at the specified in_path to a package file of the specified target_format at the out_path." alt="" coords="16,139,325,159"/>
-<area shape="rect" id="node2" href="service.packages.PackageHandler-class.html" title="Interface/Parent class for all objects wishing to provide package handling" alt="" coords="4,5,337,165"/>
+<center>  <map id="uml_class_diagram_for_service__60" name="uml_class_diagram_for_service__60">
+<area shape="rect" id="node1_10" href="service.tests.fixtures.packages.TestPackageHandler-class.html#zip_name" title="Get the name of the package zip file to be used in the storage layer" alt="" coords="115,235,270,255"/>
+<area shape="rect" id="node1_11" href="service.tests.fixtures.packages.TestPackageHandler-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this packager" alt="" coords="115,255,270,275"/>
+<area shape="rect" id="node1_12" href="service.tests.fixtures.packages.TestPackageHandler-class.html#url_name" title="Get the name of the package as it should appear in any content urls" alt="" coords="115,275,270,295"/>
+<area shape="rect" id="node1" href="service.tests.fixtures.packages.TestPackageHandler-class.html" title="Class which implements the PackageHandler interface for the purposes of mocks" alt="" coords="103,203,282,301"/>
+<area shape="rect" id="node2_13" href="service.packages.PackageHandler-class.html#__init__" title="Construct a new PackageHandler around the zip file and/or the metadata files." alt="" coords="18,37,366,57"/>
+<area shape="rect" id="node2_14" href="service.packages.PackageHandler-class.html#metadata_streams" title="A generator which yields tuples of metadata file names and data streams" alt="" coords="18,57,366,77"/>
+<area shape="rect" id="node2_15" href="service.packages.PackageHandler-class.html#notification_metadata" title="Get the notification metadata as extracted from the package" alt="" coords="18,77,366,97"/>
+<area shape="rect" id="node2_16" href="service.packages.PackageHandler-class.html#match_data" title="Get the match data as extracted from the package" alt="" coords="18,97,366,117"/>
+<area shape="rect" id="node2_17" href="service.packages.PackageHandler-class.html#convertible" title="Can this handler convert to the specified format" alt="" coords="18,117,366,137"/>
+<area shape="rect" id="node2_18" href="service.packages.PackageHandler-class.html#convert" title="Convert the file at the specified in_path to a package file of the specified target_format at the out_path." alt="" coords="18,137,366,157"/>
+<area shape="rect" id="node2_19" href="service.packages.PackageHandler-class.html#md5sum" title="Calculate the MD5 checksum of a file" alt="" coords="18,157,366,177"/>
+<area shape="rect" id="node2" href="service.packages.PackageHandler-class.html" title="Interface/Parent class for all objects wishing to provide package handling" alt="" coords="5,5,377,184"/>
 </map>
-  <img src="uml_class_diagram_for_service__45.gif" alt='' usemap="#uml_class_diagram_for_service__45" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_service__60.gif" alt='' usemap="#uml_class_diagram_for_service__60" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
@@ -239,6 +240,25 @@ specified target_format at the out_path.</td>
       Get the match data as extracted from the package</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.match_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#md5sum" class="summary-sig-name">md5sum</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fname</span>,
+        <span class="summary-sig-arg">blocksize</span>=<span class="summary-sig-default">65536</span>)</span><br />
+      Calculate the MD5 checksum of a file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.md5sum">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -428,7 +448,7 @@ specified target_format at the out_path.</td>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:08 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:52 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

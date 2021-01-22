@@ -1,0 +1,1174 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.packages.FilesAndRSC</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        <a href="service.packages-module.html">Module&nbsp;packages</a> ::
+        Class&nbsp;FilesAndRSC
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.packages.FilesAndRSC-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class FilesAndRSC</h1><p class="nomargin-top"><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_service__41" name="uml_class_diagram_for_service__41">
+<area shape="rect" id="node1_10" href="service.packages.FilesAndRSC-class.html#__init__" title="Construct a new PackageHandler around the zip file and/or the metadata files." alt="" coords="18,115,366,135"/>
+<area shape="rect" id="node1_11" href="service.packages.FilesAndRSC-class.html#zip_name" title="Get the name of the package zip file to be used in the storage layer" alt="" coords="18,135,366,155"/>
+<area shape="rect" id="node1_12" href="service.packages.FilesAndRSC-class.html#metadata_names" title="Get a list of the names of metadata files extracted and stored by this packager" alt="" coords="18,155,366,175"/>
+<area shape="rect" id="node1_13" href="service.packages.FilesAndRSC-class.html#url_name" title="Get the name of the package as it should appear in any content urls" alt="" coords="18,175,366,195"/>
+<area shape="rect" id="node1_14" href="service.packages.FilesAndRSC-class.html#metadata_streams" title="A generator which yields tuples of metadata file names and data streams" alt="" coords="18,195,366,215"/>
+<area shape="rect" id="node1_15" href="service.packages.FilesAndRSC-class.html#notification_metadata" title="Get the notification metadata as extracted from the package" alt="" coords="18,215,366,235"/>
+<area shape="rect" id="node1_16" href="service.packages.FilesAndRSC-class.html#match_data" title="Get the match data as extracted from the package" alt="" coords="18,235,366,255"/>
+<area shape="rect" id="node1_17" href="service.packages.FilesAndRSC-class.html#convertible" title="Checks whether this handler can do the conversion to the target format." alt="" coords="18,255,366,275"/>
+<area shape="rect" id="node1_18" href="service.packages.FilesAndRSC-class.html#convert" title="Convert the file at the specified in_path to a package file of the specified target_format at the out_path." alt="" coords="18,275,366,295"/>
+<area shape="rect" id="node1" href="service.packages.FilesAndRSC-class.html" title="Class for representing the FilesAndRSC format" alt="" coords="5,83,377,301"/>
+<area shape="rect" id="node2_19" href="service.packages.PackageHandler-class.html#md5sum" title="Calculate the MD5 checksum of a file" alt="" coords="59,37,326,57"/>
+<area shape="rect" id="node2" href="service.packages.PackageHandler-class.html" title="Interface/Parent class for all objects wishing to provide package handling" alt="" coords="47,5,338,64"/>
+</map>
+  <img src="uml_class_diagram_for_service__41.gif" alt='' usemap="#uml_class_diagram_for_service__41" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Class for representing the FilesAndRSC format</p>
+<p>You should use the format identifier: <a class="rst-reference external" href="https://datahub.deepgreen.org/FilesAndRSC" target="_top">https://datahub.deepgreen.org/FilesAndRSC</a></p>
+<p>This is the format that we prefer to get from (the?) RSC provider(s).  It consists
+of a zip of a single XML file which is the RSC metadata, a single PDF which is the
+fulltext, and an arbitrary number of other files which are supporting information.</p>
+<p>To be valid, the zip must just consist of the RSC metadata file.
+All other files are optional</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">zip_path</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">metadata_files</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Construct a new PackageHandler around the zip file and/or the metadata files.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#zip_name" class="summary-sig-name">zip_name</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the name of the package zip file to be used in the storage layer</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.zip_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#metadata_names" class="summary-sig-name">metadata_names</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get a list of the names of metadata files extracted and stored by this packager</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.metadata_names">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#url_name" class="summary-sig-name">url_name</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the name of the package as it should appear in any content urls</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.url_name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#metadata_streams" class="summary-sig-name">metadata_streams</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      A generator which yields tuples of metadata file names and data streams</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.metadata_streams">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#notification_metadata" class="summary-sig-name">notification_metadata</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the notification metadata as extracted from the package</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.notification_metadata">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#match_data" class="summary-sig-name">match_data</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the match data as extracted from the package</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.match_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#convertible" class="summary-sig-name">convertible</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">target_format</span>)</span><br />
+      Checks whether this handler can do the conversion to the target format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.convertible">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#convert" class="summary-sig-name">convert</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">target_format</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      Convert the file at the specified in_path to a package file of the
+specified target_format at the out_path.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.convert">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_simple_zip" class="summary-sig-name" onclick="show_private();">_simple_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to simple zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._simple_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_opus4_zip" class="summary-sig-name" onclick="show_private();">_opus4_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to OPUS4 zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._opus4_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_escidoc_zip" class="summary-sig-name" onclick="show_private();">_escidoc_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to ESciDoc zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._escidoc_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_metsdspace_zip" class="summary-sig-name" onclick="show_private();">_metsdspace_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to METSDSpaceSIP zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._metsdspace_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_metsmods_zip" class="summary-sig-name" onclick="show_private();">_metsmods_zip</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_path</span>,
+        <span class="summary-sig-arg">out_path</span>)</span><br />
+      convert to METSMODS zip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._metsmods_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_merge_metadata" class="summary-sig-name" onclick="show_private();">_merge_metadata</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">emd</span>,
+        <span class="summary-sig-arg">rmd</span>)</span><br />
+      Merge the supplied None (==EMPC) and RSC metadata records into one</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._merge_metadata">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_rsc_metadata" class="summary-sig-name" onclick="show_private();">_rsc_metadata</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Extract metadata from the RSC XML</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._rsc_metadata">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_rsc_match_data" class="summary-sig-name" onclick="show_private();">_rsc_match_data</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">match</span>)</span><br />
+      Extract match data from the RSC XML</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._rsc_match_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_load_from_metadata" class="summary-sig-name" onclick="show_private();">_load_from_metadata</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Load the properties for this handler from the file metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._load_from_metadata">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_load_from_zip" class="summary-sig-name" onclick="show_private();">_load_from_zip</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Load the properties for this handler from a zip file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._load_from_zip">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_xml_files" class="summary-sig-name" onclick="show_private();">_xml_files</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      List the XML files in the zip file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._xml_files">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_rsc"></a><span class="summary-sig-name">_set_rsc</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">xml</span>)</span><br />
+      Set the local RSC XML property on this object based on the xml document passed in
+:param xml:
+:return:</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._set_rsc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.FilesAndRSC-class.html#_is_valid" class="summary-sig-name" onclick="show_private();">_is_valid</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Is this package valid as FilesAndRSC?</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._is_valid">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.packages.PackageHandler-class.html">PackageHandler</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.packages.PackageHandler-class.html#md5sum" class="summary-sig-name">md5sum</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fname</span>,
+        <span class="summary-sig-arg">blocksize</span>=<span class="summary-sig-default">65536</span>)</span><br />
+      Calculate the MD5 checksum of a file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.packages-pysrc.html#PackageHandler.md5sum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">zip_path</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">metadata_files</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Construct a new PackageHandler around the zip file and/or the metadata files.</p>
+<p>Metadata file handles should be of the form</p>
+<pre class="rst-literal-block">
+[(&quot;filename&quot;, &lt;file handle&gt;)]
+</pre>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>zip_path</code></strong> - locally accessible path to zip file</li>
+        <li><strong class="pname"><code>metadata_files</code></strong> - metadata file handles tuple</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="zip_name"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">zip_name</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.zip_name">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the name of the package zip file to be used in the storage layer</p>
+<p>In this case FilesAndRSC.zip</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>filname</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#zip_name">PackageHandler.zip_name</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="metadata_names"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">metadata_names</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.metadata_names">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get a list of the names of metadata files extracted and stored by this packager</p>
+<p>In this case [&quot;filesandrsc_rsc.xml&quot;]</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>list of metadata files</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#metadata_names">PackageHandler.metadata_names</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="url_name"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">url_name</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.url_name">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the name of the package as it should appear in any content urls</p>
+<p>In this case FilesAndRSC</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>url name</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#url_name">PackageHandler.url_name</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="metadata_streams"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">metadata_streams</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.metadata_streams">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>A generator which yields tuples of metadata file names and data streams</p>
+<p>In this handler, this will yield one metadata streams: for &quot;filesandrsc_rsc.xml&quot;.</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>generator for file names/data streams</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#metadata_streams">PackageHandler.metadata_streams</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="notification_metadata"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">notification_metadata</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.notification_metadata">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the notification metadata as extracted from the package</p>
+<p>This will extract metadata of the RSC XML.</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>NotificationMetadata populated</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#notification_metadata">PackageHandler.notification_metadata</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="match_data"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">match_data</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.match_data">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the match data as extracted from the package</p>
+<p>This will extract match data of the RSC XML.</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>RoutingMetadata populated</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#match_data">PackageHandler.match_data</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="convertible"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">convertible</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">target_format</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.convertible">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Checks whether this handler can do the conversion to the target format.</p>
+<p>This handler currently supports the following conversion formats:</p>
+<ul class="rst-simple">
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/SimpleZip" target="_top">http://purl.org/net/sword/package/SimpleZip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/OPUS4Zip" target="_top">http://purl.org/net/sword/package/OPUS4Zip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/ESciDoc" target="_top">http://purl.org/net/sword/package/ESciDoc</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSDSpaceSIP" target="_top">http://purl.org/net/sword/package/METSDSpaceSIP</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSMODS" target="_top">http://purl.org/net/sword/package/METSMODS</a></li>
+</ul>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>target_format</code></strong> - target format</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if in the above list, else False</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#convertible">PackageHandler.convertible</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="convert"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">convert</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">target_format</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC.convert">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convert the file at the specified in_path to a package file of the
+specified target_format at the out_path.</p>
+<p>You should check first that this target_format is supported via convertible()</p>
+<p>This handler currently supports the following conversion formats:</p>
+<ul class="rst-simple">
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/SimpleZip" target="_top">http://purl.org/net/sword/package/SimpleZip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/OPUS4Zip" target="_top">http://purl.org/net/sword/package/OPUS4Zip</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/ESciDoc" target="_top">http://purl.org/net/sword/package/ESciDoc</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSDSpaceSIP" target="_top">http://purl.org/net/sword/package/METSDSpaceSIP</a></li>
+<li><a class="rst-reference external" href="http://purl.org/net/sword/package/METSMODS" target="_top">http://purl.org/net/sword/package/METSMODS</a></li>
+</ul>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong> - locally accessible file path to the source package</li>
+        <li><strong class="pname"><code>target_format</code></strong> - the format identifier for the format we want to convert to</li>
+        <li><strong class="pname"><code>out_path</code></strong> - locally accessible file path for the output to be written</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True/False on success/fail</dd>
+    <dt>Overrides:
+        <a href="service.packages.PackageHandler-class.html#convert">PackageHandler.convert</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_simple_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_simple_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._simple_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to simple zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_opus4_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_opus4_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._opus4_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to OPUS4 zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_escidoc_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_escidoc_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._escidoc_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to ESciDoc zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_metsdspace_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_metsdspace_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._metsdspace_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to METSDSpaceSIP zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_metsmods_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_metsmods_zip</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">in_path</span>,
+        <span class="sig-arg">out_path</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._metsmods_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  convert to METSMODS zip
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>in_path</code></strong></li>
+        <li><strong class="pname"><code>out_path</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_merge_metadata"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_merge_metadata</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">emd</span>,
+        <span class="sig-arg">rmd</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._merge_metadata">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Merge the supplied None (==EMPC) and RSC metadata records into one
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>emd</code></strong></li>
+        <li><strong class="pname"><code>rmd</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_rsc_metadata"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_rsc_metadata</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._rsc_metadata">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Extract metadata from the RSC XML
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_rsc_match_data"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_rsc_match_data</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">match</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._rsc_match_data">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Extract match data from the RSC XML
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>match</code></strong></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_load_from_metadata"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_load_from_metadata</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._load_from_metadata">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Load the properties for this handler from the file metadata
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_load_from_zip"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_load_from_zip</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._load_from_zip">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Load the properties for this handler from a zip file
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_xml_files"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_xml_files</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._xml_files">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  List the XML files in the zip file
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_is_valid"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_is_valid</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.packages-pysrc.html#FilesAndRSC._is_valid">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Is this package valid as FilesAndRSC?
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:51 2021
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

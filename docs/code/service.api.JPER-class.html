@@ -61,14 +61,19 @@
 <h1 class="epydoc">Class JPER</h1><p class="nomargin-top"><span class="codelink"><a href="service.api-pysrc.html#JPER">source&nbsp;code</a></span></p>
 <center>
 <center>  <map id="uml_class_diagram_for_service_" name="uml_class_diagram_for_service_">
-<area shape="rect" id="node1_7" href="service.api.JPER-class.html#validate" title="Validate the incoming notification (and optional binary content) on behalf of the Account holder." alt="" coords="17,40,539,60"/>
-<area shape="rect" id="node1_8" href="service.api.JPER-class.html#create_notification" title="Create a new notification in the system on behalf of the Account holder, based on the supplied notification and optional binary content." alt="" coords="17,60,539,80"/>
-<area shape="rect" id="node1_9" href="service.api.JPER-class.html#get_notification" title="Retrieve a copy of the notification object as identified by the supplied notification_id, on behalf of the supplied Account" alt="" coords="17,80,539,100"/>
-<area shape="rect" id="node1_10" href="service.api.JPER-class.html#get_content" title="Retrieve the content associated with the requested notification_id, on behalf of the supplied user account." alt="" coords="17,100,539,120"/>
-<area shape="rect" id="node1_11" href="service.api.JPER-class.html#get_proxy_url" title="service.api.JPER.get_proxy_url" alt="" coords="17,120,539,140"/>
-<area shape="rect" id="node1_12" href="service.api.JPER-class.html#get_public_url" title="service.api.JPER.get_public_url" alt="" coords="17,140,539,160"/>
-<area shape="rect" id="node1_13" href="service.api.JPER-class.html#list_notifications" title="List notification which meet the criteria specified by the parameters" alt="" coords="17,160,539,180"/>
-<area shape="rect" id="node1" href="service.api.JPER-class.html" title="Main Python API for interacting with the JPER system" alt="" coords="5,6,550,186"/>
+<area shape="rect" id="node1_12" href="service.api.JPER-class.html#validate" title="Validate the incoming notification (and optional binary content) on behalf of the Account holder." alt="" coords="17,38,708,58"/>
+<area shape="rect" id="node1_13" href="service.api.JPER-class.html#create_notification" title="Create a new notification in the system on behalf of the Account holder, based on the supplied notification and optional binary content." alt="" coords="17,58,708,78"/>
+<area shape="rect" id="node1_14" href="service.api.JPER-class.html#get_notification" title="Retrieve a copy of the notification object as identified by the supplied notification_id, on behalf of the supplied Account" alt="" coords="17,78,708,98"/>
+<area shape="rect" id="node1_15" href="service.api.JPER-class.html#get_content" title="Retrieve the content associated with the requested notification_id, on behalf of the supplied user account." alt="" coords="17,98,708,118"/>
+<area shape="rect" id="node1_16" href="service.api.JPER-class.html#get_proxy_url" title="service.api.JPER.get_proxy_url" alt="" coords="17,118,708,138"/>
+<area shape="rect" id="node1_17" href="service.api.JPER-class.html#get_public_url" title="service.api.JPER.get_public_url" alt="" coords="17,138,708,158"/>
+<area shape="rect" id="node1_18" href="service.api.JPER-class.html#list_notifications" title="List notification which meet the criteria specified by the parameters" alt="" coords="17,158,708,178"/>
+<area shape="rect" id="node1_19" href="service.api.JPER-class.html#list_matches" title="List match provenances which meet the criteria specified by the parameters" alt="" coords="17,178,708,198"/>
+<area shape="rect" id="node1_20" href="service.api.JPER-class.html#list_failed" title="List failed notifications which meet the criteria specified by the parameters" alt="" coords="17,198,708,218"/>
+<area shape="rect" id="node1_21" href="service.api.JPER-class.html#bulk_notifications" title="Bulk list notification which meet the criteria specified by the parameters" alt="" coords="17,218,708,238"/>
+<area shape="rect" id="node1_22" href="service.api.JPER-class.html#bulk_matches" title="Bulk match provenances which meet the criteria specified by the parameters" alt="" coords="17,238,708,258"/>
+<area shape="rect" id="node1_23" href="service.api.JPER-class.html#bulk_failed" title="Bulk failed notifications which meet the criteria specified by the parameters" alt="" coords="17,258,708,278"/>
+<area shape="rect" id="node1" href="service.api.JPER-class.html" title="Main Python API for interacting with the JPER system" alt="" coords="5,5,720,284"/>
 </map>
   <img src="uml_class_diagram_for_service_.gif" alt='' usemap="#uml_class_diagram_for_service_" ismap="ismap" class="graph-without-title" />
 </center>
@@ -261,10 +266,118 @@ of the supplied Account</td>
         <span class="summary-sig-arg">since</span>,
         <span class="summary-sig-arg">page</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">page_size</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">repository_id</span>=<span class="summary-sig-default">None</span>)</span><br />
+        <span class="summary-sig-arg">repository_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider</span>=<span class="summary-sig-default">False</span>)</span><br />
       List notification which meet the criteria specified by the parameters</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.api-pysrc.html#JPER.list_notifications">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#list_matches" class="summary-sig-name">list_matches</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">account</span>,
+        <span class="summary-sig-arg">since</span>,
+        <span class="summary-sig-arg">page</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">page_size</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">repository_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider</span>=<span class="summary-sig-default">False</span>)</span><br />
+      List match provenances which meet the criteria specified by the parameters</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.api-pysrc.html#JPER.list_matches">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#list_failed" class="summary-sig-name">list_failed</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">account</span>,
+        <span class="summary-sig-arg">since</span>,
+        <span class="summary-sig-arg">page</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">page_size</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider_id</span>=<span class="summary-sig-default">None</span>)</span><br />
+      List failed notifications which meet the criteria specified by the parameters</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.api-pysrc.html#JPER.list_failed">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#bulk_notifications" class="summary-sig-name">bulk_notifications</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">account</span>,
+        <span class="summary-sig-arg">since</span>,
+        <span class="summary-sig-arg">repository_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Bulk list notification which meet the criteria specified by the parameters</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.api-pysrc.html#JPER.bulk_notifications">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#bulk_matches" class="summary-sig-name">bulk_matches</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">account</span>,
+        <span class="summary-sig-arg">since</span>,
+        <span class="summary-sig-arg">repository_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Bulk match provenances which meet the criteria specified by the parameters</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.api-pysrc.html#JPER.bulk_matches">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.api.JPER-class.html#bulk_failed" class="summary-sig-name">bulk_failed</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">account</span>,
+        <span class="summary-sig-arg">since</span>,
+        <span class="summary-sig-arg">provider_id</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Bulk failed notifications which meet the criteria specified by the parameters</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.api-pysrc.html#JPER.bulk_failed">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -458,7 +571,8 @@ any file with the same name that appears in the notification will be returned.</
         <span class="sig-arg">since</span>,
         <span class="sig-arg">page</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">page_size</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">repository_id</span>=<span class="sig-default">None</span>)</span>
+        <span class="sig-arg">repository_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider</span>=<span class="sig-default">False</span>)</span>
     <br /><em class="fname">Class Method</em>
   </h3>
   </td><td align="right" valign="top"
@@ -478,6 +592,172 @@ any file with the same name that appears in the notification will be returned.</
     </ul></dd>
     <dt>Returns:</dt>
         <dd>models.NotificationList containing the parameters and results</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="list_matches"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">list_matches</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">since</span>,
+        <span class="sig-arg">page</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">page_size</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">repository_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.list_matches">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  List match provenances which meet the criteria specified by the parameters
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which to carry out this action (all users can request matches, so this is primarily for logging purposes)</li>
+        <li><strong class="pname"><code>since</code></strong> - date string for the earliest match analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work</li>
+        <li><strong class="pname"><code>page</code></strong> - page number in result set to return (which results appear will also depend on the page_size parameter)</li>
+        <li><strong class="pname"><code>page_size</code></strong> - number of results to return in this page of results</li>
+        <li><strong class="pname"><code>repository_id</code></strong> - the id of the repository whose matches to return.  If no id is provided, all matches for all repositories will be queried.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>models.MatchProvenanceList containing the parameters and results</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="list_failed"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">list_failed</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">since</span>,
+        <span class="sig-arg">page</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">page_size</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider_id</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.list_failed">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  List failed notifications which meet the criteria specified by the parameters
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which to carry out this action (all users can request failed notifications, so this is primarily for logging purposes)</li>
+        <li><strong class="pname"><code>since</code></strong> - date string for the earliest failed analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work</li>
+        <li><strong class="pname"><code>page</code></strong> - page number in result set to return (which results appear will also depend on the page_size parameter)</li>
+        <li><strong class="pname"><code>page_size</code></strong> - number of results to return in this page of results</li>
+        <li><strong class="pname"><code>provider_id</code></strong> - the id of the provider whose failed notifications to return.  If no id is provided, all failed notifications for all providers will be queried.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>models.FailedNotificationList containing the parameters and results</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="bulk_notifications"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">bulk_notifications</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">since</span>,
+        <span class="sig-arg">repository_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.bulk_notifications">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Bulk list notification which meet the criteria specified by the parameters
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which to carry out this action (all users can request notifications, so this is primarily for logging purposes)</li>
+        <li><strong class="pname"><code>since</code></strong> - date string for the earliest notification date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work</li>
+        <li><strong class="pname"><code>repository_id</code></strong> - the id of the repository whose notifications to return.  If no id is provided, all notifications for all repositories will be queried.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>models.NotificationList containing the parameters and results</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="bulk_matches"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">bulk_matches</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">since</span>,
+        <span class="sig-arg">repository_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider</span>=<span class="sig-default">False</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.bulk_matches">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Bulk match provenances which meet the criteria specified by the parameters
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which to carry out this action (all users can request matches, so this is primarily for logging purposes)</li>
+        <li><strong class="pname"><code>since</code></strong> - date string for the earliest match analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work</li>
+        <li><strong class="pname"><code>repository_id</code></strong> - the id of the repository whose matches to return.  If no id is provided, all matches for all repositories will be queried.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>models.MatchProvenanceList containing the parameters and results</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="bulk_failed"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">bulk_failed</span>(<span class="sig-arg">cls</span>,
+        <span class="sig-arg">account</span>,
+        <span class="sig-arg">since</span>,
+        <span class="sig-arg">provider_id</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">Class Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.api-pysrc.html#JPER.bulk_failed">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Bulk failed notifications which meet the criteria specified by the parameters
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>account</code></strong> - user Account as which to carry out this action (all users can request failed notifications, so this is primarily for logging purposes)</li>
+        <li><strong class="pname"><code>since</code></strong> - date string for the earliest failed analysis date requested.  Should be of the form YYYY-MM-DDTHH:MM:SSZ, though other sensible formats may also work</li>
+        <li><strong class="pname"><code>provider_id</code></strong> - the id of the provider whose failed notifications to return.  If no id is provided, all failed notifications for all providers will be queried.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>models.FailedNotificationList containing the parameters and results</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -510,7 +790,7 @@ any file with the same name that appears in the notification will be returned.</
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:07 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:49 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

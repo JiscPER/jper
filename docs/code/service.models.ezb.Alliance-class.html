@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.models.ezb.Alliance</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        <a href="service.models-module.html">Package&nbsp;models</a> ::
+        <a href="service.models.ezb-module.html">Module&nbsp;ezb</a> ::
+        Class&nbsp;Alliance
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.models.ezb.Alliance-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Alliance</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_service__26" name="uml_class_diagram_for_service__26">
+<area shape="rect" id="node1_11" href="service.models.ezb.Alliance-class.html#__init__" title="Create a new instance of the Alliance object, optionally around the raw python dictionary." alt="" coords="18,115,494,135"/>
+<area shape="rect" id="node1_12" href="service.models.ezb.Alliance-class.html#name" title="Set the (human readable) name of this alliance license package." alt="" coords="18,135,494,155"/>
+<area shape="rect" id="node1_13" href="service.models.ezb.Alliance-class.html#license_id" title="Set the license_id of the alliance license, corresponding to the value in licence record." alt="" coords="18,155,494,175"/>
+<area shape="rect" id="node1_14" href="service.models.ezb.Alliance-class.html#identifiers" title="The list of identifier objects for the alliance license package. &#160;The returned objects have the form:" alt="" coords="18,175,494,195"/>
+<area shape="rect" id="node1_15" href="service.models.ezb.Alliance-class.html#get_identifier" title="The list of identifiers, as filtered by type." alt="" coords="18,195,494,215"/>
+<area shape="rect" id="node1_16" href="service.models.ezb.Alliance-class.html#add_identifier" title="Add an identifier for the alliance package, with the given id and type" alt="" coords="18,215,494,235"/>
+<area shape="rect" id="node1_17" href="service.models.ezb.Alliance-class.html#participants" title="Set the supplied list of participant objects for the alliance license package." alt="" coords="18,235,494,255"/>
+<area shape="rect" id="node1_18" href="service.models.ezb.Alliance-class.html#add_participant" title="Add a single participant object to the existing list of participant objects." alt="" coords="18,255,494,275"/>
+<area shape="rect" id="node1_19" href="service.models.ezb.Alliance-class.html#pull_by_key" title="service.models.ezb.Alliance.pull_by_key" alt="" coords="18,275,494,295"/>
+<area shape="rect" id="node1_20" href="service.models.ezb.Alliance-class.html#set_alliance_data" title="service.models.ezb.Alliance.set_alliance_data" alt="" coords="18,295,494,315"/>
+<area shape="rect" id="node1" href="service.models.ezb.Alliance-class.html" title="Class to represent the alliance license information as provided by EZB (Regensburg). The alliance information is needed by the system to ensure correct (and lawful!) routing of notifications." alt="" coords="5,83,505,321"/>
+<area shape="rect" id="node2_21" href="service.dao.AllianceDAO-class.html#__type__" title="The index type to use to store these objects" alt="" coords="202,29,311,49"/>
+<area shape="rect" id="node2" href="service.dao.AllianceDAO-class.html" title="DAO for Alliance (DeepGreen add&#45;on)" alt="" coords="190,5,323,64"/>
+</map>
+  <img src="uml_class_diagram_for_service__26.gif" alt='' usemap="#uml_class_diagram_for_service__26" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Class to represent the alliance license information as provided by EZB (Regensburg).  The alliance
+information is needed by the system to ensure correct (and lawful!) routing of notifications.</p>
+<p>See also the core system model documentation for details on the JSON structure of this model.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new instance of the Alliance object, optionally around the raw python dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#name" class="summary-sig-name">name</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the (human readable) name of this alliance license package.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.name">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#license_id" class="summary-sig-name">license_id</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the license_id of the alliance license, corresponding to the value in licence record.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.license_id">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#identifiers" class="summary-sig-name">identifiers</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      The list of identifier objects for the alliance license package.  The returned objects have the form:</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.identifiers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#get_identifier" class="summary-sig-name">get_identifier</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">type</span>)</span><br />
+      The list of identifiers, as filtered by type.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.get_identifier">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#add_identifier" class="summary-sig-name">add_identifier</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">id</span>,
+        <span class="summary-sig-arg">type</span>)</span><br />
+      Add an identifier for the alliance package, with the given id and type</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.add_identifier">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#participants" class="summary-sig-name">participants</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">objlist</span>)</span><br />
+      Set the supplied list of participant objects for the alliance license package.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.participants">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.ezb.Alliance-class.html#add_participant" class="summary-sig-name">add_participant</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">part_object</span>)</span><br />
+      Add a single participant object to the existing list of participant objects.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.add_participant">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_alliance_data"></a><span class="summary-sig-name">set_alliance_data</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">license</span>,
+        <span class="summary-sig-arg">ezbid</span>,
+        <span class="summary-sig-arg">csvfile</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">jsoncontent</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.set_alliance_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS METHODS ==================== -->
+<a name="section-ClassMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pull_by_key"></a><span class="summary-sig-name">pull_by_key</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">value</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.pull_by_key">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.dao.AllianceDAO-class.html">dao.AllianceDAO</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__type__"></a><span class="summary-name">__type__</span> = <code title="&quot;alliance&quot;">&quot;alliance&quot;</code><br />
+      The index type to use to store these objects
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">raw</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Create a new instance of the Alliance object, optionally around the raw python dictionary.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>raw</code></strong> - python dict object containing alliance data of participating institutions</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="name"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">name</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.name">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the (human readable) name of this alliance license package.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the alliance license package name</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@name.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="license_id"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">license_id</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.license_id">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the license_id of the alliance license, corresponding to the value in licence record.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the license_id</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@license_id.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="identifiers"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">identifiers</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.identifiers">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>The list of identifier objects for the alliance license package.  The returned objects have the form:</p>
+<pre class="rst-literal-block">
+{ &quot;type&quot; : &quot;&lt;identifier type&gt;&quot;, &quot;id&quot; : &quot;&lt;actual identifier&gt;&quot; }
+</pre>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>List of python dict objects containing the identifier information</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_identifier"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_identifier</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">type</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.get_identifier">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>The list of identifiers, as filtered by type.</p>
+<p>Unlike .identifiers, this returns a list of strings of the actual identifiers, rather than the dict representation.</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>List of identifiers of the requested type</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_identifier"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_identifier</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">id</span>,
+        <span class="sig-arg">type</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.add_identifier">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Add an identifier for the alliance package, with the given id and type
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>id</code></strong> - the id for the alliance licence package</li>
+        <li><strong class="pname"><code>type</code></strong> - the type of identifier (e.g. &quot;ezb&quot;)</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="participants"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">participants</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">objlist</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.participants">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Set the supplied list of participant objects for the alliance license package.</p>
+<p>The structure of each participant object will be validated, and the values coerced to unicode where necessary.</p>
+<p>Participants objects should have the form:</p>
+<pre class="rst-literal-block">
+{
+    &quot;name&quot; : &quot;&lt;participant institution name&gt;&quot;,
+    &quot;identifier&quot; : [
+        { &quot;type&quot; : &quot;&lt;identifier type&gt;&quot;, &quot;id&quot; : &quot;&lt;actual identifier&gt;&quot; }
+    ]
+}
+</pre>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>objlist</code></strong> - list of participant objects</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@participants.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_participant"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_participant</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">part_object</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.ezb-pysrc.html#Alliance.add_participant">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Add a single participant object to the existing list of participant objects.</p>
+<p>Additions are not validated or coerced, so use with extreme(!) caution (or not at all).</p>
+<p>Participant objects should be of the form:</p>
+<pre class="rst-literal-block">
+{
+    &quot;name&quot; : &quot;&lt;participant institution name&gt;&quot;,
+    &quot;identifier&quot; : [
+        { &quot;type&quot; : &quot;&lt;identifier type&gt;&quot;, &quot;id&quot; : &quot;&lt;actual identifier&gt;&quot; }
+    ]
+}
+</pre>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>part_object</code></strong> - participant object to add</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper">Jisc Publications Router</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:50 2021
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

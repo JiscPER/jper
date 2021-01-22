@@ -61,14 +61,16 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class RoutingInformation</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation">source&nbsp;code</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_service__26" name="uml_class_diagram_for_service__26">
-<area shape="rect" id="node1_4" href="service.models.notifications.RoutingInformation-class.html#__init__" title="Create a new instance of the RoutingInformation object, optionally around the raw python dictionary." alt="" coords="17,39,169,59"/>
-<area shape="rect" id="node1_5" href="service.models.notifications.RoutingInformation-class.html#analysis_date" title="Set the date this notification was analysed for routing, as a string of the form YYYY&#45;MM&#45;DDTHH:MM:SSZ" alt="" coords="17,59,169,79"/>
-<area shape="rect" id="node1_6" href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" title="The date this notification was analysed for routing, as a datetime object" alt="" coords="17,79,169,99"/>
-<area shape="rect" id="node1_7" href="service.models.notifications.RoutingInformation-class.html#repositories" title="Set the list of repository ids to which this notification was routed" alt="" coords="17,99,169,119"/>
-<area shape="rect" id="node1" href="service.models.notifications.RoutingInformation-class.html" title="Class which provides some additional data to any notification regarding the routing status" alt="" coords="5,5,181,125"/>
+<center>  <map id="uml_class_diagram_for_service__32" name="uml_class_diagram_for_service__32">
+<area shape="rect" id="node1_6" href="service.models.notifications.RoutingInformation-class.html#__init__" title="Create a new instance of the RoutingInformation object, optionally around the raw python dictionary." alt="" coords="17,38,188,58"/>
+<area shape="rect" id="node1_7" href="service.models.notifications.RoutingInformation-class.html#issn_data" title="Set the issn_data of this notification" alt="" coords="17,58,188,78"/>
+<area shape="rect" id="node1_8" href="service.models.notifications.RoutingInformation-class.html#reason" title="Set the reason why this notification was routed or rejected" alt="" coords="17,78,188,98"/>
+<area shape="rect" id="node1_9" href="service.models.notifications.RoutingInformation-class.html#analysis_date" title="Set the date this notification was analysed for routing, as a string of the form YYYY&#45;MM&#45;DDTHH:MM:SSZ" alt="" coords="17,98,188,118"/>
+<area shape="rect" id="node1_10" href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" title="The date this notification was analysed for routing, as a datetime object" alt="" coords="17,118,188,138"/>
+<area shape="rect" id="node1_11" href="service.models.notifications.RoutingInformation-class.html#repositories" title="Set the list of repository ids to which this notification was routed" alt="" coords="17,138,188,158"/>
+<area shape="rect" id="node1" href="service.models.notifications.RoutingInformation-class.html" title="Class which provides some additional data to any notification regarding the routing status" alt="" coords="5,5,200,164"/>
 </map>
-  <img src="uml_class_diagram_for_service__26.gif" alt='' usemap="#uml_class_diagram_for_service__26" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_service__32.gif" alt='' usemap="#uml_class_diagram_for_service__32" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
@@ -77,6 +79,8 @@
 <pre class="rst-literal-block">
 {
     &quot;analysis_date&quot; : &quot;&lt;date the routing analysis was carried out&gt;&quot;,
+    &quot;reason&quot; : &quot;&lt;short explanation why this notification was routed or rejected&gt;&quot;,
+    &quot;issn_data&quot; : &quot;&lt;all available issn items (P/EISSNs) collected in one string&gt;&quot;,
     &quot;repositories&quot; : [&quot;&lt;ids of repository user accounts whcih match this notification&gt;&quot;]
 }
 </pre>
@@ -110,6 +114,42 @@
 raw python dictionary.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#issn_data" class="summary-sig-name">issn_data</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the issn_data of this notification</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.issn_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#reason" class="summary-sig-name">reason</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the reason why this notification was routed or rejected</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.reason">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -215,6 +255,62 @@ object, and an exception will be raised if it does not validate</p>
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>raw</code></strong> - python dict object containing the notification data</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="issn_data"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">issn_data</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.issn_data">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the issn_data of this notification
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the issn_data (coerced in <em>one</em> string!)</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@issn_data.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="reason"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">reason</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.reason">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the reason why this notification was routed or rejected
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - the reason (as short but informative as possible)</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@reason.setter</code></li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -329,7 +425,7 @@ object, and an exception will be raised if it does not validate</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:07 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:50 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

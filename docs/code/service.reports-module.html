@@ -84,6 +84,13 @@ Functions which generate reports from the JPER system
         <a href="service.reports.DeliveryReportQuery-class.html" class="summary-name">DeliveryReportQuery</a>
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="service.reports.AdminReportQuery-class.html" class="summary-name">AdminReportQuery</a>
+    </td>
+  </tr>
 </table>
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
@@ -102,6 +109,66 @@ Functions which generate reports from the JPER system
     </table>
   </td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.reports-module.html#admin_routed_report" class="summary-sig-name">admin_routed_report</a>(<span class="summary-sig-arg">from_date</span>,
+        <span class="summary-sig-arg">to_date</span>,
+        <span class="summary-sig-arg">reportfile</span>)</span><br />
+      Generate a (monthly) routed report from from_date to to_date.  It is assumed that
+from_date is the start of a month, and to_date is the end of a month.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.reports-pysrc.html#admin_routed_report">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.reports-module.html#admin_failed_report" class="summary-sig-name">admin_failed_report</a>(<span class="summary-sig-arg">from_date</span>,
+        <span class="summary-sig-arg">to_date</span>,
+        <span class="summary-sig-arg">reportfile</span>)</span><br />
+      Generate a (monthly) failed report from from_date to to_date.  It is assumed that
+from_date is the start of a month, and to_date is the end of a month.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.reports-pysrc.html#admin_failed_report">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.reports-module.html#publisher_report" class="summary-sig-name">publisher_report</a>(<span class="summary-sig-arg">from_date</span>,
+        <span class="summary-sig-arg">to_date</span>,
+        <span class="summary-sig-arg">reportfile</span>)</span><br />
+      Generate a monthly publisher report from from_date to to_date.  It is assumed that
+from_date is the start of a month, and to_date is the end of a month.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.reports-pysrc.html#publisher_report">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -141,6 +208,93 @@ the start of a month, and to_date is the end of a month.</td>
   </td>
 </tr>
 </table>
+<a name="admin_routed_report"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">admin_routed_report</span>(<span class="sig-arg">from_date</span>,
+        <span class="sig-arg">to_date</span>,
+        <span class="sig-arg">reportfile</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.reports-pysrc.html#admin_routed_report">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate a (monthly) routed report from from_date to to_date.  It is assumed that
+from_date is the start of a month, and to_date is the end of a month.</p>
+<p>Dates must be strings of the form YYYY-MM-DDThh:mm:ssZ</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>from_date</code></strong> - start of month date from which to generate the report</li>
+        <li><strong class="pname"><code>to_date</code></strong> - end of month date up to which to generate the report (if this is not specified, it will default to datetime.utcnow())</li>
+        <li><strong class="pname"><code>reportfile</code></strong> - file path for existing/new report to be output</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="admin_failed_report"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">admin_failed_report</span>(<span class="sig-arg">from_date</span>,
+        <span class="sig-arg">to_date</span>,
+        <span class="sig-arg">reportfile</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.reports-pysrc.html#admin_failed_report">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate a (monthly) failed report from from_date to to_date.  It is assumed that
+from_date is the start of a month, and to_date is the end of a month.</p>
+<p>Dates must be strings of the form YYYY-MM-DDThh:mm:ssZ</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>from_date</code></strong> - start of month date from which to generate the report</li>
+        <li><strong class="pname"><code>to_date</code></strong> - end of month date up to which to generate the report (if this is not specified, it will default to datetime.utcnow())</li>
+        <li><strong class="pname"><code>reportfile</code></strong> - file path for existing/new report to be output</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="publisher_report"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">publisher_report</span>(<span class="sig-arg">from_date</span>,
+        <span class="sig-arg">to_date</span>,
+        <span class="sig-arg">reportfile</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.reports-pysrc.html#publisher_report">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate a monthly publisher report from from_date to to_date.  It is assumed that
+from_date is the start of a month, and to_date is the end of a month.</p>
+<p>Dates must be strings of the form YYYY-MM-DDThh:mm:ssZ</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>from_date</code></strong> - start of month date from which to generate the report</li>
+        <li><strong class="pname"><code>to_date</code></strong> - end of month date up to which to generate the report (if this is not specified, it will default to datetime.utcnow())</li>
+        <li><strong class="pname"><code>reportfile</code></strong> - file path for existing/new report to be output</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="delivery_report"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -199,7 +353,7 @@ the start of a month, and to_date is the end of a month.</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:07 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:49 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
