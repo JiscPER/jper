@@ -6,8 +6,7 @@ Form for webservice
 @author: Mateusz.Kasiuba
 '''
 
-from wtforms import Form, BooleanField, TextField, PasswordField, validators, SelectField
-import utils.config as config
+from wtforms import Form, BooleanField, TextField, validators, SelectField
 from engine.query.QueryInvoker import H_QueryInvoker
 from utils.config import MULTI_PAGE, FREQUENCY_DAILY, FREQUENCY_WEEKLY,\
     FREQUENCY_MONTHLY

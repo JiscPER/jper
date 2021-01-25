@@ -9,8 +9,6 @@ from flask import Blueprint, request, abort, make_response
 from flask.ext.login import current_user
 
 from service import models
-from octopus.core import app
-
 
 blueprint = Blueprint('query', __name__)
 

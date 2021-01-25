@@ -6,9 +6,8 @@ Webpage - Graphic User Interface for more information
 @author: Ruben Romartinez
 '''
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
-from flask import render_template, abort
-from flask.ext.login import login_user, logout_user, current_user
+from flask import Blueprint
+from flask import render_template
 
 blueprint = Blueprint('more', __name__)
 

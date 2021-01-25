@@ -5,15 +5,12 @@ Webpage - Graphic User Interface for an harvester
 
 @author: Mateusz.Kasiuba
 '''
-import uuid, json, time, requests
-
 from service.models.harvester import HarvesterModel
 from service.forms.webservice import WebserviceForm
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
+from flask import Blueprint, request, flash, redirect
 from flask import render_template, abort
 from flask.ext.login import login_user, logout_user, current_user
-from datetime import datetime
 from standalone_octopus.core import app
 
 harvester = Blueprint('harvester', __name__)

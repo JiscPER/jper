@@ -2,21 +2,19 @@
 Blueprint for providing account management
 """
 from __future__ import division
-import uuid, json, time, requests, re
+import uuid, json, time, requests
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort, send_file
 from service.forms.adduser import AdduserForm
 from flask.ext.login import login_user, logout_user, current_user
 from standalone_octopus.core import app
-from standalone_octopus.lib import webapp, dates
-from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
+from standalone_octopus.lib import dates
+from service.api import JPER, ParameterException
 from service.views.webapi import _bad_request
-import pprint
 import math
 # 2016-12-14 TD : Native 'csv'-module of python2.7 has encoding shortcomings
-# import csv
-import unicodecsv 
+import unicodecsv
 from jsonpath_rw_ext import parse
 # 2018-12-18 TD : Replacement for zip(...) which will _not_ truncate the result
 from itertools import izip_longest

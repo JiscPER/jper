@@ -1,9 +1,7 @@
 from __future__ import absolute_import
 import utils.connector.connector as DB
 import utils.config as config
-import json
 from werkzeug.datastructures import MultiDict
-import time
 from datetime import datetime
 import math
 

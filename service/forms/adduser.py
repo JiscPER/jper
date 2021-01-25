@@ -6,8 +6,7 @@ Form for webservice
 @author: Mateusz.Kasiuba
 '''
 
-from wtforms import Form, BooleanField, TextField, PasswordField, validators, SelectField, RadioField
-import utils.config as config
+from wtforms import Form, TextField, PasswordField, validators, RadioField
 from werkzeug.routing import ValidationError
 import re 
 import time

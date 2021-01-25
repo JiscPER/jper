@@ -6,7 +6,7 @@ The main initialise() function is run when the app is started every time
 
 from standalone_octopus.core import app
 from werkzeug import generate_password_hash
-import uuid, requests, json, logging, os, scheduler
+import requests, json, logging, os, scheduler
 from logging import Formatter
 from logging.handlers import RotatingFileHandler
 
