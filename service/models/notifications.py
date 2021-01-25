@@ -2,12 +2,13 @@
 Model objects used to represent system core notification objects
 """
 
-from octopus.lib import dataobj
+from standalone_octopus.lib import dataobj
+from standalone_octopus.modules.identifiers import postcode
+from standalone_octopus.core import app
 from service import dao
 from copy import deepcopy
-from octopus.modules.identifiers import postcode
 import requests, json
-from octopus.core import app
+
 
 class NotificationMetadata(dataobj.DataObj):
     """

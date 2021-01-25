@@ -5,10 +5,10 @@ On production this should be run once, and never again, as it removes the old
 account and builds a new one in its place.  This means no historical data will 
 be kept from the before time.
 """
-from octopus.core import add_configuration, app
+from standalone_octopus.core import add_configuration, app
 from werkzeug import generate_password_hash
 # from datetime import datetime
-import os, requests, json
+import requests, json
 
 ELASTIC_SEARCH_HOST = "http://gateway:9200"
 """Elasticsearch hostname"""

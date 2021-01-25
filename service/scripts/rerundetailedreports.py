@@ -5,9 +5,8 @@ It runs on the current year by default, or the year provided by the caller.
 
 Could take its time, so be informed by now!
 """
-from octopus.core import add_configuration, app
+from standalone_octopus.core import add_configuration, app
 from service import reports
-#from datetime import datetime
 import os, time
 
 if __name__ == "__main__":

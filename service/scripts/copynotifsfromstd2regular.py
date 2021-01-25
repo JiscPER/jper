@@ -6,14 +6,12 @@ regular account if it exists (i.e. is registered with DeepGreen!) **AND** is giv
 in some input CSV file (the same as for 'resetregularaccounts.py').
 """
 try:
-    from octopus.core import add_configuration, app
+    from standalone_octopus.core import add_configuration, app
     from service.models import Account,RoutedNotification
 except:
     print "ERROR: Need to run from a virtualenv enabled setting, i.e."
     print "ERROR: run 'source ../../bin/activate' in some DG installation root folder first!"
     exit(-1)
-
-import os, csv, glob
 
 OA_PARTICIPANTS_GLOB = "OA_participants*.csv"
 """Lists of OA participants (as already determined from EZB)"""

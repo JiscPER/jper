@@ -8,7 +8,7 @@ from flask import Blueprint, request, url_for, render_template, redirect, send_f
 from flask.ext.login import current_user
 
 from service import reports
-from octopus.core import app
+from standalone_octopus.core import app
 
 blueprint = Blueprint('reports', __name__)
 

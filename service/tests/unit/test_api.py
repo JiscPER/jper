@@ -2,12 +2,12 @@
 Unit tests for the JPER API class
 """
 
-from octopus.modules.es.testindex import ESTestCase
-from octopus.lib import http, paths
-from octopus.core import app
+from standalone_octopus.modules.es.testindex import ESTestCase
+from standalone_octopus.lib import http, paths
+from standalone_octopus.core import app
+from standalone_octopus.modules.store import store
 from service.tests import fixtures
 from service import api, models
-from octopus.modules.store import store
 import os
 
 class MockResponse(object):
@@ -36,7 +36,7 @@ class TestAPI(ESTestCase):
         app.config["RUN_SCHEDULE"] = False
 
         self.store_impl = app.config.get("STORE_IMPL")
-        app.config["STORE_IMPL"] = "octopus.modules.store.store.TempStore"
+        app.config["STORE_IMPL"] = "standalone_octopus.modules.store.store.TempStore"
 
         # now call the superclass, which will init the app
         super(TestAPI, self).setUp()

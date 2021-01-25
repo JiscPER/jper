@@ -1,4 +1,4 @@
-from octopus.core import app, add_configuration
+from standalone_octopus.core import app, add_configuration
 from service import control
 
 import sys

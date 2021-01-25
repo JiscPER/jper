@@ -3,7 +3,7 @@ Fixtures for testing the API
 """
 
 from copy import deepcopy
-from octopus.lib import paths
+from standalone_octopus.lib import paths
 import os
 
 RESOURCES = paths.rel2abs(__file__, "..", "resources")

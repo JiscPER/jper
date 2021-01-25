@@ -10,13 +10,14 @@ Quickstart: just execute this script with no arguments, and the defaults will be
     python harness.py
     
 """
-from octopus.core import app, add_configuration
+from standalone_octopus.core import app, add_configuration
+from standalone_octopus.modules.jper import client
+from standalone_octopus.lib import dates, http, isolang
+from service.tests import fixtures
 import threading, time, os, uuid, shutil, json, string
 from datetime import datetime, timedelta
 from random import randint, random, triangular
-from octopus.modules.jper import client
-from service.tests import fixtures
-from octopus.lib import dates, http, isolang
+
 
 def _load_keys(path):
     """

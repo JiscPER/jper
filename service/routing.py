@@ -3,8 +3,7 @@ Module which handles all the routing mechanics to convert UnroutedNotifications 
 RoutedNotifications or FailedNotifications
 """
 
-from octopus.lib import dates
-from octopus.modules.store import store
+from standalone_octopus.lib import dates
 from service import packages, models
 import esprit
 from service.web import app

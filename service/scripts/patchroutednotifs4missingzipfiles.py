@@ -6,7 +6,7 @@ regular account if it exists (i.e. is registered with DeepGreen!).
 
 """
 try:
-    from octopus.core import add_configuration
+    from standalone_octopus.core import add_configuration
     from service.models import Account,RoutedNotification
     from service.web import app
     from service import packages
@@ -15,9 +15,6 @@ except:
     print "ERROR: Need to run from a virtualenv enabled setting, i.e."
     print "ERROR: run 'source ../../bin/activate' in some DG installation root folder first!"
     exit(-1)
-
-import os
-
 
 
 def repair_notes4missing_zip_files(packageprefs, page_size=1000):

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if current_user.has_role(config.get("ACCOUNT_CREATE_USER_ROLE")) %}
+<div class="row">
+    <div class="col-md-12" style="text-align: right">
+        {# FIXME: need to set the URL correctly when account.register is enabled #}
+        <a class="btn btn-info" href="{{url_for('account.register')}}">Create User</a>
+    </div>
+</div>
+{% endif %}
+
+<h1>Manage Users</h1>
+
+<div id="userfacetview"></div>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/account/userlist.js') }}"></script>
+{% endblock extra_js_bottom %}

@@ -2,9 +2,10 @@
 from flask.ext.login import UserMixin
 from werkzeug import generate_password_hash, check_password_hash
 
-from octopus.core import app
+from standalone_octopus.core import app
+from standalone_octopus.lib import dataobj
 from service import dao
-from octopus.lib import dataobj
+
 
 class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     '''

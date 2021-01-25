@@ -22,7 +22,7 @@ running the schedule would need access to any relevant directories.
 
 import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json, csv
 from threading import Thread
-from octopus.core import app, initialise
+from standalone_octopus.core import app, initialise
 from service import reports
 import models
 

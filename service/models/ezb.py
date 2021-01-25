@@ -2,9 +2,9 @@
 Model objects used to represent interactions with ezb items
 """
 
-from octopus.lib import dataobj
+from standalone_octopus.lib import dataobj
+from standalone_octopus.core import app
 from service import dao
-from octopus.core import app
 import csv
 
 class Alliance(dataobj.DataObj, dao.AllianceDAO):

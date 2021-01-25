@@ -5,8 +5,5 @@
 # install esprit from submodule directory
 -e esprit/
 
-# install octopus from submodue directory
--e magnificent-octopus/
-
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .

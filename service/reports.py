@@ -6,10 +6,10 @@ Functions which generate reports from the JPER system
 from service.models import RoutedNotification, FailedNotification, Account, MatchProvenance
 import os
 import unicodecsv
-from octopus.lib import clcsv
+from standalone_octopus.lib import clcsv
 from copy import deepcopy
 from datetime import datetime
-from octopus.core import app
+from standalone_octopus.core import app
 
 # 2019-10-08 TD : adding an overall admin report statistics 
 #

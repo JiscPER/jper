@@ -4,7 +4,7 @@ JPER service initialise module, run at application startup.
 The main initialise() function is run when the app is started every time
 """
 
-from octopus.core import app
+from standalone_octopus.core import app
 from werkzeug import generate_password_hash
 import uuid, requests, json, logging, os, scheduler
 from logging import Formatter

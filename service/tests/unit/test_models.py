@@ -2,11 +2,11 @@
 Unit tests for the core system objects
 """
 
-from octopus.modules.es.testindex import ESTestCase
-from octopus.core import app
+from standalone_octopus.modules.es.testindex import ESTestCase
+from standalone_octopus.core import app
+from standalone_octopus.lib import dataobj
 from service import models
 from service.tests import fixtures
-from octopus.lib import dataobj
 
 class TestModels(ESTestCase):
     def setUp(self):

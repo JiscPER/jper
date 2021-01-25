@@ -2,9 +2,9 @@
 Unit tests for the monthly report
 """
 
-from octopus.modules.es.testindex import ESTestCase
-from octopus.core import app
-from octopus.lib import paths
+from standalone_octopus.modules.es.testindex import ESTestCase
+from standalone_octopus.core import app
+from standalone_octopus.lib import paths
 
 from service import models, reports
 from service.tests import fixtures

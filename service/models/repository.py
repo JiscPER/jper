@@ -2,9 +2,9 @@
 Model objects used to represent interactions with repositories
 """
 
-from octopus.lib import dataobj
+from standalone_octopus.lib import dataobj
+from standalone_octopus.core import app
 from service import dao
-from octopus.core import app
 import csv
 
 class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):

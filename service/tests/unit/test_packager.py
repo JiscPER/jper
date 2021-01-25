@@ -5,15 +5,14 @@ Unit tests for the packaging system
 
 # from octopus.modules.es.testindex import ESTestCase
 from unittest import TestCase
-from service import packages
-from octopus.modules.store import store
 from copy import deepcopy
-
-from service.tests import fixtures
-from octopus.core import app
 from lxml import etree
-from octopus.lib import paths
 import os
+from service import packages
+from service.tests import fixtures
+from standalone_octopus.modules.store import store
+from standalone_octopus.core import app
+from standalone_octopus.lib import paths
 
 ## PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 ## TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
@@ -32,7 +31,7 @@ class TestPackager(TestCase):
         app.config["PACKAGE_HANDLERS"].update({TEST_FORMAT : TEST_HANDLER})
 
         self.old_store = app.config["STORE_IMPL"]
-        app.config["STORE_IMPL"] = "octopus.modules.store.store.StoreLocal"
+        app.config["STORE_IMPL"] = "standalone_octopus.modules.store.store.StoreLocal"
 
         super(TestPackager, self).setUp()
 

@@ -4,8 +4,9 @@ Blueprint which provides the RESTful web API for JPER
 from flask import Blueprint, make_response, url_for, request, abort, redirect, current_app
 from flask import stream_with_context, Response
 import json, csv
-from octopus.core import app
-from octopus.lib import webapp, dates
+from standalone_octopus.core import app
+from standalone_octopus.lib import webapp
+from standalone_octopus.lib import dates
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
 from service import models

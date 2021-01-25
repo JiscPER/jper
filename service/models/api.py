@@ -2,7 +2,7 @@
 Model objects which are used in providing the Python API to JPER
 """
 
-from octopus.lib import dataobj
+from standalone_octopus.lib import dataobj
 from service.models.notifications import NotificationMetadata, UnroutedNotification
 from copy import deepcopy
 

@@ -7,10 +7,9 @@ All records are put into possibly already existing alliance data.
 This means historical data will probably be overwritten/updated. 
 So be warned/informed now!
 """
-from octopus.core import add_configuration, app
+from standalone_octopus.core import add_configuration, app
 from service.models import License, Alliance
-# from datetime import datetime
-import os, requests, csv
+import requests, csv
 import lxml.html
 
 EZB_SEARCH_HOST = "http://rzbvm016.ur.de"

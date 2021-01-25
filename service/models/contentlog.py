@@ -1,7 +1,7 @@
 
 from octopus.core import app
 from service import dao
-from octopus.lib import dataobj
+from standalone_octopus.lib import dataobj
 
 class ContentLog(dataobj.DataObj, dao.ContentLogDAO):
     '''

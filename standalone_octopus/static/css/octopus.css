@@ -1,0 +1,150 @@
+/************************************
+  * Parsley validation
+  ***********************************/
+
+input.parsley-success, textarea.parsley-success, select.parsley-success {
+    color: #468847 !important;
+    background-color: #DFF0D8 !important;
+    border: 1px solid #D6E9C6 !important;
+}
+input.parsley-error, textarea.parsley-error, select.parsley-error {
+    color: #B94A48 !important;
+    background-color: #F2DEDE !important;
+    border: 1px solid #EED3D7 !important;
+}
+ul.parsley-error-list {
+    font-size: 10px;
+    margin: -5px 0 0 0;
+    width:200px;
+    list-style-type:none;
+}
+ul.parsley-error-list li {
+    line-height: 9px;
+    width:200px;
+}
+
+
+/************************************
+  * Media screenshots
+  ***********************************/
+#screenshot{
+	position:absolute;
+	border:1px solid #ccc;
+	background:#333;
+	padding:5px;
+	display:none;
+	color:#fff;
+	}
+
+
+/************************************
+  * Some defaults
+  ***********************************/
+
+body {
+  padding-top: 0px;
+}
+
+.content {
+  margin-top: 0px;
+}
+
+form{
+    display:inline;
+}
+
+#footer {
+    margin-top: 50px;
+}
+
+/************************************
+  * Page loader elements
+  ***********************************/
+
+#loadcover{
+    display:none;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#333;
+    opacity:0.8;
+    filter:alpha(opacity=80);
+}
+#loading{
+    display:none;
+    position:absolute;
+    top:250px;
+    left:50%;
+    width:300px;
+    margin:0 0 0 -150px;
+    z-index:10000;
+}
+
+/************************************
+  * Flash notifications / messages
+  ***********************************/
+
+div.alert-messages {
+  margin-top: 15px;
+}
+
+/************************************
+  * Navigation elements
+  ***********************************/
+
+#navigation {
+  /*background: -webkit-linear-gradient(180deg, blue, black);*/ /* For Safari 5.1 to 6.0 */
+  /*background: -o-linear-gradient(180deg, blue, black);*/ /* For Opera 11.1 to 12.0 */
+  /*background: -moz-linear-gradient(180deg, blue, black);*/ /* For Firefox 3.6 to 15 */
+  /*background: linear-gradient(180deg, #003399, #011135);*/ /* Standard syntax */
+  background: #00325b;
+  color: white;
+  height: 40px;
+}
+
+#navigation a {
+    padding-top: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+#navigation a:hover {
+
+    border: 0;
+    border-bottom: 5px solid #ffffff;
+    background-color: transparent;
+    padding-top: 10px;
+    padding-bottom: 6px;
+}
+
+#navigation .logo_link:hover {
+    border: none;
+}
+
+#navigation .active>a{
+    border-bottom: 5px solid #9ab2e1;
+    background-color: transparent;
+    padding-top: 10px;
+    padding-bottom: 6px;
+}
+
+/************************************
+  * Straighten out google maps navigation
+  ***********************************/
+
+#map-canvas {
+    height: 100%
+}
+#mappins-map img {
+    max-width: none !important;
+    height: auto !important;
+    background: none !important;
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.gm-style img { max-width: none; }
+.gm-style label { width: auto; display: inline; }
