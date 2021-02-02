@@ -35,7 +35,7 @@ while getopts "ahe:" option; do
    esac
 done 
 
-if [ "$ALL" == "N" ]; then
+if [ "$ALL" == "N" ] $$ [ -z "$REPO" ]; then
     help
     exit 1
 fi
