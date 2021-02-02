@@ -1,5 +1,5 @@
 #! /bin/bash
- 
+
 ESHOST=`hostname|sed -e 's/1\./4./'`
 ES="http://${ESHOST}:9200"
 REPO=""
@@ -41,7 +41,7 @@ if [ "$ALL" == "N" ]; then
 fi
 
 
-if [ "$ALL" == "Y" ] ; then
+if [ "$ALL" == "Y" ] && [ -z "$REPO" ]; then
   echo ES: $ES
   echo '| Name | Id | Type |'
   curl -s "${ES}/jper/license/_search?size=50" | jq '.hits.hits[]._source|.name,.id,.type ' | sed -e 's/^"//' -e 's/"$//' | sed -e 'N;N;s/\n/ | /g' -e 's/^/| /'  -e 's/$/ |/'
