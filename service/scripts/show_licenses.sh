@@ -1,5 +1,5 @@
 #! /bin/bash
-
+ 
 ESHOST=`hostname|sed -e 's/1\./4./'`
 ES="http://${ESHOST}:9200"
 REPO=""
