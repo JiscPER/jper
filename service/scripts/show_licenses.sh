@@ -35,13 +35,13 @@ while getopts "ahe:" option; do
    esac
 done 
 
-if [ "$ALL" == "N" ] $$ [ -z "$REPO" ]; then
+if [ "$ALL" == "N" ] && [ -z "$REPO" ]; then
     help
     exit 1
 fi
 
 
-if [ "$ALL" == "Y" ] && [ -z "$REPO" ]; then
+if [ "$ALL" == "Y" ]; then
   echo ES: $ES
   echo '| Name | Id | Type |'
   curl -s "${ES}/jper/license/_search?size=50" | jq '.hits.hits[]._source|.name,.id,.type ' | sed -e 's/^"//' -e 's/"$//' | sed -e 'N;N;s/\n/ | /g' -e 's/^/| /'  -e 's/$/ |/'
