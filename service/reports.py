@@ -31,7 +31,7 @@ def admin_routed_report(from_date, to_date, reportfile):
         tostamp = datetime.utcnow()
     else:
         tostamp = datetime.strptime(to_date, "%Y-%m-%dT%H:%M:%SZ")
-    months = range(frstamp.month, tostamp.month + 1)
+    months = list(range(frstamp.month, tostamp.month + 1))
 
     with open(reportfile,'wb') as f:
         writer = unicodecsv.writer(f,delimiter=',',quoting=unicodecsv.QUOTE_ALL,encoding='utf-8')
@@ -76,7 +76,7 @@ def admin_failed_report(from_date, to_date, reportfile):
         tostamp = datetime.utcnow()
     else:
         tostamp = datetime.strptime(to_date, "%Y-%m-%dT%H:%M:%SZ")
-    months = range(frstamp.month, tostamp.month + 1)
+    months = list(range(frstamp.month, tostamp.month + 1))
 
     with open(reportfile,'wb') as f:
         writer = unicodecsv.writer(f,delimiter=',',quoting=unicodecsv.QUOTE_ALL,encoding='utf-8')
@@ -126,7 +126,7 @@ def publisher_report(from_date, to_date, reportfile):
         tostamp = datetime.utcnow()
     else:
         tostamp = datetime.strptime(to_date, "%Y-%m-%dT%H:%M:%SZ")
-    months = range(frstamp.month, tostamp.month + 1)
+    months = list(range(frstamp.month, tostamp.month + 1))
 
     # prep the data structures where we're going to record the results
     result = {}
@@ -189,7 +189,7 @@ def publisher_report(from_date, to_date, reportfile):
 
 
     # now flesh out the report with account names and totals
-    for k in result.keys():
+    for k in list(result.keys()):
         acc = Account.pull(k)
         if acc is None:
             pubs[k] = k
@@ -201,12 +201,12 @@ def publisher_report(from_date, to_date, reportfile):
 
         # print "Publisher '{name}' encountered.".format(name=pubs[k])
 
-        for mon in result[k].keys():
+        for mon in list(result[k].keys()):
             result[k][mon]["total"] = result[k][mon]["md"]
             result[k][mon]["total"] += result[k][mon]["content"]
             result[k][mon]["total"] += result[k][mon]["failed"] 
 
-    for mon in uniques.keys():
+    for mon in list(uniques.keys()):
         uniques[mon]["total"] = uniques[mon]["md"]
         uniques[mon]["total"] += uniques[mon]["content"]
         uniques[mon]["total"] += uniques[mon]["failed"]
@@ -243,7 +243,7 @@ def publisher_report(from_date, to_date, reportfile):
         sofar = clcsv.ClCsv(file_path=reportfile)
         for obj in sofar.objects():
             # convert all the fields to integers as needed
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in ["Publisher", "ID"]:
                     if obj[k] == "":
                         obj[k] = 0
@@ -251,20 +251,20 @@ def publisher_report(from_date, to_date, reportfile):
                         try:
                             obj[k] = int(obj[k])
                         except:
-                            app.logger.warn(u"Unable to coerce existing report value '{x}' to an integer, so assuming it is 0".format(x=obj[k]))
+                            app.logger.warn("Unable to coerce existing report value '{x}' to an integer, so assuming it is 0".format(x=obj[k]))
                             obj[k] = 0
 
             data[obj.get("Publisher")] = obj
 
 
     # now add any new data from the report
-    for id, res in result.iteritems():
+    for id, res in result.items():
         pub = pubs.get(id)
         if pub not in data:
             data[pub] = deepcopy(template)
         data[pub]["Publisher"] = pub
         data[pub]["ID"] = id
-        for mon, info in res.iteritems():
+        for mon, info in res.items():
             mn = month_names[mon - 1]
             mdk = mn + " md-only"
             ctk = mn + " with-content"
@@ -293,8 +293,8 @@ def publisher_report(from_date, to_date, reportfile):
     totals["Publisher"] = "Total"
     totals["ID"] = ""
 
-    for pub, obj in data.iteritems():
-        for k, v in obj.iteritems():
+    for pub, obj in data.items():
+        for k, v in obj.items():
             if k in ["Publisher", "ID"]:
                 continue
             if isinstance(v, int):
@@ -306,7 +306,7 @@ def publisher_report(from_date, to_date, reportfile):
     data["Unique"] = existing_unique
     data["Unique"]["Publisher"] = "Unique"
 
-    for mon, info in uniques.iteritems():
+    for mon, info in uniques.items():
         mn = month_names[mon - 1]
         mdk = mn + " md-only"
         ctk = mn + " with-content"
@@ -317,7 +317,7 @@ def publisher_report(from_date, to_date, reportfile):
         data["Unique"][rjk] = info.get("failed")
         data["Unique"][tk] = info.get("total")
 
-    orderedkeys = data.keys()
+    orderedkeys = list(data.keys())
     orderedkeys.remove('Unique')
     orderedkeys.remove('Total')
     orderedkeys.sort()
@@ -361,7 +361,7 @@ def delivery_report(from_date, to_date, reportfile):
         tostamp = datetime.utcnow()
     else:
         tostamp = datetime.strptime(to_date, "%Y-%m-%dT%H:%M:%SZ")
-    months = range(frstamp.month, tostamp.month + 1)
+    months = list(range(frstamp.month, tostamp.month + 1))
 
     # prep the data structures where we're going to record the results
     result = {}
@@ -398,7 +398,7 @@ def delivery_report(from_date, to_date, reportfile):
                 result[r][nm]["md"] += 1
 
     # now flesh out the report with account names and totals
-    for k in result.keys():
+    for k in list(result.keys()):
         acc = Account.pull(k)
         if acc is None:
             heis[k] = k
@@ -408,10 +408,10 @@ def delivery_report(from_date, to_date, reportfile):
             else:
                 heis[k] = k
 
-        for mon in result[k].keys():
+        for mon in list(result[k].keys()):
             result[k][mon]["total"] = result[k][mon]["md"] + result[k][mon]["content"]
 
-    for mon in uniques.keys():
+    for mon in list(uniques.keys()):
         uniques[mon]["total"] = uniques[mon]["md"] + uniques[mon]["content"]
 
     # some constant bits of information we're going to need to convert the results into a table
@@ -446,7 +446,7 @@ def delivery_report(from_date, to_date, reportfile):
         sofar = clcsv.ClCsv(file_path=reportfile)
         for obj in sofar.objects():
             # convert all the fields to integers as needed
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in ["HEI", "ID"]:
                     if obj[k] == "":
                         obj[k] = 0
@@ -454,20 +454,20 @@ def delivery_report(from_date, to_date, reportfile):
                         try:
                             obj[k] = int(obj[k])
                         except:
-                            app.logger.warn(u"Unable to coerce existing report value '{x}' to an integer, so assuming it is 0".format(x=obj[k]))
+                            app.logger.warn("Unable to coerce existing report value '{x}' to an integer, so assuming it is 0".format(x=obj[k]))
                             obj[k] = 0
 
             data[obj.get("HEI")] = obj
 
 
     # now add any new data from the report
-    for id, res in result.iteritems():
+    for id, res in result.items():
         hei = heis.get(id)
         if hei not in data:
             data[hei] = deepcopy(template)
         data[hei]["HEI"] = hei
         data[hei]["ID"] = id
-        for mon, info in res.iteritems():
+        for mon, info in res.items():
             mn = month_names[mon - 1]
             mdk = mn + " md-only"
             ctk = mn + " with-content"
@@ -494,8 +494,8 @@ def delivery_report(from_date, to_date, reportfile):
     totals["HEI"] = "Total"
     totals["ID"] = ""
 
-    for hei, obj in data.iteritems():
-        for k, v in obj.iteritems():
+    for hei, obj in data.items():
+        for k, v in obj.items():
             if k in ["HEI", "ID"]:
                 continue
             if isinstance(v, int):
@@ -507,7 +507,7 @@ def delivery_report(from_date, to_date, reportfile):
     data["Unique"] = existing_unique
     data["Unique"]["HEI"] = "Unique"
 
-    for mon, info in uniques.iteritems():
+    for mon, info in uniques.items():
         mn = month_names[mon - 1]
         mdk = mn + " md-only"
         ctk = mn + " with-content"
@@ -516,7 +516,7 @@ def delivery_report(from_date, to_date, reportfile):
         data["Unique"][ctk] = info.get("content")
         data["Unique"][tk] = info.get("total")
 
-    orderedkeys = data.keys()
+    orderedkeys = list(data.keys())
     orderedkeys.remove('Unique')
     orderedkeys.remove('Total')
     orderedkeys.sort()

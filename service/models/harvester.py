@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 import utils.connector.connector as DB
 import utils.config as config
 from werkzeug.datastructures import MultiDict

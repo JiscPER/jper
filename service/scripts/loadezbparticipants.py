@@ -28,12 +28,12 @@ def upload_csv(newf,alid):
                  if not alliance:
                      alliance = Alliance()
                  alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
-                 print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
+                 print("INFO: data for alliance '{a}' uploaded to system.".format(a=alid))
              else:
-                 print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
+                 print("WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid))
     except Exception as e:
-         print "WARNING: could not process .csv file '{x}' for database upload.".format(x=newf)
-         print "WARNING: message: '{x}'".format(x=e.message)
+         print("WARNING: could not process .csv file '{x}' for database upload.".format(x=newf))
+         print("WARNING: message: '{x}'".format(x=e.message))
 
 
 def close_and_upload_csv(csvfile,newf,alid):
@@ -47,12 +47,12 @@ def close_and_upload_csv(csvfile,newf,alid):
                     if not alliance:
                         alliance = Alliance()
                     alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
-                    print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
+                    print("INFO: data for alliance '{a}' uploaded to system.".format(a=alid))
                 else:
-                    print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
+                    print("WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid))
     except Exception as e:
-         print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
-         print "WARNING: message: '{x}'".format(x=e.message)
+         print("WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf))
+         print("WARNING: message: '{x}'".format(x=e.message))
 
 
 if __name__ == "__main__":
@@ -103,11 +103,11 @@ if __name__ == "__main__":
         try:
             tree = lxml.html.fromstring(ae.content)
         except:
-            print "ERROR: Could not parse .html page as tree."
-            print
+            print("ERROR: Could not parse .html page as tree.")
+            print()
             exit(-3)
 
-        print "INFO: xml tree read."
+        print("INFO: xml tree read.")
 
         newf = "dummy"
         alid = "0"
@@ -136,14 +136,14 @@ if __name__ == "__main__":
                                                    lineterminator='\n')
                     outp.writeheader()
                 except IOError:
-                    print "ERROR: could not write .csv file '{x}' (IOError).".format(x=newf)
-                    print
+                    print("ERROR: could not write .csv file '{x}' (IOError).".format(x=newf))
+                    print()
                     exit(-4)
 
             item = el.tail
 
             if item and item.startswith(': '):           # kill leading colon ': ' and, if necessary,
-                item = item[1:].replace(u"\u0096",'-')   # funny hyphens...
+                item = item[1:].replace("\u0096",'-')   # funny hyphens...
             if el.text == 'Institution':
                 if len(part) > 0:
                     if outp: outp.writerow(part)
@@ -162,5 +162,5 @@ if __name__ == "__main__":
         close_and_upload_csv(csvfile,newf,alid)
 
     else:
-        print "ERROR: web page '{x}' not available (http {y}).".format(x=ia,y=ea.status_code)
+        print("ERROR: web page '{x}' not available (http {y}).".format(x=ia,y=ea.status_code))
 

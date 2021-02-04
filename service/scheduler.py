@@ -24,12 +24,12 @@ import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subproc
 from threading import Thread
 from standalone_octopus.core import app, initialise
 from service import reports
-import models
+from . import models
 
 if app.config.get('DEEPGREEN_EZB_ROUTING',False):
-    import routing_deepgreen as routing
+    from . import routing_deepgreen as routing
 else:
-    import routing
+    from . import routing
 
 
 # functions for the checkftp to unzip and move stuff up then zip again in incoming packages
@@ -304,7 +304,7 @@ def processftp():
                         pkg_fmt = pkgformat(pdir + '/' + singlepub)
                         #
                         pkg = pdir + '/' + singlepub + '.zip'
-                        zip(pdir + '/' + singlepub, pkg)
+                        list(zip(pdir + '/' + singlepub, pkg))
 
                         # create a notification and send to the API to join the unroutednotification index
                         notification = {
@@ -482,7 +482,7 @@ if app.config.get('SCHEDULE_DELETE_OLD_ROUTED',False):
     
 def cheep():
     app.logger.debug("Scheduled cheep")
-    print "Scheduled cheep"
+    print("Scheduled cheep")
 #schedule.every(1).minutes.do(cheep)
 
 def run():
@@ -498,7 +498,7 @@ def go():
 
 if __name__ == "__main__":
     initialise()
-    print "starting scheduler"
+    print("starting scheduler")
     app.logger.debug("Scheduler - starting up directly in own process.")
     run()
     

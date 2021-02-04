@@ -8,7 +8,7 @@ from standalone_octopus.modules.store import store
 import uuid
 
 import zipfile, os, codecs
-from StringIO import StringIO
+from io import StringIO
 
 RESOURCES = paths.rel2abs(__file__, "..", "resources")
 """Path to the test resources directory, calculated relative to this file"""

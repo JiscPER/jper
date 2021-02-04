@@ -233,10 +233,10 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             lines = False
             inp = csv.DictReader(csvfile)
             for row in inp:
-                for x in row.keys():
+                for x in list(row.keys()):
                     # 2019-05-21 TD : A tiny safeguard with respect to forgotten commata
                     #                 'None' appears if there are less than fields in row.keys()
-                    if None in row.values():
+                    if None in list(row.values()):
                         continue
                     # 2019-05-21 TD
                     if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant' and len(row[x].strip()) > 1:
@@ -277,7 +277,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             return True
         elif jsoncontent is not None:
             # save the lines into the repo config
-            for k in jsoncontent.keys():
+            for k in list(jsoncontent.keys()):
                 self.data[k] = jsoncontent[k]
             self.data['repo'] = repoid
             # self.data['repository'] = repository
@@ -532,7 +532,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         """
         # validate the object structure quickly
         allowed = ["name", "id", "issn", "doi", "link", "embargo"]
-        for k in obj.keys():
+        for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("Alliance license object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 

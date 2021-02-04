@@ -29,7 +29,7 @@ class OctopusHttpResponse(HttpResponse):
         return self.resp.headers.get(att, default)
 
     def keys(self):
-        return self.resp.headers.keys()
+        return list(self.resp.headers.keys())
 
 class OctopusHttpLayer(HttpLayer):
     def __init__(self, *args, **kwargs):
@@ -54,7 +54,7 @@ class OctopusHttpLayer(HttpLayer):
             resp = http.delete(uri, headers=headers, auth=self.auth)
 
         if resp is None:
-            return OctopusHttpResponse(), u""
+            return OctopusHttpResponse(), ""
 
         return OctopusHttpResponse(resp), resp.text
 

@@ -43,8 +43,8 @@ def initialise():
             "password":generate_password_hash(un)
         }
         c = requests.post(ia, data=json.dumps(su))
-        print "first superuser account created for user " + un + " with password " + un 
-        print "THIS FIRST SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE..."
+        print("first superuser account created for user " + un + " with password " + un) 
+        print("THIS FIRST SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE...")
                 
     file_handler = RotatingFileHandler(app.config.get('LOGFILE','/home/green/jperlog'), maxBytes=1000000000, backupCount=5)
     lvl = app.config.get('LOGLEVEL','info')
@@ -63,6 +63,6 @@ def initialise():
     # NOTE / TODO scheduler may have to be started separately once running app in production under supervisor
     if app.config.get('RUN_SCHEDULE',False):
         if not app.config.get("DEBUG",False) or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-            print "starting scheduler"
+            print("starting scheduler")
             app.logger.debug("Scheduler - starting up on startup of app.")
             scheduler.go()

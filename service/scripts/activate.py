@@ -28,19 +28,19 @@ if __name__ == "__main__":
         app.config['DEBUG'] = False
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_SERVER_HOST', 'localhost'), port=app.config.get('DEBUG_SERVER_PORT', 51234), stdoutToServer=True, stderrToServer=True)
-        print "STARTED IN REMOTE DEBUG MODE"
+        print("STARTED IN REMOTE DEBUG MODE")
 
     if not args.repo and not args.input:
         parser.print_help()
         exit(0)
 
     if args.activate and args.stop:
-        print "Please specify only one of -a/--activate and -s/--stop"
+        print("Please specify only one of -a/--activate and -s/--stop")
         parser.print_help()
         exit(0)
 
     if args.input and args.repo:
-        print "Please specify only one of -i/--input and -r/--repo"
+        print("Please specify only one of -i/--input and -r/--repo")
         parser.print_help()
         exit(0)
 
@@ -50,27 +50,27 @@ if __name__ == "__main__":
                 if args.stop:
                     for line in sys.stdin:
                         repo = line.rstrip()
-                        print "stop {repo}".format(repo=repo)
+                        print("stop {repo}".format(repo=repo))
                         control.deactivate_account(repo)
                 elif args.activate:
                     for line in sys.stdin:
                         repo = line.rstrip()
-                        print "activate {repo}".format(repo=repo)
+                        print("activate {repo}".format(repo=repo))
                         control.activate_account(repo)
             else:
                 with open(args.input,'r') as f:
                     if args.stop:
                         for line in f:
                             repo = line.rstrip()
-                            print "stop {repo}".format(repo=repo)
+                            print("stop {repo}".format(repo=repo))
                             control.deactivate_account(repo)
                     elif args.activate:
                         for line in f:
                             repo = line.rstrip()
-                            print "activate {repo}".format(repo=repo)
+                            print("activate {repo}".format(repo=repo))
                             control.activate_account(repo)
         except Exception as e:
-            print "ERROR: exception '{s}'".format(s=e.message)
+            print("ERROR: exception '{s}'".format(s=e.message))
             pass
     else:
         if args.stop:

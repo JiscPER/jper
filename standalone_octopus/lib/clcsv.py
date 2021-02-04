@@ -1,7 +1,7 @@
 import csv, codecs, re, os
-import cStringIO
+import io
 from standalone_octopus.core import app
-from StringIO import StringIO
+from io import StringIO
 
 class CsvReadException(Exception):
     pass
@@ -178,7 +178,7 @@ class ClCsv():
             if type(col_identifier) == int:
                 # get column by index
                 return self.data[col_identifier]
-            elif isinstance(col_identifier, basestring):
+            elif isinstance(col_identifier, str):
                 # get column by title
                 for col in self.data:
                     if col[0] == col_identifier:
@@ -195,7 +195,7 @@ class ClCsv():
         try:
             if type(col_identifier) == int:
                 self.data[col_identifier] = col_contents
-            elif isinstance(col_identifier, basestring):
+            elif isinstance(col_identifier, str):
                 # set column by title.
                 num = self.get_colnumber(col_identifier)
                 if num is not None and type(col_contents) == list:
@@ -207,7 +207,7 @@ class ClCsv():
             # The column isn't there already; append a new one
             if type(col_identifier) == int:
                 self.data.append(col_contents)
-            elif isinstance(col_identifier, basestring):
+            elif isinstance(col_identifier, str):
                 self.data.append((col_identifier, col_contents))
 
     def get_colnumber(self, header):
@@ -330,14 +330,14 @@ class BadCharReplacer:
                 #'\xcc\xb1' : '',         # modifier - under line
             }
 
-        self.pattern = '(' + '|'.join(self.charmap.keys()) + ')'
+        self.pattern = '(' + '|'.join(list(self.charmap.keys())) + ')'
         self.rx = re.compile(self.pattern)
 
     def __iter__(self):
         return self
 
-    def next(self):
-        val = self.reader.next()
+    def __next__(self):
+        val = next(self.reader)
 
         def replace_chars(match):
             # this function returns the substitute value from the dict above
@@ -363,8 +363,8 @@ class UTF8Recoder:
     def __iter__(self):
         return self
 
-    def next(self):
-        val = self.reader.next()
+    def __next__(self):
+        val = next(self.reader)
         raw = val.encode("utf-8")
         if raw.startswith(codecs.BOM_UTF8):
             raw = raw.replace(codecs.BOM_UTF8, '', 1)
@@ -381,9 +381,9 @@ class UnicodeReader:
         f = UTF8Recoder(f, self.output_encoding)
         self.reader = csv.reader(f, dialect=dialect, **kwds)
 
-    def next(self):
-        row = self.reader.next()
-        return [unicode(s, self.output_encoding) for s in row]
+    def __next__(self):
+        row = next(self.reader)
+        return [str(s, self.output_encoding) for s in row]
 
     def __iter__(self):
         return self
@@ -396,7 +396,7 @@ class UnicodeWriter:
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
@@ -407,7 +407,7 @@ class UnicodeWriter:
         for s in row:
             if s is None:
                 s = ''
-            if not isinstance(s, basestring):
+            if not isinstance(s, str):
                 s = str(s)
             encoded_row.append(s.encode(self.encoding))
         self.writer.writerow(encoded_row)
@@ -492,7 +492,7 @@ class SheetWrapper(object):
         # Master spreadsheet header definitions
         for o in oo:
             found = False
-            for k, v in self.HEADERS.iteritems():
+            for k, v in self.HEADERS.items():
                 if v == o:
                     headers.append(k)
                     found = True
@@ -504,13 +504,13 @@ class SheetWrapper(object):
         self._sheet.set_headers(headers)
 
     def _header_key_map(self, key):
-        for k, v in self.HEADERS.iteritems():
+        for k, v in self.HEADERS.items():
             if key.strip().lower() == k.lower():
                 return v
         return None
 
     def _header_value_map(self, val):
-        for k, v in self.HEADERS.iteritems():
+        for k, v in self.HEADERS.items():
             if v.strip().lower() == val.lower():
                 return k
 
@@ -567,7 +567,7 @@ class SheetWrapper(object):
     def objects(self, use_headers=True, beyond_headers=False):
         for o in self._sheet.objects():
             no = {}
-            for key, val in o.iteritems():
+            for key, val in o.items():
                 hk = None
                 if use_headers:
                     hk = self._header_key_map(key)
@@ -582,8 +582,8 @@ class SheetWrapper(object):
 
     def add_object(self, obj):
         no = {}
-        for k, v in obj.iteritems():
-            for k1, v1 in self.HEADERS.iteritems():
+        for k, v in obj.items():
+            for k1, v1 in self.HEADERS.items():
                 if k == v1:
                     no[k1] = self._value(k, v)
                     break
@@ -602,7 +602,7 @@ class SheetWrapper(object):
 
     def add_dataobj(self, dobj, coerce=None):
         obj = {}
-        for field in self.HEADERS.values():
+        for field in list(self.HEADERS.values()):
             # get the attribute for the header if it exists
             att = getattr(dobj, field, None)
             if att is None:
@@ -647,7 +647,7 @@ def get_csv_string(csv_row):
     csvstream = StringIO()
     csvwriter = csv.writer(csvstream, quoting=csv.QUOTE_ALL)
     # normalise the row - None -> "", and unicode > 128 to ascii
-    csvwriter.writerow([unicode(c).encode("utf8", "replace") if c is not None else "" for c in csv_row])
+    csvwriter.writerow([str(c).encode("utf8", "replace") if c is not None else "" for c in csv_row])
     csvstring = csvstream.getvalue()
     csvstream.close()
     return csvstring

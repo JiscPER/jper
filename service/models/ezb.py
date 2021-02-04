@@ -200,7 +200,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         # validate the object structure on-the-fly
         allowed = [ "name", "identifier" ]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Participant object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -273,7 +273,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
             return True
         elif jsoncontent is not None:
             # save the lines into the alliance data
-            for k in jsoncontent.keys():
+            for k in list(jsoncontent.keys()):
                 self.data[k] = jsoncontent[k]
             self.data['license_id'] = licid
             self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
@@ -574,7 +574,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         # validate the object structure on-the-fly
         allowed = [ "title", "publisher", "identifier", "link", "period", "embargo", "subject", "keyword" ]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Journal object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -630,7 +630,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
         nres = res.get('hits',{}).get('total',0)
         if nres > 0:
-            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in xrange(nres) ]
+            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(nres) ]
         else:
             return None
 
@@ -702,7 +702,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
             return True
         elif jsoncontent is not None:
             # save the lines into the license fields
-            for k in jsoncontent.keys():
+            for k in list(jsoncontent.keys()):
                self.data[k] = jsoncontent[k]
             self.data['name'] = name.strip()
             self.data['type'] = type.strip()

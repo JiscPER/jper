@@ -35,7 +35,7 @@ def term(config_name):
         abort(500)
 
     # now build the query object
-    field = filter.keys()[0]
+    field = list(filter.keys())[0]
     params = filter.get(field, {})
     wq = _do_wildcard(q, params.get("start_wildcard", True), params.get("end_wildcard", True))
     query = {"query" : {"bool" : {"must" : [{"wildcard" : {field : {"value" : wq}}}]}}}
@@ -101,12 +101,12 @@ def compound(config_name):
 
     # get the filters that will be used to match documents
     filters = cfg.get("filters")
-    if filters is None or len(filters.keys()) == 0:
+    if filters is None or len(list(filters.keys())) == 0:
         abort(500)
 
     # now build the query object
     query = {"query" : {"bool" : {"should" : []}}}
-    for field, params in filters.iteritems():
+    for field, params in filters.items():
         wq = _do_wildcard(q, params.get("start_wildcard", True), params.get("end_wildcard", True))
         boost = params.get("boost", 1.0)
         wcq = {"wildcard" : {field : {"value" : wq, "boost" : boost}}}
@@ -150,10 +150,10 @@ def compound(config_name):
     # rewrite the field names if necessary
     field_name_map = cfg.get("field_name_map")
     mapped_records = []
-    if field_name_map is not None and len(field_name_map.keys()) > 0:
+    if field_name_map is not None and len(list(field_name_map.keys())) > 0:
         for r in records:
             newobj = {}
-            for k, v in r.iteritems():
+            for k, v in r.items():
                 newk = field_name_map.get(k)
                 if newk is None:
                     newobj[k] = v

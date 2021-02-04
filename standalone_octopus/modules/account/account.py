@@ -2,7 +2,7 @@ import uuid, json
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required
 
 from standalone_octopus.core import app
 from standalone_octopus.lib.webapp import ssl_required, request_wants_json, flash_with_url, is_safe_url

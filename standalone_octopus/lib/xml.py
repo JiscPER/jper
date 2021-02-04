@@ -19,7 +19,7 @@ def fromstring(s):
 
     # if this failed, and this is not a unicode string, then just raise
     # the exception, as there's nothing more to do for now
-    if not isinstance(s, unicode):
+    if not isinstance(s, str):
         raise error
 
     # our next best bet is to attempt to encode the unicode to a byte-stream

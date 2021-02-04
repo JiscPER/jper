@@ -1,18 +1,18 @@
 from standalone_octopus.core import app
 from standalone_octopus.lib import http
-import urllib, string
+import urllib.request, urllib.parse, urllib.error, string
 from lxml import etree
 from standalone_octopus.modules.epmc import models
 
 def quote(s, **kwargs):
     try:
-        return urllib.quote_plus(s, **kwargs)
+        return urllib.parse.quote_plus(s, **kwargs)
     except:
         pass
 
     try:
         utf = s.encode("utf-8")
-        return urllib.quote(utf, **kwargs)
+        return urllib.parse.quote(utf, **kwargs)
     except:
         return None
 

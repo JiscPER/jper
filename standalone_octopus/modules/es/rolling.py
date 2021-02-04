@@ -30,7 +30,7 @@ def rollback():
 def status():
     map = app.config.get("ESDAO_ROLLING_PLUGINS", {})
     resp = {}
-    for k,v in map.iteritems():
+    for k,v in map.items():
         klazz = plugin.load_class(v)
         s = klazz.rolling_status()
         resp[k] = s
@@ -41,7 +41,7 @@ def status():
 @blueprint.route("/refresh", methods=["GET"])
 def refresh():
     map = app.config.get("ESDAO_ROLLING_PLUGINS", {})
-    for k, v in map.iteritems():
+    for k, v in map.items():
         klazz = plugin.load_class(v)
         klazz.rolling_refresh()
     return ""

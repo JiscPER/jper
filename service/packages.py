@@ -16,7 +16,7 @@ from service import models
 import zipfile, os, shutil, hashlib, mimetypes
 from datetime import datetime
 from lxml import etree
-from StringIO import StringIO
+from io import StringIO
 
 class PackageException(Exception):
     """
@@ -1240,7 +1240,7 @@ class FilesAndJATS(PackageHandler):
             ag = grant.get("agency")
             if ag is not None:
                 obj["name"] = ag
-            if len(obj.keys()) > 0:
+            if len(list(obj.keys())) > 0:
                 md.add_project(obj)
 
         for kw in self.epmc.mesh_descriptors:

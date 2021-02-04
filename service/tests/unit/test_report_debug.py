@@ -29,11 +29,11 @@ class TestModels(ESTestCase):
         self.old_reportsdir = app.config.get("REPORTSDIR")
         app.config['REPORTSDIR'] = RESOURCES
 
-        print '*****************************************'
-        print 'STARTING TESTS in TEST REPORT'
-        print "REPORT FILE = ", REPORT_FILE
-        print "RESOURCES = ", RESOURCES
-        print "MONTHTRACKER = ", MONTHTRACKER
+        print('*****************************************')
+        print('STARTING TESTS in TEST REPORT')
+        print("REPORT FILE = ", REPORT_FILE)
+        print("RESOURCES = ", RESOURCES)
+        print("MONTHTRACKER = ", MONTHTRACKER)
         super(TestModels, self).setUp()
 
     def tearDown(self):
@@ -65,14 +65,14 @@ class TestModels(ESTestCase):
         source = fixtures.NotificationFactory.routed_notification()
 
         name_id_map = {}
-        for uni_name, months in notes.iteritems():
+        for uni_name, months in notes.items():
             names = [n.strip() for n in uni_name.split(",")]
 
             # first make (or re-use) an account for the repository
             accs = []
             for n in names:
                 acc = None
-                if n not in accounts.keys():
+                if n not in list(accounts.keys()):
                     acc = models.Account()
                     acc.repository_name = n
                     acc.save()
@@ -83,7 +83,7 @@ class TestModels(ESTestCase):
                 name_id_map[n] = acc.id
                 accounts[n] = acc
 
-            for month, distribution in months.iteritems():
+            for month, distribution in months.items():
                 md = distribution.get("md")
                 for i in range(md):
                     s = deepcopy(source)
@@ -157,7 +157,7 @@ class TestModels(ESTestCase):
                 seen.append(row[0])
                 if row[0] not in ["Total", "Unique"]:
                     cfg = notes.get(row[0])
-                    for mon, dist in cfg.iteritems():
+                    for mon, dist in cfg.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
@@ -165,7 +165,7 @@ class TestModels(ESTestCase):
                         assert int(row[ctcol]) == dist.get("content")
                         assert int(row[totcol]) == dist.get("total")
                 else:
-                    for mon, dist in grand_totals.iteritems():
+                    for mon, dist in grand_totals.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
@@ -174,7 +174,7 @@ class TestModels(ESTestCase):
                         assert int(row[totcol]) == dist.get("total")
 
         # just check the coverage
-        for k in notes.keys():
+        for k in list(notes.keys()):
             assert k in seen
 
         assert "Total" in seen
@@ -304,7 +304,7 @@ class TestModels(ESTestCase):
                 seen.append(row[0])
                 if row[0] not in ["Total", "Unique"]:
                     cfg = notes_final.get(row[0])
-                    for mon, dist in cfg.iteritems():
+                    for mon, dist in cfg.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
@@ -312,7 +312,7 @@ class TestModels(ESTestCase):
                         assert int(row[ctcol]) == dist.get("content")
                         assert int(row[totcol]) == dist.get("total")
                 else:
-                    for mon, dist in grand_totals.iteritems():
+                    for mon, dist in grand_totals.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
@@ -321,14 +321,14 @@ class TestModels(ESTestCase):
                         assert int(row[totcol]) == dist.get("total")
 
         # just check the coverage
-        for k in notes_final.keys():
+        for k in list(notes_final.keys()):
             assert k in seen
 
         assert "Total" in seen
         assert "Unique" in seen
 
     def test_03_multi_routed(self):
-        print ">>>>>>>>>>>>>>>>> Entering test_03_multi_routed"
+        print(">>>>>>>>>>>>>>>>> Entering test_03_multi_routed")
         notes1 = {
             "Uni A" : {
                 1 : { "md" : 1, "content" : 2 },
@@ -450,8 +450,8 @@ class TestModels(ESTestCase):
 
         # read in the csv and check it contains the right values
         seen = []
-        print '~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-        print REPORT_FILE
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print(REPORT_FILE)
         with open(REPORT_FILE, "r") as f:
             reader = csv.reader(f)
             first = True
@@ -460,19 +460,19 @@ class TestModels(ESTestCase):
                     first = False
                     continue
                 seen.append(row[0])
-                print row[0]
+                print(row[0])
                 if row[0] not in ["Total", "Unique"]:
                     cfg = notes_final.get(row[0])
-                    for mon, dist in cfg.iteritems():
+                    for mon, dist in cfg.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
-                        print "month ... ", mon
+                        print("month ... ", mon)
                         assert int(row[mdcol]) == dist.get("md"), "found " + row[mdcol] + ", expected " + str(dist.get("md")) + " for " + row[0] + " col " + str(mdcol)
                         assert int(row[ctcol]) == dist.get("content")
                         assert int(row[totcol]) == dist.get("total")
                 elif row[0] == "Total":
-                    for mon, dist in grand_totals.iteritems():
+                    for mon, dist in grand_totals.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
@@ -480,17 +480,17 @@ class TestModels(ESTestCase):
                         assert int(row[ctcol]) == dist.get("content")
                         assert int(row[totcol]) == dist.get("total")
                 elif row[0] == "Unique":
-                    for mon, dist in unique_totals.iteritems():
+                    for mon, dist in unique_totals.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
                         assert int(row[mdcol]) == dist.get("md"), "found " + row[mdcol] + ", expected " + str(dist.get("md")) + " for " + row[0] + " col " + str(mdcol)
                         assert int(row[ctcol]) == dist.get("content")
                         assert int(row[totcol]) == dist.get("total")
-        print '~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 
         # just check the coverage
-        for k in notes_final.keys():
+        for k in list(notes_final.keys()):
             assert k in seen
 
         assert "Total" in seen

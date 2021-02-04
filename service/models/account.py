@@ -1,6 +1,6 @@
 
-from flask.ext.login import UserMixin
-from werkzeug import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from standalone_octopus.core import app
 from standalone_octopus.lib import dataobj
@@ -196,7 +196,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         # 2019-06-11 TD : re-query necessary as a precautionary measure because len(res) seems 
         #                 to be restricted to 10 records only per default...
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
-        return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in xrange(n) ]
+        return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(n) ]
 
     @classmethod
     def pull_all_by_email(cls,email):
@@ -241,11 +241,11 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         try:
             import os, subprocess
             fl = os.path.dirname(os.path.abspath(__file__)) + '/createFTPuser.sh'
-            print "subprocessing " + fl
+            print("subprocessing " + fl)
             subprocess.call( [ 'sudo', fl, un, self.data['api_key'] ] )
-            print "creating FTP user for " + un
+            print("creating FTP user for " + un)
         except:
-            print "could not create an FTP user for " + un
+            print("could not create an FTP user for " + un)
         self.add_role('publisher')
         self.save()
 
@@ -254,11 +254,11 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         try:
             import os, subprocess
             fl = os.path.dirname(os.path.abspath(__file__)) + '/deleteFTPuser.sh'
-            print "subprocessing " + fl
+            print("subprocessing " + fl)
             subprocess.call(['sudo',fl,un])
-            print "deleting FTP user for " + un
+            print("deleting FTP user for " + un)
         except:
-            print "could not delete an FTP user for " + un
+            print("could not delete an FTP user for " + un)
         self.remove_role('publisher')
         self.save()
         

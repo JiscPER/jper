@@ -14,7 +14,7 @@ class UserMod(cli.Script):
         password = getpass.getpass()
         confirm = getpass.getpass("Confirm Password:")
         if password != confirm:
-            print "passwords do not match - try again!"
+            print("passwords do not match - try again!")
             return None
         return password
 
@@ -29,12 +29,12 @@ class UserMod(cli.Script):
         args = parser.parse_args(argv)
 
         if not args.email:
-            print "Please specify an email with the -e option"
+            print("Please specify an email with the -e option")
             parser.print_help()
             exit()
 
         if not args.role:
-            print "WARNING: no role specified, so this user won't be able to do anything"
+            print("WARNING: no role specified, so this user won't be able to do anything")
 
         email = args.email
         password = None

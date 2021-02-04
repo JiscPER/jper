@@ -110,11 +110,11 @@ class H_QueryEngineMultiPage(H_QueryEngine):
         invoker = U_WSInvoker()
         self._bulid_query()
         LH.logger.info("Execute validation: %s" % self.__api_query)
-        print(self.__api_query)
+        print((self.__api_query))
         data = invoker.retrieve_information_json(self.__api_query)
-        if('errCode' in data.keys()):
+        if('errCode' in list(data.keys())):
             raise ValueError('404 response')
-        if('resultList' in data.keys()):
+        if('resultList' in list(data.keys())):
             valid = True
         return valid
 

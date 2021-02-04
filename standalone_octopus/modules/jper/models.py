@@ -318,7 +318,7 @@ class NotificationMetadata(dataobj.DataObj):
         # validate the object structure quickly
         allowed = ["name", "affiliation", "identifier"]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Author object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -344,7 +344,7 @@ class NotificationMetadata(dataobj.DataObj):
         # validate the object structure quickly
         allowed = ["name", "grant_number", "identifier"]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Project object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -376,7 +376,7 @@ class NotificationMetadata(dataobj.DataObj):
     def license(self, obj):
         # validate the object structure quickly
         allowed = ["title", "type", "url", "version"]
-        for k in obj.keys():
+        for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("License object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 

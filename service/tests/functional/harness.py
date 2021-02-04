@@ -72,7 +72,7 @@ def _select_n(arr, n):
     """
     selection = []
 
-    idx = range(0, len(arr))
+    idx = list(range(0, len(arr)))
     for x in range(n):
         if len(idx) == 0:
             break
@@ -271,7 +271,7 @@ def _make_notification(error=False, routable=0, repo_configs=None):
     for cfg in route_to:
         # the config may not be fully populated, so only allow us to choose from a field which has data in it
         routable_fields = []
-        for f, l in cfg.iteritems():
+        for f, l in cfg.items():
             if l is not None and len(l) > 0:
                 routable_fields.append(f)
 
@@ -283,7 +283,7 @@ def _make_notification(error=False, routable=0, repo_configs=None):
         uber[field].append(cfg[field][idx])
 
     # now layer the uber match record over the randomised notification
-    for k, v in uber.iteritems():
+    for k, v in uber.items():
         if k == "domains":
             # add an author with that domain in their email
             for domain in v:
@@ -731,7 +731,7 @@ if __name__ == "__main__":
         app.config['DEBUG'] = False
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_SERVER_HOST', 'localhost'), port=app.config.get('DEBUG_SERVER_PORT', 51234), stdoutToServer=True, stderrToServer=True)
-        print "STARTED IN REMOTE DEBUG MODE"
+        print("STARTED IN REMOTE DEBUG MODE")
 
     # attempt to load the publisher and repo keys
     pubkeys = _load_keys(args.pub_keys)

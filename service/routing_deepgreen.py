@@ -34,9 +34,9 @@ def route(unrouted):
             failed.reason = routing_reason
             failed.issn_data = "None"
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} stored as a (stalling) Failed Notification".format(y=urid))
+            app.logger.debug("Routing - Notification:{y} stored as a (stalling) Failed Notification".format(y=urid))
 
-        app.logger.error(u"Routing - Notification:{y} failed with (stalling) error '{x}'".format(y=urid, x=e.message))
+        app.logger.error("Routing - Notification:{y} failed with (stalling) error '{x}'".format(y=urid, x=e.message))
         return False
         # raise RoutingException(e.message)
 
@@ -63,7 +63,7 @@ def _route(unrouted):
     :param unrouted: an UnroutedNotification object
     :return: True if the notification was routed to a repository, False if there were no matches
     """
-    app.logger.debug(u"Routing - Notification:{y}".format(y=unrouted.id))
+    app.logger.debug("Routing - Notification:{y}".format(y=unrouted.id))
 
     # 2016-10-19 TD : introduce a short(!) explanation for more routing information in history logs
     routing_reason = "n/a"
@@ -89,9 +89,9 @@ def _route(unrouted):
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
+            app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
-        app.logger.debug(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
+        app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
         raise RoutingException(e.message)
 
     # extract the match data from the notification and combine it with the match data from the package
@@ -99,7 +99,7 @@ def _route(unrouted):
     if pmd is not None:
         match_data.merge(pmd)
 
-    app.logger.debug(u"Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
+    app.logger.debug("Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
 
     # 2016-09-08 TD : start of alliance license legitimation
     doi = metadata.get_identifiers("doi")
@@ -114,10 +114,10 @@ def _route(unrouted):
     if issn_data is not None and len(issn_data)>0 and publ_date is not None:
         dt = datetime.strptime(publ_date, "%Y-%m-%dT%H:%M:%SZ")
         publ_year = str(dt.year)
-        app.logger.debug(u"Routing - Notification:{y} provides issn_data:{x} and publ_year:{w}".format(y=unrouted.id, x=issn_data, w=publ_year))
+        app.logger.debug("Routing - Notification:{y} provides issn_data:{x} and publ_year:{w}".format(y=unrouted.id, x=issn_data, w=publ_year))
     else:
         routing_reason = "No ISSN/EISSN nor publication date found."
-        app.logger.debug(u"Routing - Notification:{y} includes no ISSN or no publ_year in metatdata".format(y=unrouted.id, x=issn_data))
+        app.logger.debug("Routing - Notification:{y} includes no ISSN or no publ_year in metatdata".format(y=unrouted.id, x=issn_data))
         issn_data = []
 
     part_bibids = []
@@ -145,8 +145,8 @@ def _route(unrouted):
                         if (i.get("type") == "eissn" and i.get("id") == issn) or (i.get("type") == "issn" and i.get("id") == issn):
                             for p in jrnl["period"]:
                                 if p.get("type") == "year":
-                                    if "start" in p.keys(): ys = str(p["start"])
-                                    if "end" in p.keys(): yt = str(p["end"])
+                                    if "start" in list(p.keys()): ys = str(p["start"])
+                                    if "end" in list(p.keys()): yt = str(p["end"])
                                     break # so far, we are only interested in the year of publication 
                                 # elif p.get("type") == "volume":
                                 # elif p.get("type") == "issue":
@@ -164,7 +164,7 @@ def _route(unrouted):
                     continue           # thus try next!
                 # FIXED: !!! checking license period with year of publication
  
-                bibids = list(set([ acc['_source']['repository'].get('bibid',u"*****").lstrip('a') for acc in models.Account.query(q='*',size=10000).get('hits',{}).get('hits',[]) if "repository" in acc['_source']['role'] ]))
+                bibids = list(set([ acc['_source']['repository'].get('bibid',"*****").lstrip('a') for acc in models.Account.query(q='*',size=10000).get('hits',{}).get('hits',[]) if "repository" in acc['_source']['role'] ]))
                 # collect *all unique* current EZB-Ids currently registered in the router
                 for bibid in bibids:                          # note: only first ISSN record found 
                     part_bibids.append( (bibid,lic_data[0]) ) # in current license will be considered!
@@ -186,8 +186,8 @@ def _route(unrouted):
                         if (i.get("type") == "eissn" and i.get("id") == issn) or (i.get("type") == "issn" and i.get("id") == issn):
                             for p in jrnl["period"]:
                                 if p.get("type") == "year":
-                                    if "start" in p.keys(): ys = str(p["start"])
-                                    if "end" in p.keys(): yt = str(p["end"])
+                                    if "start" in list(p.keys()): ys = str(p["start"])
+                                    if "end" in list(p.keys()): yt = str(p["end"])
                                     break # so far, we are only interested in the year of publication 
                                 # elif p.get("type") == "volume":
                                 # elif p.get("type") == "issue":
@@ -266,10 +266,10 @@ def _route(unrouted):
     # 2019-03-26 TD : continue from here on with all the collected 'al_repos'
     #
     if len(al_repos) > 0:
-        app.logger.debug(u"Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
+        app.logger.debug("Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
     else:
         routing_reason = "No (active!) qualified repositories."
-        app.logger.debug(u"Routing - Notification {y} No (active!) qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))
+        app.logger.debug("Routing - Notification {y} No (active!) qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))
     # 2016-09-08 TD : end of checking alliance (and probably other!) license legitimation(s)
 
     # iterate through all the repository configs, collecting match provenance and
@@ -286,7 +286,7 @@ def _route(unrouted):
             rc = models.RepositoryConfig.pull_by_repo(repo)
             #
             if rc is None:
-                app.logger.debug(u"Routing - Notification:{y} found no RepositoryConfig for Repository:{x}".format(y=unrouted.id, x=repo))
+                app.logger.debug("Routing - Notification:{y} found no RepositoryConfig for Repository:{x}".format(y=unrouted.id, x=repo))
                 continue
             #
             prov = models.MatchProvenance()
@@ -298,14 +298,14 @@ def _route(unrouted):
             prov.bibid = bibid
             #
             prov.notification = unrouted.id
-            app.logger.debug(u"Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
+            app.logger.debug("Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
             match(match_data, rc, prov)
             if len(prov.provenance) > 0:
                 match_provenance.append(prov)
                 match_ids.append(rc.repository)
-                app.logger.debug(u"Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug("Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id, x=rc.repository))
             else:
-                app.logger.debug(u"Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug("Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
 
     # except esprit.tasks.ScrollException as e:
     # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above) 
@@ -325,17 +325,17 @@ def _route(unrouted):
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
+            app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
-        app.logger.error(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
+        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
         raise RoutingException(e.message)
 
-    app.logger.debug(u"Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
+    app.logger.debug("Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
 
     # write all the match provenance out to the index (could be an empty list)
     for p in match_provenance:
         p.save()
-        app.logger.debug(u"Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
+        app.logger.debug("Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
 
     # if there are matches then the routing is successful, and we want to finalise the
     # notification for the routed index and its content for download
@@ -362,13 +362,13 @@ def _route(unrouted):
             enhance(routed, metadata)
         links(routed)
         routed.save()
-        app.logger.debug(u"Routing - Notification:{y} successfully routed".format(y=unrouted.id))
+        app.logger.debug("Routing - Notification:{y} successfully routed".format(y=unrouted.id))
         return True
     else:
         if routing_reason == "n/a":
             routing_reason = "No match in qualified repositories."
         # log the failure
-        app.logger.error(u"Routing - Notification:{y} was not routed".format(y=unrouted.id))
+        app.logger.error("Routing - Notification:{y} was not routed".format(y=unrouted.id))
 
         # if config says so, convert the unrouted notification to a failed notification, enhance and save
         # for later diagnosis
@@ -384,7 +384,7 @@ def _route(unrouted):
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
+            app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
         return False
 
@@ -451,8 +451,8 @@ def match(notification_data, repository_config, provenance):
 
     # do the required matches
     matched = False
-    for repo_property, sub in match_algorithms.iteritems():
-        for match_property, fn in sub.iteritems():
+    for repo_property, sub in match_algorithms.items():
+        for match_property, fn in sub.items():
             for rprop in getattr(rc, repo_property):
                 for mprop in getattr(md, match_property):
                     m = fn(rprop, mprop)
@@ -667,7 +667,7 @@ def repackage(unrouted, repo_ids):
         acc = models.Account.pull(rid)
         if acc is None:
             # realistically this shouldn't happen, but if it does just carry on
-            app.logger.warn(u"Repackaging - no account with id {x}; carrying on regardless".format(x=rid))
+            app.logger.warn("Repackaging - no account with id {x}; carrying on regardless".format(x=rid))
             continue
         for pack in acc.packaging:
             # if it's already in the conversion list, get this job done, and check next pack!
@@ -769,7 +769,7 @@ def domain_url(domain, url):
     url = _normalise(url)
 
     if domain.endswith(url) or url.endswith(domain):
-        return u"Domain matched URL: '{d}' and '{u}' have the same root domains".format(d=od, u=ou)
+        return "Domain matched URL: '{d}' and '{u}' have the same root domains".format(d=od, u=ou)
 
     return False
 
@@ -820,7 +820,7 @@ def domain_email(domain, email):
     email = _normalise(email)
 
     if domain.endswith(email) or email.endswith(domain):
-        return u"Domain matched email address: '{d}' and '{e}' have the same root domains".format(d=od, e=oe)
+        return "Domain matched email address: '{d}' and '{e}' have the same root domains".format(d=od, e=oe)
 
     return False
 
@@ -839,7 +839,7 @@ def author_match(author_obj_1, author_obj_2):
     i2 = _normalise(author_obj_2.get("id", ""))
 
     if t1 == t2 and i1 == i2:
-        return u"Author ids matched: {t1} '{i1}' is the same as {t2} '{i2}'".format(t1=t1, i1=author_obj_1.get("id", ""), t2=t2, i2=author_obj_2.get("id", ""))
+        return "Author ids matched: {t1} '{i1}' is the same as {t2} '{i2}'".format(t1=t1, i1=author_obj_1.get("id", ""), t2=t2, i2=author_obj_2.get("id", ""))
 
     return False
 
@@ -855,7 +855,7 @@ def author_string_match(author_string, author_obj):
     nid = _normalise(author_obj.get("id", ""))
 
     if ns == nid:
-        return u"Author ids matched: '{s}' is the same as '{aid}'".format(s=author_string, aid=author_obj.get("id", ""))
+        return "Author ids matched: '{s}' is the same as '{aid}'".format(s=author_string, aid=author_obj.get("id", ""))
 
     return False
 
@@ -876,7 +876,7 @@ def postcode_match(pc1, pc2):
     npc2 = npc2.replace(" ", "")
 
     if npc1 == npc2:
-        return u"Postcodes matched: '{a}' is the same as '{b}'".format(a=pc1, b=pc2)
+        return "Postcodes matched: '{a}' is the same as '{b}'".format(a=pc1, b=pc2)
 
     return False
 
@@ -916,17 +916,17 @@ def exact_substring(s1, s2):
     ##                 caused an exception (and thus a stalled(!!) failure). Shite...
     ##
     if re.search(r'\b' + re.escape(s1) + r'\b', s2, re.UNICODE) is not None:
-        app.logger.debug(u"stl: Match exact_substring s1:{x} s2:{y}".format(x=os1, y=os2))
-        app.logger.debug(u"stl: '{a}' appears in '{b}'".format(a=s1, b=s2))
-        return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
+        app.logger.debug("stl: Match exact_substring s1:{x} s2:{y}".format(x=os1, y=os2))
+        app.logger.debug("stl: '{a}' appears in '{b}'".format(a=s1, b=s2))
+        return "'{a}' appears in '{b}'".format(a=os1, b=os2)
 
     if os1=="IGNORE-AFFILIATION":
-        app.logger.debug(u"stl: Match exact_substring s1:{x} found".format(x=os1))
-        return u"'{a}' appears in 'repo_config'".format(a=os1)
+        app.logger.debug("stl: Match exact_substring s1:{x} found".format(x=os1))
+        return "'{a}' appears in 'repo_config'".format(a=os1)
 
     if os2=="IGNORE-AFFILIATION":
-        app.logger.debug(u"stl: Match exact_substring s2:{x} found".format(x=os2))
-        return u"'{a}' appears in 'metadata'".format(a=os2)
+        app.logger.debug("stl: Match exact_substring s2:{x} found".format(x=os2))
+        return "'{a}' appears in 'metadata'".format(a=os2)
 
     return False
 
@@ -947,7 +947,7 @@ def exact(s1, s2):
     s2 = _normalise(s2)
 
     if s1 == s2:
-        return u"'{a}' is an exact match with '{b}'".format(a=os1, b=os2)
+        return "'{a}' is an exact match with '{b}'".format(a=os1, b=os2)
 
     return False
 
@@ -985,4 +985,4 @@ def author_id_string(aob):
     :param aob: author object
     :return: string representation of author id
     """
-    return u"{x}: {y}".format(x=aob.get("type"), y=aob.get("id"))
+    return "{x}: {y}".format(x=aob.get("type"), y=aob.get("id"))

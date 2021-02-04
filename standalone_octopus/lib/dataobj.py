@@ -1,21 +1,21 @@
 from standalone_octopus.lib import dates
 from copy import deepcopy
-import locale, json, urlparse
+import locale, json, urllib.parse
 
 #########################################################
 ## Data coerce functions
 
 def to_unicode():
     def to_utf8_unicode(val):
-        if isinstance(val, unicode):
+        if isinstance(val, str):
             return val
-        elif isinstance(val, basestring):
+        elif isinstance(val, str):
             try:
                 return val.decode("utf8", "strict")
             except UnicodeDecodeError:
-                raise ValueError(u"Could not decode string")
+                raise ValueError("Could not decode string")
         else:
-            return unicode(val)
+            return str(val)
 
     return to_utf8_unicode
 
@@ -23,7 +23,7 @@ def to_int():
     def intify(val):
         # strip any characters that are outside the ascii range - they won't make up the int anyway
         # and this will get rid of things like strange currency marks
-        if isinstance(val, unicode):
+        if isinstance(val, str):
             val = val.encode("ascii", errors="ignore")
 
         # try the straight cast
@@ -44,7 +44,7 @@ def to_int():
         except ValueError:
             pass
 
-        raise ValueError(u"Could not convert string to int: {x}".format(x=val))
+        raise ValueError("Could not convert string to int: {x}".format(x=val))
 
     return intify
 
@@ -52,7 +52,7 @@ def to_float():
     def floatify(val):
         # strip any characters that are outside the ascii range - they won't make up the float anyway
         # and this will get rid of things like strange currency marks
-        if isinstance(val, unicode):
+        if isinstance(val, str):
             val = val.encode("ascii", errors="ignore")
 
         # try the straight cast
@@ -73,7 +73,7 @@ def to_float():
         except ValueError:
             pass
 
-        raise ValueError(u"Could not convert string to float: {x}".format(x=val))
+        raise ValueError("Could not convert string to float: {x}".format(x=val))
 
     return floatify
 
@@ -126,14 +126,14 @@ def to_url(val):
         return None
 
     # parse with urlparse
-    url = urlparse.urlparse(val)
+    url = urllib.parse.urlparse(val)
 
     # now check the url has the minimum properties that we require
     if url.scheme and url.scheme.startswith("http"):
         uc = to_unicode()
         return uc(val)
     else:
-        raise ValueError(u"Could not convert string {val} to viable URL".format(val=val))
+        raise ValueError("Could not convert string {val} to viable URL".format(val=val))
 
 def to_bool(val):
     """Conservative boolean cast - don't cast lists and objects to True, just existing booleans and strings."""
@@ -142,14 +142,14 @@ def to_bool(val):
     if val is True or val is False:
         return val
 
-    if isinstance(val, basestring):
+    if isinstance(val, str):
         if val.lower() == 'true':
             return True
         elif val.lower() == 'false':
             return False
-        raise ValueError(u"Could not convert string {val} to boolean. Expecting string to either say 'true' or 'false' (not case-sensitive).".format(val=val))
+        raise ValueError("Could not convert string {val} to boolean. Expecting string to either say 'true' or 'false' (not case-sensitive).".format(val=val))
 
-    raise ValueError(u"Could not convert {val} to boolean. Expect either boolean or string.".format(val=val))
+    raise ValueError("Could not convert {val} to boolean. Expect either boolean or string.".format(val=val))
 
 
 
@@ -300,7 +300,7 @@ class DataObj(object):
         pass
 
     def populate(self, fields_and_values):
-        for k, v in fields_and_values.iteritems():
+        for k, v in fields_and_values.items():
             setattr(self, k, v)
 
     def clone(self):
@@ -440,7 +440,7 @@ class DataObj(object):
         props = []
         try:
             # props = og(self, 'properties').keys()
-            props = self._properties.keys()
+            props = list(self._properties.keys())
         except AttributeError:
             pass
 
@@ -450,7 +450,7 @@ class DataObj(object):
                 if self._struct:
                     data_attrs = construct_data_keys(self._struct)
                 else:
-                    data_attrs = self.data.keys()
+                    data_attrs = list(self.data.keys())
         except AttributeError:
             pass
 
@@ -500,10 +500,10 @@ class DataObj(object):
                     removes.append(i)
             elif matchsub is not None:
                 matches = 0
-                for k, v in matchsub.iteritems():
+                for k, v in matchsub.items():
                     if entry.get(k) == v:
                         matches += 1
-                if matches == len(matchsub.keys()):
+                if matches == len(list(matchsub.keys())):
                     removes.append(i)
             i += 1
 
@@ -535,8 +535,8 @@ class DataObj(object):
         while len(stack) > 0:
             context = stack.pop()
             todelete = []
-            for k, v in context.iteritems():
-                if isinstance(v, dict) and len(v.keys()) == 0:
+            for k, v in context.items():
+                if isinstance(v, dict) and len(list(v.keys())) == 0:
                     todelete.append(k)
             for d in todelete:
                 del context[d]
@@ -549,7 +549,7 @@ class DataObj(object):
         except (ValueError, TypeError):
             if accept_failure:
                 return val
-            raise DataSchemaException(u"Cast with {x} failed on {y}".format(x=cast, y=val))
+            raise DataSchemaException("Cast with {x} failed on {y}".format(x=cast, y=val))
 
     def _get_single(self, path, coerce=None, default=None, allow_coerce_failure=True):
         # get the value at the point in the object
@@ -578,7 +578,7 @@ class DataObj(object):
 
         # check that the val is actually a list
         if not isinstance(val, list):
-            raise DataSchemaException(u"Expecting a list at {x} but found {y}".format(x=path, y=val))
+            raise DataSchemaException("Expecting a list at {x} but found {y}".format(x=path, y=val))
 
         # if there is a value, do we want to coerce each of them
         if coerce is not None:
@@ -599,14 +599,14 @@ class DataObj(object):
             return
 
         if val is None and not allow_none:
-            raise DataSchemaException(u"NoneType is not allowed at {x}".format(x=path))
+            raise DataSchemaException("NoneType is not allowed at {x}".format(x=path))
 
         # first see if we need to coerce the value (and don't coerce None)
         if coerce is not None and val is not None:
             val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
 
         if allowed_values is not None and val not in allowed_values:
-            raise DataSchemaException(u"Value {x} is not permitted at {y}".format(x=val, y=path))
+            raise DataSchemaException("Value {x} is not permitted at {y}".format(x=val, y=path))
 
         if allowed_range is not None:
             lower, upper = allowed_range
@@ -627,7 +627,7 @@ class DataObj(object):
         for v in val:
             if v is None and not allow_none:
                 if not ignore_none:
-                    raise DataSchemaException(u"NoneType is not allowed at {x}".format(x=path))
+                    raise DataSchemaException("NoneType is not allowed at {x}".format(x=path))
 
         # now coerce each of the values, stripping out Nones if necessary
         val = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val if v is not None or not ignore_none]
@@ -640,7 +640,7 @@ class DataObj(object):
                 return
             elif not allow_none:
                 # if we are not ignoring nones, and not allowing them, raise an error
-                raise DataSchemaException(u"Empty array not permitted at {x}".format(x=path))
+                raise DataSchemaException("Empty array not permitted at {x}".format(x=path))
 
         # now set it on the path
         self._set_path(path, val)
@@ -650,7 +650,7 @@ class DataObj(object):
             return
 
         if val is None and not allow_none:
-            raise DataSchemaException(u"NoneType is not allowed in list at {x}".format(x=path))
+            raise DataSchemaException("NoneType is not allowed in list at {x}".format(x=path))
 
         # first coerce the value
         if coerce is not None:
@@ -709,7 +709,7 @@ def validate(obj, schema):
     # all fields
     allowed = schema.get("bools", []) + schema.get("fields", []) + schema.get("lists", []) + schema.get("objects", [])
 
-    for k, v in obj.iteritems():
+    for k, v in obj.items():
         # is k allowed at all
         if k not in allowed:
             raise ObjectSchemaValidationError("object contains key " + k + " which is not permitted by schema")
@@ -721,7 +721,7 @@ def validate(obj, schema):
 
         # check that the fields are plain old strings
         if k in schema.get("fields", []):
-            if type(v) != str and type(v) != unicode and type(v) != int and type(v) != float:
+            if type(v) != str and type(v) != str and type(v) != int and type(v) != float:
                 raise ObjectSchemaValidationError("object contains " + k + " = " + str(v) + " but expected string, unicode or a number")
 
         # check that the lists are really lists
@@ -733,7 +733,7 @@ def validate(obj, schema):
             if entry_schema is None:
                 # validate the entries as fields
                 for e in v:
-                    if type(e) != str and type(e) != unicode and type(e) != int and type(e) != float:
+                    if type(e) != str and type(e) != str and type(e) != int and type(e) != float:
                         raise ObjectSchemaValidationError("list in object contains " + str(type(e)) + " but expected string, unicode or a number in " + k)
             else:
                 # validate each entry against the schema
@@ -788,7 +788,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
         return None
 
     # check that all the required fields are there
-    keys = obj.keys()
+    keys = list(obj.keys())
     for r in struct.get("required", []):
         if r not in keys:
             c = context if context != "" else "root"
@@ -798,7 +798,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
     # Note that since the construct mechanism copies fields explicitly, silent_prune literally just turns off this
     # check
     if not silent_prune:
-        allowed = struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+        allowed = list(struct.get("fields", {}).keys()) + struct.get("objects", []) + list(struct.get("lists", {}).keys())
         for k in keys:
             if k not in allowed:
                 c = context if context != "" else "root"
@@ -809,7 +809,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
     constructed = DataObj()
 
     # now check all the fields
-    for field_name, instructions in struct.get("fields", {}).iteritems():
+    for field_name, instructions in struct.get("fields", {}).items():
         val = obj.get(field_name)
         if val is None:
             continue
@@ -852,7 +852,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
                 raise DataStructureException(e.message)
 
     # now check all the lists
-    for field_name, instructions in struct.get("lists", {}).iteritems():
+    for field_name, instructions in struct.get("lists", {}).items():
         vals = obj.get(field_name)
         if vals is None:
             continue
@@ -867,7 +867,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
             if coerce_fn is None:
                 raise DataStructureException("No coersion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
 
-            for i in xrange(len(vals)):
+            for i in range(len(vals)):
                 val = vals[i]
                 try:
                     constructed._add_to_list(field_name, val, coerce=coerce_fn, **kwargs)
@@ -907,7 +907,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
 def construct_merge(target, source):
     merged = deepcopy(target)
 
-    for field, instructions in source.get("fields", {}).iteritems():
+    for field, instructions in source.get("fields", {}).items():
         if "fields" not in merged:
             merged["fields"] = {}
         if field not in merged["fields"]:
@@ -919,7 +919,7 @@ def construct_merge(target, source):
         if obj not in merged["objects"]:
             merged["objects"].append(obj)
 
-    for field, instructions in source.get("lists", {}).iteritems():
+    for field, instructions in source.get("lists", {}).items():
         if "lists" not in merged:
             merged["lists"] = {}
         if field not in merged["lists"]:
@@ -931,7 +931,7 @@ def construct_merge(target, source):
         if r not in merged["required"]:
             merged["required"].append(r)
 
-    for field, struct in source.get("structs", {}).iteritems():
+    for field, struct in source.get("structs", {}).items():
         if "structs" not in merged:
             merged["structs"] = {}
         if field not in merged["structs"]:
@@ -990,14 +990,14 @@ def construct_kwargs(type, dir, instructions):
 
     nk = {}
     if dir == "set":
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             # basically everything is a "set" argument unless explicitly stated to be a "get" argument
             if not k.startswith("get__"):
                 if k.startswith("set__"):    # if it starts with the set__ prefix, remove it
                     k = k[5:]
                 nk[k] = v
     elif dir == "get":
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             # must start with "get" argument
             if k.startswith("get__"):
                 nk[k[5:]] = v
@@ -1005,7 +1005,7 @@ def construct_kwargs(type, dir, instructions):
     return nk
 
 def construct_data_keys(struct):
-    return struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+    return list(struct.get("fields", {}).keys()) + struct.get("objects", []) + list(struct.get("lists", {}).keys())
 
 ############################################################
 ## Unit test support
@@ -1031,16 +1031,16 @@ def test_dataobj(obj, fields_and_values):
     :param fields_and_values:
     :return:
     """
-    for k, valtup in fields_and_values.iteritems():
+    for k, valtup in fields_and_values.items():
         if not isinstance(valtup, tuple):
             valtup = (valtup,)
         set_val = valtup[0]
         try:
             setattr(obj, k, set_val)
         except AttributeError:
-            assert False, u"Unable to set attribute {x} with value {y}".format(x=k, y=set_val)
+            assert False, "Unable to set attribute {x} with value {y}".format(x=k, y=set_val)
 
-    for k, valtup in fields_and_values.iteritems():
+    for k, valtup in fields_and_values.items():
         if not isinstance(valtup, tuple):
             valtup = (valtup,)
         get_val = valtup[0]

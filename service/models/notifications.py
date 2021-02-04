@@ -479,7 +479,7 @@ class NotificationMetadata(dataobj.DataObj):
         # validate the object structure quickly
         allowed = ["name", "firstname", "lastname", "affiliation", "identifier"]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Author object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -564,7 +564,7 @@ class NotificationMetadata(dataobj.DataObj):
         # validate the object structure quickly
         allowed = ["name", "grant_number", "identifier"]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Project object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -660,7 +660,7 @@ class NotificationMetadata(dataobj.DataObj):
         """
         # validate the object structure quickly
         allowed = ["title", "type", "url", "version"]
-        for k in obj.keys():
+        for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("License object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -1609,9 +1609,9 @@ class RoutingMetadata(dataobj.DataObj):
 
         :return: True/False whether there is data or not
         """
-        if len(self.data.keys()) == 0:
+        if len(list(self.data.keys())) == 0:
             return False
-        for k, v in self.data.iteritems():
+        for k, v in self.data.items():
             if v is not None and len(v) > 0:
                 return True
         return False

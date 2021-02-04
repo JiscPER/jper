@@ -7,7 +7,7 @@ import json
 from standalone_octopus.core import app
 from standalone_octopus.lib import webapp
 from standalone_octopus.lib import dates
-from flask.ext.login import login_user, current_user
+from flask_login import login_user, current_user
 from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
 from service import models
 
@@ -83,7 +83,7 @@ def standard_authentication():
                 pass
 
     if remote_user:
-        print "remote user present " + remote_user
+        print("remote user present " + remote_user)
         app.logger.debug("Remote user connecting: {x}".format(x=remote_user))
         user = models.Account.pull(remote_user)
         if user:
@@ -91,7 +91,7 @@ def standard_authentication():
         else:
             abort(401)
     elif apik:
-        print "API key provided " + apik
+        print("API key provided " + apik)
         app.logger.debug("API key connecting: {x}".format(x=apik))
         res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
         if len(res) == 1:
@@ -106,7 +106,7 @@ def standard_authentication():
         # FIXME: this is not ideal, as it requires knowing where the blueprint is mounted
         if (request.path.startswith("/api/v1/notification") and "/content" not in request.path) or request.path.startswith("/api/v1/routed"):
             return
-        print "aborting, no user"
+        print("aborting, no user")
         app.logger.debug("Standard authentication failed")
         abort(401)
 

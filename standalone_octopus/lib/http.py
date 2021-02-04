@@ -1,19 +1,19 @@
 from standalone_octopus.core import app
-import requests, time, urllib, json
-from StringIO import StringIO
+import requests, time, urllib.request, urllib.parse, urllib.error, json
+from io import StringIO
 
 class SizeExceededException(Exception):
     pass
 
 def quote(s, **kwargs):
     try:
-        return urllib.quote_plus(s, **kwargs)
+        return urllib.parse.quote_plus(s, **kwargs)
     except:
         pass
 
     try:
         utf = s.encode("utf-8")
-        return urllib.quote(utf, **kwargs)
+        return urllib.parse.quote(utf, **kwargs)
     except:
         return None
 

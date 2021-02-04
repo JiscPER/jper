@@ -65,106 +65,106 @@ class TestRouting(ESTestCase):
 
     def test_01_domain_url(self):
         match_set = [
-            (u"ed.ac.uk", u"http://www.ed.ac.uk/", True),
-            (u"http://www.ed.ac.uk/", u"https://ed.ac.uk", True),
-            (u"ed.ac.uk", u"ic.ac.uk", False)
+            ("ed.ac.uk", "http://www.ed.ac.uk/", True),
+            ("http://www.ed.ac.uk/", "https://ed.ac.uk", True),
+            ("ed.ac.uk", "ic.ac.uk", False)
         ]
         for ms in match_set:
             m = routing.domain_url(ms[0], ms[1])
             if m is False:
                 assert ms[2] is False
             else:
-                assert isinstance(m, basestring)
+                assert isinstance(m, str)
                 assert len(m) > 0
 
     def test_02_domain_email(self):
         match_set = [
-            (u"ed.ac.uk", u"richard@ed.ac.uk", True),
-            (u"ic.ac.uk", u"richard@phys.ic.ac.uk", True),
-            (u"http://www.ic.ac.uk/", u"richard@ic.ac.uk", True),
-            (u"https://www.ic.ac.uk/physics", u"richard@sci.ic.ac.uk", False)
+            ("ed.ac.uk", "richard@ed.ac.uk", True),
+            ("ic.ac.uk", "richard@phys.ic.ac.uk", True),
+            ("http://www.ic.ac.uk/", "richard@ic.ac.uk", True),
+            ("https://www.ic.ac.uk/physics", "richard@sci.ic.ac.uk", False)
         ]
         for ms in match_set:
             m = routing.domain_email(ms[0], ms[1])
             if m is False:
                 assert ms[2] is False
             else:
-                assert isinstance(m, basestring)
+                assert isinstance(m, str)
                 assert len(m) > 0
 
     def test_03_exact_substring(self):
         match_set = [
-            (u"richard", u"was richard here?", True),
-            (u"something with  spaces ", u"this is something    with spaces in it", True),
-            (u"this one is not", u"in this one", False),
-            (u"this is the wrong way round", u"wrong way", False),
-            (u"  lettERS", u"VariyIng CAPITAL LeTTers  ", True)
+            ("richard", "was richard here?", True),
+            ("something with  spaces ", "this is something    with spaces in it", True),
+            ("this one is not", "in this one", False),
+            ("this is the wrong way round", "wrong way", False),
+            ("  lettERS", "VariyIng CAPITAL LeTTers  ", True)
         ]
         for ms in match_set:
             m = routing.exact_substring(ms[0], ms[1])
             if m is False:
                 assert ms[2] is False
             else:
-                assert isinstance(m, basestring)
+                assert isinstance(m, str)
                 assert len(m) > 0
 
     def test_04_exact(self):
         match_set = [
-            (u"richard", u"richard", True),
-            (u"  RICHARD ", u"richard   ", True),
-            (u"Mark", u"Richard", False)
+            ("richard", "richard", True),
+            ("  RICHARD ", "richard   ", True),
+            ("Mark", "Richard", False)
         ]
         for ms in match_set:
             m = routing.exact_substring(ms[0], ms[1])
             if m is False:
                 assert ms[2] is False
             else:
-                assert isinstance(m, basestring)
+                assert isinstance(m, str)
                 assert len(m) > 0
 
     def test_05_author_match(self):
         match_set = [
-            ({"type": "orcid", "id" : u"abcd"}, {"type" : "orcid", "id" : u"ABCD"}, True),
-            ({"type": "orcid", "id" : u"abcd"}, {"type" : "orcid", "id" : u"zyx"}, False),
-            ({"type": "email", "id" : u"abcd"}, {"type" : "orcid", "id" : u"abcd"}, False),
-            ({"type": "email", "id" : u"richard@here"}, {"type" : "orcid", "id" : u"abcd"}, False)
+            ({"type": "orcid", "id" : "abcd"}, {"type" : "orcid", "id" : "ABCD"}, True),
+            ({"type": "orcid", "id" : "abcd"}, {"type" : "orcid", "id" : "zyx"}, False),
+            ({"type": "email", "id" : "abcd"}, {"type" : "orcid", "id" : "abcd"}, False),
+            ({"type": "email", "id" : "richard@here"}, {"type" : "orcid", "id" : "abcd"}, False)
         ]
         for ms in match_set:
             m = routing.author_match(ms[0], ms[1])
             if m is False:
                 assert ms[2] is False
             else:
-                assert isinstance(m, basestring)
+                assert isinstance(m, str)
                 assert len(m) > 0
 
     def test_06_author_string_match(self):
         match_set = [
-            (u"abcd", {"type" : "orcid", "id" : u"ABCD"}, True),
-            (u"zyx", {"type" : "email", "id" : u"zyx"}, True),
-            (u"whatever", {"type" : "orcid", "id" : u"abcd"}, False)
+            ("abcd", {"type" : "orcid", "id" : "ABCD"}, True),
+            ("zyx", {"type" : "email", "id" : "zyx"}, True),
+            ("whatever", {"type" : "orcid", "id" : "abcd"}, False)
         ]
         for ms in match_set:
             m = routing.author_string_match(ms[0], ms[1])
             if m is False:
                 assert ms[2] is False
             else:
-                assert isinstance(m, basestring)
+                assert isinstance(m, str)
                 assert len(m) > 0
 
     def test_07_postcode_match(self):
         match_set = [
-            (u"HP3 9AA", u"HP3 9AA", True),
-            (u"HP23 1BB", u"hp23 1BB", True),
-            (u"EH10 8YY", u"eh108yy", True),
-            (u" rh6   7PT  ", u"rh67pt ", True),
-            (u"HP45 8IO", u"eh9 7uu", False)
+            ("HP3 9AA", "HP3 9AA", True),
+            ("HP23 1BB", "hp23 1BB", True),
+            ("EH10 8YY", "eh108yy", True),
+            (" rh6   7PT  ", "rh67pt ", True),
+            ("HP45 8IO", "eh9 7uu", False)
         ]
         for ms in match_set:
             m = routing.postcode_match(ms[0], ms[1])
             if m is False:
                 assert ms[2] is False
             else:
-                assert isinstance(m, basestring)
+                assert isinstance(m, str)
                 assert len(m) > 0
 
     def test_08_enhance(self):

@@ -3,10 +3,10 @@ An elasticsearch query pass-through.
 Has auth control, so it is better than exposing your ES index directly.
 '''
 
-import json, urllib2
+import json, urllib.request, urllib.error, urllib.parse
 
 from flask import Blueprint, request, abort, make_response
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from service import models
 
@@ -44,11 +44,11 @@ def query(path='match_prov'):
             if request.json:
                 qs = request.json
             else:
-                qs = dict(request.form).keys()[-1]
+                qs = list(dict(request.form).keys())[-1]
         elif 'q' in request.values:
             qs = {'query': {'query_string': { 'query': request.values['q'] }}}
         elif 'source' in request.values:
-            qs = json.loads(urllib2.unquote(request.values['source']))
+            qs = json.loads(urllib.parse.unquote(request.values['source']))
         else: 
             qs = {'query': {'match_all': {}}}
 

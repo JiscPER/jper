@@ -5,7 +5,7 @@ Blueprint for providing reports UI
 import os, time, re
 
 from flask import Blueprint, request, url_for, render_template, redirect, send_from_directory, flash
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from service import reports
 from standalone_octopus.core import app
@@ -46,7 +46,7 @@ def index():
         overall = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
         details = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('detailed') and int(ym.split('-')[0]) == tyear]
         if len(details) == 0:
-            for tmth in xrange(1,13):
+            for tmth in range(1,13):
                 fstem = "%04d-%02d.csv" % (tyear,tmth)
                 open(os.path.join(reportsdir,"detailed_routed_notifications_"+fstem), 'w').close()
                 open(os.path.join(reportsdir,"detailed_failed_notifications_"+fstem), 'w').close()

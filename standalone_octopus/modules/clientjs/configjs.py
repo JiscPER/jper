@@ -8,7 +8,7 @@ blueprint = Blueprint('configjs', __name__)
 @blueprint.route("/javascript/config.js")
 def javascript_config():
     configs = {}
-    for key, val in app.config.iteritems():
+    for key, val in app.config.items():
         if key.startswith("CLIENTJS_"):
             nk = key[9:].lower()
             configs[nk] = val

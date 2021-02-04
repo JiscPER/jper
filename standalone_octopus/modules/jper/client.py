@@ -48,8 +48,8 @@ class JPER(object):
                 params["api_key"] = self.api_key
 
         args = []
-        for k, v in params.iteritems():
-            args.append(k + "=" + http.quote(unicode(v)))
+        for k, v in params.items():
+            args.append(k + "=" + http.quote(str(v)))
         if len(args) > 0:
             if "?" not in url:
                 url += "?"

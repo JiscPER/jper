@@ -60,6 +60,6 @@ if __name__ == "__main__":
             "password":generate_password_hash(pw) 
         }
         c = requests.post(ia, data=json.dumps(su))
-        print "superuser account reseted for user " + un + " with password " + pw
-        print "THIS SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE..."
+        print("superuser account reseted for user " + un + " with password " + pw)
+        print("THIS SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE...")
 

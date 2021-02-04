@@ -32,7 +32,7 @@ def raise_error(sword_error, additional_headers=None):
     resp.mimetype = "text/xml"
     resp.status_code = sword_error.status
     if additional_headers is not None:
-        for k, v in additional_headers.iteritems():
+        for k, v in additional_headers.items():
             resp.headers[k] = v
     return resp
 

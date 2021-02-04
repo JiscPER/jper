@@ -139,8 +139,8 @@ class TestImport(TestCase):
 
         obj = { "one" : "hello" }
         new = dataobj.construct(obj, struct, coerce)
-        assert new["one"] == u"hello"
-        assert isinstance(new["one"], unicode)
+        assert new["one"] == "hello"
+        assert isinstance(new["one"], str)
 
         # try adding a disallowed field
         obj["two"]  = "world"
@@ -149,7 +149,7 @@ class TestImport(TestCase):
             try:
                 new = dataobj.construct(obj, struct, coerce)
             except dataobj.DataStructureException as e:
-                print e.message
+                print(e.message)
                 raise e
 
         # try not providing a required field
@@ -158,7 +158,7 @@ class TestImport(TestCase):
             try:
                 new = dataobj.construct(obj, struct, coerce)
             except dataobj.DataStructureException as e:
-                print e.message
+                print(e.message)
                 raise e
 
         # try an unvalidated sub-object
@@ -178,7 +178,7 @@ class TestImport(TestCase):
             try:
                 new = dataobj.construct(obj, struct, coerce)
             except dataobj.DataStructureException as e:
-                print e.message
+                print(e.message)
                 raise e
 
         # a list where the list contains directive is broken
@@ -188,7 +188,7 @@ class TestImport(TestCase):
             try:
                 new = dataobj.construct(obj, struct, coerce)
             except dataobj.DataStructureException as e:
-                print e.message
+                print(e.message)
                 raise e
 
         # successfully coerce a list of field values
@@ -203,7 +203,7 @@ class TestImport(TestCase):
             try:
                 new = dataobj.construct(obj, struct, coerce)
             except dataobj.DataStructureException as e:
-                print e.message
+                print(e.message)
                 raise e
 
         # list is supposed to contain an object but doesn't
@@ -213,7 +213,7 @@ class TestImport(TestCase):
             try:
                 new = dataobj.construct(obj, struct, coerce)
             except dataobj.DataStructureException as e:
-                print e.message
+                print(e.message)
                 raise e
 
         # list contains an object but no validation required on its structure
@@ -227,7 +227,7 @@ class TestImport(TestCase):
             try:
                 new = dataobj.construct(obj, struct, coerce)
             except dataobj.DataStructureException as e:
-                print e.message
+                print(e.message)
                 raise e
 
         # list contains an object that does validate
