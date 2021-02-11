@@ -86,7 +86,7 @@ if app.config.get("FUNCTIONAL_TEST_MODE", False):
 
 
 # this allows us to override the standard static file handling with our own dynamic version
-@app.route("/static/<path:filename>")
+@app.route("/static/<path:filename>", endpoint='static')
 def static(filename):
     """
     Serve static content

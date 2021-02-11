@@ -33,7 +33,7 @@ def query(path='match_prov'):
         else:
             rec = klass().pull(pathparts[1])
             if rec:
-                if not current_user.is_anonymous():
+                if not current_user.is_anonymous:
                     resp = make_response( rec.json )
                 else:
                     abort(401)

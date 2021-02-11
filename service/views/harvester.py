@@ -19,7 +19,7 @@ harvesterModel = HarvesterModel()
 #This is part of their code in my opinion we should move this part of code in common class
 @harvester.before_request
 def restrict():
-    if current_user.is_anonymous():
+    if current_user.is_anonymous:
         if not request.path.endswith('account/login'):
             return redirect('account/login')
 # end part of their code should be move in common class

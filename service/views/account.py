@@ -307,7 +307,7 @@ def _download_request(repo_id=None,provider=False):
 
 @blueprint.before_request
 def restrict():
-    if current_user.is_anonymous():
+    if current_user.is_anonymous:
         if not request.path.endswith('login'):
             return redirect(request.path.rsplit('/',1)[0] + '/login')
 

@@ -65,7 +65,7 @@
                         </li>
 
 
-                    {% if not current_user.is_anonymous()  %}
+                    {% if not current_user.is_anonymous  %}
                         
                         <li class="nav__item {% if request.path == url_for('account.username', username=current_user.id)%}
                          active
@@ -111,7 +111,7 @@
                     {% endif %}
                     </ul>
                 </nav>
-                            {% if current_user.is_anonymous() %}
+                            {% if current_user.is_anonymous %}
                 <div class="credentials">
                     <a href="{{ url_for('account.login') }}">
                         <div class="btn btn--rounded"> <span class="btn__text">Log in</span></div>

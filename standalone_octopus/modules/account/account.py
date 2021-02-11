@@ -230,7 +230,7 @@ def index():
 @ssl_required
 def register():
     # access to registration may not be for the public
-    if current_user.is_anonymous() and not app.config.get("ACCOUNT_ALLOW_REGISTER", False):
+    if current_user.is_anonymous and not app.config.get("ACCOUNT_ALLOW_REGISTER", False):
         abort(404)
 
     if request.method == "GET":

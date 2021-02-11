@@ -14,7 +14,7 @@ BASE_PATH = os.path.dirname(        # service base directory
 )
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder=None)   # We will be using our own custom static which supplies a number of dirs
     configure_app(app)
     setup_jinja(app)
     module_setup(app)

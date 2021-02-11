@@ -41,7 +41,7 @@ def query(path=None):
 
     # does the user have to be authenticated
     if cfg.get("auth"):
-        if current_user is None or current_user.is_anonymous():
+        if current_user is None or current_user.is_anonymous:
             abort(401)
 
         # if so, does the user require a role
