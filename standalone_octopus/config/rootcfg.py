@@ -2,36 +2,36 @@
 # to the desired config files (in the order you want them loaded)
 CONFIG_FILES = [
     # octopus.lib config files
-    "jper/standalone_octopus/config/cli.py",
-    "jper/standalone_octopus/config/dates.py",
-    "jper/standalone_octopus/config/http.py",
-    "jper/standalone_octopus/config/mail.py",
-    "jper/standalone_octopus/config/webapp.py",
+    "standalone_octopus/config/cli.py",
+    "standalone_octopus/config/dates.py",
+    "standalone_octopus/config/http.py",
+    "standalone_octopus/config/mail.py",
+    "standalone_octopus/config/webapp.py",
 
     # octopus.module config files
-    "jper/standalone_octopus/modules/account/settings.py",
-    "jper/standalone_octopus/modules/clientjs/settings.py",
-    "jper/standalone_octopus/modules/es/settings.py",
-    "jper/standalone_octopus/modules/jper/settings.py",
-    "jper/standalone_octopus/modules/store/settings.py",
-    "jper/standalone_octopus/modules/swordv2/settings.py",
+    "standalone_octopus/modules/account/settings.py",
+    "standalone_octopus/modules/clientjs/settings.py",
+    "standalone_octopus/modules/es/settings.py",
+    "standalone_octopus/modules/jper/settings.py",
+    "standalone_octopus/modules/store/settings.py",
+    "standalone_octopus/modules/swordv2/settings.py",
 
     # local service configuration
-    "jper/config/service.py",
-    "jper/local.cfg"
+    "config/service.py",
+    "local.cfg"
 ]
 
 # absolute paths, or relative paths from root directory, to the template directories (in the order you want them looked at)
 TEMPLATE_PATHS = [
     # local service templates
-    "jper/service/templates",
+    "service/templates",
 
     # octopus standard bootstrap layout templates
-    "jper/standalone_octopus/templates",
+    "standalone_octopus/templates",
 
     # octopus modules templates
-    "jper/standalone_octopus/modules/account/templates",
-    "jper/standalone_octopus/modules/clientjs/templates"
+    "standalone_octopus/modules/account/templates",
+    "standalone_octopus/modules/clientjs/templates"
 ]
 
 # absolute paths, or relative paths from the root directory, to the static file directories (in the order you want them looked at)
@@ -40,12 +40,12 @@ STATIC_PATHS = [
     "service/static",
 
     # octopus standard static directory - contains all vendor JS, plus the core Octopus JS
-    "jper/standalone_octopus/static",
+    "standalone_octopus/static",
 
     # octopus modules static directories
-    "jper/standalone_octopus/modules/account/static",
-    "jper/standalone_octopus/modules/clientjs/static",
-    "jper/standalone_octopus/modules/es/static"
+    "standalone_octopus/modules/account/static",
+    "standalone_octopus/modules/clientjs/static",
+    "standalone_octopus/modules/es/static"
 ]
 
 # module import paths for the app initialisation modules that need to run at flask app creation
