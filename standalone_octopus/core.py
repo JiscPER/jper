@@ -7,11 +7,9 @@ from datetime import datetime
 #login_manager = LoginManager()
 
 # obtain the base path of the application
-BASE_PATH = os.path.dirname(            # service base directory
-    os.path.dirname(                    # the root magnificent-octopus directory
-        os.path.dirname(                # the directory this file is in (octopus module root)
-            os.path.abspath(__file__)   # this file
-        )
+BASE_PATH = os.path.dirname(        # service base directory
+    os.path.dirname(                # the directory this file is in (octopus module root)
+        os.path.abspath(__file__)   # this file
     )
 )
 
