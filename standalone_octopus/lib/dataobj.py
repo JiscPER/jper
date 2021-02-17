@@ -384,7 +384,7 @@ class DataObj(object):
                         d = wrap(val, substruct)
                         return d.data
                     except DataStructureException as e:
-                        raise AttributeError(e.message)
+                        raise AttributeError(str(e))
 
         # pull the object from the structure, to find out what kind of retrieve it needs
         # (if there is a struct)
@@ -822,7 +822,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
         try:
             constructed._set_single(field_name, val, coerce=coerce_fn, **kwargs)
         except DataSchemaException as e:
-            raise DataStructureException(e.message)
+            raise DataStructureException(str(e))
 
     # next check all the objetcs (which will involve a recursive call to this function)
     for field_name in struct.get("objects", []):
@@ -840,7 +840,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
             try:
                 constructed._set_single(field_name, deepcopy(val))
             except DataSchemaException as e:
-                raise DataStructureException(e.message)
+                raise DataStructureException(str(e))
         else:
             # we need to recurse further down
             beneath = construct(val, instructions, coerce=coerce, context=context + field_name + ".", silent_prune=silent_prune)
@@ -849,7 +849,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
             try:
                 constructed._set_single(field_name, beneath)
             except DataSchemaException as e:
-                raise DataStructureException(e.message)
+                raise DataStructureException(str(e))
 
     # now check all the lists
     for field_name, instructions in struct.get("lists", {}).items():
@@ -872,7 +872,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
                 try:
                     constructed._add_to_list(field_name, val, coerce=coerce_fn, **kwargs)
                 except DataSchemaException as e:
-                    raise DataStructureException(e.message)
+                    raise DataStructureException(str(e))
 
         elif contains == "object":
             # for each object in the list, send it for construction
@@ -887,7 +887,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
                     try:
                         constructed._add_to_list(field_name, deepcopy(val))
                     except DataSchemaException as e:
-                        raise DataStructureException(e.message)
+                        raise DataStructureException(str(e))
                 else:
                     # we need to recurse further down
                     beneath = construct(val, subinst, coerce=coerce, context=context + field_name + "[" + str(i) + "].", silent_prune=silent_prune)
@@ -896,7 +896,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
                     try:
                         constructed._add_to_list(field_name, beneath)
                     except DataSchemaException as e:
-                        raise DataStructureException(e.message)
+                        raise DataStructureException(str(e))
 
         else:
             raise DataStructureException("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))

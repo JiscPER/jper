@@ -21,7 +21,7 @@ def valid_url(form, url):
         if(False == H_QueryInvoker().is_valid(MULTI_PAGE, form.url.data)):   
             raise ValidationError('0 results from %s for this engine' % MULTI_PAGE)
     except Exception as e:
-        raise ValidationError('Url is wrong check it again: ' + e.message)
+        raise ValidationError('Url is wrong check it again: ' + str(e))
 
     return True
 
@@ -38,7 +38,7 @@ def valid_date(form, date):
     try:
         time.mktime(datetime.strptime(form.end_date.data, "%Y-%m-%d").timetuple())
     except Exception as e:
-        raise ValidationError('Date is wrong: ' + e.message)
+        raise ValidationError('Date is wrong: ' + str(e))
 
     return True
 
@@ -50,7 +50,7 @@ def is_email(form, email):
         if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", form.email.data):
             raise ValidationError('You must provide an email address')
     except Exception as e:
-            raise ValidationError(e.message)
+            raise ValidationError(str(e))
 
 def valid_verify_email(form, email):
     """
@@ -63,7 +63,7 @@ def valid_verify_email(form, email):
             print('Account already exist')
             raise ValidationError('An account already exists for that email address')
     except Exception as e:
-        raise ValidationError('Email is wrong check it again: ' + e.message)
+        raise ValidationError('Email is wrong check it again: ' + str(e))
     return True
 
 def validate_password(form, email):
@@ -91,7 +91,7 @@ def validate_password(form, email):
         if(form.password.data!=form.password_verify.data):
             raise ValidationError('Password is not the same')
     except Exception as e:
-        raise ValidationError(e.message)
+        raise ValidationError(str(e))
     return True
 
 

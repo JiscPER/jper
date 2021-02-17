@@ -25,7 +25,7 @@ def route(unrouted):
         rc = _route(unrouted)
     except Exception as e:
         urid = unrouted.id
-        routing_reason = "Stalled: " + e.message
+        routing_reason = "Stalled: " + str(e)
         # if config says so, convert the unrouted notification to a failed notification, 
         # (enhance and) save for later diagnosis
         if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
@@ -36,9 +36,9 @@ def route(unrouted):
             failed.save()
             app.logger.debug("Routing - Notification:{y} stored as a (stalling) Failed Notification".format(y=urid))
 
-        app.logger.error("Routing - Notification:{y} failed with (stalling) error '{x}'".format(y=urid, x=e.message))
+        app.logger.error("Routing - Notification:{y} failed with (stalling) error '{x}'".format(y=urid, x=str(e)))
         return False
-        # raise RoutingException(e.message)
+        # raise RoutingException(str(e))
 
     return rc
 
@@ -74,7 +74,7 @@ def _route(unrouted):
     try:
         metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
-        routing_reason = e.message
+        routing_reason = str(e)
         # if config says so, convert the unrouted notification to a failed notification, enhance and save
         # for later diagnosis
         if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
@@ -91,8 +91,8 @@ def _route(unrouted):
             failed.save()
             app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
-        app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
-        raise RoutingException(e.message)
+        app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
+        raise RoutingException(str(e))
 
     # extract the match data from the notification and combine it with the match data from the package
     match_data = unrouted.match_data()
@@ -310,7 +310,7 @@ def _route(unrouted):
     # except esprit.tasks.ScrollException as e:
     # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above) 
     except Exception as e:
-        routing_reason = e.message
+        routing_reason = str(e)
         # if config says so, convert the unrouted notification to a failed notification, enhance and save
         # for later diagnosis
         if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
@@ -327,8 +327,8 @@ def _route(unrouted):
             failed.save()
             app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
-        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
-        raise RoutingException(e.message)
+        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
+        raise RoutingException(str(e))
 
     app.logger.debug("Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
 

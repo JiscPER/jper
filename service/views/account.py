@@ -157,7 +157,7 @@ def _list_failrequest(provider_id=None, bulk=False):
         else:
             flist = JPER.list_failed(current_user, since, page=page, page_size=page_size, provider_id=provider_id)
     except ParameterException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     resp = make_response(flist.json())
     resp.mimetype = "application/json"
@@ -209,7 +209,7 @@ def _list_matchrequest(repo_id=None, provider=False, bulk=False):
             # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
             mlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
     except ParameterException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     resp = make_response(mlist.json())
     resp.mimetype = "application/json"
@@ -262,7 +262,7 @@ def _list_request(repo_id=None, provider=False, bulk=False):
             # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
             nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
     except ParameterException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     resp = make_response(nlist.json())
     resp.mimetype = "application/json"
@@ -294,7 +294,7 @@ def _download_request(repo_id=None,provider=False):
     try:
         nbulk = JPER.bulk_notifications(current_user, since, repository_id=repo_id)
     except ParameterException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     resp = make_response(nbulk.json())
     resp.mimetype = "application/json"

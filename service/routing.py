@@ -44,8 +44,8 @@ def route(unrouted):
     try:
         metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
-        app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
-        raise RoutingException(e.message)
+        app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
+        raise RoutingException(str(e))
 
     # extract the match data from the notification and combine it with the match data from the package
     match_data = unrouted.match_data()
@@ -78,8 +78,8 @@ def route(unrouted):
                 app.logger.debug("Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
 
     except esprit.tasks.ScrollException as e:
-        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
-        raise RoutingException(e.message)
+        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
+        raise RoutingException(str(e))
 
     app.logger.debug("Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
 

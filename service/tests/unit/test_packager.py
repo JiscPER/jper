@@ -129,7 +129,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message == "Zip file is corrupt - cannot read."
+                assert str(e) == "Zip file is corrupt - cannot read."
                 raise e
 
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, no_epmc=True, no_jats=True)
@@ -137,7 +137,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message == "No JATS fulltext or EPMC metadata found in package"
+                assert str(e) == "No JATS fulltext or EPMC metadata found in package"
                 raise e
 
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, invalid_epmc=True)
@@ -145,7 +145,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message.startswith("Unable to parse XML file in package")
+                assert str(e).startswith("Unable to parse XML file in package")
                 raise e
 
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, invalid_jats=True)
@@ -153,7 +153,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message.startswith("Unable to parse XML file in package")
+                assert str(e).startswith("Unable to parse XML file in package")
                 raise e
 
     def test_04_valid_file_handles(self):
@@ -217,7 +217,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "No JATS fulltext or EPMC metadata found in metadata files"
+                assert str(e) == "No JATS fulltext or EPMC metadata found in metadata files"
                 raise e
 
         handles = fixtures.PackageFactory.custom_file_handles(invalid_epmc=True)
@@ -225,7 +225,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse filesandjats_epmc.xml file from store"
+                assert str(e) == "Unable to parse filesandjats_epmc.xml file from store"
                 raise e
 
         handles = fixtures.PackageFactory.custom_file_handles(invalid_jats=True)
@@ -233,7 +233,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse filesandjats_jats.xml file from store"
+                assert str(e) == "Unable to parse filesandjats_jats.xml file from store"
                 raise e
 
     def test_06_package_manager_ingest(self):

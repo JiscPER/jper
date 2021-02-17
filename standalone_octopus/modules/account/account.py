@@ -138,7 +138,7 @@ def username(username):
         try:
             fc.legal()
         except exceptions.AccountException as e:
-            flash(e.message, "error")
+            flash(str(e), "error")
             return fc.render_template()
 
         # if we get to here, then update the user record
@@ -247,7 +247,7 @@ def register():
         try:
             fc.legal()
         except exceptions.AccountException as e:
-            flash(e.message, "error")
+            flash(str(e), "error")
             return fc.render_template()
 
         # if we get to here, then create the user record

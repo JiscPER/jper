@@ -74,7 +74,7 @@ def extract(fl,path):
             app.logger.debug('Extracted zip ' + fl)
             return True
         except Exception as e:
-            app.logger.error('Scheduler - Extraction could not be done for ' + fl + ' : "{x}"'.format(x=e.message))
+            app.logger.error('Scheduler - Extraction could not be done for ' + fl + ' : "{x}"'.format(x=str(e)))
             return False
 
 def flatten(destination, depth=None):
@@ -238,7 +238,7 @@ def copyftp():
                     try:
                         os.remove(src) # try to take the pending symlink away
                     except Exception as e:
-                        app.logger.error("Scheduler - failed to delete pending entry: '{x}'".format(x=e.message))
+                        app.logger.error("Scheduler - failed to delete pending entry: '{x}'".format(x=str(e)))
             else:
                 app.logger.debug('Scheduler - currently, nothing to copy for Account:' + dir)
     except:
@@ -326,7 +326,7 @@ def processftp():
                 shutil.rmtree(userdir + '/' + dir + '/' + udir, ignore_errors=True) # 2019-12-02 TD : kill "udir" folder no matter what status
 
     except Exception as e:
-        app.logger.error('Scheduler - failed scheduled process for FTP temp directories: "{x}"'.format(x=e.message))
+        app.logger.error('Scheduler - failed scheduled process for FTP temp directories: "{x}"'.format(x=str(e)))
 
 if app.config.get('PROCESSFTP_SCHEDULE',10) != 0:
     schedule.every(app.config.get('PROCESSFTP_SCHEDULE',10)).minutes.do(processftp)
@@ -375,7 +375,7 @@ def checkunrouted():
 
     except Exception as e:
         app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: cnt={cnt}, len(robjids)={a}, len(urobjids)={b}".format(cnt=counter,a=len(robjids),b=len(urobjids)))
-        app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: '{x}'".format(x=e.message))
+        app.logger.error("Scheduler - Failed scheduled check for unrouted notifications: '{x}'".format(x=str(e)))
 
 if app.config.get('CHECKUNROUTED_SCHEDULE',10) != 0:
     schedule.every(app.config.get('CHECKUNROUTED_SCHEDULE',10)).minutes.do(checkunrouted)
@@ -445,7 +445,7 @@ def monthly_reporting():
             # and controlled with different settings in the config
             
     except Exception as e:
-        app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=e.message))
+        app.logger.error("Scheduler - Failed scheduled reporting job: '{x}'".format(x=str(e)))
   
 if app.config.get('SCHEDULE_MONTHLY_REPORTING',False):
     schedule.every().day.at("00:05").do(monthly_reporting)
@@ -474,7 +474,7 @@ def delete_old_routed():
         # send the delete - at the start of a month this would delete an index. Other days it will just fail
         requests.delete(addr)
     except Exception as e:
-        app.logger.error("Scheduler - Failed monthly routed index deletion: '{x}'".format(x=e.message))
+        app.logger.error("Scheduler - Failed monthly routed index deletion: '{x}'".format(x=str(e)))
 
 if app.config.get('SCHEDULE_DELETE_OLD_ROUTED',False):
     schedule.every().day.at("03:00").do(delete_old_routed)

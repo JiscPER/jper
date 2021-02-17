@@ -71,8 +71,8 @@ class JPER(object):
         try:
             incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
-            app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
-            raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
+            app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(x=account.id, y=str(e), z=magic))
+            raise ValidationException("Problem reading notification metadata: {x}".format(x=str(e)))
 
         # if so, convert it to an unrouted notification
         note = incoming.make_unrouted()
@@ -110,8 +110,8 @@ class JPER(object):
             except packages.PackageException as e:
                 s.delete(local_id)
                 s.delete(validated_id)
-                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
-                raise ValidationException("Problem reading from the zip file: {x}".format(x=e.message))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=str(e)))
+                raise ValidationException("Problem reading from the zip file: {x}".format(x=str(e)))
 
             # If successful, we should extract the metadata from the package, using the validated id and the
             # Temporary Store implementation again
@@ -123,8 +123,8 @@ class JPER(object):
             except packages.PackageException as e:
                 s.delete(local_id)
                 s.delete(validated_id)
-                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
-                raise ValidationException("Problem extracting data from the zip file: {x}".format(x=e.message))
+                app.logger.error("Request:{z} - Validate request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=str(e)))
+                raise ValidationException("Problem extracting data from the zip file: {x}".format(x=str(e)))
 
             # ensure that we don't keep copies of the files
             s.delete(local_id)
@@ -218,8 +218,8 @@ class JPER(object):
         try:
             incoming = models.IncomingNotification(notification)
         except dataobj.DataStructureException as e:
-            app.logger.error("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(x=account.id, y=e.message, z=magic))
-            raise ValidationException("Problem reading notification metadata: {x}".format(x=e.message))
+            app.logger.error("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(x=account.id, y=str(e), z=magic))
+            raise ValidationException("Problem reading notification metadata: {x}".format(x=str(e)))
 
         # if successful, convert it to an unrouted notification
         note = incoming.make_unrouted()
@@ -254,8 +254,8 @@ class JPER(object):
             except packages.PackageException as e:
                 tmp.delete(local_id)
                 remote.delete(note.id)
-                app.logger.error("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=e.message))
-                raise ValidationException("Problem reading from the zip file: {x}".format(x=e.message))
+                app.logger.error("Request:{z} - Create request from Account:{x} failed with error '{y}'".format(z=magic, x=account.id, y=str(e)))
+                raise ValidationException("Problem reading from the zip file: {x}".format(x=str(e)))
 
             # remove the local copy
             tmp.delete(local_id)

@@ -92,7 +92,7 @@ def refresh(yearmonth):
             reports.admin_failed_report(frm_date, to_date, reportsdir + "/detailed_failed_notifications_" + fstem)
 
     except Exception as e:
-        flash("Updating process encountered an error: {x}".format(x=e.message),"error")
+        flash("Updating process encountered an error: {x}".format(x=str(e)),"error")
         time.sleep(4)
 
     return redirect(url_for('.index'))

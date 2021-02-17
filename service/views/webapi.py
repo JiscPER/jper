@@ -169,12 +169,12 @@ def validate():
     try:
         md, zipfile = _get_parts()
     except BadRequest as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     try:
         JPER.validate(current_user, md, zipfile)
     except ValidationException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     return '', 204
 
@@ -189,14 +189,14 @@ def create_notification():
     try:
         md, zipfile = _get_parts()
     except BadRequest as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     try:
         notification = JPER.create_notification(current_user, md, zipfile)
         if not notification:
             abort(401)
     except ValidationException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     return _accepted(notification)
 
@@ -306,7 +306,7 @@ def _list_request(repo_id=None):
     try:
         nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
     except ParameterException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     resp = make_response(nlist.json())
     resp.mimetype = "application/json"
