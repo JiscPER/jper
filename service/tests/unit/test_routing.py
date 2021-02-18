@@ -719,7 +719,7 @@ class TestRouting(ESTestCase):
         del notification["links"]
         del notification["metadata"]["type"]    # so that we can test later that it gets added with the metadata enhancement
         filepath = fixtures.PackageFactory.example_package_path()
-        with open(filepath) as f:
+        with open(filepath, 'rb') as f:
             note = api.JPER.create_notification(acc1, notification, f)
 
         # add a repository config to the index

@@ -1,13 +1,16 @@
 import csv, codecs, re, os
-import io
 from standalone_octopus.core import app
 from io import StringIO
+from io import IOBase
+
 
 class CsvReadException(Exception):
     pass
 
+
 class CsvStructureException(Exception):
     pass
+
 
 class ClCsv():
 
@@ -41,7 +44,7 @@ class ClCsv():
 
         # Get an open file object from the given file_path or file object
         if file_path is not None:
-            if type(file_path) == file:
+            if isinstance(file_path, IOBase):
                 self.file_path = file_path.name
                 # NOTE: if you have passed in a file object, it MUST work - as in, it must be set to
                 # read the right encoding, and everything.  We will not try to parse it again if it
@@ -49,7 +52,7 @@ class ClCsv():
                 # All round - better if you just give us the file path
                 self.file_object = file_path
                 if self.file_object.closed:
-                    self.file_object = codecs.open(self.file_object.name, 'r+b', encoding=self.input_encoding)
+                    self.file_object = open(self.file_object.name, 'r+', encoding=self.input_encoding)
 
                 # explicitly read this file in
                 self._read_file(self.file_object)
@@ -59,7 +62,7 @@ class ClCsv():
                     self._read_from_path(file_path)
                 else:
                     # If the file doesn't exist, create it.
-                    self.file_object = codecs.open(file_path, 'w+b', encoding=self.output_encoding)
+                    self.file_object = open(file_path, 'w+', encoding=self.output_encoding)
 
         elif writer is not None:
             self.file_object = writer
@@ -68,7 +71,7 @@ class ClCsv():
         codes = [self.input_encoding] + self.fallback_input_encodings
         for code in codes:
             try:
-                file_object = codecs.open(file_path, 'r+b', encoding=code)
+                file_object = open(file_path, 'r+', encoding=code)
                 self._read_file(file_object)
                 self.file_object = file_object
                 self.input_encoding = code
@@ -89,9 +92,9 @@ class ClCsv():
         """
         try:
             if file_object.closed:
-                codecs.open(file_object.name, 'r+b', encoding=self.input_encoding)
+                open(file_object.name, 'r+', encoding=self.input_encoding)
 
-            reader = UnicodeReader(file_object, output_encoding=self.output_encoding, dialect=self.input_dialect)
+            reader = csv.reader(file_object, dialect=self.input_dialect)
             rows = []
             for row in reader:
                 rows.append(row)
@@ -262,7 +265,7 @@ class ClCsv():
         self.file_object.truncate()
 
         # Write new CSV data
-        writer = UnicodeWriter(self.file_object, encoding=self.output_encoding)
+        writer = csv.writer(self.file_object)
         writer.writerows(rows)
 
         if close:
@@ -292,6 +295,7 @@ class ClCsv():
                         continue
                 col_data.append(row[i])
             self.data.append((csv_rows[self.from_row][i], col_data))    # register along with the header
+
 
 class BadCharReplacer:
     """
@@ -370,59 +374,6 @@ class UTF8Recoder:
             raw = raw.replace(codecs.BOM_UTF8, '', 1)
         return raw
 
-class UnicodeReader:
-    """
-    A CSV reader which will iterate over lines in the CSV file "f",
-    which is encoded in the given encoding.
-    """
-
-    def __init__(self, f, dialect=csv.excel, output_encoding="utf-8", **kwds):
-        self.output_encoding = output_encoding
-        f = UTF8Recoder(f, self.output_encoding)
-        self.reader = csv.reader(f, dialect=dialect, **kwds)
-
-    def __next__(self):
-        row = next(self.reader)
-        return [str(s, self.output_encoding) for s in row]
-
-    def __iter__(self):
-        return self
-
-class UnicodeWriter:
-    """
-    A CSV writer which will write rows to CSV file "f",
-    which is encoded in the given encoding.
-    """
-
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-        # Redirect output to a queue
-        self.queue = io.StringIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
-        self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)()
-        self.encoding = encoding
-
-    def writerow(self, row):
-        encoded_row = []
-        for s in row:
-            if s is None:
-                s = ''
-            if not isinstance(s, str):
-                s = str(s)
-            encoded_row.append(s.encode(self.encoding))
-        self.writer.writerow(encoded_row)
-        # Fetch UTF-8 output from the queue ...
-        data = self.queue.getvalue()
-        data = data.decode(self.encoding)
-        # write to the target stream
-        self.stream.write(data)
-        # empty queue
-        self.queue.truncate(0)
-
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)
-
 
 ######################################################################
 
@@ -430,6 +381,7 @@ class SheetValidationException(Exception):
     def __init__(self, *args, **kwargs):
         super(SheetValidationException, self).__init__(*args)
         self.missing_header = kwargs["missing_header"]
+
 
 class SheetWrapper(object):
     # map from values that will appear in the headers for real (i.e. human readable) to values
@@ -633,6 +585,7 @@ class SheetWrapper(object):
 
     def save(self):
         self._sheet.save(close=False)
+
 
 def get_csv_string(csv_row):
     '''

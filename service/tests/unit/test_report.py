@@ -126,7 +126,7 @@ class TestModels(ESTestCase):
 
         self._load_data(notes)
 
-        time.sleep(5)
+        time.sleep(10)
 
         now = datetime.utcnow()
         year = str(now.year)
@@ -153,17 +153,17 @@ class TestModels(ESTestCase):
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
-                        assert int(row[mdcol]) == dist.get("md")
-                        assert int(row[ctcol]) == dist.get("content")
-                        assert int(row[totcol]) == dist.get("total")
+                        assert int(row[mdcol]) == dist.get("md"), row[mdcol]
+                        assert int(row[ctcol]) == dist.get("content"), row[ctcol]
+                        assert int(row[totcol]) == dist.get("total"), row[totcol]
                 else:
                     for mon, dist in grand_totals.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
-                        assert int(row[mdcol]) == dist.get("md")
-                        assert int(row[ctcol]) == dist.get("content")
-                        assert int(row[totcol]) == dist.get("total")
+                        assert int(row[mdcol]) == dist.get("md"), row[mdcol]
+                        assert int(row[ctcol]) == dist.get("content"), row[ctcol]
+                        assert int(row[totcol]) == dist.get("total"), row[totcol]
 
         # just check the coverage
         for k in list(notes.keys()):
@@ -298,17 +298,17 @@ class TestModels(ESTestCase):
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
-                        assert int(row[mdcol]) == dist.get("md")
-                        assert int(row[ctcol]) == dist.get("content")
-                        assert int(row[totcol]) == dist.get("total")
+                        assert int(row[mdcol]) == dist.get("md"), row[mdcol]
+                        assert int(row[ctcol]) == dist.get("content"), row[ctcol]
+                        assert int(row[totcol]) == dist.get("total"), row[totcol]
                 else:
                     for mon, dist in grand_totals.items():
                         mdcol = 3*mon - 1
                         ctcol = mdcol + 1
                         totcol = mdcol + 2
-                        assert int(row[mdcol]) == dist.get("md")
-                        assert int(row[ctcol]) == dist.get("content")
-                        assert int(row[totcol]) == dist.get("total")
+                        assert int(row[mdcol]) == dist.get("md"), row[mdcol]
+                        assert int(row[ctcol]) == dist.get("content"), row[ctcol]
+                        assert int(row[totcol]) == dist.get("total"), row[totcol]
 
         # just check the coverage
         for k in list(notes_final.keys()):

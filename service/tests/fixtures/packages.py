@@ -93,7 +93,7 @@ class PackageFactory(object):
         # if we want a corrupt zip, no need to pay attention to any of the other options
         if corrupt_zip:
             with open(path, "wb") as f:
-                f.write("alkdsjfasdfwqefnjwqeoijqwefoqwefoihwqef")
+                f.write("alkdsjfasdfwqefnjwqeoijqwefoqwefoihwqef".encode('utf-8'))
             return
 
         # create the zip we're going to populate

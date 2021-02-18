@@ -317,7 +317,7 @@ class JATS(object):
         para = self.xml.xpath("//license/license-p")
         out = ""
         for p in para:
-            out += etree.tostring(p)
+            out += etree.tostring(p).decode()
 
         return type, url, out
 

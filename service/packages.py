@@ -683,7 +683,7 @@ class FilesAndJATS(PackageHandler):
         sources = [("filesandjats_jats.xml", self.jats), ("filesandjats_epmc.xml", self.epmc)]
         for n, x in sources:
             if x is not None:
-                yield n, StringIO(x.tostring())
+                yield n, StringIO(x.tostring().decode('utf-8'))
 
     def notification_metadata(self):
         """

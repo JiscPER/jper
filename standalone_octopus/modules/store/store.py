@@ -1,10 +1,12 @@
 from standalone_octopus.core import app
 from standalone_octopus.lib import plugin
 
-import os, shutil, codecs, requests
+import os, shutil, requests
+
 
 class StoreException(Exception):
     pass
+
 
 class StoreFactory(object):
 
@@ -29,6 +31,7 @@ class StoreFactory(object):
         sm = plugin.load_class(si)
         return sm()
 
+
 class Store(object):
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
@@ -45,6 +48,7 @@ class Store(object):
 
     def delete(self, container_id, target_name=None):
         pass
+
 
 class StoreLocal(Store):
     """
@@ -64,8 +68,12 @@ class StoreLocal(Store):
         if source_path:
             shutil.copyfile(source_path, tpath)
         elif source_stream:
-            with codecs.open(tpath, "wb") as f:
-                f.write(source_stream.read())
+            data = source_stream.read()
+            mode = "wb" if isinstance(data, bytes) else "w"
+            with open(tpath, mode) as f:
+                while data:
+                    f.write(data)
+                    data = source_stream.read()
 
     def exists(self, container_id):
         cpath = os.path.join(self.dir, container_id)
@@ -78,7 +86,7 @@ class StoreLocal(Store):
     def get(self, container_id, target_name):
         cpath = os.path.join(self.dir, container_id, target_name)
         if os.path.exists(cpath) and os.path.isfile(cpath):
-            f = codecs.open(cpath, "r")
+            f = open(cpath, "rb")
             return f
 
     def delete(self, container_id, target_name=None):
@@ -93,9 +101,6 @@ class StoreLocal(Store):
 
 
 class StoreJper(Store):
-    # to update this, it is in octopus so go into octopus then pull. then merge if necessary. 
-    # then push these changes to octopus develop. then go back up to jper and it should show the commit of octopus has changed
-    # so then commit jper again.
     def __init__(self):
         self.url = app.config.get("STORE_JPER_URL")
         if self.url is None:
@@ -150,10 +155,9 @@ class StoreJper(Store):
         if r.status_code == 200:
             try:
                 listing = r.json()
-                return isinstance(listing,list)
+                return isinstance(listing, list)
             except:
                 return False
-            return True
         else:
             return False
 

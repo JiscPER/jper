@@ -737,6 +737,3 @@ class TestPackager(TestCase):
 
         conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
         assert len(conversions) == 0
-
-
-

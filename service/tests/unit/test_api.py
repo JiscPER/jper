@@ -76,7 +76,7 @@ class TestAPI(ESTestCase):
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
         filepath = fixtures.PackageFactory.example_package_path()
-        with open(filepath) as f:
+        with open(filepath, 'rb') as f:
             api.JPER.validate(acc, notification, f)
 
     def test_02_validate_md_only_fail(self):
@@ -128,7 +128,7 @@ class TestAPI(ESTestCase):
         del notification["links"]
         del notification["content"]
         path = fixtures.PackageFactory.example_package_path()
-        with open(path) as f:
+        with open(path, 'rb') as f:
             with self.assertRaises(api.ValidationException):
                 api.JPER.validate(acc, notification, f)
 
@@ -137,7 +137,7 @@ class TestAPI(ESTestCase):
         del notification["links"]
         notification["content"]["packaging_format"] = "http://some.random.url"
         path = fixtures.PackageFactory.example_package_path()
-        with open(path) as f:
+        with open(path, 'rb') as f:
             with self.assertRaises(api.ValidationException):
                 api.JPER.validate(acc, notification, f)
 
@@ -145,13 +145,13 @@ class TestAPI(ESTestCase):
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
-        with open(self.custom_zip_path) as f:
+        with open(self.custom_zip_path, 'rb') as f:
             with self.assertRaises(api.ValidationException):
                 api.JPER.validate(acc, notification, f)
 
         # 10. No match data in either md or package
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, no_jats=True, no_epmc=True)
-        with open(self.custom_zip_path) as f:
+        with open(self.custom_zip_path, 'rb') as f:
             with self.assertRaises(api.ValidationException):
                 api.JPER.validate(acc, {}, f)
 
@@ -178,7 +178,7 @@ class TestAPI(ESTestCase):
         notification = fixtures.APIFactory.incoming()
         del notification["links"]
         filepath = fixtures.PackageFactory.example_package_path()
-        with open(filepath) as f:
+        with open(filepath, 'rb') as f:
             note = api.JPER.create_notification(acc1, notification, f)
 
         self.stored_ids.append(note.id)
@@ -211,6 +211,6 @@ class TestAPI(ESTestCase):
         # 2. Corrupt zip file
         notification = fixtures.APIFactory.incoming()
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, corrupt_zip=True)
-        with open(self.custom_zip_path) as f:
+        with open(self.custom_zip_path, 'rb') as f:
             with self.assertRaises(api.ValidationException):
                 api.JPER.validate(acc1, notification, f)
