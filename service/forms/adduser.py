@@ -5,7 +5,8 @@ Form for webservice
 
 @author: Mateusz.Kasiuba
 '''
-
+from engine.query.QueryInvoker import H_QueryInvoker
+from utils.config import MULTI_PAGE
 from wtforms import Form, TextField, PasswordField, validators, RadioField
 from werkzeug.routing import ValidationError
 import re 
