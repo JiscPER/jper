@@ -14,6 +14,7 @@ setup(
         "Flask-WTF",
         "nose",
         "Flask-Mail",
+        "Flask-Babel",
         "python-dateutil",
         "unidecode",
         "esprit",
