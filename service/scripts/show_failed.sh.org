@@ -1,0 +1,62 @@
+#! /bin/bash
+
+ESHOST=`hostname|sed -e 's/1\./4./'`
+ES="http://${ESHOST}:9200"
+LIMIT=1000
+FULL=0
+
+help() {
+    cat << EOT
+$0 - show failed notifications
+usage: $0 [-i LIMIT] [-f] [-u] <query>
+ -u         show notification and URL only (default)
+ -f         show full notifications
+ -l  LIMIT  limit results to LIMIT (default $LIMIT)
+<query>     query may be a DOI, ISSN, TIMESTAMP
+EOT
+    exit 1
+}
+
+
+
+# Working on a local tunnel
+if [ `hostname` == "probibw41" ] 
+then
+    ES="http://localhost:9201"
+fi
+
+while getopts "hl:f" option; do
+case ${option} in
+  f ) FULL=1  ;;
+  l ) LIMIT=99 ;;
+  q ) QUERY="1234567890" ;;
+  h ) help ;;
+ \? ) help ;;
+esac
+
+cat <<EOT
+ES:  $ES
+q:   $QUERY
+l:   $LIMIT
+f:   $FULL
+EOT
+
+exit 1
+
+if [ -z "$1" ]
+then
+    cat << EOT
+$0 - show failed notifications
+usage: $0 [-i LIMIT] [-f] [-u] <query>
+ -u         show notification and URL only (default)
+ -f         show full notifications
+ -l  LIMIT  limit results to LIMIT (default $LIMIT)
+<query>     query may be a DOI, ISSN, TIMESTAMP
+EOT
+    exit 1
+fi
+
+# echo '| Name | Id | Type |'
+
+curl -s "${ES}/jper/failed/_search?size=$LIMIT&q=\"$1\"" |jq '.hits|.total'
+curl -s "${ES}/jper/failed/_search?size=$LIMIT&q=\"$1\"" |jq '.hits.hits[]|._id,._source.links[].url'

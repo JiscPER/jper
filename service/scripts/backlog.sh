@@ -115,7 +115,7 @@ cat << EOT
 Number of sucessfully routed notifications:
 -------------------------------------------
 EOT
-grep -h 'successfully routed' jperlog* jperlog_before_chrash/jperlog*  2>/dev/null |cut -c-10| sort -r | uniq -c
+grep -h 'successfully routed' jperlog*  2>/dev/null |cut -c-10| sort -r | uniq -c
 
 
 cat << EOT
@@ -123,6 +123,6 @@ cat << EOT
 Number of unrouted notifications:
 ----------------------------------
 EOT
-grep -h 'was not routed' jperlog* jperlog_before_chrash/jperlog*  2>/dev/null |cut -c-10| sort -r | uniq -c
+grep -h 'was not routed' jperlog*  2>/dev/null |cut -c-10| sort -r | uniq -c
 
 
