@@ -8,17 +8,15 @@ Form for webservice
 
 from wtforms import Form, BooleanField, TextField, validators, SelectField
 from engine.query.QueryInvoker import H_QueryInvoker
-from utils.config import MULTI_PAGE, FREQUENCY_DAILY, FREQUENCY_WEEKLY,\
-    FREQUENCY_MONTHLY
+from utils.config import MULTI_PAGE, FREQUENCY_DAILY, FREQUENCY_WEEKLY, FREQUENCY_MONTHLY
 from werkzeug.routing import ValidationError
-import re 
-import time
+import re, time, json
 from datetime import datetime
 
 
 def valid_url(form, url):
     try:
-        if(re.findall('\pageSize=\d+', form.url.data)):
+        if(re.findall('pageSize=\d+', form.url.data)):
             raise ValidationError(' Specify pageSize is not allowed')
         if(False == H_QueryInvoker().is_valid(MULTI_PAGE, form.url.data)):   
             raise ValidationError('0 results from %s for this engine' % MULTI_PAGE)
