@@ -167,6 +167,10 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def repository_name(self, val):
         self._set_single("repository.name", val, coerce=self._utf8_unicode())
 
+    @property
+    def repository_bibid(self):
+        return self._get_single("repository.bibid", coerce=self._utf8_unicode())
+
     # 2020-02-20 TD : add convenience setter and getter for extra pub infos
     @property
     def publisher_name(self):

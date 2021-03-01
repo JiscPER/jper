@@ -244,6 +244,20 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         else:
             return None
 
+    @classmethod
+    def pull_by_participant_id(cls,value):
+        key = 'participant.identifier.id'
+        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
+        n = res.get('hits',{}).get('total',0)
+        if n > 10:
+            # re-query necessary as a precautionary measure because len(res) seems 
+            # to be restricted to 10 records only per default...
+            res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
+        if n > 0:
+            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(n) ]
+        else:
+            return None
+
     def set_alliance_data(self,license,ezbid,csvfile=None,jsoncontent=None):
         licid = license
         fields = ['name','license_id','identifier','participant']
@@ -637,7 +651,6 @@ class License(dataobj.DataObj, dao.LicenseDAO):
     @classmethod
     def pull_by_journal_id(cls,journal_id):
         return cls.pull_by_key('journal.identifier.id',journal_id)
-
 
     def set_license_data(self,ezbid,name,type='alliance',csvfile=None,jsoncontent=None):
         fields = ['name','type','identifier','journal']

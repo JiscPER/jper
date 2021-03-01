@@ -12,6 +12,7 @@ from standalone_octopus.core import app
 from standalone_octopus.lib import dates
 from service.api import JPER, ParameterException
 from service.views.webapi import _bad_request
+from service.repository_licenses import get_matching_licenses
 import math
 # 2016-12-14 TD : Native 'csv'-module of python2.7 has encoding shortcomings
 import unicodecsv
@@ -565,10 +566,15 @@ def username(username):
         return render_template('account/user.html', account=acc)
     elif current_user.id == acc.id or current_user.is_super:
         if acc.has_role('repository'):
-            repoconfig = models.RepositoryConfig().pull_by_repo(acc.id)
+            repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
+            licenses = get_matching_licenses(acc.id)
+            license_ids = json.dumps([license['id'] for license in licenses])
         else:
             repoconfig = None
-        return render_template('account/user.html', account=acc, repoconfig=repoconfig)
+            licenses = None
+            license_ids = None
+        return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
+                               license_ids=license_ids)
     else:
         abort(404)
 
@@ -608,7 +614,7 @@ def pubinfo(username):
             acc.data['license']['version'] = ""
         
     acc.save()
-    time.sleep(2);
+    time.sleep(2)
     flash('Thank you. Your publisher details have been updated.', "success")
     return redirect(url_for('.username', username=username))
 
@@ -665,7 +671,7 @@ def repoinfo(username):
             acc.data['packaging'] = []
 
     acc.save()
-    time.sleep(2);
+    time.sleep(2)
     flash('Thank you. Your repository details have been updated.', "success")
     return redirect(url_for('.username', username=username))
 
@@ -762,6 +768,12 @@ def changerole(username,role):
         if 'become' in request.path:
             if role == 'publisher':
                 acc.become_publisher()
+            elif role == 'active' and acc.has_role('repository'):
+                acc.set_active()
+                acc.save()
+            elif role == 'passive' and acc.has_role('repository'):
+                acc.set_passive()
+                acc.save()
             else:
                 acc.add_role(role)
                 acc.save()
@@ -782,6 +794,22 @@ def changerole(username,role):
 def matches():
     return redirect(url_for('.username/match.html', username=username))
         
+
+@blueprint.route('/<username>/excluded_license', methods=["POST"])
+def excluded_license(username):
+    if current_user.id != username and not current_user.is_super:
+        abort(401)
+    if request.method == "POST":
+        included_licenses = request.form.getlist('excluded_license')
+        license_ids = json.loads(request.form.get('license_ids'))
+        excluded_licenses = [id for id in license_ids if id not in included_licenses]
+        # acc = models.Account.pull(username)
+        rec = models.RepositoryConfig.pull_by_repo(username)
+        rec.excluded_license = excluded_licenses
+        rec.save()
+        time.sleep(1)
+    return redirect(url_for('.username', username=username))
+
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
@@ -814,7 +842,6 @@ def register():
     if not current_user.is_super:
         abort(401)
 
-    
     form = AdduserForm(request.form)
     vals = request.json if request.json else request.values
     
@@ -870,4 +897,3 @@ def register():
     
     return render_template('account/register.html', vals = vals, form = form)
 
-    

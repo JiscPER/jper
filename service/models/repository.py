@@ -42,7 +42,8 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 "keywords" : {"contains" : "field", "coerce" : "unicode"},
                 "grants" : {"contains" : "field", "coerce" : "unicode"},
                 "content_types" : {"contains" : "field", "coerce" : "unicode"},
-                "strings" : {"contains" : "field", "coerce" : "unicode"}
+                "strings" : {"contains" : "field", "coerce" : "unicode"},
+                "excluded_license": {"contains" : "field", "coerce" : "unicode"},
             },
             "structs" : {
                 "author_ids" : {
@@ -202,6 +203,28 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         :return: list of match strings
         """
         return self._get_list("strings", coerce=dataobj.to_unicode())
+
+    @property
+    def excluded_license(self):
+        """
+        List of licenses not associated with this repository
+
+        :return: excluded licenses
+        """
+        return self._get_list("excluded_license", coerce=self._utf8_unicode())
+
+    def add_excluded_license(self, excluded_license):
+        self._add_to_list("excluded_license", excluded_license, coerce=self._utf8_unicode())
+
+    def remove_excluded_license(self, excluded_license):
+        self._delete_from_list("excluded_license", excluded_license)
+
+    @excluded_license.setter
+    def excluded_license(self, excluded_license):
+        self._set_list("excluded_license", excluded_license, coerce=self._utf8_unicode())
+
+    def excludes_license(self, license):
+        return license in self.excluded_license
 
     @classmethod
     def pull_by_key(cls,key,value):

@@ -60,14 +60,14 @@
 			<div class="row">
 				<a href="/account/matching/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}">View matched notifications for this account</a>
 				<form method="POST" action="/account/download/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}" class="form">
-					<button class="btn btn--3d btnright" id="download" type="submit">Download matching log</button>
+					<button class="btn btn--3d btnright" id="download_matching_log" type="submit">Download matching log</button>
 				</form>
 			</div>
 			<br>
 			<div class="row">
 				<a href="/account/failing/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}">View rejected notifications for this account</a>
 				<form method="POST" action="/account/download/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}&rejected=1" class="form">
-					<button class="btn btn--3d btnright" id="download" type="submit">Download rejected log</button>
+					<button class="btn btn--3d btnright" id="download_rejected_log" type="submit">Download rejected log</button>
 				</form>
 			</div>
 			
@@ -176,15 +176,38 @@
 
 		</div>
 	
-	<div class="box box--padding-large box--brd-mgreyblue">
-		<h3>View routing history</h3>
-		<div class="row">
-			<a href="/account/details/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}">View routed notifications for this institution</a>
-			<form method="POST" action="/account/download/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}" class="form">
-				<button class="btn btn--3d btnright" id="download" type="submit">Download routed log</button>
-			</form>
+		<div class="box box--padding-large box--brd-mgreyblue">
+			<h3>View routing history</h3>
+			<div class="row">
+				<a href="/account/details/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}">View routed notifications for this institution</a>
+				<form method="POST" action="/account/download/{{account.id}}?since=01/06/2019&api_key={{current_user.data['api_key']}}" class="form">
+					<button class="btn btn--3d btnright" id="download_routed_log" type="submit">Download routed log</button>
+				</form>
+			</div>
 		</div>
-	</div>
+
+		{% if licenses %}
+		<div class="box box--padding-large box--brd-mgreyblue">
+			<h3>Filter</h3>
+			<div class="row">
+				<form class="form" method="POST" action="{{request.path}}/excluded_license" enctype="multipart/form-data">
+					<p>Your institution appears in the following licenses. More information <a href="https://deepgreen.kobv.de/en/project-deepgreen/" target="_blank">here</a></p>
+					<p>Please uncheck all licenses you don’t want to receive articles from:</p>
+					{% for license in licenses %}
+						{% set check = "" %}
+					    {% if license.checked %}
+							{% set check = "checked" %}
+						{% endif %}
+						<input type="checkbox" id="license_{{license.id}}" value="{{license.id}}" name='excluded_license' {{check}}>
+						<label for="license_{{license.id}}">{{license.name}}</label><br>
+					{% endfor %}
+					<input type="hidden" id="license_ids" value="{{license_ids}}" name='license_ids'>
+					<button class="btn btn--3d btnright" id="update" type="submit">Update settings</button>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+
 		<div class="box box--padding-large box--brd-mgreyblue">
 	        <h3>Manage profile settings</h3>	
 			<form method="post" action="{{request.path}}/repoinfo" class="form">
@@ -298,10 +321,7 @@
 		<div class="box box--padding-large box--brd-mgreyblue">
         	<p>
 			{% if account.has_role('admin') %} Admin account {% endif %} 
-			{% if account.has_role('repository') %} Repository account 
-				{% if account.has_role('active') %} (active) {% endif %}
-				{% if account.has_role('passive') %} (passive) {% endif %}
-			{% endif %} 
+			{% if account.has_role('repository') %} Repository account {% endif %}
 			{% if account.has_role('publisher') %} Publisher account {% endif %} 
 			</p>
 			<form method="POST" action="" class="form">
@@ -310,11 +330,49 @@
 				</div>
 			</form>
 		</div>
+		{% if account.has_role('repository') %}
+			<div class="box box--padding-large box--brd-mgreyblue">
+				<p>Account settings</p>
+				{% if account.has_role('passive') %}
+					<form class="form" method="POST" action="{{request.path}}/become/active" id="form_passive">
+						<input type="checkbox" id="passive_no" value="active" name='status'
+						   onclick="submit_form_passive()">
+						<label for="passive_no">Active</label><br>
+						<input type="checkbox" id="passive_yes" value="passive" name='status' checked="checked"
+						   onclick="submit_form_passive()">
+						<label for="passive_yes">Passive</label><br>
+					</form>
+				{% else %}
+					<form class="form" method="POST" action="{{request.path}}/become/passive" id="form_active">
+							<input type="checkbox" id="active_yes" value="active" name='status' checked="checked"
+							   onclick="submit_form_active()">
+							<label for="active_yes">Active</label><br>
+							<input type="checkbox" id="active_no" value="passive" name='status'
+							   onclick="submit_form_active()">
+							<label for="active_no">Passive</label><br>
+					</form>
+				{% endif %}
+				{% set check = "" %}
+				{% set action = "become" %}
+				{% if account.has_role('match_all') %}
+					{% set check = "checked" %}
+					{% set action = "cease" %}
+				{% endif %}
+				<form class="form" method="POST" action="{{request.path}}/{{action}}/match_all" id="form_match_all">
+					<div class="form-fields__item--text form-fields__item--single">
+						<input type="checkbox" id="update_match_all" value="{{match_all}}" name='role' {{check}}
+							   onclick='document.getElementById("form_match_all").submit()'>
+						<label for="update_match_all">Match with all institutions</label><br>
+					</div>
+				</form>
+			</div>
+		{% endif %}
 	</div>
 	{% endif %}
 </div>
-<!-- 2016-08-18 TD : *** The following if-clause is NO typo. The role is mispelled to disable these lines. *** -->
-{% if account.has_role('xrepository') %}
+<!-- 2016-08-18 TD : *** Do not want to display this *** -->
+{% set display = false %}
+{% if display and account.has_role('repository') %}
 <div class="row">
 	<div class="col-md-12">
 		<div id="matchholder">
@@ -359,8 +417,19 @@
             if (!conf) event.preventDefault();
         }
         $('#delete').bind('click',deleteaccount);
+
+    	function submit_form_active() {
+			document.getElementById("active_no").checked = true;
+			document.getElementById("active_yes").checked = false;
+	     	document.getElementById("form_active").submit();
+    	}
+		function submit_form_passive() {
+			document.getElementById("passive_no").checked = true;
+			document.getElementById("passive_yes").checked = false;
+	     	document.getElementById("form_passive").submit();
+		}
 			
-    {% if account.has_role('repository') %}
+    	{% if account.has_role('repository') %}
 		var results = function(data) {
 			var disp = '<table data-rwdtable data-rwdtable-sortable class="content-table" id="matches">';
 			for ( var r in data.hits.hits ) {

@@ -12,11 +12,13 @@ from datetime import datetime
 import uuid, re
 import unicodedata
 
+
 class RoutingException(Exception):
     """
     Generic exception to be raised when errors with routing are encountered
     """
     pass
+
 
 # 2019-06-18 TD : a wrapper around the routing.route(obj) call in order to
 #                 be able to catch 'stalled' notifications
@@ -26,20 +28,9 @@ def route(unrouted):
     except Exception as e:
         urid = unrouted.id
         routing_reason = "Stalled: " + str(e)
-        # if config says so, convert the unrouted notification to a failed notification, 
-        # (enhance and) save for later diagnosis
-        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
-            failed = unrouted.make_failed()
-            failed.analysis_date = dates.now()
-            failed.reason = routing_reason
-            failed.issn_data = "None"
-            failed.save()
-            app.logger.debug("Routing - Notification:{y} stored as a (stalling) Failed Notification".format(y=urid))
-
+        notify_failure(unrouted, routing_reason, None, None, '(stalling)')
         app.logger.error("Routing - Notification:{y} failed with (stalling) error '{x}'".format(y=urid, x=str(e)))
         return False
-        # raise RoutingException(str(e))
-
     return rc
 
 
@@ -74,44 +65,23 @@ def _route(unrouted):
     try:
         metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
-        routing_reason = str(e)
-        # if config says so, convert the unrouted notification to a failed notification, enhance and save
-        # for later diagnosis
-        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
-            failed = unrouted.make_failed()
-            failed.analysis_date = dates.now()
-            failed.reason = routing_reason
-            # 2016-11-24 TD : collecting all available ISSN data of this notifiction
-            if issn_data is not None and len(issn_data)>0:
-                failed.issn_data = " ; ".join(issn_data)
-            else:
-                failed.issn_data = "None"
-            if metadata is not None:
-                enhance(failed, metadata)
-            failed.save()
-            app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
-
+        notify_failure(unrouted, e.message, issn_data, metadata, '')
         app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
         raise RoutingException(str(e))
 
-    # extract the match data from the notification and combine it with the match data from the package
+    # get a RoutingMetadata object which contains all the extracted metadata from this notification
     match_data = unrouted.match_data()
     if pmd is not None:
+        # Add the package routing metadata with the routing metadata from the notification
         match_data.merge(pmd)
 
     app.logger.debug("Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
 
+    # Extract issn and publication date
     # 2016-09-08 TD : start of alliance license legitimation
-    doi = metadata.get_identifiers("doi")
-    if doi is None:
-        doi = "unkown"
-    elif len(doi) == 0:
-        doi = "unknown"
-    else:
-        doi = doi[0]
     issn_data = metadata.get_identifiers("issn")
     publ_date = metadata.publication_date
-    if issn_data is not None and len(issn_data)>0 and publ_date is not None:
+    if issn_data is not None and len(issn_data) > 0 and publ_date is not None:
         dt = datetime.strptime(publ_date, "%Y-%m-%dT%H:%M:%SZ")
         publ_year = str(dt.year)
         app.logger.debug("Routing - Notification:{y} provides issn_data:{x} and publ_year:{w}".format(y=unrouted.id, x=issn_data, w=publ_year))
@@ -120,151 +90,73 @@ def _route(unrouted):
         app.logger.debug("Routing - Notification:{y} includes no ISSN or no publ_year in metatdata".format(y=unrouted.id, x=issn_data))
         issn_data = []
 
+    # Extract doi
+    doi = metadata.get_identifiers("doi")
+    if doi is None:
+        doi = "unknown"
+    elif len(doi) == 0:
+        doi = "unknown"
+    else:
+        doi = doi[0]
+
+    # Get all repository accounts. Needed for Gold license
+    bibids = list(set([acc['_source']['repository'].get('bibid', u"*****").lstrip('a') for acc in
+                       models.Account.query(q='*', size=10000).get('hits', {}).get('hits', []) if
+                       "repository" in acc['_source']['role']]))
+
     part_bibids = []
-    lic_data = []
+
     for issn in issn_data:
-        # are (was: is) there licenses stored for this ISSN?
+        # are there licenses stored for this ISSN?
         # 2016-10-12 TD : an ISSN could appear in more than one license !
         lics = models.License.pull_by_journal_id(issn) # matches issn, eissn, doi, etc.
         if lics is None: # nothing found at all...
             continue
         for lic in lics:
-            lic_data = []
+            lic_data = get_current_license_data(doi, issn, lic, publ_year)
+            if len(lic_data) == 0:
+                continue
             if lic.type == "gold":
-                #
-                # 2018-11-15 TD : introducing the case of /gold open access/ journals
-                # 2020-04-03 TD : ... and DEAL journals; handled as if they were gold 
-                # 2020-09-29 STL: ... and DEAL journals; handled as if they were alliance
-                #
-                # FIXED: !!! missing: check license period against publ_date here !!!
-                for jrnl in lic.journals:
-                    # check anew for each journal included in the license
-                    ys = "0000"
-                    yt = "9999"
-                    for i in jrnl["identifier"]:
-                        if (i.get("type") == "eissn" and i.get("id") == issn) or (i.get("type") == "issn" and i.get("id") == issn):
-                            for p in jrnl["period"]:
-                                if p.get("type") == "year":
-                                    if "start" in list(p.keys()): ys = str(p["start"])
-                                    if "end" in list(p.keys()): yt = str(p["end"])
-                                    break # so far, we are only interested in the year of publication 
-                                # elif p.get("type") == "volume":
-                                # elif p.get("type") == "issue":
-                            if ys <= publ_year <= yt:
-                                for l in jrnl["link"]:
-                                    if l.get("type") == "ezb": 
-                                        lic_data.append({   'name' : lic.name, 
-                                                              'id' : lic.id,
-                                                            'issn' : issn,
-                                                             'doi' : doi,
-                                                            'link' : l.get("url"), 
-                                                         'embargo' : jrnl["embargo"]["duration"]})
-                                break  # found a (the?!) ISSN for which the publ_date _is_ in the OA-enabled period!
-                if len(lic_data) == 0: # no journal in this license found that apply to ISSN _and_ publ_date,
-                    continue           # thus try next!
-                # FIXED: !!! checking license period with year of publication
- 
-                bibids = list(set([ acc['_source']['repository'].get('bibid',"*****").lstrip('a') for acc in models.Account.query(q='*',size=10000).get('hits',{}).get('hits',[]) if "repository" in acc['_source']['role'] ]))
-                # collect *all unique* current EZB-Ids currently registered in the router
-                for bibid in bibids:                          # note: only first ISSN record found 
-                    part_bibids.append( (bibid,lic_data[0]) ) # in current license will be considered!
-                #
-                # 2018-11-15 TD : that's it up to here (for the time being) for /gold open access/
-                #
+                for bibid in bibids:
+                    # note: only first ISSN record found in current license will be considered!
+                    part_bibids.append((bibid, lic_data[0]))
             if lic.type == "alliance" or lic.type == "national" or lic.type == "deal" or lic.type == "fid":
-                # 2016-10-12 TD
-                # FIXED: !!! missing: check license period against publ_date here !!!
-                # 2020-05-28 STL
-                # License type 'fid' added
-                # 2020-09-29 STL
-                # License type 'deal' also to be handeled like "alliance"
-                for jrnl in lic.journals:
-                    # check anew for each journal included in the license
-                    ys = "0000"
-                    yt = "9999"
-                    for i in jrnl["identifier"]:
-                        if (i.get("type") == "eissn" and i.get("id") == issn) or (i.get("type") == "issn" and i.get("id") == issn):
-                            for p in jrnl["period"]:
-                                if p.get("type") == "year":
-                                    if "start" in list(p.keys()): ys = str(p["start"])
-                                    if "end" in list(p.keys()): yt = str(p["end"])
-                                    break # so far, we are only interested in the year of publication 
-                                # elif p.get("type") == "volume":
-                                # elif p.get("type") == "issue":
-                            if ys <= publ_year <= yt:
-                                for l in jrnl["link"]:
-                                    if l.get("type") == "ezb": 
-                                        lic_data.append({   'name' : lic.name, 
-                                                              'id' : lic.id,
-                                                            'issn' : issn,
-                                                             'doi' : doi,
-                                                            'link' : l.get("url"), 
-                                                         'embargo' : jrnl["embargo"]["duration"]})
-                                break  # found a (the?!) ISSN for which the publ_date _is_ in the OA-enabled period!
-                if len(lic_data) == 0: # no journal in this license found that apply to ISSN _and_ publ_date,
-                    continue           # thus try next!
-                # FIXED: !!! checking license period with year of publication
- 
-                al = models.Alliance.pull_by_key("license_id",lic.id)
+                al = models.Alliance.pull_by_key("license_id", lic.id)
                 # collect all EZB-Ids of participating institutions of AL
                 for part in al.participants:
                     for i in part["identifier"]:
-                        if i.get("type") == "ezb":                            # note: only first ISSN record found 
-                            part_bibids.append( (i.get("id"),lic_data[0]) ) # in current license will be considered!
-    
+                        if i.get("type") == "ezb":
+                            # note: only first ISSN record found in current license will be considered!
+                            part_bibids.append((i.get("id"), lic_data[0]))
+
+    # Get only active repository accounts
+    # 2019-06-03 TD : yet a level more to differentiate between active and passive
+    #                 accounts. A new requirement, at a /very/ early stage... gosh.
     al_repos = []
-    if app.config.get("DEEPGREEN_ALLOW_EQUAL_REPOS", False):
-            #
-            # 2019-03-26 TD : case decision - handle multiple, equal accs vs. single accs only
-            #
-        for bibid,aldata in part_bibids:
-            # 2017-06-06 TD : insert of this safeguard ;  
-            #                 although it would be *very* unlikely to be needed here.  Strange. 
-            if bibid is None: continue
-            #
-            # 2019-06-03 TD : yet a level more to differentiate between active and passive 
-            #                 accounts. A new reqiurement, at a /very/ early stage... gosh.
-            #
-            # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
-            #acc1 = models.Account.pull_by_key("repository.bibid",bibid)
-            for acc1 in models.Account.pull_all_by_key("repository.bibid",bibid):
-                if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive:
-                    unrouted.embargo = aldata["embargo"]
-                    al_repos.append((acc1.id,aldata,bibid))
-
-            # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
-            #
-            # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
-            #acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
-            for acc2 in models.Account.pull_all_by_key("repository.bibid","a"+bibid):
-                if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive:
-                    unrouted.embargo = aldata["embargo"]
-                    al_repos.append((acc2.id,aldata,"a"+bibid))
-
-    else:   # when DEEPGREEN_ALLOW_EQUAL_REPOS is *not* set - utilising 'pull_by_key()' instead!
-
-        for bibid,aldata in part_bibids:
-            # 2017-06-06 TD : insert of this safeguard ;  
-            #                 although it would be *very* unlikely to be needed here.  Strange. 
-            if bibid is None: continue
-            #
-            # 2019-06-03 TD : yet a level more to differentiate between active and passive 
-            #                 accounts. A new reqiurement, at a /very/ early stage... gosh.
-            #
-            acc1 = models.Account.pull_by_key("repository.bibid",bibid)
+    for bibid, aldata in part_bibids:
+        # 2017-06-06 TD : insert of this safeguard ;
+        #                 although it would be *very* unlikely to be needed here.  Strange.
+        if bibid is None: continue
+        # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
+        # Regular accounts
+        # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
+        for acc1 in models.Account.pull_all_by_key("repository.bibid", bibid):
             if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive:
+                match_data.add_license_id(aldata["id"])
                 unrouted.embargo = aldata["embargo"]
-                al_repos.append((acc1.id,aldata,bibid))
-
-            # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
-            #
-            acc2 = models.Account.pull_by_key("repository.bibid","a"+bibid)
+                al_repos.append((acc1.id, aldata, bibid))
+                # 2019-03-26 TD : case decision - handle multiple, equal accs vs. single accs only
+                if not app.config.get("DEEPGREEN_ALLOW_EQUAL_REPOS", False):
+                    break
+        for acc2 in models.Account.pull_all_by_key("repository.bibid", "a" + bibid):
             if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive:
+                match_data.add_license_id(aldata["id"])
                 unrouted.embargo = aldata["embargo"]
-                al_repos.append((acc2.id,aldata,"a"+bibid))
-    #
+                al_repos.append((acc2.id, aldata, "a" + bibid))
+                if not app.config.get("DEEPGREEN_ALLOW_EQUAL_REPOS", False):
+                    break
+
     # 2019-03-26 TD : continue from here on with all the collected 'al_repos'
-    #
     if len(al_repos) > 0:
         app.logger.debug("Routing - Notification:{y} al_repos:{x}".format(y=unrouted.id, x=al_repos))
     else:
@@ -272,23 +164,21 @@ def _route(unrouted):
         app.logger.debug("Routing - Notification {y} No (active!) qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))
     # 2016-09-08 TD : end of checking alliance (and probably other!) license legitimation(s)
 
-    # iterate through all the repository configs, collecting match provenance and
-    # id information
-    # FIXME: at the moment this puts all the provenance in memory and then writes it all
-    # in one go later.  Probably that's OK, but it will depend on the number of fields the
-    # repository matches and the number of repositories as to how big this gets.
-    match_provenance = []
+    # iterate through all the repository configs, collecting match provenance and id information
     match_ids = []
     try:
         # for rc in models.RepositoryConfig.scroll(page_size=10, keepalive="1m"):
         # 2016-09-08 TD : iterate through all _qualified_ repositories by the current alliance license
-        for repo,aldata,bibid in al_repos:
+        for repo, aldata, bibid in al_repos:
             rc = models.RepositoryConfig.pull_by_repo(repo)
-            #
             if rc is None:
                 app.logger.debug("Routing - Notification:{y} found no RepositoryConfig for Repository:{x}".format(y=unrouted.id, x=repo))
                 continue
-            #
+            # Does repository want articles for this license?
+            if not license_included(unrouted.id, match_data, rc):
+                continue
+            app.logger.debug(
+                "Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
             prov = models.MatchProvenance()
             prov.repository = rc.repository
             # 2016-08-10 TD : fill additional field for origin of notification (publisher) with provider_id
@@ -296,46 +186,30 @@ def _route(unrouted):
             # 2016-10-13 TD : fill additional object of alliance license with data gathered from EZB
             prov.alliance = aldata
             prov.bibid = bibid
-            #
             prov.notification = unrouted.id
-            app.logger.debug("Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
-            match(match_data, rc, prov)
+            match(match_data, rc, prov, repo)
             if len(prov.provenance) > 0:
-                match_provenance.append(prov)
+                app.logger.debug("Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id,
+                                                                                                          x=rc.repository))
+                prov.save()
                 match_ids.append(rc.repository)
-                app.logger.debug("Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug(
+                    "Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(
+                        x=prov.repository,
+                        y=unrouted.id,
+                        z=prov.id))
+                # match_provenance.append(prov)
             else:
                 app.logger.debug("Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
 
     # except esprit.tasks.ScrollException as e:
-    # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above) 
+    # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above)
     except Exception as e:
-        routing_reason = str(e)
-        # if config says so, convert the unrouted notification to a failed notification, enhance and save
-        # for later diagnosis
-        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
-            failed = unrouted.make_failed()
-            failed.analysis_date = dates.now()
-            failed.reason = routing_reason
-            # 2016-11-24 TD : collecting all available ISSN data of this notifiction
-            if issn_data is not None and len(issn_data)>0:
-                failed.issn_data = " ; ".join(issn_data)
-            else:
-                failed.issn_data = "None"
-            if metadata is not None:
-                enhance(failed, metadata)
-            failed.save()
-            app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
-
-        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
-        raise RoutingException(str(e))
+        notify_failure(unrouted, e.message, issn_data, metadata, '')
+        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
+        raise RoutingException(e.message)
 
     app.logger.debug("Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
-
-    # write all the match provenance out to the index (could be an empty list)
-    for p in match_provenance:
-        p.save()
-        app.logger.debug("Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
 
     # if there are matches then the routing is successful, and we want to finalise the
     # notification for the routed index and its content for download
@@ -350,7 +224,7 @@ def _route(unrouted):
         routed = unrouted.make_routed()
         routed.reason = routing_reason
         # 2016-11-24 TD : collecting all available ISSN data of this notifiction
-        if issn_data is not None and len(issn_data)>0:
+        if issn_data is not None and len(issn_data) > 0:
             routed.issn_data = " ; ".join(issn_data)
         else:
             routed.issn_data = "None"
@@ -360,7 +234,8 @@ def _route(unrouted):
         routed.analysis_date = dates.now()
         if metadata is not None:
             enhance(routed, metadata)
-        links(routed)
+        # Modify existing routed links with public access
+        modify_public_links(routed)
         routed.save()
         app.logger.debug("Routing - Notification:{y} successfully routed".format(y=unrouted.id))
         return True
@@ -369,29 +244,13 @@ def _route(unrouted):
             routing_reason = "No match in qualified repositories."
         # log the failure
         app.logger.error("Routing - Notification:{y} was not routed".format(y=unrouted.id))
-
-        # if config says so, convert the unrouted notification to a failed notification, enhance and save
-        # for later diagnosis
-        if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
-            failed = unrouted.make_failed()
-            failed.analysis_date = dates.now()
-            failed.reason = routing_reason
-            # 2016-11-24 TD : collecting all available ISSN data of this notifiction
-            if issn_data is not None and len(issn_data)>0:
-                failed.issn_data = " ; ".join(issn_data)
-            else:
-                failed.issn_data = "None"
-            if metadata is not None:
-                enhance(failed, metadata)
-            failed.save()
-            app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
-
+        notify_failure(unrouted, routing_reason, issn_data, metadata, '')
         return False
 
     # Note that we don't delete the unrouted notification here - that's for the caller to decide
 
 
-def match(notification_data, repository_config, provenance):
+def match(notification_data, repository_config, provenance, acc_id):
     """
     Match the incoming notification data, to the repository config and determine
     if there is a match.
@@ -401,6 +260,8 @@ def match(notification_data, repository_config, provenance):
 
     :param notification_data:   models.RoutingMetadata
     :param repository_config:   models.RepositoryConfig
+    :param provenance:          models.MatchProvenance
+    :param acc_id:              Account id matching the bib_id
     :return:  True if there was a match, False if not
     """
     # just to give us a short-hand without compromising the useful names in the method sig
@@ -408,28 +269,28 @@ def match(notification_data, repository_config, provenance):
     rc = repository_config
 
     match_algorithms = {
-        "domains" : {
-            "urls" : domain_url,
-            "emails" : domain_email
+        "domains": {
+            "urls": domain_url,
+            "emails": domain_email
         },
-        "name_variants" : {
-            "affiliations" : exact_substring
+        "name_variants": {
+            "affiliations": exact_substring
         },
-        "author_emails" : {
-            "emails" : exact
+        "author_emails": {
+            "emails": exact
         },
-        "author_ids" : {
-            "author_ids" : author_match
+        "author_ids": {
+            "author_ids": author_match
         },
-        "grants" : {
-            "grants" : exact
+        "grants": {
+            "grants": exact
         },
-        "strings" : {
-            "urls" : domain_url,
-            "emails" : exact,
-            "affiliations" : exact_substring,
-            "author_ids" : author_string_match,
-            "grants" : exact
+        "strings": {
+            "urls": domain_url,
+            "emails": exact,
+            "affiliations": exact_substring,
+            "author_ids": author_string_match,
+            "grants": exact
         }
     }
     # 2016-08-18 and 2018-08-18 TD : take out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
@@ -437,16 +298,16 @@ def match(notification_data, repository_config, provenance):
     # I have added a config option and set the default to false, as tests were failing
     if app.config.get("EXTRACT_POSTCODES", False):
         match_algorithms["postcodes"] = {
-            "postcodes" : postcode_match
+            "postcodes": postcode_match
         }
         match_algorithms["strings"]["postcodes"] = postcode_match
 
     repo_property_values = {
-        "author_ids" : author_id_string
+        "author_ids": author_id_string
     }
 
     match_property_values = {
-        "author_ids" : author_id_string
+        "author_ids": author_id_string
     }
 
     # do the required matches
@@ -455,13 +316,17 @@ def match(notification_data, repository_config, provenance):
         for match_property, fn in sub.items():
             for rprop in getattr(rc, repo_property):
                 for mprop in getattr(md, match_property):
-                    m = fn(rprop, mprop)
+                    if fn == exact_substring:
+                        m = fn(acc_id, rprop, mprop)
+                    else:
+                        m = fn(rprop, mprop)
                     if m is not False:  # it will be a string then
                         matched = True
-
                         # convert the values that have matched to string values suitable for provenance
-                        rval = repo_property_values.get(repo_property)(rprop) if repo_property in repo_property_values else rprop
-                        mval = match_property_values.get(match_property)(mprop) if match_property in match_property_values else mprop
+                        rval = repo_property_values.get(repo_property)(
+                            rprop) if repo_property in repo_property_values else rprop
+                        mval = match_property_values.get(match_property)(
+                            mprop) if match_property in match_property_values else mprop
 
                         # record the provenance
                         provenance.add_provenance(repo_property, rval, match_property, mval, m)
@@ -478,7 +343,7 @@ def match(notification_data, repository_config, provenance):
         for rk in rc.keywords:
             for mk in md.keywords:
                 m = exact(rk, mk)
-                if m is not False: # then it is a string
+                if m is not False:  # then it is a string
                     trip = True
                     provenance.add_provenance("keywords", rk, "keywords", mk, m)
         if not trip:
@@ -497,6 +362,7 @@ def match(notification_data, repository_config, provenance):
             return False
 
     return len(provenance.provenance) > 0
+
 
 def enhance(routed, metadata):
     """
@@ -522,14 +388,14 @@ def enhance(routed, metadata):
 
     # add any new identifiers to the source identifiers
     mis = metadata.source_identifiers
-    for id in mis:
+    for s_id in mis:
         # the API prevents us from adding duplicates, so just add them all and let the model handle it
-        routed.add_source_identifier(id.get("type"), id.get("id"))
+        routed.add_source_identifier(s_id.get("type"), s_id.get("id"))
 
     # add any new identifiers
     ids = metadata.identifiers
-    for id in ids:
-        routed.add_identifier(id.get("id"), id.get("type"))
+    for m_id in ids:
+        routed.add_identifier(m_id.get("id"), m_id.get("type"))
 
     # add any new authors, using a slightly complex merge strategy:
     # 1. If both authors have identifiers and one matches, they are equivalent and missing name/affiliation/identifiers should be added
@@ -541,7 +407,7 @@ def enhance(routed, metadata):
         merged = False
         # first run through all the existing authors, and see if any of them merge
         for ra in ras:
-            merged = _merge_entities(ra, ma, "name", other_properties=["affiliation","lastname","firstname"])
+            merged = _merge_entities(ra, ma, "name", other_properties=["affiliation", "lastname", "firstname"])
             # if one merges, don't continue
             if merged:
                 break
@@ -594,7 +460,8 @@ def _merge_entities(e1, e2, primary_property, other_properties=None):
     if other_properties is None:
         other_properties = []
 
-    # 1. If both entities have identifiers and one matches, they are equivalent and missing properties/identifiers should be added
+    # 1. If both entities have identifiers and one matches,
+    # they are equivalent and missing properties/identifiers should be added
     if e2.get("identifier") is not None and e1.get("identifier") is not None:
         for maid in e2.get("identifier"):
             for raid in e1.get("identifier"):
@@ -705,15 +572,17 @@ def repackage(unrouted, repo_ids):
             url = burl + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
         links.append({
             "type": "package",
-            "format" : "application/zip",
-            "access" : "router",
-            "url" : url,
-            "packaging" : d[0]
+            "format": "application/zip",
+            "access": "router",
+            "url": url,
+            "packaging": d[0]
         })
 
     return links
 
-def links(routed):
+
+def modify_public_links(routed):
+    # Modify the url and type of all public access links
     newlinks = []
     for link in routed.links:
         # treat a missing access annotation as a "public" link
@@ -734,11 +603,24 @@ def links(routed):
             newlinks.append(nl)
     for l in newlinks:
         routed.add_link(l.get("url"), l.get("type"), l.get("format"), l.get("access"), l.get("packaging"))
-            
 
 
 ###########################################################
-## Individual match functions
+# Individual match functions
+
+def license_included(urid, match_data, rc):
+    included = True
+    for l in rc.excluded_license:
+        if l in match_data.license_ids:
+            included = False
+            reason = "Routing - Notification {y} License {x} is excluded by repository.  Notification will not be routed!".format(y=urid, x=l)
+            app.logger.debug(reason)
+            break
+    if included:
+        reason = "Routing - Notification {y} licenses not excluded {x}.".format(y=urid, x=" ; ".join(match_data.license_ids))
+        app.logger.debug(reason)
+    return included
+
 
 def domain_url(domain, url):
     """
@@ -773,6 +655,7 @@ def domain_url(domain, url):
 
     return False
 
+
 def domain_email(domain, email):
     """
     normalise the domain: strip prefixes an URL paths.  Normalise the email: strip everything before @.  If either ends with the other it is a match
@@ -793,7 +676,7 @@ def domain_email(domain, email):
 
     # strip everything after a path separator
     domain = domain.split("/")[0]
- 
+
     # strip everything before @
     bits = email.split("@")
     if len(bits) > 1:
@@ -806,8 +689,8 @@ def domain_email(domain, email):
     email = email.strip()
 
     # 2019-10-24 TD : Some mad publishers (not to name one, but Frontiers seems a candidate)
-    #                 are convinced that it would be a great idea to use the xml <email> tag 
-    #                 twice: one for the first part upto "@", and one for the email domain part.  
+    #                 are convinced that it would be a great idea to use the xml <email> tag
+    #                 twice: one for the first part upto "@", and one for the email domain part.
     #                 How stupid can you be??!? Plonkers! (Sorry my language, but it is still
     #                 completely insane...)
 
@@ -824,6 +707,7 @@ def domain_email(domain, email):
 
     return False
 
+
 def author_match(author_obj_1, author_obj_2):
     """
     Match two author objects against eachother
@@ -839,9 +723,13 @@ def author_match(author_obj_1, author_obj_2):
     i2 = _normalise(author_obj_2.get("id", ""))
 
     if t1 == t2 and i1 == i2:
-        return "Author ids matched: {t1} '{i1}' is the same as {t2} '{i2}'".format(t1=t1, i1=author_obj_1.get("id", ""), t2=t2, i2=author_obj_2.get("id", ""))
+        return u"Author ids matched: {t1} '{i1}' is the same as {t2} '{i2}'".format(t1=t1,
+                                                                                    i1=author_obj_1.get("id", ""),
+                                                                                    t2=t2,
+                                                                                    i2=author_obj_2.get("id", ""))
 
     return False
+
 
 def author_string_match(author_string, author_obj):
     """
@@ -858,6 +746,7 @@ def author_string_match(author_string, author_obj):
         return "Author ids matched: '{s}' is the same as '{aid}'".format(s=author_string, aid=author_obj.get("id", ""))
 
     return False
+
 
 def postcode_match(pc1, pc2):
     """
@@ -881,10 +770,11 @@ def postcode_match(pc1, pc2):
     return False
 
 
-def exact_substring(s1, s2):
+def exact_substring(acc_id, s1, s2):
     """
     normalised s1 must be an exact substring of normalised s2
 
+    :param acc_id: account id matching the repository config
     :param s1: first string
     :param s2: second string
     :return: True if match, False if not
@@ -904,31 +794,37 @@ def exact_substring(s1, s2):
     s1 = _normalise(s1)
     s2 = _normalise(s2)
 
+    acc = models.Account.pull(acc_id)
+    if acc.has_role('match_all'):
+        app.logger.debug("stl: User account {x} has role match all, so no affiliation match needed".format(x=acc_id))
+        return u"'User account' has role 'match_all', so no affiliation match needed"
+
+    if os1 == "IGNORE-AFFILIATION":
+        app.logger.debug("stl: Match exact_substring s1:{x} found".format(x=os1))
+        return u"'{a}' appears in 'repo_config'".format(a=os1)
+
+    if os2 == "IGNORE-AFFILIATION":
+        app.logger.debug(u"stl: Match exact_substring s2:{x} found".format(x=os2))
+        return u"'{a}' appears in 'metadata'".format(a=os2)
+
     # if s1 in s2:
     #     return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
     #
-    ## 2019-08-27 TD : activate the checking with word boundaries using the module 're'
-    ##
-    ## this version uses module 're', and checks for word boundaries as well
-    ##
-    ## 2019-09-25 TD : insert the tiny (but most impacting) call re.escape(s1)
-    ##                 before, without escaping, s1 containing a single ')' or '('
-    ##                 caused an exception (and thus a stalled(!!) failure). Shite...
-    ##
+    # 2019-08-27 TD : activate the checking with word boundaries using the module 're'
+    #
+    # this version uses module 're', and checks for word boundaries as well
+    #
+    # 2019-09-25 TD : insert the tiny (but most impacting) call re.escape(s1)
+    #                 before, without escaping, s1 containing a single ')' or '('
+    #                 caused an exception (and thus a stalled(!!) failure). Shite...
+    #
     if re.search(r'\b' + re.escape(s1) + r'\b', s2, re.UNICODE) is not None:
         app.logger.debug("stl: Match exact_substring s1:{x} s2:{y}".format(x=os1, y=os2))
         app.logger.debug("stl: '{a}' appears in '{b}'".format(a=s1, b=s2))
         return "'{a}' appears in '{b}'".format(a=os1, b=os2)
 
-    if os1=="IGNORE-AFFILIATION":
-        app.logger.debug("stl: Match exact_substring s1:{x} found".format(x=os1))
-        return "'{a}' appears in 'repo_config'".format(a=os1)
-
-    if os2=="IGNORE-AFFILIATION":
-        app.logger.debug("stl: Match exact_substring s2:{x} found".format(x=os2))
-        return "'{a}' appears in 'metadata'".format(a=os2)
-
     return False
+
 
 def exact(s1, s2):
     """
@@ -951,6 +847,7 @@ def exact(s1, s2):
 
     return False
 
+
 def _normalise(s):
     """
     Normalise the supplied string in the following ways:
@@ -967,11 +864,11 @@ def _normalise(s):
     if s is None:
         return ""
     s = s.strip().lower()
-    while "  " in s:    # two spaces
-        s = s.replace("  ", " ")    # reduce two spaces to one
+    while "  " in s:  # two spaces
+        s = s.replace("  ", " ")  # reduce two spaces to one
     # 2017-03-13 TD : Introduction of unicode normalisation to cope with
     #                 all sorts of diacritical signs
-    s = unicodedata.normalize('NFD',s)
+    s = unicodedata.normalize('NFD', s)
     return s
 
 
@@ -986,3 +883,21 @@ def author_id_string(aob):
     :return: string representation of author id
     """
     return "{x}: {y}".format(x=aob.get("type"), y=aob.get("id"))
+
+def notify_failure(unrouted, routing_reason, issn_data=None, metadata=None, label=''):
+    # if config says so, convert the unrouted notification to a failed notification,
+    # (enhance and) save for later diagnosis
+    if app.config.get("KEEP_FAILED_NOTIFICATIONS", False):
+        failed = unrouted.make_failed()
+        failed.analysis_date = dates.now()
+        failed.reason = routing_reason
+        if issn_data is not None and len(issn_data) > 0:
+            failed.issn_data = " ; ".join(issn_data)
+        else:
+            failed.issn_data = "None"
+        if metadata is not None:
+            enhance(failed, metadata)
+        failed.save()
+        app.logger.debug(
+            "Routing - Notification:{y} stored as a {z} Failed Notification".format(y=unrouted.id, z=label))
+    return
