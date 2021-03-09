@@ -2,8 +2,8 @@
 # pip install -r requirements.txt
 # (i.e. target this file with the -r switch on pip).
 
-# install esprit from submodule directory
--e esprit/
+# install esprit
+-e git+https://github.com/OA-DeepGreen/esprit.git@603e8c285bb76217d8e7716f9fd8e1bc24adb8fd#egg=esprit
 
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .
