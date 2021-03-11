@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from standalone_octopus.core import app
 from standalone_octopus.lib import dataobj
 from service import dao
+from esprit import raw
 
 
 class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
@@ -199,8 +200,48 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         n = res.get('hits',{}).get('total',0)
         # 2019-06-11 TD : re-query necessary as a precautionary measure because len(res) seems 
         #                 to be restricted to 10 records only per default...
-        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
+        if n > 10:
+            res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
         return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(n) ]
+
+    @classmethod
+    def pull_all_non_subject_repositories(cls):
+        q = {
+          "query": {
+            "bool": {
+              "filter": {
+                "bool": {
+                  "must_not": [
+                    {
+                      "match": {
+                        "role": "subject_repository"
+                      }
+                    }
+                  ]
+                }
+              },
+              "must": {
+                "match": {
+                  "role": "repository"
+                }
+              }
+            }
+          }
+        }
+        conn = cls.__conn__
+        types = cls.get_read_types(None)
+        r = raw.search(conn, types, q)
+        res = r.json()
+        # res = cls.query(q=q)
+        n = res.get('hits',{}).get('total',0)
+        if n > 10:
+            q["size"] = n
+            r = raw.search(conn, types, q)
+            res = r.json()
+        ans = []
+        for hit in res['hits']['hits']:
+            ans.append(hit.get('_source', {}).get('repository', {}).get('bibid', u"*****").lstrip('a'))
+        return ans
 
     @classmethod
     def pull_all_by_email(cls,email):

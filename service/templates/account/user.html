@@ -344,12 +344,16 @@
 					</form>
 				{% else %}
 					<form class="form" method="POST" action="{{request.path}}/become/passive" id="form_active">
+						<div class="form-fields__item--text form-fields__item--single">
 							<input type="checkbox" id="active_yes" value="active" name='status' checked="checked"
 							   onclick="submit_form_active()">
-							<label for="active_yes">Active</label><br>
+							<label for="active_yes">Active</label>
+						</div>
+						<div class="form-fields__item--text form-fields__item--single">
 							<input type="checkbox" id="active_no" value="passive" name='status'
 							   onclick="submit_form_active()">
-							<label for="active_no">Passive</label><br>
+							<label for="active_no">Passive</label>
+						</div>
 					</form>
 				{% endif %}
 				{% set check = "" %}
@@ -360,9 +364,22 @@
 				{% endif %}
 				<form class="form" method="POST" action="{{request.path}}/{{action}}/match_all" id="form_match_all">
 					<div class="form-fields__item--text form-fields__item--single">
-						<input type="checkbox" id="update_match_all" value="{{match_all}}" name='role' {{check}}
+						<input type="checkbox" id="update_match_all" value="match_all" name='role' {{check}}
 							   onclick='document.getElementById("form_match_all").submit()'>
 						<label for="update_match_all">Match with all institutions</label><br>
+					</div>
+				</form>
+				{% set subject_check = "" %}
+				{% set subject_action = "become" %}
+				{% if account.has_role('subject_repository') %}
+					{% set subject_check = "checked" %}
+					{% set subject_action = "cease" %}
+				{% endif %}
+				<form class="form" method="POST" action="{{request.path}}/{{action}}/subject_repository" id="form_subject_repository">
+					<div class="form-fields__item--text form-fields__item--single">
+						<input type="checkbox" id="update_subject_repository" value="subject_repository" name='role' {{subject_check}}
+							   onclick='document.getElementById("form_subject_repository").submit()'>
+						<label for="update_subject_repository">Subject repository</label><br>
 					</div>
 				</form>
 			</div>

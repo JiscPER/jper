@@ -81,6 +81,7 @@ def _route(unrouted):
     # 2016-09-08 TD : start of alliance license legitimation
     issn_data = metadata.get_identifiers("issn")
     publ_date = metadata.publication_date
+    publ_year = None
     if issn_data is not None and len(issn_data) > 0 and publ_date is not None:
         dt = datetime.strptime(publ_date, "%Y-%m-%dT%H:%M:%SZ")
         publ_year = str(dt.year)
@@ -99,10 +100,11 @@ def _route(unrouted):
     else:
         doi = doi[0]
 
-    # Get all repository accounts. Needed for Gold license
-    bibids = list(set([acc['_source']['repository'].get('bibid', u"*****").lstrip('a') for acc in
-                       models.Account.query(q='*', size=10000).get('hits', {}).get('hits', []) if
-                       "repository" in acc['_source']['role']]))
+    # Get all repository accounts, which are not subject repositories. Needed for Gold license
+    # bibids = list(set([acc['_source']['repository'].get('bibid', u"*****").lstrip('a') for acc in
+    #                    models.Account.query(q='*', size=10000).get('hits', {}).get('hits', []) if
+    #                    "repository" in acc['_source']['role']]))
+    bibids = list(set(models.Account.pull_all_non_subject_repositories()))
 
     part_bibids = []
 
@@ -113,7 +115,7 @@ def _route(unrouted):
         if lics is None: # nothing found at all...
             continue
         for lic in lics:
-            lic_data = get_current_license_data(doi, issn, lic, publ_year)
+            lic_data = get_current_license_data(lic, publ_year, issn, doi)
             if len(lic_data) == 0:
                 continue
             if lic.type == "gold":
@@ -605,6 +607,44 @@ def modify_public_links(routed):
         routed.add_link(l.get("url"), l.get("type"), l.get("format"), l.get("access"), l.get("packaging"))
 
 
+def get_current_license_data(lic, publ_year, issn, doi):
+    lic_data = []
+    for jrnl in lic.journals:
+        # check anew for each journal included in the license
+        ys = "0000"
+        yt = "9999"
+        journal_matches = False
+        for i in jrnl["identifier"]:
+            if (i.get("type") == "eissn" and i.get("id") == issn) or (i.get("type") == "issn" and i.get("id") == issn):
+                journal_matches = True
+        if not journal_matches:
+            continue
+        for p in jrnl.get("period", {}):
+            if p.get("type") == "year":
+                if p.get("start", None):
+                    ys = str(p["start"])
+                if p.get("end", None):
+                    yt = str(p["end"])
+                break
+        if ys <= publ_year <= yt:
+            url = ''
+            for l in jrnl.get("link", {}):
+                if l.get("type", None) == "ezb":
+                    url = l.get("url", '')
+                    break
+            embargo = jrnl.get('embargo', {}).get('duration', '')
+            lic_data.append({
+                'name': lic.name,
+                'id': lic.id,
+                'issn': issn,
+                'doi': doi,
+                'link': url,
+                'embargo': embargo
+            })
+            break
+    return lic_data
+
+
 ###########################################################
 # Individual match functions
 
@@ -883,6 +923,7 @@ def author_id_string(aob):
     :return: string representation of author id
     """
     return "{x}: {y}".format(x=aob.get("type"), y=aob.get("id"))
+
 
 def notify_failure(unrouted, routing_reason, issn_data=None, metadata=None, label=''):
     # if config says so, convert the unrouted notification to a failed notification,
