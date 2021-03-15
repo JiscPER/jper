@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='utils',
-    version='1.0.0',
+    version='1.0.0-p3',
     packages=find_packages(),
     install_requires=[
-        "requests",
+        "requests==2.25.1",
         # "elasticsearch",
-        "elasticsearch2",
-        "python-dateutil"
+        "elasticsearch2==2.5.1",
+        "python-dateutil==2.8.1"
     ],
     url='http://jisc.ac.uk/',
     author='Ruben Romartinez',

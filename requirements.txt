@@ -5,5 +5,9 @@
 # install esprit
 -e git+https://github.com/OA-DeepGreen/esprit.git@603e8c285bb76217d8e7716f9fd8e1bc24adb8fd#egg=esprit
 
+# install the sub-projects
+-e API/src
+-e OAUtils/src
+
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .
