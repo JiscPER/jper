@@ -356,15 +356,15 @@
 						</div>
 					</form>
 				{% endif %}
-				{% set check = "" %}
-				{% set action = "become" %}
+				{% set match_check = "" %}
+				{% set match_action = "become" %}
 				{% if account.has_role('match_all') %}
-					{% set check = "checked" %}
-					{% set action = "cease" %}
+					{% set match_check = "checked" %}
+					{% set match_action = "cease" %}
 				{% endif %}
-				<form class="form" method="POST" action="{{request.path}}/{{action}}/match_all" id="form_match_all">
+				<form class="form" method="POST" action="{{request.path}}/{{match_action}}/match_all" id="form_match_all">
 					<div class="form-fields__item--text form-fields__item--single">
-						<input type="checkbox" id="update_match_all" value="match_all" name='role' {{check}}
+						<input type="checkbox" id="update_match_all" value="match_all" name='role' {{match_check}}
 							   onclick='document.getElementById("form_match_all").submit()'>
 						<label for="update_match_all">Match with all institutions</label><br>
 					</div>
@@ -375,7 +375,7 @@
 					{% set subject_check = "checked" %}
 					{% set subject_action = "cease" %}
 				{% endif %}
-				<form class="form" method="POST" action="{{request.path}}/{{action}}/subject_repository" id="form_subject_repository">
+				<form class="form" method="POST" action="{{request.path}}/{{subject_action}}/subject_repository" id="form_subject_repository">
 					<div class="form-fields__item--text form-fields__item--single">
 						<input type="checkbox" id="update_subject_repository" value="subject_repository" name='role' {{subject_check}}
 							   onclick='document.getElementById("form_subject_repository").submit()'>
