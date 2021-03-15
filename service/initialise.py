@@ -10,11 +10,12 @@ import requests, json, logging, os, scheduler
 from logging import Formatter
 from logging.handlers import RotatingFileHandler
 
+# Elasticsearch hostname
 ELASTIC_SEARCH_HOST = "http://gateway:9200"
-"""Elasticsearch hostname"""
 
+# JPER index name in the elasticsearch instance
 ELASTIC_SEARCH_INDEX = "jper"
-"""JPER index name in the elasticsearch instance"""
+
 
 def initialise():
     """
@@ -36,18 +37,18 @@ def initialise():
     ae = requests.get(ia)
     if ae.status_code != 200:
         su = {
-            "id":un, 
+            "id": un,
             "role": ["admin"],
-            "email":"green@deepgreen.org",
-            "api_key":"admin",
-            "password":generate_password_hash(un)
+            "email": "green@deepgreen.org",
+            "api_key": "admin",
+            "password": generate_password_hash(un)
         }
         c = requests.post(ia, data=json.dumps(su))
         print("first superuser account created for user " + un + " with password " + un) 
         print("THIS FIRST SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE...")
                 
-    file_handler = RotatingFileHandler(app.config.get('LOGFILE','/home/green/jperlog'), maxBytes=1000000000, backupCount=5)
-    lvl = app.config.get('LOGLEVEL','info')
+    file_handler = RotatingFileHandler(app.config.get('LOGFILE', '/home/green/jperlog'), maxBytes=1000000000, backupCount=5)
+    lvl = app.config.get('LOGLEVEL', 'info')
     if lvl == 'debug':
         file_handler.setLevel(logging.DEBUG)
         app.logger.setLevel(logging.DEBUG)
