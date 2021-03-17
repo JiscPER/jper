@@ -15,7 +15,7 @@ from service.views.webapi import _bad_request
 from service.repository_licenses import get_matching_licenses
 import math
 # 2016-12-14 TD : Native 'csv'-module of python2.7 has encoding shortcomings
-import unicodecsv
+import csv
 from jsonpath_rw_ext import parse
 # 2018-12-18 TD : Replacement for zip(...) which will _not_ truncate the result
 from itertools import zip_longest
@@ -23,10 +23,8 @@ from itertools import zip_longest
 
 from service import models
 
-try:
-    from io import StringIO
-except:
-    from io import StringIO
+from io import StringIO
+from io import TextIOWrapper
 
 
 blueprint = Blueprint('account', __name__)
@@ -368,7 +366,7 @@ def download(account_id):
     #
 
     strm = StringIO()
-    writer = unicodecsv.writer(strm, delimiter=',', quoting=unicodecsv.QUOTE_ALL)
+    writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
     # writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
     # 2016-12-14 TD : python's native 'csv'-module has encoding problems...
     #
@@ -380,7 +378,6 @@ def download(account_id):
     writer.writerows(rows)
 
     fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=account_id, x=dates.now())
-    strm.reset()
 
     #time.sleep(1)
     #flash(" Saved {z} notifications as\n '{x}'".format(z=fprefix,x=fname), "success")
@@ -509,9 +506,9 @@ def configView(repoid=None):
         else:
             try:
                 if request.files['file'].filename.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=request.files['file'],repository=repoid)
+                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
                 elif request.files['file'].filename.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=request.files['file'],repository=repoid)
+                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
             except:
                 saved = False
         if saved:
@@ -708,7 +705,7 @@ def config(username):
         rows = list( zip_longest(*rows, fillvalue='') )
 
         strm = StringIO()
-        writer = unicodecsv.writer(strm, delimiter=',', quoting=unicodecsv.QUOTE_MINIMAL)
+        writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         # writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
         # 2016-12-14 TD : python's native 'csv'-module has encoding problems...
         #
@@ -720,7 +717,6 @@ def config(username):
         writer.writerows(rows)
 
         fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=username, x=dates.now())
-        strm.reset()
 
         #time.sleep(1)
         #flash(" Saved {z} notifications as\n '{x}'".format(z=fprefix,x=fname), "success")
@@ -730,29 +726,31 @@ def config(username):
 
     elif request.method == "POST":
         try:
+            saved = False
             if len(request.values.get('url','')) > 1:
                 url = request.values['url']
                 fn = url.split('?')[0].split('#')[0].split('/')[-1]
                 r = requests.get(url)
                 try:
-                    saved = rec.set_repo_config(jsoncontent=r.json(),repository=username)
+                    saved = rec.set_repo_config(jsoncontent=r.json(), repository=username)
                 except:
-                    strm = StringIO(r.content)
+                    strm = StringIO(r.text)
                     if fn.endswith('.csv'):
                         saved = rec.set_repo_config(csvfile=strm,repository=username)
                     elif fn.endswith('.txt'):
                         saved = rec.set_repo_config(textfile=strm,repository=username)
             else:
                 if request.files['file'].filename.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=request.files['file'],repository=username)
+                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=username)
                 elif request.files['file'].filename.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=request.files['file'],repository=username)
+                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=username)
             if saved:
                 flash('Thank you. Your match config has been updated.', "success")        
             else:
                 flash('Sorry, there was an error with your config upload. Please try again.', "error")        
-        except:
+        except Exception as e:
             flash('Sorry, there was an exception detected while your config upload was processed. Please try again.', "error")
+            app.logger.error(str(e))
         time.sleep(1)
 
     return redirect(url_for('.username', username=username))

@@ -4,6 +4,7 @@ Blueprint which provides the RESTful web API for JPER
 from flask import Blueprint, make_response, url_for, request, abort, redirect
 from flask import stream_with_context, Response
 import json
+from io import TextIOWrapper
 from standalone_octopus.core import app
 from standalone_octopus.lib import webapp
 from standalone_octopus.lib import dates
@@ -137,9 +138,8 @@ def _get_parts():
         if metadata.mimetype != "application/json":
             raise BadRequest("Content-Type for metadata part of multipart request must be application/json")
 
-        rawmd = metadata.stream.read()
         try:
-            md = json.loads(rawmd)
+            md = json.load(TextIOWrapper(metadata))
         except:
             raise BadRequest("Unable to parse metadata part of multipart request as valid json")
 
@@ -371,9 +371,9 @@ def config(repoid=None):
         else:
             try:
                 if request.files['file'].filename.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=request.files['file'],repository=repoid)
+                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
                 elif request.files['file'].filename.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=request.files['file'],repository=repoid)
+                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
             except:
                 saved = False
         if saved:
