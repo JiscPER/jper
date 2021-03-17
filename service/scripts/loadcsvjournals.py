@@ -54,16 +54,16 @@ if __name__ == "__main__":
     #
     # reports.delivery_report(args.from_date, args.to_date, reportfile)
 
-    with open(args.table, 'rb') as csvfile:
+    with open(args.table, 'r') as csvfile:
         license = License()
         j = 0
         for row in csvfile:
             j = j + 1
             if j == 1:
-               name = row.replace('"','').strip()
-               name = name[name.find(':')+2:]
-               ezbid = name[name.find('[')+1:name.find(']')].upper()
+               name = row.replace('"', '').strip()
+               name = name[name.find(':') + 2:]
+               ezbid = name[name.find('[') + 1:name.find(']')].upper()
             if j == 4: break
 
-        license.set_license_data(ezbid,name,type=args.licence,csvfile=csvfile)
+        license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
 
