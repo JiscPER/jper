@@ -109,4 +109,6 @@ configMySQL = {
                'raise_on_warnings': True,
                }
 
-configES = [{'host': 'gateway', 'port': 9200, 'timeout': 300}]
+#configES = [{'host': 'gateway', 'port': 9200, 'timeout': 300}]
+# TODO: SE 2021-03-17 - has this always been misconfigured and never used?
+configES = [{'host': 'localhost', 'port': 9200, 'timeout': 300}]

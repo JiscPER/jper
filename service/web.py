@@ -9,7 +9,7 @@ To start the application directly using the python web server, you can just do
 
 Refer to server installation documentation for more details how to deploy in production.
 """
-from standalone_octopus.core import app, initialise, add_configuration
+from octopus.core import app, initialise, add_configuration
 
 if __name__ == "__main__":
     import argparse
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
 # most of the imports should be done here, after initialise()
 from flask import render_template
-from standalone_octopus.lib.webapp import custom_static
+from octopus.lib.webapp import custom_static
 
 from service import models
 

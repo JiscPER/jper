@@ -4,7 +4,7 @@ Blueprint for providing test endpoints for when the system is run in functional 
 Under normal operation, this blueprint will not be in use
 """
 from flask import Blueprint, send_from_directory
-from standalone_octopus.lib import paths
+from octopus.lib import paths
 
 blueprint = Blueprint('test', __name__)
 

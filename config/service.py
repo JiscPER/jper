@@ -3,7 +3,7 @@ Main configuration file for the application
 
 On deployment, desired configuration can be overridden by the provision of a local.cfg file
 """
-from standalone_octopus.lib import paths
+from octopus.lib import paths
 
 ##################################################
 # overrides for the webapp deployment
@@ -139,11 +139,11 @@ SCHEDULE_KEEP_ROUTED_MONTHS = 3
 LOGLEVEL = 'debug'
 LOGFILE = '/home/green/jperlog'
 
-STORE_TMP_IMPL = "standalone_octopus.modules.store.store.TempStore"
+STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 """implementation class of the temporary local filestore"""
 
-#STORE_IMPL = "standalone_octopus.modules.store.store.StoreLocal"
-STORE_IMPL = "standalone_octopus.modules.store.store.StoreJper"
+#STORE_IMPL = "octopus.modules.store.store.StoreLocal"
+STORE_IMPL = "octopus.modules.store.store.StoreJper"
 """implementation class of the main fielstore"""
 STORE_JPER_URL = 'http://store'
 """StoreJper's base url"""

@@ -3,8 +3,8 @@ Fixtures for testing packages
 """
 
 from service.packages import PackageHandler
-from standalone_octopus.lib import paths
-from standalone_octopus.modules.store import store
+from octopus.lib import paths
+from octopus.modules.store import store
 import uuid
 
 import zipfile, os, codecs

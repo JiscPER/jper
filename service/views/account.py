@@ -8,8 +8,8 @@ from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort, send_file
 from service.forms.adduser import AdduserForm
 from flask_login import login_user, logout_user, current_user
-from standalone_octopus.core import app
-from standalone_octopus.lib import dates
+from octopus.core import app
+from octopus.lib import dates
 from service.api import JPER, ParameterException
 from service.views.webapi import _bad_request
 from service.repository_licenses import get_matching_licenses

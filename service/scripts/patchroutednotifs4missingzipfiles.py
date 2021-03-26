@@ -6,7 +6,7 @@ regular account if it exists (i.e. is registered with DeepGreen!).
 
 """
 try:
-    from standalone_octopus.core import add_configuration
+    from octopus.core import add_configuration
     from service.models import Account,RoutedNotification
     from service.web import app
     from service import packages

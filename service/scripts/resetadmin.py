@@ -5,7 +5,7 @@ On production this should be run once, and never again, as it removes the old
 account and builds a new one in its place.  This means no historical data will 
 be kept from the before time.
 """
-from standalone_octopus.core import add_configuration, app
+from octopus.core import add_configuration, app
 from werkzeug.security import generate_password_hash
 # from datetime import datetime
 import requests, json

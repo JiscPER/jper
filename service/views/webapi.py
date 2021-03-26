@@ -5,9 +5,9 @@ from flask import Blueprint, make_response, url_for, request, abort, redirect
 from flask import stream_with_context, Response
 import json
 from io import TextIOWrapper
-from standalone_octopus.core import app
-from standalone_octopus.lib import webapp
-from standalone_octopus.lib import dates
+from octopus.core import app
+from octopus.lib import webapp
+from octopus.lib import dates
 from flask_login import login_user, current_user
 from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
 from service import models

@@ -2,8 +2,8 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from standalone_octopus.core import app
-from standalone_octopus.lib import dataobj
+from octopus.core import app
+from octopus.lib import dataobj
 from service import dao
 from esprit import raw
 

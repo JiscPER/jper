@@ -8,7 +8,7 @@ This means historical data will probably be overwritten/updated.
 So be warned/informed now!
 """
 try:
-    from standalone_octopus.core import add_configuration, app
+    from octopus.core import add_configuration, app
     from service.models import Account,RepositoryConfig
 except:
     print("ERROR: Need to run from a virtualenv enabled setting, i.e.")

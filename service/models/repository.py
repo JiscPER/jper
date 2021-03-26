@@ -2,8 +2,8 @@
 Model objects used to represent interactions with repositories
 """
 
-from standalone_octopus.lib import dataobj
-from standalone_octopus.core import app
+from octopus.lib import dataobj
+from octopus.core import app
 from service import dao
 import csv
 

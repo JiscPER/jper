@@ -17,10 +17,11 @@ setup(
         "Flask-Babel==2.0.0",
         "python-dateutil==2.8.1",
         "unidecode==1.2.0",
-        "esprit",
         "schedule==1.0.0",
         "jsonpath-rw-ext==1.2.2",
-        "unicodecsv==0.14.1"
+        "unicodecsv==0.14.1",
+        "esprit",
+        "octopus"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

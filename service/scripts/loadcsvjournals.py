@@ -5,7 +5,7 @@ in a live system,  as it could be obtained from EZB anchor search, for example.
 All records are put into a new License class. This means historical data will 
 be kept.
 """
-from standalone_octopus.core import add_configuration, app
+from octopus.core import add_configuration, app
 from service.models import License
 
 # ELASTIC_SEARCH_HOST = "http://gateway:9200"

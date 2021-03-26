@@ -2,10 +2,10 @@
 Unit tests for the Data Access Objects
 """
 
-from standalone_octopus.modules.es.testindex import ESTestCase
+from octopus.modules.es.testindex import ESTestCase
 from service import dao
 from datetime import datetime
-from standalone_octopus.core import app
+from octopus.core import app
 import esprit, time
 
 ESV = app.config.get("ELASTIC_SEARCH_VERSION", "2.3.3")

@@ -10,9 +10,9 @@ Go around it at your own risk!
 
 from flask_login import current_user
 from service import models, packages
-from standalone_octopus.lib import dates, dataobj, http
-from standalone_octopus.core import app
-from standalone_octopus.modules.store import store
+from octopus.lib import dates, dataobj, http
+from octopus.core import app
+from octopus.modules.store import store
 import uuid, json
 
 

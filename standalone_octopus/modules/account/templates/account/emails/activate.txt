@@ -1,3 +1,0 @@
-A new account has been created for you.
-
-Please visit {{activate_url}} to activate it!

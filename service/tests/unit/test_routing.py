@@ -8,9 +8,9 @@ File "jper/src/jper/service/routing_deepgreen.py", line 974, in _normalise
 # s = unicodedata.normalize('NFD',s)
 """
 
-from standalone_octopus.modules.es.testindex import ESTestCase
-from standalone_octopus.lib import paths
-from standalone_octopus.modules.store import store
+from octopus.modules.es.testindex import ESTestCase
+from octopus.lib import paths
+from octopus.modules.store import store
 from service.web import app
 from flask import url_for
 
@@ -34,7 +34,7 @@ SIMPLE_ZIP = "http://purl.org/net/sword/package/SimpleZip"
 class TestRouting(ESTestCase):
     def setUp(self):
         self.store_impl = app.config.get("STORE_IMPL")
-        app.config["STORE_IMPL"] = "standalone_octopus.modules.store.store.StoreLocal"
+        app.config["STORE_IMPL"] = "octopus.modules.store.store.StoreLocal"
 
         self.run_schedule = app.config.get("RUN_SCHEDULE")
         app.config["RUN_SCHEDULE"] = False

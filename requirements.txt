@@ -5,6 +5,9 @@
 # install esprit
 -e git+https://github.com/OA-DeepGreen/esprit.git@603e8c285bb76217d8e7716f9fd8e1bc24adb8fd#egg=esprit
 
+# install octopus (initialise the submodule first)
+-e magnificent-octopus
+
 # install the sub-projects
 -e API/src
 -e OAUtils/src

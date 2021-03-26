@@ -5,7 +5,7 @@ It runs on the current year by default, or the year provided by the caller.
 
 Could take its time, so be informed by now!
 """
-from standalone_octopus.core import add_configuration, app
+from octopus.core import add_configuration, app
 from service import reports
 import os, time
 

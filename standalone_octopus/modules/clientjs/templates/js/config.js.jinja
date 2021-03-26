@@ -1,9 +1,0 @@
-jQuery(document).ready(function($) {
-    $.extend(octopus, {
-        "config" : {
-            {% for c, v in configs.iteritems() %}
-                "{{c}}" : "{{v}}" {% if not loop.last %},{% endif %}
-            {% endfor %}
-        }
-    })
-});

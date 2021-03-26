@@ -6,7 +6,7 @@ regular account if it exists (i.e. is registered with DeepGreen!) **AND** is giv
 in some input CSV file (the same as for 'resetregularaccounts.py').
 """
 try:
-    from standalone_octopus.core import add_configuration, app
+    from octopus.core import add_configuration, app
     from service.models import Account, RoutedNotification
 except:
     print("ERROR: Need to run from a virtualenv enabled setting, i.e.")

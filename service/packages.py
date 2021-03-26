@@ -6,11 +6,11 @@ All packaging format handlers should extend the PackageHandler class defined in 
 Packages should then be configured through the PACKAGE_HANDLERS configuration option
 """
 
-from standalone_octopus.core import app
-from standalone_octopus.lib import plugin
-from standalone_octopus.modules.store import store
-from standalone_octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
-# from standalone_octopus.modules.identifiers import postcode
+from octopus.core import app
+from octopus.lib import plugin
+from octopus.modules.store import store
+from octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
+# from octopus.modules.identifiers import postcode
 # 2017-01-19 TD : in the deepgreen setting, postcodes are not needed. They are rather counter-productive...
 from service import models
 import zipfile, os, shutil, hashlib, mimetypes

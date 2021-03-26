@@ -7,7 +7,7 @@ All records are put into possibly already existing alliance data.
 This means historical data will probably be overwritten/updated. 
 So be warned/informed now!
 """
-from standalone_octopus.core import add_configuration, app
+from octopus.core import add_configuration, app
 from service.models import License, Alliance
 import requests, csv, os
 import lxml.html

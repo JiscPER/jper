@@ -3,7 +3,7 @@ Module which handles all the routing mechanics to convert UnroutedNotifications 
 RoutedNotifications or FailedNotifications
 """
 
-from standalone_octopus.lib import dates
+from octopus.lib import dates
 from service import packages, models
 from service.web import app
 from flask import url_for

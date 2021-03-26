@@ -11,7 +11,7 @@ from service.forms.webservice import WebserviceForm
 from flask import Blueprint, request, flash, redirect
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user
-from standalone_octopus.core import app
+from octopus.core import app
 
 harvester = Blueprint('harvester', __name__)
 harvesterModel = HarvesterModel()

@@ -1,4 +1,4 @@
-from standalone_octopus.core import app, add_configuration, initialise
+from octopus.core import app, add_configuration, initialise
 import json
 from service import models
 

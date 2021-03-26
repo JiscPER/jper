@@ -7,13 +7,13 @@ If you want to run it in a different environment you will need to modify some of
 """
 import requests, json, os
 
-from standalone_octopus.modules.es.testindex import ESTestCase
-from standalone_octopus.modules.test.helpers import get_first_free_port, TestServer, make_config
+from octopus.modules.es.testindex import ESTestCase
+from octopus.modules.test.helpers import get_first_free_port, TestServer, make_config
 from service.tests import fixtures
-from standalone_octopus.core import app
+from octopus.core import app
 from service import web
-from standalone_octopus.lib import paths
-from standalone_octopus.modules.store import store
+from octopus.lib import paths
+from octopus.modules.store import store
 
 # FIXME: at this point these don't do anything.  We'll need to create user accounts
 # in the remote system and get their api keys.
@@ -31,7 +31,7 @@ class TestAPI(ESTestCase):
             "ELASTIC_SEARCH_INDEX" : app.config['ELASTIC_SEARCH_INDEX'],
             "THREADED" : True,
             "FUNCTIONAL_TEST_MODE" : True,
-            "STORE_IMPL" : "standalone_octopus.modules.store.store.TempStore",
+            "STORE_IMPL" : "octopus.modules.store.store.TempStore",
             "RUN_SCHEDULE": False
         }
         self.cfg_file = paths.rel2abs(__file__, "..", "resources", "test-server.cfg")
