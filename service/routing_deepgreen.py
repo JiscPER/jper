@@ -5,7 +5,7 @@ RoutedNotifications or FailedNotifications
 
 from octopus.lib import dates
 from service import packages, models
-from service.web import app
+from octopus.core import app
 from flask import url_for
 from copy import deepcopy
 from datetime import datetime
@@ -65,7 +65,7 @@ def _route(unrouted):
     try:
         metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
-        notify_failure(unrouted, e.message, issn_data, metadata, '')
+        notify_failure(unrouted, str(e), issn_data, metadata, '')
         app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
         raise RoutingException(str(e))
 
@@ -207,9 +207,9 @@ def _route(unrouted):
     # except esprit.tasks.ScrollException as e:
     # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above)
     except Exception as e:
-        notify_failure(unrouted, e.message, issn_data, metadata, '')
-        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
-        raise RoutingException(e.message)
+        notify_failure(unrouted, str(e), issn_data, metadata, '')
+        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
+        raise RoutingException(str(e))
 
     app.logger.debug("Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
 

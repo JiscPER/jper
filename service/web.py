@@ -11,6 +11,7 @@ Refer to server installation documentation for more details how to deploy in pro
 """
 from octopus.core import app, initialise, add_configuration
 
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -39,6 +40,7 @@ from octopus.lib.webapp import custom_static
 
 from service import models
 
+
 @app.login_manager.user_loader
 def load_account_for_login_manager(userid):
     """
@@ -50,6 +52,7 @@ def load_account_for_login_manager(userid):
     acc = models.Account().pull(userid)
     return acc
 
+
 @app.route("/")
 def index():
     """
@@ -58,6 +61,7 @@ def index():
     :return: Flask response for rendered index page
     """
     return render_template("index.html")
+
 
 from service.views.webapi import blueprint as webapi
 app.register_blueprint(webapi, url_prefix="/api/v1")
@@ -86,7 +90,7 @@ if app.config.get("FUNCTIONAL_TEST_MODE", False):
 
 
 # this allows us to override the standard static file handling with our own dynamic version
-@app.route("/static/<path:filename>", endpoint='static')
+@app.route("/static/<path:filename>")
 def static(filename):
     """
     Serve static content
@@ -96,6 +100,6 @@ def static(filename):
     """
     return custom_static(filename)
 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'], threaded=app.config.get("THREADED", False))
-
