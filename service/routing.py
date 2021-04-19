@@ -6,7 +6,7 @@ RoutedNotifications or FailedNotifications
 from octopus.lib import dates
 from service import packages, models
 import esprit
-from service.web import app
+from octopus.core import app
 from flask import url_for
 from copy import deepcopy
 import uuid
