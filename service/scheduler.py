@@ -20,7 +20,7 @@ some synchronisation would have to be added to that tasks were not run on every 
 the schedule would need access to any relevant directories.
 """
 
-import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, uuid, json
+import schedule, time, os, shutil, requests, datetime, tarfile, zipfile, subprocess, getpass, uuid, json
 from threading import Thread
 from octopus.core import app, initialise
 from service import reports
@@ -175,18 +175,17 @@ def moveftp():
                     founditems = True
                     for thisitem in os.listdir(os.path.join(userdir, dir, xfer)):
                         app.logger.info('Scheduler - moving file ' + thisitem + ' for Account:' + dir)
-                        # try:
-                        #     newowner = getpass.getuser()
-                        # except:
-                        #     newowner = 'green'
-                        newowner = app.config.get('PUBSTORE_USER', 'green')
+                        try:
+                            newowner = getpass.getuser()
+                        except:
+                            newowner = app.config.get('PUBSTORE_USER', 'green')
                         uniqueid = uuid.uuid4().hex
                         targetdir = os.path.join(pubstoredir, dir)
                         pendingdir = os.path.join(pubstoredir, dir, 'pending')
                         uniquedir = os.path.join(pubstoredir, dir, uniqueid)
                         moveitem = os.path.join(userdir, dir, xfer, thisitem)
-                        # subprocess.call( [ 'sudo', fl, dir, newowner, targetdir, uniqueid, uniquedir, moveitem, pendingdir ] )
-                        subprocess.call([fl, dir, newowner, targetdir, uniqueid, uniquedir, moveitem, pendingdir])
+                        subprocess.call( [ 'sudo', fl, dir, newowner, targetdir, uniqueid, uniquedir, moveitem, pendingdir ] )
+                        # subprocess.call([fl, dir, newowner, targetdir, uniqueid, uniquedir, moveitem, pendingdir])
 
             if founditems is False:
                 app.logger.debug('Scheduler - found nothing to move for Account:' + dir)
