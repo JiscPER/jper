@@ -205,6 +205,65 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(n) ]
 
     @classmethod
+    def pull_all_repositories(cls):
+        q = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            "role": "repository"
+                        }
+                    }
+                }
+            }
+        }
+        conn = cls.__conn__
+        types = cls.get_read_types(None)
+        r = raw.search(conn, types, q)
+        res = r.json()
+        # res = cls.query(q=q)
+        n = res.get('hits',{}).get('total',0)
+        if n > 10:
+            q["size"] = n
+            r = raw.search(conn, types, q)
+            res = r.json()
+        ans = []
+        for hit in res['hits']['hits']:
+            ans.append(hit.get('_source', {}).get('repository', {}).get('bibid', u"*****").lstrip('a'))
+        return ans
+
+    @classmethod
+    def pull_all_subject_repositories(cls):
+        q = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            "role": "repository",
+                        },
+                        "match": {
+                            "role": "subject_repository",
+                        },
+                    }
+                }
+            }
+        }
+        conn = cls.__conn__
+        types = cls.get_read_types(None)
+        r = raw.search(conn, types, q)
+        res = r.json()
+        # res = cls.query(q=q)
+        n = res.get('hits',{}).get('total',0)
+        if n > 10:
+            q["size"] = n
+            r = raw.search(conn, types, q)
+            res = r.json()
+        ans = []
+        for hit in res['hits']['hits']:
+            ans.append(hit.get('_source', {}).get('repository', {}).get('bibid', u"*****").lstrip('a'))
+        return ans
+
+    @classmethod
     def pull_all_non_subject_repositories(cls):
         q = {
           "query": {
