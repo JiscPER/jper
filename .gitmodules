@@ -1,8 +1,4 @@
-[submodule "esprit"]
-	path = esprit
-	url = https@github.com:OA-DeepGreen/esprit.git
-	branch = python3
-
 [submodule "magnificent-octopus"]
 	path = magnificent-octopus
 	url = git@github.com:OA-DeepGreen/magnificent-octopus
+	branch = python3
