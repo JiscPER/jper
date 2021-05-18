@@ -11,6 +11,7 @@ try:
     from service.web import app
     from service import packages
     from flask import url_for
+    from werkzeug.routing import BuildError
 except:
     print("ERROR: Need to run from a virtualenv enabled setting, i.e.")
     print("ERROR: run 'source ../../bin/activate' in some DG installation root folder first!")
@@ -74,9 +75,12 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
                         burl = app.config.get("BASE_URL")
                         if burl.endswith("/"):
                             burl = burl[:-1]
-                        url = burl + url_for("webapi.retrieve_content", 
+                        try:
+                            url = burl + url_for("webapi.retrieve_content",
                                              notification_id=note_id, 
                                              filename=d[2])
+                        except BuildError:
+                            url = burl + "/notification/{x}/content/{y}".format(x=note_id, y=d[2])
                     nl = {
                         "type": "package",
                         "format": "application/zip",

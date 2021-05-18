@@ -11,6 +11,7 @@ from octopus.lib import dates
 from flask_login import login_user, current_user
 from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
 from service import models
+from werkzeug.routing import BuildError
 
 blueprint = Blueprint('webapi', __name__)
 
@@ -60,7 +61,10 @@ def _accepted(obj):
     root = request.url_root
     if root.endswith("/"):
         root = root[:-1]
-    url = root + url_for("webapi.retrieve_notification", notification_id=obj.id)
+    try:
+        url = root + url_for("webapi.retrieve_notification", notification_id=obj.id)
+    except BuildError:
+        url = root + "/notification/{x}".format(x=obj.id)
     resp = make_response(json.dumps({"status" : "accepted", "id" : obj.id, "location" : url }))
     resp.mimetype = "application/json"
     resp.headers["Location"] = url

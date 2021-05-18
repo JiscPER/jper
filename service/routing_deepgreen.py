@@ -2,7 +2,6 @@
 Module which handles all the routing mechanics to convert UnroutedNotifications into either
 RoutedNotifications or FailedNotifications
 """
-
 from octopus.lib import dates
 from service import packages, models
 from octopus.core import app
@@ -11,7 +10,7 @@ from copy import deepcopy
 from datetime import datetime
 import uuid, re
 import unicodedata
-
+from werkzeug.routing import BuildError
 
 class RoutingException(Exception):
     """
@@ -571,7 +570,10 @@ def repackage(unrouted, repo_ids):
             burl = app.config.get("BASE_URL")
             if burl.endswith("/"):
                 burl = burl[:-1]
-            url = burl + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
+            try:
+                url = burl + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
+            except BuildError:
+                url = burl + "/notification/{x}/content/{y}".format(x=unrouted.id, y=d[2])
         links.append({
             "type": "package",
             "format": "application/zip",
@@ -601,7 +603,10 @@ def modify_public_links(routed):
                 burl = app.config.get("BASE_URL")
                 if burl.endswith("/"):
                     burl = burl[:-1]
-                nl['url'] = burl + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid)
+                try:
+                    nl['url'] = burl + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid)
+                except BuildError:
+                    nl['url'] = burl + "/notification/{x}/proxy/{y}".format(x=routed.id, y=nid)
             newlinks.append(nl)
     for l in newlinks:
         routed.add_link(l.get("url"), l.get("type"), l.get("format"), l.get("access"), l.get("packaging"))
