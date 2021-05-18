@@ -99,11 +99,11 @@ def _route(unrouted):
     else:
         doi = doi[0]
 
-    # Get all repository accounts, which are not subject repositories. Needed for Gold license
-    # bibids = list(set([acc['_source']['repository'].get('bibid', u"*****").lstrip('a') for acc in
-    #                    models.Account.query(q='*', size=10000).get('hits', {}).get('hits', []) if
-    #                    "repository" in acc['_source']['role']]))
-    bibids = list(set(models.Account.pull_all_non_subject_repositories()))
+    bibids = list(set(models.Account.pull_all_repositories()))
+    # NEW FEATURE
+    # Get all subject repository accounts. Needed for Gold license. 
+    # They do not get publications with gold license.
+    subject_repo_bibids = list(set(models.Account.pull_all_subject_repositories()))
 
     part_bibids = []
 
@@ -119,8 +119,10 @@ def _route(unrouted):
                 continue
             if lic.type == "gold":
                 for bibid in bibids:
-                    # note: only first ISSN record found in current license will be considered!
-                    part_bibids.append((bibid, lic_data[0]))
+                    # All repositories except subject repositories get publications with gold license
+                    if bibid not in subject_repo_bibids:
+                        # note: only first ISSN record found in current license will be considered!
+                        part_bibids.append((bibid, lic_data[0]))
             if lic.type == "alliance" or lic.type == "national" or lic.type == "deal" or lic.type == "fid":
                 al = models.Alliance.pull_by_key("license_id", lic.id)
                 # collect all EZB-Ids of participating institutions of AL
@@ -137,25 +139,28 @@ def _route(unrouted):
     for bibid, aldata in part_bibids:
         # 2017-06-06 TD : insert of this safeguard ;
         #                 although it would be *very* unlikely to be needed here.  Strange.
-        if bibid is None: continue
+        if bibid is None:
+            continue
         # 2017-03-09 TD : handle DG standard (and somehow passive..) accounts as well.
         # Regular accounts
         # 2019-03-21 TD : in some (rare?) test scenarios there might be more than one account
+        # 2019-03-26 TD : case decision - handle multiple, equal accs vs. single accs only
+        add_account = True
+        accounts = models.Account.pull_all_by_key("repository.bibid", bibid)
+        if len(accounts) > 1 and not app.config.get("DEEPGREEN_ALLOW_EQUAL_REPOS", False):
+            add_account = False
         for acc1 in models.Account.pull_all_by_key("repository.bibid", bibid):
-            if acc1 is not None and acc1.has_role("repository") and not acc1.is_passive:
+            if add_account and acc1 is not None and acc1.has_role("repository") and not acc1.is_passive:
+                # Add license id to match metadata
                 match_data.add_license_id(aldata["id"])
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc1.id, aldata, bibid))
-                # 2019-03-26 TD : case decision - handle multiple, equal accs vs. single accs only
-                if not app.config.get("DEEPGREEN_ALLOW_EQUAL_REPOS", False):
-                    break
         for acc2 in models.Account.pull_all_by_key("repository.bibid", "a" + bibid):
-            if acc2 is not None and acc2.has_role("repository") and not acc2.is_passive:
+            if add_account and acc2 is not None and acc2.has_role("repository") and not acc2.is_passive:
+                # Add license id to match metadata
                 match_data.add_license_id(aldata["id"])
                 unrouted.embargo = aldata["embargo"]
                 al_repos.append((acc2.id, aldata, "a" + bibid))
-                if not app.config.get("DEEPGREEN_ALLOW_EQUAL_REPOS", False):
-                    break
 
     # 2019-03-26 TD : continue from here on with all the collected 'al_repos'
     if len(al_repos) > 0:
@@ -175,11 +180,12 @@ def _route(unrouted):
             if rc is None:
                 app.logger.debug("Routing - Notification:{y} found no RepositoryConfig for Repository:{x}".format(y=unrouted.id, x=repo))
                 continue
+            app.logger.debug(
+                "Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
+            # NEW FEATURE
             # Does repository want articles for this license?
             if not license_included(unrouted.id, match_data, rc):
                 continue
-            app.logger.debug(
-                "Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
             prov = models.MatchProvenance()
             prov.repository = rc.repository
             # 2016-08-10 TD : fill additional field for origin of notification (publisher) with provider_id
@@ -199,7 +205,6 @@ def _route(unrouted):
                         x=prov.repository,
                         y=unrouted.id,
                         z=prov.id))
-                # match_provenance.append(prov)
             else:
                 app.logger.debug("Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
 
@@ -314,11 +319,22 @@ def match(notification_data, repository_config, provenance, acc_id):
     # do the required matches
     matched = False
     for repo_property, sub in match_algorithms.items():
+        match_affiliation = True
+        affiliation_checked = False
         for match_property, fn in sub.items():
             for rprop in getattr(rc, repo_property):
                 for mprop in getattr(md, match_property):
-                    if fn == exact_substring:
-                        m = fn(acc_id, rprop, mprop)
+                    # NEW FEATURE
+                    # Check if repository has role match_all'
+                    # if yes, do not need to match affiliations
+                    if match_property == 'affiliations':
+                        if not affiliation_checked:
+                            m = has_match_all(acc_id)
+                            affiliation_checked = True
+                            if m is not False:
+                                match_affiliation = False
+                        if match_affiliation:
+                            m = fn(rprop, mprop)
                     else:
                         m = fn(rprop, mprop)
                     if m is not False:  # it will be a string then
@@ -547,7 +563,6 @@ def repackage(unrouted, repo_ids):
             # otherwise, if the package manager can convert it, also get this job done, and next!
             if pm.convertible(pack):
                 conversions.append(pack)
-                continue
                 # break
                 # 2019-12-12 TD : replace 'break' because there might still be other packs in acc
 
@@ -632,21 +647,24 @@ def get_current_license_data(lic, publ_year, issn, doi):
                     yt = str(p["end"])
                 break
         if ys <= publ_year <= yt:
+            is_ezb = False
             url = ''
             for l in jrnl.get("link", {}):
                 if l.get("type", None) == "ezb":
+                    is_ezb = True
                     url = l.get("url", '')
                     break
             embargo = jrnl.get('embargo', {}).get('duration', '')
-            lic_data.append({
-                'name': lic.name,
-                'id': lic.id,
-                'issn': issn,
-                'doi': doi,
-                'link': url,
-                'embargo': embargo
-            })
-            break
+            if is_ezb:
+                lic_data.append({
+                    'name': lic.name,
+                    'id': lic.id,
+                    'issn': issn,
+                    'doi': doi,
+                    'link': url,
+                    'embargo': embargo
+                })
+                break
     return lic_data
 
 
@@ -815,7 +833,7 @@ def postcode_match(pc1, pc2):
     return False
 
 
-def exact_substring(acc_id, s1, s2):
+def exact_substring(s1, s2):
     """
     normalised s1 must be an exact substring of normalised s2
 
@@ -839,19 +857,6 @@ def exact_substring(acc_id, s1, s2):
     s1 = _normalise(s1)
     s2 = _normalise(s2)
 
-    acc = models.Account.pull(acc_id)
-    if acc.has_role('match_all'):
-        app.logger.debug("stl: User account {x} has role match all, so no affiliation match needed".format(x=acc_id))
-        return u"'User account' has role 'match_all', so no affiliation match needed"
-
-    if os1 == "IGNORE-AFFILIATION":
-        app.logger.debug("stl: Match exact_substring s1:{x} found".format(x=os1))
-        return u"'{a}' appears in 'repo_config'".format(a=os1)
-
-    if os2 == "IGNORE-AFFILIATION":
-        app.logger.debug(u"stl: Match exact_substring s2:{x} found".format(x=os2))
-        return u"'{a}' appears in 'metadata'".format(a=os2)
-
     # if s1 in s2:
     #     return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
     #
@@ -867,6 +872,14 @@ def exact_substring(acc_id, s1, s2):
         app.logger.debug("stl: Match exact_substring s1:{x} s2:{y}".format(x=os1, y=os2))
         app.logger.debug("stl: '{a}' appears in '{b}'".format(a=s1, b=s2))
         return "'{a}' appears in '{b}'".format(a=os1, b=os2)
+
+    if os1 == "IGNORE-AFFILIATION":
+        app.logger.debug("stl: Match exact_substring s1:{x} found".format(x=os1))
+        return "'{a}' appears in 'repo_config'".format(a=os1)
+
+    if os2 == "IGNORE-AFFILIATION":
+        app.logger.debug(u"stl: Match exact_substring s2:{x} found".format(x=os2))
+        return "'{a}' appears in 'metadata'".format(a=os2)
 
     return False
 
@@ -916,6 +929,13 @@ def _normalise(s):
     s = unicodedata.normalize('NFD', s)
     return s
 
+
+def has_match_all(acc_id):
+    acc = models.Account.pull(acc_id)
+    if acc.has_role('match_all'):
+        app.logger.debug("stl: User account {x} has role match all, so no affiliation match needed".format(x=acc_id))
+        return "'User account' has role 'match_all'. Affiliation match not needed."
+    return False
 
 ####################################################
 # Functions for turning objects into their string representations
