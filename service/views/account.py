@@ -158,11 +158,7 @@ def _list_failrequest(provider_id=None, bulk=False):
     except ParameterException as e:
         return _bad_request(str(e))
 
-    resp = make_response(flist.json())
-    resp.mimetype = "application/json"
-    resp.status_code = 200
-    return resp
-
+    return flist.json()
 
 # 2016-10-18 TD : new call to list all matches (model class MatchProvenance)
 # 2016-11-24 TD : to decrease the number of different calls; unifying screen and csv output
@@ -210,10 +206,7 @@ def _list_matchrequest(repo_id=None, provider=False, bulk=False):
     except ParameterException as e:
         return _bad_request(str(e))
 
-    resp = make_response(mlist.json())
-    resp.mimetype = "application/json"
-    resp.status_code = 200
-    return resp
+    return mlist.json()
 
 
 # def _list_request(repo_id=None):
@@ -263,10 +256,7 @@ def _list_request(repo_id=None, provider=False, bulk=False):
     except ParameterException as e:
         return _bad_request(str(e))
 
-    resp = make_response(nlist.json())
-    resp.mimetype = "application/json"
-    resp.status_code = 200
-    return resp
+    return nlist.json()
 
 
 # 2016-11-24 TD : *** DEPRECATED: this function shall not be called anymore! ***
@@ -295,13 +285,7 @@ def _download_request(repo_id=None,provider=False):
     except ParameterException as e:
         return _bad_request(str(e))
 
-    resp = make_response(nbulk.json())
-    resp.mimetype = "application/json"
-    resp.status_code = 200
-    return resp
-#
-# 2016-11-15 TD : process a download request of a notification list -- end --
-
+    return nbulk.json()
 
 
 @blueprint.before_request
@@ -346,7 +330,8 @@ def download(account_id):
         # 2016-11-24 TD : old call; DEPRECATED!
         # data = _download_request(repo_id=acc.id, provider=provider)
 
-    res = json.loads(html.response[0])
+    # res = json.loads(html.response[0])
+    res = json.loads(html)
 
     ## app.logger.debug('Download call gathered data: ' + json.dumps(res))
 
@@ -409,13 +394,15 @@ def details(repo_id):
     else:
         link += '/' + acc.id + '?since=01/06/2019&api_key='+acc.data['api_key']
              
-    results = json.loads(data.response[0])      
+    results = json.loads(data)
                         
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
     if provider:
-        return render_template('account/matching.html',repo=data.response, tabl=[json.dums(mtable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
-    return render_template('account/details.html',repo=data.response, tabl=[json.dumps(ntable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+        return render_template('account/matching.html',repo=data, tabl=[json.dumps(mtable)],
+                               num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/details.html',repo=data, tabl=[json.dumps(ntable)],
+                           num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 
 # 2016-10-19 TD : restructure matching and(!!) failing history output (primarily for publishers) -- start --
@@ -439,11 +426,12 @@ def matching(repo_id):
     else:
         link += '/' + acc.id + '?since=01/06/2019&api_key='+acc.data['api_key']
              
-    results = json.loads(data.response[0])      
+    results = json.loads(data)
                         
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
-    return render_template('account/matching.html',repo=data.response, tabl=[json.dumps(mtable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/matching.html',repo=data, tabl=[json.dumps(mtable)],
+                           num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 @blueprint.route('/failing/<provider_id>', methods=["GET", "POST"])
 def failing(provider_id):
@@ -464,11 +452,11 @@ def failing(provider_id):
     else:
         link += '/' + acc.id +'?since=01/06/2019&api_key='+acc.data['api_key']
              
-    results = json.loads(data.response[0])      
+    results = json.loads(data)
                         
     page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total']/results['pageSize']))
-    return render_template('account/failing.html',repo=data.response, tabl=[json.dumps(ftable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+    return render_template('account/failing.html',repo=data, tabl=[json.dumps(ftable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
 # 2016-10-19 TD : restructure matching and(!!) failing -- end --
 
@@ -497,9 +485,8 @@ def configView(repoid=None):
         # get the config for the current user and return it
         # this route may not actually be needed, but is convenient during development
         # also it should be more than just the strings data once complex configs are accepted
-        resp = make_response(json.dumps(rec.data))
-        resp.mimetype = "application/json"
-        return render_template('account/configview.html',repo=resp.response)
+        json_data = json.dumps(rec.data, ensure_ascii=False)
+        return render_template('account/configview.html',repo=json_data)
     elif request.method == 'POST':
         if request.json:
             saved = rec.set_repo_config(jsoncontent=request.json,repository=repoid)
