@@ -4,8 +4,7 @@ Blueprint for providing account management
 
 import uuid, json, time, requests
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
-from flask import render_template, abort, send_file
+from flask import Blueprint, request, url_for, flash, redirect, render_template, abort, send_file
 from service.forms.adduser import AdduserForm
 from flask_login import login_user, logout_user, current_user
 from octopus.core import app
@@ -14,108 +13,70 @@ from service.api import JPER, ParameterException
 from service.views.webapi import _bad_request
 from service.repository_licenses import get_matching_licenses
 import math
-# 2016-12-14 TD : Native 'csv'-module of python2.7 has encoding shortcomings
 import csv
 from jsonpath_rw_ext import parse
-# 2018-12-18 TD : Replacement for zip(...) which will _not_ truncate the result
 from itertools import zip_longest
-
-
 from service import models
-
-from io import StringIO
-from io import TextIOWrapper
-
+from io import StringIO, TextIOWrapper, BytesIO
 
 blueprint = Blueprint('account', __name__)
 
-# 2020-03-11 TD : including column(s) of publication_date and embargo for both srceen and file
-#
-# 2016-11-22 TD : global definition of output table by making use of jsonpath query strings;
-#                 applicable to both screen *and* file (e.g. csv) output simultanously
-#
 # Notification table/csv for repositories
 ntable = {
-            "screen" : ["Send Date", ["DOI","Publisher"], ["Publication Date", "Embargo"], "Title", "Analysis Date"],
-            "header" : ["Send Date", "DOI", "Publisher", "Publication Date", "Embargo", "Title", "Analysis Date" ],
-     "Analysis Date" : "notifications[*].analysis_date",
-         "Send Date" : "notifications[*].created_date",
-           "Embargo" : "notifications[*].embargo.duration",
-               "DOI" : "notifications[*].metadata.identifier[?(@.type=='doi')].id",
-         "Publisher" : "notifications[*].metadata.publisher",
-             "Title" : "notifications[*].metadata.title",
-  "Publication Date" : "notifications[*].metadata.publication_date"
+    "screen": ["Send Date", ["DOI", "Publisher"], ["Publication Date", "Embargo"], "Title", "Analysis Date"],
+    "header": ["Send Date", "DOI", "Publisher", "Publication Date", "Embargo", "Title", "Analysis Date"],
+    "Analysis Date": "notifications[*].analysis_date",
+    "Send Date": "notifications[*].created_date",
+    "Embargo": "notifications[*].embargo.duration",
+    "DOI": "notifications[*].metadata.identifier[?(@.type=='doi')].id",
+    "Publisher": "notifications[*].metadata.publisher",
+    "Title": "notifications[*].metadata.title",
+    "Publication Date": "notifications[*].metadata.publication_date"
 }
 
 # Matching table/csv for providers (with detailed reasoning)
 mtable = {
-         "screen" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term", "Appears in {notification_field}"],
-         "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
-  "Analysis Date" : "matches[*].created_date",
-  "ISSN or EISSN" : "matches[*].alliance.issn",
-            "DOI" : "matches[*].alliance.doi",
-        "License" : "matches[*].alliance.link",
-   "Forwarded to" : "matches[*].bibid",
-           "Term" : "matches[*].provenance[0].term",
-     "Appears in" : "matches[*].provenance[0].notification_field"
+    "screen": ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term",
+               "Appears in {notification_field}"],
+    "header": ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
+    "Analysis Date": "matches[*].created_date",
+    "ISSN or EISSN": "matches[*].alliance.issn",
+    "DOI": "matches[*].alliance.doi",
+    "License": "matches[*].alliance.link",
+    "Forwarded to": "matches[*].bibid",
+    "Term": "matches[*].provenance[0].term",
+    "Appears in": "matches[*].provenance[0].notification_field"
 }
-
 
 # Rejected table/csv for providers
 ftable = {
-         "screen" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
-         "header" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
-      "Send Date" : "failed[*].created_date",
-  "Analysis Date" : "failed[*].analysis_date",
-  "ISSN or EISSN" : "failed[*].issn_data",
-            "DOI" : "failed[*].metadata.identifier[?(@.type=='doi')].id",
-         "Reason" : "failed[*].reason"
+    "screen": ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
+    "header": ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
+    "Send Date": "failed[*].created_date",
+    "Analysis Date": "failed[*].analysis_date",
+    "ISSN or EISSN": "failed[*].issn_data",
+    "DOI": "failed[*].metadata.identifier[?(@.type=='doi')].id",
+    "Reason": "failed[*].reason"
 }
 
 # Config table/csv for repositories
 ctable = {
-        # "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
-        # "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
-        "screen" : ["Name Variants", "Domains", "Grant Numbers", "Keywords"],
-        "header" : ["Name Variants", "Domains", "Grant Numbers", "Dummy1", "Dummy2", "Keywords"],
- "Name Variants" : "repoconfig[0].name_variants[*]",
-       "Domains" : "repoconfig[0].domains[*]",
-#     "Postcodes" : "repoconfig[0].postcodes[*]",
- "Grant Numbers" : "repoconfig[0].grants[*]",
-        "Dummy1" : "repoconfig[0].author_ids[?(@.type=='xyz1')].id",
-        "Dummy2" : "repoconfig[0].author_ids[?(@.type=='xyz2')].id",
-#        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
-# "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
-      "Keywords" : "repoconfig[0].keywords[*]",
+    # "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+    # "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+    "screen": ["Name Variants", "Domains", "Grant Numbers", "Keywords"],
+    "header": ["Name Variants", "Domains", "Grant Numbers", "Dummy1", "Dummy2", "Keywords"],
+    "Name Variants": "repoconfig[0].name_variants[*]",
+    "Domains": "repoconfig[0].domains[*]",
+    #     "Postcodes" : "repoconfig[0].postcodes[*]",
+    "Grant Numbers": "repoconfig[0].grants[*]",
+    "Dummy1": "repoconfig[0].author_ids[?(@.type=='xyz1')].id",
+    "Dummy2": "repoconfig[0].author_ids[?(@.type=='xyz2')].id",
+    #        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
+    # "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
+    "Keywords": "repoconfig[0].keywords[*]",
 }
 
 
-# 2016-11-22 TD : '_flatten_json' superseded by previous construction (and the usage of jsonpath)
-#
-# # 2016-11-15 TD : create a flat json hierarchy
-# # ( taken from http://stackoverflow.com/questions/1871524/how-can-i-convert-json-to-csv#1871568 )
-# def _flatten_json(mp, delim='.'):
-#     ret = {}
-#     for k in mp.keys():
-#         if isinstance(mp[k], dict):
-#             get = _flatten_json(mp[k], delim)
-#             for j in get.keys():
-#                 ret[k + delim + j] = get[j]
-#         elif isinstance(mp[k], list):
-#             for l in mp[k]:
-#                 get = _flatten_json(l, delim)
-#                 for j in get.keys():
-#                     if k + delim + j in ret:
-#                         ret[k + delim + j].append(get[j])
-#                     else:
-#                         ret[k+ delim + j] = [get[j]]
-#         else:
-#             ret[k] = mp[k]
-#     return ret
-
-
-# 2016-10-19 TD : new call to list all failed notifications (model class FailedNotification)
-# 2016-11-24 TD : to decrease the number of different calls; unifying screen and csv output
 def _list_failrequest(provider_id=None, bulk=False):
     """
     Process a list request, either against the full dataset or the specific provider_id supplied
@@ -126,31 +87,11 @@ def _list_failrequest(provider_id=None, bulk=False):
     :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
-    since = request.values.get("since")
-    page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
-    page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
-
-    if since is None or since == "":
-        return _bad_request("Missing required parameter 'since'")
+    since = _validate_since()
+    page = _validate_page()
+    page_size = _validate_page_size()
 
     try:
-        since = dates.reformat(since)
-    except ValueError as e:
-        return _bad_request("Unable to understand since date '{x}'".format(x=since))
-
-    try:
-        page = int(page)
-    except:
-        return _bad_request("'page' parameter is not an integer")
-
-    try:
-        page_size = int(page_size)
-    except:
-        return _bad_request("'pageSize' parameter is not an integer")
-
-    try:
-        # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
-        # 2016-11-24 TD : bulk switch to decrease the number of different calls
         if bulk is True:
             flist = JPER.bulk_failed(current_user, since, provider_id=provider_id)
         else:
@@ -160,8 +101,7 @@ def _list_failrequest(provider_id=None, bulk=False):
 
     return flist.json()
 
-# 2016-10-18 TD : new call to list all matches (model class MatchProvenance)
-# 2016-11-24 TD : to decrease the number of different calls; unifying screen and csv output
+
 def _list_matchrequest(repo_id=None, provider=False, bulk=False):
     """
     Process a list request, either against the full dataset or the specific repo_id supplied
@@ -173,27 +113,9 @@ def _list_matchrequest(repo_id=None, provider=False, bulk=False):
     :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
-    since = request.values.get("since")
-    page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
-    page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
-
-    if since is None or since == "":
-        return _bad_request("Missing required parameter 'since'")
-
-    try:
-        since = dates.reformat(since)
-    except ValueError as e:
-        return _bad_request("Unable to understand since date '{x}'".format(x=since))
-
-    try:
-        page = int(page)
-    except:
-        return _bad_request("'page' parameter is not an integer")
-
-    try:
-        page_size = int(page_size)
-    except:
-        return _bad_request("'pageSize' parameter is not an integer")
+    since = _validate_since()
+    page = _validate_page()
+    page_size = _validate_page_size()
 
     try:
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
@@ -202,16 +124,14 @@ def _list_matchrequest(repo_id=None, provider=False, bulk=False):
             mlist = JPER.bulk_matches(current_user, since, repository_id=repo_id, provider=provider)
         else:
             # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
-            mlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
+            mlist = JPER.list_matches(current_user, since, page=page, page_size=page_size, repository_id=repo_id,
+                                      provider=provider)
     except ParameterException as e:
         return _bad_request(str(e))
 
     return mlist.json()
 
 
-# def _list_request(repo_id=None):
-# 2016-09-07 TD : trial to include some kind of reporting for publishers here!
-# 2016-11-24 TD : to decrease the number of different calls; unifying screen and csv output
 def _list_request(repo_id=None, provider=False, bulk=False):
     """
     Process a list request, either against the full dataset or the specific repo_id supplied
@@ -223,27 +143,9 @@ def _list_request(repo_id=None, provider=False, bulk=False):
     :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
-    since = request.values.get("since")
-    page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
-    page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
-
-    if since is None or since == "":
-        return _bad_request("Missing required parameter 'since'")
-
-    try:
-        since = dates.reformat(since)
-    except ValueError as e:
-        return _bad_request("Unable to understand since date '{x}'".format(x=since))
-
-    try:
-        page = int(page)
-    except:
-        return _bad_request("'page' parameter is not an integer")
-
-    try:
-        page_size = int(page_size)
-    except:
-        return _bad_request("'pageSize' parameter is not an integer")
+    since = _validate_since()
+    page = _validate_page()
+    page_size = _validate_page_size()
 
     try:
         # nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
@@ -252,7 +154,8 @@ def _list_request(repo_id=None, provider=False, bulk=False):
             nlist = JPER.bulk_notifications(current_user, since, repository_id=repo_id, provider=provider)
         else:
             # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
-            nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id, provider=provider)
+            nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id,
+                                            provider=provider)
     except ParameterException as e:
         return _bad_request(str(e))
 
@@ -261,7 +164,7 @@ def _list_request(repo_id=None, provider=False, bulk=False):
 
 # 2016-11-24 TD : *** DEPRECATED: this function shall not be called anymore! ***
 # 2016-11-15 TD : process a download request of a notification list -- start --
-def _download_request(repo_id=None,provider=False):
+def _download_request(repo_id=None, provider=False):
     """
     Process a download request, either against the full dataset or the specific repo_id supplied
     This function will pull the arguments it requires out of the Flask request object. 
@@ -288,19 +191,50 @@ def _download_request(repo_id=None,provider=False):
     return nbulk.json()
 
 
+def _validate_since():
+    since = request.values.get("since", None)
+    if since is None or since == "":
+        return _bad_request("Missing required parameter 'since'")
+
+    try:
+        since = dates.reformat(since)
+    except ValueError:
+        return _bad_request("Unable to understand since date '{x}'".format(x=since))
+
+    return since
+
+
+def _validate_page():
+    page = request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1))
+    try:
+        page = int(page)
+    except:
+        return _bad_request("'page' parameter is not an integer")
+    return page
+
+
+def _validate_page_size():
+    page_size = request.values.get("pageSize", app.config.get("DEFAULT_LIST_PAGE_SIZE", 25))
+    try:
+        page_size = int(page_size)
+    except:
+        return _bad_request("'pageSize' parameter is not an integer")
+    return page_size
+
+
 @blueprint.before_request
 def restrict():
     if current_user.is_anonymous:
         if not request.path.endswith('login'):
-            return redirect(request.path.rsplit('/',1)[0] + '/login')
+            return redirect(request.path.rsplit('/', 1)[0] + '/login')
 
 
 @blueprint.route('/')
 def index():
     if not current_user.is_super:
         abort(401)
-    ## users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=1000000).get('hits',{}).get('hits',[])]
-    users = [[i['_source']['id'],i['_source']['email'],i['_source'].get('role',[])] for i in models.Account().query(q='*',size=10000).get('hits',{}).get('hits',[])]
+    users = [[i['_source']['id'], i['_source']['email'], i['_source'].get('role', [])] for i in
+             models.Account().query(q='*', size=10000).get('hits', {}).get('hits', [])]
     return render_template('account/users.html', users=users)
 
 
@@ -310,12 +244,12 @@ def download(account_id):
     acc = models.Account.pull(account_id)
     if acc is None:
         abort(404)
-   
+
     provider = acc.has_role('publisher')
     data = None
-   
+
     if provider:
-        if request.args.get('rejected',False):
+        if request.args.get('rejected', False):
             fprefix = "failed"
             xtable = ftable
             html = _list_failrequest(provider_id=account_id, bulk=True)
@@ -327,54 +261,30 @@ def download(account_id):
         fprefix = "routed"
         xtable = ntable
         html = _list_request(repo_id=account_id, provider=provider, bulk=True)
-        # 2016-11-24 TD : old call; DEPRECATED!
-        # data = _download_request(repo_id=acc.id, provider=provider)
 
-    # res = json.loads(html.response[0])
     res = json.loads(html)
 
-    ## app.logger.debug('Download call gathered data: ' + json.dumps(res))
-
-    rows=[]
+    rows = []
     for hdr in xtable["header"]:
-        rows.append( (m.value for m in parse(xtable[hdr]).find(res)), )
+        rows.append((m.value for m in parse(xtable[hdr]).find(res)), )
 
+    rows = list(zip_longest(*rows, fillvalue=''))
     #
-    # 2016-11-25 TD : FIXME: 'zip' command truncates *silently* to the shortest length! 
-    #                 Rows might therefore become really inconsistent here.  Indeed, 
-    #                 very ugly!!!
-    ## rows = zip(*rows)
-    #
-    # 2018-12-18 TD : Here comes the solution: Using a tool in itertools: izip_longest
-    #
-    rows = list( zip_longest(*rows, fillvalue='') )
-    #
-
+    # Python 3 you need to use StringIO with csv.write. send_file requires BytesIO, so you have to do both.
     strm = StringIO()
     writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
-    # writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
-    # 2016-12-14 TD : python's native 'csv'-module has encoding problems...
-    #
-    ## writer = csv.DictWriter(strm, fieldnames=ntable["header"],
-    ##                               delimiter=',', quoting=csv.QUOTE_ALL)
-
-    ## writer.writeheader()
     writer.writerow(xtable["header"])
     writer.writerows(rows)
-
+    mem = BytesIO()
+    mem.write(strm.getvalue().encode('utf-8-sig'))
+    mem.seek(0)
+    strm.close()
     fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=account_id, x=dates.now())
-
-    #time.sleep(1)
-    #flash(" Saved {z} notifications as\n '{x}'".format(z=fprefix,x=fname), "success")
-    return send_file(strm, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
-#
-# 2016-11-15 TD : enable download option ("csv", for a start...)
+    return send_file(mem, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
 
 
 @blueprint.route('/details/<repo_id>', methods=["GET", "POST"])
 def details(repo_id):
-    # data = _list_request(repo_id)
-    # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
     acc = models.Account.pull(repo_id)
     if acc is None:
         abort(404)
@@ -389,27 +299,25 @@ def details(repo_id):
     date = request.args.get('since')
     if date == '':
         date = '01/06/2019'
-    if current_user.has_role('admin'): 
-        link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
+    if current_user.has_role('admin'):
+        link += '/' + acc.id + '?since=' + date + '&api_key=' + current_user.data['api_key']
     else:
-        link += '/' + acc.id + '?since=01/06/2019&api_key='+acc.data['api_key']
-             
+        link += '/' + acc.id + '?since=01/06/2019&api_key=' + acc.data['api_key']
+
     results = json.loads(data)
-                        
-    page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
-    num_of_pages = int(math.ceil(results['total']/results['pageSize']))
+
+    page_num = int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
+    num_of_pages = int(math.ceil(results['total'] / results['pageSize']))
     if provider:
-        return render_template('account/matching.html',repo=data, tabl=[json.dumps(mtable)],
-                               num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
-    return render_template('account/details.html',repo=data, tabl=[json.dumps(ntable)],
-                           num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+        return render_template('account/matching.html', repo=data, tabl=[json.dumps(mtable)],
+                               num_of_pages=num_of_pages, page_num=page_num, link=link, date=date)
+    return render_template('account/details.html', repo=data, tabl=[json.dumps(ntable)],
+                           num_of_pages=num_of_pages, page_num=page_num, link=link, date=date)
 
 
 # 2016-10-19 TD : restructure matching and(!!) failing history output (primarily for publishers) -- start --
 @blueprint.route('/matching/<repo_id>', methods=["GET", "POST"])
 def matching(repo_id):
-    # data = _list_request(repo_id)
-    # 2016-09-07 TD : trial to include some kind of reporting for publishers here!
     acc = models.Account.pull(repo_id)
     if acc is None:
         abort(404)
@@ -421,17 +329,18 @@ def matching(repo_id):
     date = request.args.get('since')
     if date == '':
         date = '01/06/2019'
-    if current_user.has_role('admin'): 
-        link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
+    if current_user.has_role('admin'):
+        link += '/' + acc.id + '?since=' + date + '&api_key=' + current_user.data['api_key']
     else:
-        link += '/' + acc.id + '?since=01/06/2019&api_key='+acc.data['api_key']
-             
+        link += '/' + acc.id + '?since=01/06/2019&api_key=' + acc.data['api_key']
+
     results = json.loads(data)
-                        
-    page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
-    num_of_pages = int(math.ceil(results['total']/results['pageSize']))
-    return render_template('account/matching.html',repo=data, tabl=[json.dumps(mtable)],
-                           num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
+
+    page_num = int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
+    num_of_pages = int(math.ceil(results['total'] / results['pageSize']))
+    return render_template('account/matching.html', repo=data, tabl=[json.dumps(mtable)],
+                           num_of_pages=num_of_pages, page_num=page_num, link=link, date=date)
+
 
 @blueprint.route('/failing/<provider_id>', methods=["GET", "POST"])
 def failing(provider_id):
@@ -447,32 +356,31 @@ def failing(provider_id):
     date = request.args.get('since')
     if date == '':
         date = '01/06/2019'
-    if current_user.has_role('admin'): 
-        link +='/' + acc.id + '?since='+date+'&api_key='+current_user.data['api_key']
+    if current_user.has_role('admin'):
+        link += '/' + acc.id + '?since=' + date + '&api_key=' + current_user.data['api_key']
     else:
-        link += '/' + acc.id +'?since=01/06/2019&api_key='+acc.data['api_key']
-             
+        link += '/' + acc.id + '?since=01/06/2019&api_key=' + acc.data['api_key']
+
     results = json.loads(data)
-                        
-    page_num =  int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
-    num_of_pages = int(math.ceil(results['total']/results['pageSize']))
-    return render_template('account/failing.html',repo=data, tabl=[json.dumps(ftable)], num_of_pages = num_of_pages, page_num = page_num, link = link,date=date)
 
-# 2016-10-19 TD : restructure matching and(!!) failing -- end --
+    page_num = int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
+    num_of_pages = int(math.ceil(results['total'] / results['pageSize']))
+    return render_template('account/failing.html', repo=data, tabl=[json.dumps(ftable)], num_of_pages=num_of_pages,
+                           page_num=page_num, link=link, date=date)
 
 
-@blueprint.route("/configview", methods=["GET","POST"])
-@blueprint.route("/configview/<repoid>", methods=["GET","POST"])
+@blueprint.route("/configview", methods=["GET", "POST"])
+@blueprint.route("/configview/<repoid>", methods=["GET", "POST"])
 def configView(repoid=None):
     app.logger.debug(current_user.id + " " + request.method + " to config route")
     if repoid is None:
         if current_user.has_role('repository'):
             repoid = current_user.id
         elif current_user.has_role('admin'):
-            return '' # the admin cannot do anything at /config, but gets a 200 so it is clear they are allowed
+            return ''  # the admin cannot do anything at /config, but gets a 200 so it is clear they are allowed
         else:
             abort(400)
-    elif not current_user.has_role('admin'): # only the superuser can set a repo id directly
+    elif not current_user.has_role('admin'):  # only the superuser can set a repo id directly
         abort(401)
     rec = models.RepositoryConfig().pull_by_repo(repoid)
     if rec is None:
@@ -486,16 +394,18 @@ def configView(repoid=None):
         # this route may not actually be needed, but is convenient during development
         # also it should be more than just the strings data once complex configs are accepted
         json_data = json.dumps(rec.data, ensure_ascii=False)
-        return render_template('account/configview.html',repo=json_data)
+        return render_template('account/configview.html', repo=json_data)
     elif request.method == 'POST':
         if request.json:
-            saved = rec.set_repo_config(jsoncontent=request.json,repository=repoid)
+            saved = rec.set_repo_config(jsoncontent=request.json, repository=repoid)
         else:
             try:
                 if request.files['file'].filename.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
+                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'),
+                                                repository=repoid)
                 elif request.files['file'].filename.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
+                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'),
+                                                repository=repoid)
             except:
                 saved = False
         if saved:
@@ -504,15 +414,15 @@ def configView(repoid=None):
             abort(400)
 
 
-@blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
+@blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
 def username(username):
     acc = models.Account.pull(username)
 
     if acc is None:
         abort(404)
-    elif ( request.method == 'DELETE' or 
-            ( request.method == 'POST' and 
-            request.values.get('submit','').split(' ')[0].lower() == 'delete' ) ):
+    elif (request.method == 'DELETE' or
+          (request.method == 'POST' and
+           request.values.get('submit', '').split(' ')[0].lower() == 'delete')):
         if not current_user.is_super:
             abort(401)
         else:
@@ -533,8 +443,8 @@ def username(username):
     elif request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
-            
-        if request.values.get('email',False):
+
+        if request.values.get('email', False):
             acc.data['email'] = request.values['email']
 
         if 'password' in request.values and not request.values['password'].startswith('sha1'):
@@ -543,7 +453,7 @@ def username(username):
                 return render_template('account/user.html', account=acc)
             else:
                 acc.set_password(request.values['password'])
-            
+
         acc.save()
         time.sleep(2)
         flash("Record updated", "success")
@@ -569,90 +479,94 @@ def pubinfo(username):
     if current_user.id != acc.id and not current_user.is_super:
         abort(401)
 
-    if 'embargo' not in acc.data: acc.data['embargo'] = {}
+    if 'embargo' not in acc.data:
+        acc.data['embargo'] = {}
     # 2016-07-12 TD: proper handling of two independent forms using hidden input fields
-    if request.values.get('embargo_form',False):
-        if request.values.get('embargo_duration',False):
+    if request.values.get('embargo_form', False):
+        if request.values.get('embargo_duration', False):
             acc.data['embargo']['duration'] = request.values['embargo_duration']
         else:
             acc.data['embargo']['duration'] = 0
-             
-    if 'license' not in acc.data: acc.data['license'] = {}
+
+    if 'license' not in acc.data:
+        acc.data['license'] = {}
     # 2016-07-12 TD: proper handling of two independent forms using hidden input fields
-    if request.values.get('license_form',False):
-        if request.values.get('license_title',False):
+    if request.values.get('license_form', False):
+        if request.values.get('license_title', False):
             acc.data['license']['title'] = request.values['license_title']
         else:
             acc.data['license']['title'] = ""
-        if request.values.get('license_type',False):
+        if request.values.get('license_type', False):
             acc.data['license']['type'] = request.values['license_type']
         else:
             acc.data['license']['type'] = ""
-        if request.values.get('license_url',False):
+        if request.values.get('license_url', False):
             acc.data['license']['url'] = request.values['license_url']
         else:
             acc.data['license']['url'] = ""
-        if request.values.get('license_version',False):
+        if request.values.get('license_version', False):
             acc.data['license']['version'] = request.values['license_version']
         else:
             acc.data['license']['version'] = ""
-        
+
     acc.save()
     time.sleep(2)
     flash('Thank you. Your publisher details have been updated.', "success")
     return redirect(url_for('.username', username=username))
 
-        
+
 @blueprint.route('/<username>/repoinfo', methods=['POST'])
 def repoinfo(username):
     acc = models.Account.pull(username)
     if current_user.id != acc.id and not current_user.is_super:
         abort(401)
 
-    if 'repository' not in acc.data: acc.data['repository'] = {}
+    if 'repository' not in acc.data:
+        acc.data['repository'] = {}
     # 2016-10-04 TD: proper handling of two independent forms using hidden input fields
     # if request.values.get('repo_profile_form',False):
-    if request.values.get('repository_software',False):
-            acc.data['repository']['software'] = request.values['repository_software']
+    if request.values.get('repository_software', False):
+        acc.data['repository']['software'] = request.values['repository_software']
     else:
-            acc.data['repository']['software'] = ''
-    if request.values.get('repository_url',False):
-            acc.data['repository']['url'] = request.values['repository_url'].strip()
+        acc.data['repository']['software'] = ''
+    if request.values.get('repository_url', False):
+        acc.data['repository']['url'] = request.values['repository_url'].strip()
     else:
-            acc.data['repository']['url'] = ''
-    if request.values.get('repository_name',False):
-            acc.data['repository']['name'] = request.values['repository_name']
+        acc.data['repository']['url'] = ''
+    if request.values.get('repository_name', False):
+        acc.data['repository']['name'] = request.values['repository_name']
     else:
-            acc.data['repository']['name'] = ''
-    if request.values.get('repository_sigel',False):
-            acc.data['repository']['sigel'] = request.values['repository_sigel'].split(',')
+        acc.data['repository']['name'] = ''
+    if request.values.get('repository_sigel', False):
+        acc.data['repository']['sigel'] = request.values['repository_sigel'].split(',')
     else:
-            acc.data['repository']['sigel'] = []
-    if request.values.get('repository_bibid',False):
-            acc.data['repository']['bibid'] = request.values['repository_bibid'].strip().upper()
+        acc.data['repository']['sigel'] = []
+    if request.values.get('repository_bibid', False):
+        acc.data['repository']['bibid'] = request.values['repository_bibid'].strip().upper()
     else:
-            acc.data['repository']['bibid'] = ''
-        
-    if 'sword' not in acc.data: acc.data['sword'] = {}
+        acc.data['repository']['bibid'] = ''
+
+    if 'sword' not in acc.data:
+        acc.data['sword'] = {}
     # 2016-10-04 TD: proper handling of two independent forms using hidden input fields
     # if request.values.get('repo_sword_form',False):
-    if request.values.get('sword_username',False):
-            acc.data['sword']['username'] = request.values['sword_username']
+    if request.values.get('sword_username', False):
+        acc.data['sword']['username'] = request.values['sword_username']
     else:
-            acc.data['sword']['username'] = ''
-    if request.values.get('sword_password',False):
-            acc.data['sword']['password'] = request.values['sword_password']
+        acc.data['sword']['username'] = ''
+    if request.values.get('sword_password', False):
+        acc.data['sword']['password'] = request.values['sword_password']
     else:
-            acc.data['sword']['password'] = ''
-    if request.values.get('sword_collection',False):
-            acc.data['sword']['collection'] = request.values['sword_collection'].strip()
+        acc.data['sword']['password'] = ''
+    if request.values.get('sword_collection', False):
+        acc.data['sword']['collection'] = request.values['sword_collection'].strip()
     else:
-            acc.data['sword']['collection'] = ''
-        
-    if request.values.get('packaging',False):
-            acc.data['packaging'] = [s.strip() for s in request.values['packaging'].split(',')]
+        acc.data['sword']['collection'] = ''
+
+    if request.values.get('packaging', False):
+        acc.data['packaging'] = [s.strip() for s in request.values['packaging'].split(',')]
     else:
-            acc.data['packaging'] = []
+        acc.data['packaging'] = []
 
     acc.save()
     time.sleep(2)
@@ -667,7 +581,7 @@ def apikey(username):
     acc = models.Account.pull(username)
     acc.data['api_key'] = str(uuid.uuid4())
     acc.save()
-    time.sleep(2);
+    time.sleep(2)
     flash('Thank you. Your API key has been updated.', "success")
     return redirect(url_for('.username', username=username))
 
@@ -683,38 +597,30 @@ def config(username):
     if request.method == "GET":
         fprefix = "repoconfig"
         xtable = ctable
-        res = { "repoconfig": [json.loads(rec.json())] }
+        res = {"repoconfig": [json.loads(rec.json())]}
 
         rows = []
         for hdr in xtable["header"]:
-            rows.append( (m.value for m in parse(xtable[hdr]).find(res)), )
+            rows.append((m.value for m in parse(xtable[hdr]).find(res)), )
 
-        rows = list( zip_longest(*rows, fillvalue='') )
+        rows = list(zip_longest(*rows, fillvalue=''))
 
+        # Python 3 you need to use StringIO with csv.write and send_file requires BytesIO, so you have to do both.
         strm = StringIO()
         writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-        # writer = csv.writer(strm, delimiter=',', quoting=csv.QUOTE_ALL)
-        # 2016-12-14 TD : python's native 'csv'-module has encoding problems...
-        #
-        ## writer = csv.DictWriter(strm, fieldnames=ntable["header"],
-        ##                               delimiter=',', quoting=csv.QUOTE_ALL)
-
-        ## writer.writeheader()
         writer.writerow(xtable["header"])
         writer.writerows(rows)
-
+        mem = BytesIO()
+        mem.write(strm.getvalue().encode('utf-8-sig'))
+        mem.seek(0)
+        strm.close()
         fname = "{z}_{y}_{x}.csv".format(z=fprefix, y=username, x=dates.now())
-
-        #time.sleep(1)
-        #flash(" Saved {z} notifications as\n '{x}'".format(z=fprefix,x=fname), "success")
-        return send_file(strm, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
-        #
-        # 2018-12-18 TD : enable download option ("csv", for a start...)
+        return send_file(mem, as_attachment=True, attachment_filename=fname, mimetype='text/csv')
 
     elif request.method == "POST":
         try:
             saved = False
-            if len(request.values.get('url','')) > 1:
+            if len(request.values.get('url', '')) > 1:
                 url = request.values['url']
                 fn = url.split('?')[0].split('#')[0].split('/')[-1]
                 r = requests.get(url)
@@ -723,20 +629,23 @@ def config(username):
                 except:
                     strm = StringIO(r.text)
                     if fn.endswith('.csv'):
-                        saved = rec.set_repo_config(csvfile=strm,repository=username)
+                        saved = rec.set_repo_config(csvfile=strm, repository=username)
                     elif fn.endswith('.txt'):
-                        saved = rec.set_repo_config(textfile=strm,repository=username)
+                        saved = rec.set_repo_config(textfile=strm, repository=username)
             else:
                 if request.files['file'].filename.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=username)
+                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'),
+                                                repository=username)
                 elif request.files['file'].filename.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=username)
+                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'),
+                                                repository=username)
             if saved:
-                flash('Thank you. Your match config has been updated.', "success")        
+                flash('Thank you. Your match config has been updated.', "success")
             else:
-                flash('Sorry, there was an error with your config upload. Please try again.', "error")        
+                flash('Sorry, there was an error with your config upload. Please try again.', "error")
         except Exception as e:
-            flash('Sorry, there was an exception detected while your config upload was processed. Please try again.', "error")
+            flash('Sorry, there was an exception detected while your config upload was processed. Please try again.',
+                  "error")
             app.logger.error(str(e))
         time.sleep(1)
 
@@ -745,7 +654,7 @@ def config(username):
 
 @blueprint.route('/<username>/become/<role>', methods=['POST'])
 @blueprint.route('/<username>/cease/<role>', methods=['POST'])
-def changerole(username,role):
+def changerole(username, role):
     acc = models.Account.pull(username)
     if acc is None:
         abort(404)
@@ -778,7 +687,7 @@ def changerole(username,role):
 @blueprint.route('/<username>/matches')
 def matches():
     return redirect(url_for('.username/match.html', username=username))
-        
+
 
 @blueprint.route('/<username>/excluded_license', methods=["POST"])
 def excluded_license(username):
@@ -829,56 +738,61 @@ def register():
 
     form = AdduserForm(request.form)
     vals = request.json if request.json else request.values
-    
+
     if request.method == 'POST' and form.validate():
-        #From here! 
+        # From here!
         api_key = str(uuid.uuid4())
         account = models.Account()
         account.data['email'] = vals['email']
         account.data['api_key'] = api_key
         account.data['role'] = []
-    
-        if vals.get('repository_name',False):
+
+        if vals.get('repository_name', False):
             account.data['repository'] = {
                 'name': vals['repository_name']
             }
-            if vals.get('repository_software',False): account.data['repository']['software'] = vals['repository_software']
-            if vals.get('repository_url',False): account.data['repository']['url'] = vals['repository_url']
-            if vals.get('repository_bibid',False): account.data['repository']['bibid'] = vals['repository_bibid'].upper()
-            if vals.get('repository_sigel',False): account.data['repository']['sigel'] = vals['repository_sigel'].split(',')
-    
-        if vals.get('sword_username',False):
+            if vals.get('repository_software', False):
+                account.data['repository']['software'] = vals['repository_software']
+            if vals.get('repository_url', False):
+                account.data['repository']['url'] = vals['repository_url']
+            if vals.get('repository_bibid', False):
+                account.data['repository']['bibid'] = vals['repository_bibid'].upper()
+            if vals.get('repository_sigel', False):
+                account.data['repository']['sigel'] = vals['repository_sigel'].split(',')
+
+        if vals.get('sword_username', False):
             account.data['sword'] = {
                 'username': vals['sword_username']
             }
-            if vals.get('sword_password',False): account.data['sword']['password'] = vals['sword_password']
-            if vals.get('sword_collection',False): account.data['sword']['collection'] = vals['sword_collection']
-    
-        if vals.get('packaging',False):
+            if vals.get('sword_password', False):
+                account.data['sword']['password'] = vals['sword_password']
+            if vals.get('sword_collection', False):
+                account.data['sword']['collection'] = vals['sword_collection']
+
+        if vals.get('packaging', False):
             account.data['packaging'] = vals['packaging'].split(',')
-    
-        if vals.get('embargo_duration',False):
+
+        if vals.get('embargo_duration', False):
             account.data['embargo'] = {'duration': vals['embargo_duration']}
-    
-        if vals.get('license_title',False):
+
+        if vals.get('license_title', False):
             account.data['license'] = {'title': vals['license_title']}
-            if vals.get('license_type',False):
+            if vals.get('license_type', False):
                 account.data['license']['type'] = vals['license_type']
-            if vals.get('license_url',False):
+            if vals.get('license_url', False):
                 account.data['license']['url'] = vals['license_url']
-            if vals.get('license_version',False):
+            if vals.get('license_version', False):
                 account.data['license']['version'] = vals['license_version']
-    
+
         account.set_password(vals['password'])
         if vals['radio'] != 'publisher':
             account.add_role(vals['radio'])
         account.save()
         if vals['radio'] == 'publisher':
             account.become_publisher()
-        #To here! it should be a method in model not part of the controller!
+        # To here! it should be a method in model not part of the controller!
         time.sleep(1)
         flash('Account created for ' + account.id, 'success')
         return redirect('/account')
-    
-    return render_template('account/register.html', vals = vals, form = form)
 
+    return render_template('account/register.html', vals=vals, form=form)
