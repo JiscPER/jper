@@ -1397,8 +1397,7 @@ class RoutingMetadata(dataobj.DataObj):
                 "postcodes" : {"contains" : "field", "coerce" : "unicode"},
                 "keywords" : {"contains" : "field", "coerce" : "unicode"},
                 "grants" : {"contains" : "field", "coerce" : "unicode"},
-                "content_types" : {"contains" : "field", "coerce" : "unicode"},
-                "license_ids": {"contains": "field", "coerce": "unicode"},
+                "content_types" : {"contains" : "field", "coerce" : "unicode"}
             },
             "structs" : {
                 "author_ids" : {
@@ -1603,34 +1602,6 @@ class RoutingMetadata(dataobj.DataObj):
         :return:
         """
         self._add_to_list("postcodes", val, coerce=dataobj.to_unicode(), unique=True)
-
-    @property
-    def license_ids(self):
-        """
-        The license ids in the routing metadata
-
-        :return: a list of license ids
-        """
-        return self._get_list("license_ids", coerce=dataobj.to_unicode())
-
-    @license_ids.setter
-    def license_ids(self, val):
-        """
-        Set the license ids for this routing metadata
-
-        :param val: list of license ids
-        :return:
-        """
-        self._set_list("license_ids", val, coerce=dataobj.to_unicode())
-
-    def add_license_id(self, val):
-        """
-        Add a license id to the existing list of license ids for this routing metadata
-
-        :param val: a license id
-        :return:
-        """
-        self._add_to_list("license_ids", val, coerce=dataobj.to_unicode(), unique=True)
 
     def has_data(self):
         """

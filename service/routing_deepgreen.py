@@ -114,6 +114,9 @@ def _route(unrouted):
         if lics is None: # nothing found at all...
             continue
         for lic in lics:
+            # lic_data includes only valid license for the issn.
+            # It is a list with the url for the journal changing between each entry.
+            # So will only use the first record, as any valid url is fine.
             lic_data = get_current_license_data(lic, publ_year, issn, doi)
             if len(lic_data) == 0:
                 continue
@@ -121,13 +124,12 @@ def _route(unrouted):
                 for bibid in bibids:
                     # All repositories except subject repositories get publications with gold license
                     if bibid not in subject_repo_bibids:
-                        # note: only first ISSN record found in current license will be considered!
                         part_bibids.append((bibid, lic_data[0]))
             if lic.type == "alliance" or lic.type == "national" or lic.type == "deal" or lic.type == "fid":
                 al = models.Alliance.pull_by_key("license_id", lic.id)
                 # collect all EZB-Ids of participating institutions of AL
-                for part in al.participants:
-                    for i in part["identifier"]:
+                for participant in al.participants:
+                    for i in participant["identifier"]:
                         if i.get("type") == "ezb":
                             # note: only first ISSN record found in current license will be considered!
                             part_bibids.append((i.get("id"), lic_data[0]))
@@ -136,7 +138,7 @@ def _route(unrouted):
     # 2019-06-03 TD : yet a level more to differentiate between active and passive
     #                 accounts. A new requirement, at a /very/ early stage... gosh.
     al_repos = []
-    for bibid, aldata in part_bibids:
+    for bibid, lic_data in part_bibids:
         # 2017-06-06 TD : insert of this safeguard ;
         #                 although it would be *very* unlikely to be needed here.  Strange.
         if bibid is None:
@@ -151,16 +153,13 @@ def _route(unrouted):
             add_account = False
         for acc1 in models.Account.pull_all_by_key("repository.bibid", bibid):
             if add_account and acc1 is not None and acc1.has_role("repository") and not acc1.is_passive:
-                # Add license id to match metadata
-                match_data.add_license_id(aldata["id"])
-                unrouted.embargo = aldata["embargo"]
-                al_repos.append((acc1.id, aldata, bibid))
+                # extend this to hold all the license data may be?
+                unrouted.embargo = lic_data["embargo"]
+                al_repos.append((acc1.id, lic_data, bibid))
         for acc2 in models.Account.pull_all_by_key("repository.bibid", "a" + bibid):
             if add_account and acc2 is not None and acc2.has_role("repository") and not acc2.is_passive:
-                # Add license id to match metadata
-                match_data.add_license_id(aldata["id"])
-                unrouted.embargo = aldata["embargo"]
-                al_repos.append((acc2.id, aldata, "a" + bibid))
+                unrouted.embargo = lic_data["embargo"]
+                al_repos.append((acc2.id, lic_data, "a" + bibid))
 
     # 2019-03-26 TD : continue from here on with all the collected 'al_repos'
     if len(al_repos) > 0:
@@ -175,7 +174,7 @@ def _route(unrouted):
     try:
         # for rc in models.RepositoryConfig.scroll(page_size=10, keepalive="1m"):
         # 2016-09-08 TD : iterate through all _qualified_ repositories by the current alliance license
-        for repo, aldata, bibid in al_repos:
+        for repo, lic_data, bibid in al_repos:
             rc = models.RepositoryConfig.pull_by_repo(repo)
             if rc is None:
                 app.logger.debug("Routing - Notification:{y} found no RepositoryConfig for Repository:{x}".format(y=unrouted.id, x=repo))
@@ -184,14 +183,14 @@ def _route(unrouted):
                 "Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
             # NEW FEATURE
             # Does repository want articles for this license?
-            if not license_included(unrouted.id, match_data, rc):
+            if not license_included(unrouted.id, lic_data, rc):
                 continue
             prov = models.MatchProvenance()
             prov.repository = rc.repository
             # 2016-08-10 TD : fill additional field for origin of notification (publisher) with provider_id
             prov.publisher = unrouted.provider_id
             # 2016-10-13 TD : fill additional object of alliance license with data gathered from EZB
-            prov.alliance = aldata
+            prov.alliance = lic_data
             prov.bibid = bibid
             prov.notification = unrouted.id
             match(match_data, rc, prov, repo)
@@ -236,7 +235,7 @@ def _route(unrouted):
             routed.issn_data = "None"
         for pl in pack_links:
             routed.add_link(pl.get("url"), pl.get("type"), pl.get("format"), pl.get("access"), pl.get("packaging"))
-        routed.repositories = match_ids
+        routed.repositories = list(set(match_ids)) # make them unique
         routed.analysis_date = dates.now()
         if metadata is not None:
             enhance(routed, metadata)
@@ -582,13 +581,13 @@ def repackage(unrouted, repo_ids):
     links = []
     for d in done:
         with app.test_request_context():
-            burl = app.config.get("BASE_URL")
-            if burl.endswith("/"):
-                burl = burl[:-1]
+            api_burl = app.config.get("API_BASE_URL")
+            if api_burl.endswith("/"):
+                api_burl = api_burl[:-1]
             try:
-                url = burl + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
+                url = api_burl + url_for("webapi.retrieve_content", notification_id=unrouted.id, filename=d[2])
             except BuildError:
-                url = burl + "/notification/{x}/content/{y}".format(x=unrouted.id, y=d[2])
+                url = api_burl + "/notification/{x}/content/{y}".format(x=unrouted.id, y=d[2])
         links.append({
             "type": "package",
             "format": "application/zip",
@@ -615,13 +614,13 @@ def modify_public_links(routed):
             link['proxy'] = nid
             nl['access'] = 'router'
             with app.test_request_context():
-                burl = app.config.get("BASE_URL")
-                if burl.endswith("/"):
-                    burl = burl[:-1]
+                api_burl = app.config.get("API_BASE_URL")
+                if api_burl.endswith("/"):
+                    api_burl = api_burl[:-1]
                 try:
-                    nl['url'] = burl + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid)
+                    nl['url'] = api_burl + url_for("webapi.proxy_content", notification_id=routed.id, pid=nid)
                 except BuildError:
-                    nl['url'] = burl + "/notification/{x}/proxy/{y}".format(x=routed.id, y=nid)
+                    nl['url'] = api_burl + "/notification/{x}/proxy/{y}".format(x=routed.id, y=nid)
             newlinks.append(nl)
     for l in newlinks:
         routed.add_link(l.get("url"), l.get("type"), l.get("format"), l.get("access"), l.get("packaging"))
@@ -671,18 +670,14 @@ def get_current_license_data(lic, publ_year, issn, doi):
 ###########################################################
 # Individual match functions
 
-def license_included(urid, match_data, rc):
-    included = True
-    for l in rc.excluded_license:
-        if l in match_data.license_ids:
-            included = False
-            reason = "Routing - Notification {y} License {x} is excluded by repository.  Notification will not be routed!".format(y=urid, x=l)
-            app.logger.debug(reason)
-            break
-    if included:
-        reason = "Routing - Notification {y} licenses not excluded {x}.".format(y=urid, x=" ; ".join(match_data.license_ids))
+def license_included(urid, lic_data, rc):
+    if lic_data['id'] in rc.excluded_license:
+        reason = "Routing - Notification {y} License {x} is excluded by repository.  Notification will not be routed!".format(y=urid, x=lic_data['id'])
         app.logger.debug(reason)
-    return included
+        return False
+    reason = "Routing - Notification {y} license {x} is not excluded by repository.".format(y=urid, x=lic_data['id'])
+    app.logger.debug(reason)
+    return True
 
 
 def domain_url(domain, url):
