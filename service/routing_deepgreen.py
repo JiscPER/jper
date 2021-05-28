@@ -127,12 +127,13 @@ def _route(unrouted):
                         part_bibids.append((bibid, lic_data[0]))
             if lic.type == "alliance" or lic.type == "national" or lic.type == "deal" or lic.type == "fid":
                 al = models.Alliance.pull_by_key("license_id", lic.id)
-                # collect all EZB-Ids of participating institutions of AL
-                for participant in al.participants:
-                    for i in participant["identifier"]:
-                        if i.get("type") == "ezb":
-                            # note: only first ISSN record found in current license will be considered!
-                            part_bibids.append((i.get("id"), lic_data[0]))
+                if al:
+                    # collect all EZB-Ids of participating institutions of AL
+                    for participant in al.participants:
+                        for i in participant["identifier"]:
+                            if i.get("type") == "ezb":
+                                # note: only first ISSN record found in current license will be considered!
+                                part_bibids.append((i.get("id"), lic_data[0]))
 
     # Get only active repository accounts
     # 2019-06-03 TD : yet a level more to differentiate between active and passive
@@ -177,16 +178,15 @@ def _route(unrouted):
         for repo, lic_data, bibid in al_repos:
             rc = models.RepositoryConfig.pull_by_repo(repo)
             if rc is None:
-                app.logger.debug("Routing - Notification:{y} found no RepositoryConfig for Repository:{x}".format(y=unrouted.id, x=repo))
-                continue
+                rc = models.RepositoryConfig()
             app.logger.debug(
-                "Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                "Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=repo))
             # NEW FEATURE
             # Does repository want articles for this license?
             if not license_included(unrouted.id, lic_data, rc):
                 continue
             prov = models.MatchProvenance()
-            prov.repository = rc.repository
+            prov.repository = repo
             # 2016-08-10 TD : fill additional field for origin of notification (publisher) with provider_id
             prov.publisher = unrouted.provider_id
             # 2016-10-13 TD : fill additional object of alliance license with data gathered from EZB
@@ -196,16 +196,16 @@ def _route(unrouted):
             match(match_data, rc, prov, repo)
             if len(prov.provenance) > 0:
                 app.logger.debug("Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id,
-                                                                                                          x=rc.repository))
+                                                                                                          x=repo))
                 prov.save()
-                match_ids.append(rc.repository)
+                match_ids.append(repo)
                 app.logger.debug(
                     "Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(
                         x=prov.repository,
                         y=unrouted.id,
                         z=prov.id))
             else:
-                app.logger.debug("Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug("Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=repo))
 
     # except esprit.tasks.ScrollException as e:
     # 2016-09-08 TD : replace ScrollException by more general Exception type as .scroll() is no longer used here (see above)
@@ -318,25 +318,25 @@ def match(notification_data, repository_config, provenance, acc_id):
     # do the required matches
     matched = False
     for repo_property, sub in match_algorithms.items():
-        match_affiliation = True
-        affiliation_checked = False
         for match_property, fn in sub.items():
+            match_affiliation = True
+            if match_property == 'affiliations':
+                m = has_match_all(acc_id)
+                if m is not False:
+                    match_affiliation = False
+                    matched = True
+                    # record the provenance
+                    provenance.add_provenance(repo_property, "", match_property, "", m)
             for rprop in getattr(rc, repo_property):
                 for mprop in getattr(md, match_property):
                     # NEW FEATURE
                     # Check if repository has role match_all'
                     # if yes, do not need to match affiliations
-                    if match_property == 'affiliations':
-                        if not affiliation_checked:
-                            m = has_match_all(acc_id)
-                            affiliation_checked = True
-                            if m is not False:
-                                match_affiliation = False
-                        if match_affiliation:
-                            m = fn(rprop, mprop)
+                    if match_property == 'affiliations' and match_affiliation:
+                        m = fn(rprop, mprop)
                     else:
                         m = fn(rprop, mprop)
-                    if m is not False:  # it will be a string then
+                    if m is not False: # it will be a string then
                         matched = True
                         # convert the values that have matched to string values suitable for provenance
                         rval = repo_property_values.get(repo_property)(
@@ -671,11 +671,12 @@ def get_current_license_data(lic, publ_year, issn, doi):
 # Individual match functions
 
 def license_included(urid, lic_data, rc):
-    if lic_data['id'] in rc.excluded_license:
-        reason = "Routing - Notification {y} License {x} is excluded by repository.  Notification will not be routed!".format(y=urid, x=lic_data['id'])
+    lic = lic_data.get('id', None)
+    if rc and lic and lic in rc.excluded_license:
+        reason = "Routing - Notification {y} License {x} is excluded by repository.  Notification will not be routed!".format(y=urid, x=lic)
         app.logger.debug(reason)
         return False
-    reason = "Routing - Notification {y} license {x} is not excluded by repository.".format(y=urid, x=lic_data['id'])
+    reason = "Routing - Notification {y} license {x} is not excluded by repository.".format(y=urid, x=lic)
     app.logger.debug(reason)
     return True
 
@@ -928,8 +929,8 @@ def _normalise(s):
 def has_match_all(acc_id):
     acc = models.Account.pull(acc_id)
     if acc.has_role('match_all'):
-        app.logger.debug("stl: User account {x} has role match all, so no affiliation match needed".format(x=acc_id))
-        return "'User account' has role 'match_all'. Affiliation match not needed."
+        app.logger.debug("Routing: User account {x} has role match all, so no affiliation match needed".format(x=acc_id))
+        return "Repository has role 'match_all'. Matching on all affiliations."
     return False
 
 ####################################################
