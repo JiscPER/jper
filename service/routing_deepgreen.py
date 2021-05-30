@@ -317,21 +317,23 @@ def match(notification_data, repository_config, provenance, acc_id):
 
     # do the required matches
     matched = False
+    check_match_all = True
+    match_affiliation = True
     for repo_property, sub in match_algorithms.items():
         for match_property, fn in sub.items():
-            match_affiliation = True
-            if match_property == 'affiliations':
+            # NEW FEATURE
+            # Check if repository has role match_all'
+            # if yes, do not need to match affiliations
+            # Need to do this just once
+            if match_property == 'affiliations' and check_match_all:
                 m = has_match_all(acc_id)
+                check_match_all = False
                 if m is not False:
                     match_affiliation = False
                     matched = True
-                    # record the provenance
                     provenance.add_provenance(repo_property, "", match_property, "", m)
             for rprop in getattr(rc, repo_property):
                 for mprop in getattr(md, match_property):
-                    # NEW FEATURE
-                    # Check if repository has role match_all'
-                    # if yes, do not need to match affiliations
                     if match_property == 'affiliations' and match_affiliation:
                         m = fn(rprop, mprop)
                     else:
