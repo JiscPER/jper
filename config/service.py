@@ -34,6 +34,9 @@ ELASTIC_SEARCH_VERSION = "2.3.3"
 # ELASTIC_SEARCH_VERSION = "1.5.2"
 """version of elasticsearch which we're using - matters for certain semantics of requests"""
 
+ELASTIC_INDEX_PER_TYPE = True
+"""Each type is saved in it's own index in elastic search, prefixed by the search index"""
+
 # Classes from which to retrieve ES mappings to be used in this application
 # Note: right now this is an empty list, as the ELASTIC_SEARCH_DEFAULT_MAPPING covers us
 ELASTIC_SEARCH_MAPPINGS = [
