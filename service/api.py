@@ -443,15 +443,14 @@ class JPER(object):
                 qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": repository_id } })
             else:
                 qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
-
             app.logger.debug(str(repository_id) + ' list notifications for query ' + json.dumps(qr))
         else:
             app.logger.debug('List all notifications for query ' + json.dumps(qr))
-
-        res = models.RoutedNotification.query(q=qr)
+        types = None
+        if models.RoutedNotification.__conn__.index_per_type:
+            types = 'routed20*'
+        res = models.RoutedNotification.query(q=qr, types=types)
         app.logger.debug('List notifications query resulted ' + json.dumps(res))
-        # 2016-09-07 TD : trial to filter for publisher's reporting
-        #nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
         nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing(provider=provider).data for i in res.get('hits',{}).get('hits',[])]
         nl.total = res.get('hits',{}).get('total',0)
         return nl
@@ -523,8 +522,6 @@ class JPER(object):
 
         res = models.MatchProvenance.query(q=qr)
         app.logger.debug('List matches query resulted ' + json.dumps(res))
-        # 2016-09-07 TD : trial to filter for publisher's reporting
-        #nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
         mpl.matches = [models.MatchProvenance(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
         mpl.total = res.get('hits',{}).get('total',0)
         return mpl
@@ -594,8 +591,6 @@ class JPER(object):
 
         res = models.FailedNotification.query(q=qr)
         app.logger.debug('List failed notifications query resulted ' + json.dumps(res))
-        # 2016-09-07 TD : trial to filter for publisher's reporting
-        #nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
         fnl.failed = [models.FailedNotification(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
         fnl.total = res.get('hits',{}).get('total',0)
         return fnl
@@ -658,14 +653,11 @@ class JPER(object):
             app.logger.debug('Bulk all notifications for query ' + json.dumps(qr))
 
         nl.notifications = []
-        for rn in models.RoutedNotification.iterate(q=qr):
-            # 2016-09-07 TD : trial to filter for publisher's reporting
+        types = None
+        if models.RoutedNotification.__conn__.index_per_type:
+            types = 'routed20*'
+        for rn in models.RoutedNotification.iterate(q=qr, types=types):
             nl.notifications.append(rn.make_outgoing(provider=provider).data)
-
-        ### app.logger.debug('List notifications query resulted ' + json.dumps(res))
-        ### nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing().data for i in res.get('hits',{}).get('hits',[])]
-
-        ### nl.total = res.get('hits',{}).get('total',0)
         nl.total = len(nl.notifications)
         return nl
 
@@ -726,11 +718,6 @@ class JPER(object):
         mpl.matches = []
         for mp in models.MatchProvenance.iterate(q=qr):
             mpl.matches.append(mp.data)
-
-        ### app.logger.debug('List matches query resulted ' + json.dumps(res))
-        ### mpl.matches = [models.MatchProvenance(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
-
-        ### mpl.total = res.get('hits',{}).get('total',0)
         mpl.total = len(mpl.matches)
         return mpl
 
@@ -774,9 +761,6 @@ class JPER(object):
                 }
             },
             "sort": [{"created_date":{"order":"desc"}}],
-            ## "sort": [{"analysis_date":{"order":"desc"}}],
-            ## 2018-03-07 TD : change of sort key to 'created_date', but still newest first
-            # 2016-09-06 TD : change of sort order newest first
         }
         
         if provider_id is not None:
@@ -789,12 +773,6 @@ class JPER(object):
         fnl.failed = []
         for fn in models.FailedNotification.iterate(q=qr):
             fnl.failed.append(fn.data)
-
-        ### app.logger.debug('List failed notifications query resulted ' + json.dumps(res))
-        ### fnl.failed = [models.FailedNotification(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
-
-        ### fnl.total = res.get('hits',{}).get('total',0)
         fnl.total = len(fnl.failed)
         return fnl
-
 
