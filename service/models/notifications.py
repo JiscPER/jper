@@ -7,7 +7,6 @@ from octopus.modules.identifiers import postcode
 from octopus.core import app
 from service import dao
 from copy import deepcopy
-import requests, json
 
 
 class NotificationMetadata(dataobj.DataObj):
@@ -1142,19 +1141,6 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
         :param raw: python dict object containing the notification data
         """
         super(UnroutedNotification, self).__init__(raw=raw)
-
-    @classmethod
-    def bulk_delete(cls,ids):
-        """
-        Bulk delete all of the unrouted notifications specified by the ID
-
-        :param ids: ids of notifications to be deleted
-        """
-        data = ''
-        for i in ids:
-            data += json.dumps( {'delete':{'_id':i}} ) + '\n'
-        r = requests.post(app.config['ELASTIC_SEARCH_HOST'] + '/' + app.config['ELASTIC_SEARCH_INDEX'] + '/unrouted/_bulk', data=data)
-        return r.json()
         
     def make_routed(self):
         """
