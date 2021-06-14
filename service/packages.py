@@ -1016,7 +1016,7 @@ class FilesAndJATS(PackageHandler):
         # 2017-07-11 TD :
         # files and jats are already basically a METSMODS, so a straight copy
         # eer, well, almost...
-        #shutil.copyfile(in_path, out_path)
+        # shutil.copyfile(in_path, out_path)
         app.logger.debug("PackageHandler FilesAndJATS._metsmods_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
         try:
             zin = zipfile.ZipFile(in_path, "r", allowZip64=True)

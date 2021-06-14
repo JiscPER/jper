@@ -23,57 +23,56 @@ blueprint = Blueprint('account', __name__)
 
 # Notification table/csv for repositories
 ntable = {
-    "screen": ["Send Date", ["DOI", "Publisher"], ["Publication Date", "Embargo"], "Title", "Analysis Date"],
-    "header": ["Send Date", "DOI", "Publisher", "Publication Date", "Embargo", "Title", "Analysis Date"],
-    "Analysis Date": "notifications[*].analysis_date",
-    "Send Date": "notifications[*].created_date",
-    "Embargo": "notifications[*].embargo.duration",
-    "DOI": "notifications[*].metadata.identifier[?(@.type=='doi')].id",
-    "Publisher": "notifications[*].metadata.publisher",
-    "Title": "notifications[*].metadata.title",
-    "Publication Date": "notifications[*].metadata.publication_date"
+            "screen" : ["Send Date", ["DOI","Publisher"], ["Publication Date", "Embargo"], "Title", "Analysis Date"],
+            "header" : ["Send Date", "DOI", "Publisher", "Publication Date", "Embargo", "Title", "Analysis Date"],
+     "Analysis Date" : "notifications[*].analysis_date",
+         "Send Date" : "notifications[*].created_date",
+           "Embargo" : "notifications[*].embargo.duration",
+               "DOI" : "notifications[*].metadata.identifier[?(@.type=='doi')].id",
+         "Publisher" : "notifications[*].metadata.publisher",
+             "Title" : "notifications[*].metadata.title",
+  "Publication Date" : "notifications[*].metadata.publication_date"
 }
 
 # Matching table/csv for providers (with detailed reasoning)
 mtable = {
-    "screen": ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term",
-               "Appears in {notification_field}"],
-    "header": ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
-    "Analysis Date": "matches[*].created_date",
-    "ISSN or EISSN": "matches[*].alliance.issn",
-    "DOI": "matches[*].alliance.doi",
-    "License": "matches[*].alliance.link",
-    "Forwarded to": "matches[*].bibid",
-    "Term": "matches[*].provenance[0].term",
-    "Appears in": "matches[*].provenance[0].notification_field"
+         "screen" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term", "Appears in {notification_field}"],
+         "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
+  "Analysis Date" : "matches[*].created_date",
+  "ISSN or EISSN" : "matches[*].alliance.issn",
+            "DOI" : "matches[*].alliance.doi",
+        "License" : "matches[*].alliance.link",
+   "Forwarded to" : "matches[*].bibid",
+           "Term" : "matches[*].provenance[0].term",
+     "Appears in" : "matches[*].provenance[0].notification_field"
 }
 
 # Rejected table/csv for providers
 ftable = {
-    "screen": ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
-    "header": ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
-    "Send Date": "failed[*].created_date",
-    "Analysis Date": "failed[*].analysis_date",
-    "ISSN or EISSN": "failed[*].issn_data",
-    "DOI": "failed[*].metadata.identifier[?(@.type=='doi')].id",
-    "Reason": "failed[*].reason"
+         "screen" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
+         "header" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
+      "Send Date" : "failed[*].created_date",
+  "Analysis Date" : "failed[*].analysis_date",
+  "ISSN or EISSN" : "failed[*].issn_data",
+            "DOI" : "failed[*].metadata.identifier[?(@.type=='doi')].id",
+         "Reason" : "failed[*].reason"
 }
 
 # Config table/csv for repositories
 ctable = {
-    # "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
-    # "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
-    "screen": ["Name Variants", "Domains", "Grant Numbers", "Keywords"],
-    "header": ["Name Variants", "Domains", "Grant Numbers", "Dummy1", "Dummy2", "Keywords"],
-    "Name Variants": "repoconfig[0].name_variants[*]",
-    "Domains": "repoconfig[0].domains[*]",
-    #     "Postcodes" : "repoconfig[0].postcodes[*]",
-    "Grant Numbers": "repoconfig[0].grants[*]",
-    "Dummy1": "repoconfig[0].author_ids[?(@.type=='xyz1')].id",
-    "Dummy2": "repoconfig[0].author_ids[?(@.type=='xyz2')].id",
-    #        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
-    # "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
-    "Keywords": "repoconfig[0].keywords[*]",
+        # "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+        # "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+        "screen" : ["Name Variants", "Domains", "Grant Numbers", "Keywords"],
+        "header" : ["Name Variants", "Domains", "Grant Numbers", "Dummy1", "Dummy2", "Keywords"],
+ "Name Variants" : "repoconfig[0].name_variants[*]",
+       "Domains" : "repoconfig[0].domains[*]",
+#     "Postcodes" : "repoconfig[0].postcodes[*]",
+ "Grant Numbers" : "repoconfig[0].grants[*]",
+        "Dummy1" : "repoconfig[0].author_ids[?(@.type=='xyz1')].id",
+        "Dummy2" : "repoconfig[0].author_ids[?(@.type=='xyz2')].id",
+#        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
+# "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
+      "Keywords" : "repoconfig[0].keywords[*]",
 }
 
 
