@@ -452,7 +452,7 @@ class JPER(object):
         res = models.RoutedNotification.query(q=qr, types=types)
         app.logger.debug('List notifications query resulted ' + json.dumps(res))
         nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing(provider=provider).data for i in res.get('hits',{}).get('hits',[])]
-        nl.total = res.get('hits',{}).get('total',0)
+        nl.total = res.get('hits',{}).get('total',{}).get('value', 0)
         return nl
 
 
@@ -523,7 +523,7 @@ class JPER(object):
         res = models.MatchProvenance.query(q=qr)
         app.logger.debug('List matches query resulted ' + json.dumps(res))
         mpl.matches = [models.MatchProvenance(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
-        mpl.total = res.get('hits',{}).get('total',0)
+        mpl.total = res.get('hits',{}).get('total',{}).get('value', 0)
         return mpl
 
 
@@ -592,7 +592,7 @@ class JPER(object):
         res = models.FailedNotification.query(q=qr)
         app.logger.debug('List failed notifications query resulted ' + json.dumps(res))
         fnl.failed = [models.FailedNotification(i['_source']).data for i in res.get('hits',{}).get('hits',[])]
-        fnl.total = res.get('hits',{}).get('total',0)
+        fnl.total = res.get('hits',{}).get('total',{}).get('value', 0)
         return fnl
 
 

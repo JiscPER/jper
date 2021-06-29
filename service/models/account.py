@@ -604,8 +604,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     @classmethod
     def pull_all_by_key(cls,key,value):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        n = res.get('hits',{}).get('total',0)
-        # 2019-06-11 TD : re-query necessary as a precautionary measure because len(res) seems 
+        n = res.get('hits',{}).get('total',{}).get('value', 0)
+        # 2019-06-11 TD : re-query necessary as a precautionary measure because len(res) seems
         #                 to be restricted to 10 records only per default...
         if n > 10:
             res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
@@ -629,7 +629,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         r = raw.search(conn, types, q)
         res = r.json()
         # res = cls.query(q=q)
-        n = res.get('hits',{}).get('total',0)
+        n = res.get('hits',{}).get('total',{}).get('value', 0)
         if n > 10:
             q["size"] = n
             r = raw.search(conn, types, q)
@@ -660,7 +660,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         r = raw.search(conn, types, q)
         res = r.json()
         # res = cls.query(q=q)
-        n = res.get('hits',{}).get('total',0)
+        n = res.get('hits',{}).get('total',{}).get('value', 0)
         if n > 10:
             q["size"] = n
             r = raw.search(conn, types, q)
@@ -699,7 +699,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         r = raw.search(conn, types, q)
         res = r.json()
         # res = cls.query(q=q)
-        n = res.get('hits',{}).get('total',0)
+        n = res.get('hits',{}).get('total',{}).get('value', 0)
         if n > 10:
             q["size"] = n
             r = raw.search(conn, types, q)
@@ -717,10 +717,10 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        if res.get('hits',{}).get('total',0) == 1:
+        if res.get('hits',{}).get('total',{}).get('value', 0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )
         else:
-            return None        
+            return None
 
     @classmethod
     def pull_by_email(cls,email):
@@ -740,12 +740,12 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
 
     def become_publisher(self):
         # create an FTP user for the account, if it is a publisher
-        # TODO / NOTE: if the service has to be scaled up to run on multiple machines, 
+        # TODO / NOTE: if the service has to be scaled up to run on multiple machines,
         # the ftp users should only be created on the machine that the ftp address points to.
-        # so the create user scripts should be triggered on that machine. Alternatively the user 
-        # accounts could be created on every machine - but that leaves more potential security holes. 
-        # Better to restrict the ftp upload to one machine that is configured to accept them. Then 
-        # when it runs the schedule, it will check the ftp folder locations and send any to the API 
+        # so the create user scripts should be triggered on that machine. Alternatively the user
+        # accounts could be created on every machine - but that leaves more potential security holes.
+        # Better to restrict the ftp upload to one machine that is configured to accept them. Then
+        # when it runs the schedule, it will check the ftp folder locations and send any to the API
         # endpoints, so the heavy lifting would still be distributed across machines.
         #un = self.data['email'].replace('@','_')
         un = self.id

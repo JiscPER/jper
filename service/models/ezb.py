@@ -239,7 +239,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"term":{key+'.exact':value}}})
-        if res.get('hits',{}).get('total',0) == 1:
+        if res.get('hits',{}).get('total',{}).get('value', 0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )
         else:
             return None
@@ -248,7 +248,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
     def pull_by_participant_id(cls,value):
         key = 'participant.identifier.id'
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        n = res.get('hits',{}).get('total',0)
+        n = res.get('hits',{}).get('total',{}).get('value', 0)
         if n > 10:
             # re-query necessary as a precautionary measure because len(res) seems 
             # to be restricted to 10 records only per default...
@@ -642,7 +642,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        nres = res.get('hits',{}).get('total',0)
+        nres = res.get('hits',{}).get('total',{}).get('value', 0)
         if nres > 0:
             return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(nres) ]
         else:

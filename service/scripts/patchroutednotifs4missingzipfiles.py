@@ -21,7 +21,7 @@ except:
 def repair_notes4missing_zip_files(packageprefs, page_size=1000):
     #
     modified = 0
-    total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
+    total = RoutedNotification.query(size=0).get('hits',{}).get('total',{}).get('value', 0)
     if total <= 0:
         app.logger.error("PatchRouted4MissingZips - No routed notifications found.")
         # print "ERROR: No routed notifications found."

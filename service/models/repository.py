@@ -229,7 +229,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"term":{key+'.exact':value}}})
-        if res.get('hits',{}).get('total',0) == 1:
+        if res.get('hits',{}).get('total',{}).get('value', 0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )
         else:
             return None        
