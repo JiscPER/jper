@@ -27,12 +27,12 @@ def initialise():
     """
     username = 'admin'
     params = {
-            "id": username,
-            "role": ["admin"],
-            "email": "green@deepgreen.org",
-            "api_key": "admin",
-            "password": username
-        }
+        "id": username,
+        "role": ["admin"],
+        "email": "green@deepgreen.org",
+        "api_key": "admin",
+        "password": username
+    }
     a = Account.pull('admin')
     if not a:
         a = Account()
