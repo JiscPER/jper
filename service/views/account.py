@@ -578,7 +578,7 @@ def apikey(username):
     if current_user.id != username and not current_user.is_super:
         abort(401)
     acc = models.Account.pull(username)
-    acc.data['api_key'] = str(uuid.uuid4())
+    acc.api_key = str(uuid.uuid4())
     acc.save()
     time.sleep(2)
     flash('Thank you. Your API key has been updated.', "success")
@@ -739,57 +739,12 @@ def register():
     vals = request.json if request.json else request.values
 
     if request.method == 'POST' and form.validate():
-        # From here!
-        api_key = str(uuid.uuid4())
+        role = vals.get('radio', None)
         account = models.Account()
-        account.data['email'] = vals['email']
-        account.data['api_key'] = api_key
-        account.data['role'] = []
-
-        if vals.get('repository_name', False):
-            account.data['repository'] = {
-                'name': vals['repository_name']
-            }
-            if vals.get('repository_software', False):
-                account.data['repository']['software'] = vals['repository_software']
-            if vals.get('repository_url', False):
-                account.data['repository']['url'] = vals['repository_url']
-            if vals.get('repository_bibid', False):
-                account.data['repository']['bibid'] = vals['repository_bibid'].upper()
-            if vals.get('repository_sigel', False):
-                account.data['repository']['sigel'] = vals['repository_sigel'].split(',')
-
-        if vals.get('sword_username', False):
-            account.data['sword'] = {
-                'username': vals['sword_username']
-            }
-            if vals.get('sword_password', False):
-                account.data['sword']['password'] = vals['sword_password']
-            if vals.get('sword_collection', False):
-                account.data['sword']['collection'] = vals['sword_collection']
-
-        if vals.get('packaging', False):
-            account.data['packaging'] = vals['packaging'].split(',')
-
-        if vals.get('embargo_duration', False):
-            account.data['embargo'] = {'duration': vals['embargo_duration']}
-
-        if vals.get('license_title', False):
-            account.data['license'] = {'title': vals['license_title']}
-            if vals.get('license_type', False):
-                account.data['license']['type'] = vals['license_type']
-            if vals.get('license_url', False):
-                account.data['license']['url'] = vals['license_url']
-            if vals.get('license_version', False):
-                account.data['license']['version'] = vals['license_version']
-
-        account.set_password(vals['password'])
-        if vals['radio'] != 'publisher':
-            account.add_role(vals['radio'])
+        account.add_account(vals)
         account.save()
-        if vals['radio'] == 'publisher':
+        if role == 'publisher':
             account.become_publisher()
-        # To here! it should be a method in model not part of the controller!
         time.sleep(1)
         flash('Account created for ' + account.id, 'success')
         return redirect('/account')

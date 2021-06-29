@@ -1,6 +1,7 @@
-
+import uuid
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.datastructures import TypeConversionDict
 
 from octopus.core import app
 from octopus.lib import dataobj
@@ -24,7 +25,9 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         "repository" : {
             "name" : "<name of the repository>",
             "url" : "<url for the repository>",
-            "software" : "<name of the software>"
+            "software" : "<name of the software>",
+            "bibid": "<bibid for the repository>",
+            "sigel": ["<seal for the repository>"]
         },
 
         "publisher" : {
@@ -90,7 +93,9 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     #                 "fields" : {
     #                     "name" : {"coerce" : "unicode"},
     #                     "url" : {"coerce" : "unicode"},
-    #                     "software": {"coerce": "unicode"}
+    #                     "software": {"coerce": "unicode"},
+    #                     "bibid": {"coerce": "unicode"},
+    #                     "sigel": {"coerce": "unicode"},
     #                 }
     #             },
     #             "publisher": {
@@ -192,7 +197,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         self._set_list("role", role, coerce=self._utf8_unicode())
 
     def add_role(self, role):
-        self._add_to_list("role", role, coerce=self._utf8_unicode())
+        self._add_to_list("role", role, coerce=self._utf8_unicode(), unique=True)
 
     def remove_role(self, role):
         self._delete_from_list("role", role)
@@ -245,6 +250,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
                 "name" : "<name of repository>",
                 "url" : "<url>",
                 "software" : "<software>",
+                "bibid": "<bibid>",
+                "sigel": ["<seal>"]
             }
 
         :return: The repository information as a python dict object
@@ -271,17 +278,19 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         :return:
         """
         # validate the object structure quickly
-        allowed = ["name", "url", "software"]
+        allowed = ["name", "url", "software", "bibid", "sigel"]
         for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("Repository object must only contain the following keys: {x}".format(x=", ".join(allowed)))
-
         # coerce the values of the keys
         uc = dataobj.to_unicode()
+        allowed.remove('sigel')
         for k in allowed:
-            if k in obj:
+            if obj.get(k, None):
                 obj[k] = self._coerce(obj[k], uc)
-
+        # set list for sigel
+        if obj.get('sigel', []):
+            obj['sigel'] = [self._coerce(v, self._utf8_unicode()) for v in obj['sigel'] if v is not None]
         # finally write it
         self._set_single("repository", obj)
 
@@ -552,33 +561,41 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         self._set_single("license", obj)
 
     def add_account(self, account_hash):
-        id = account_hash.get('id', None) or account_hash.get('username', None)
-        if not self.id:
-            if not id:
-                raise dataobj.DataSchemaException("Account has to contain id")
-            self.id = id
-        else:
-            if id != self.id:
-                app.logger.warn("Account params have a different id. Ignoring it")
+        account_hash = coerce_account_hash(account_hash)
+        acc_id = account_hash.get('id', None) or account_hash.get('username', None)
+        if self.id and acc_id != self.id:
+            app.logger.warn("Account params have a different id. Ignoring id in params")
+        elif not self.id and acc_id:
+            self.id = acc_id
         password = account_hash.get('password', None)
         if password:
             if not self.password:
-                app.logger.info('Password has been set for account {id}'.format(id=id))
+                app.logger.info('Password has been set for account {id}'.format(id=acc_id))
             else:
-                app.logger.warn('Password has been changed for account {id}'.format(id=id))
+                app.logger.warn('Password has been changed for account {id}'.format(id=acc_id))
             self.password = password
         elif not self.password:
             raise dataobj.DataSchemaException("Account has to contain password")
-        self.email = account_hash.get('email', None)
-        self.contact_name = account_hash.get('contact_name', None)
-        self.api_key = account_hash.get('api_key', None)
-        self.role = account_hash.get('role', [])
-        self.packaging = account_hash.get('packaging', [])
-        self.repository = account_hash.get('repository', {})
-        self.publisher = account_hash.get('publisher', {})
-        self.sword = account_hash.get('sword', {})
-        self.embargo = account_hash.get('embargo', {})
-        self.license = account_hash.get('license', {})
+        if account_hash.get('email', None):
+            self.email = account_hash.get('email')
+        if account_hash.get('contact_name', None):
+            self.contact_name = account_hash.get('contact_name')
+        if account_hash.get('api_key', None):
+            self.api_key = account_hash.get('api_key')
+        if account_hash.get('role', []):
+            self.role = account_hash.get('role')
+        if account_hash.get('packaging', []):
+            self.packaging = account_hash.get('packaging')
+        if account_hash.get('repository', {}):
+            self.repository = account_hash.get('repository')
+        if account_hash.get('publisher', {}):
+            self.publisher = account_hash.get('publisher')
+        if account_hash.get('sword', {}):
+            self.sword = account_hash.get('sword')
+        if account_hash.get('embargo', {}):
+            self.embargo = account_hash.get('embargo')
+        if account_hash.get('license', {}):
+            self.license = account_hash.get('license')
 
     def can_log_in(self):
         return True
@@ -756,3 +773,40 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         self.remove_role('publisher')
         self.save()
 
+
+def coerce_account_hash(account_hash):
+    if isinstance(account_hash, TypeConversionDict):
+        account_hash = account_hash.to_dict()
+    # set api_key if missing
+    if not account_hash.get('api_key', None):
+        account_hash['api_key'] = str(uuid.uuid4())
+    # nested properties
+    nested_properties = {
+        'repository': ['repository_name', 'repository_software', 'repository_url', 'repository_bibid', 'repository_sigel'],
+        'sword': ['sword_username', 'sword_password', 'sword_collection'],
+        'embargo': ['embargo_duration',],
+        'license': ['license_title', 'license_type', 'license_url', 'license_version']
+    }
+    for parent, props in nested_properties.items():
+        parent_hash = account_hash.pop(parent, {})
+        for prop in props:
+            label = prop.split('_')[-1]
+            val = account_hash.pop(prop, None)
+            if not val:
+                continue
+            if label == 'bibid':
+                val = val.upper()
+            elif label == 'sigel':
+                val = val.split(',')
+            parent_hash[label] = val
+        if parent_hash:
+            account_hash[parent] = parent_hash
+    # role
+    role = account_hash.pop('radio', None)
+    if role:
+        account_hash['role'] = [role]
+    # packaging
+    packaging = account_hash.pop('packaging', None)
+    if packaging:
+        account_hash['packaging'] = packaging.split(',')
+    return account_hash
