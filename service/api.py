@@ -412,18 +412,12 @@ class JPER(object):
         nl.timestamp = dates.now()
         qr = {
             "query": {
-                "filtered": {
+                "bool": {
                     "filter": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "range": {
-                                        "created_date": {
-                                            "gte": nl.since
-                                        }
-                                    }
-                                }                                
-                            ]
+                        "range": {
+                            "created_date": {
+                                "gte": nl.since
+                            }
                         }
                     }
                 }
@@ -440,9 +434,9 @@ class JPER(object):
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"provider.id.exact": repository_id}}
             else:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"repositories.exact": repository_id}}
             app.logger.debug(str(repository_id) + ' list notifications for query ' + json.dumps(qr))
         else:
             app.logger.debug('List all notifications for query ' + json.dumps(qr))
@@ -486,18 +480,12 @@ class JPER(object):
         mpl.timestamp = dates.now()
         qr = {
             "query": {
-                "filtered": {
+                "bool": {
                     "filter": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "range": {
-                                        "created_date": {
-                                            "gte": mpl.since
-                                        }
-                                    }
-                                }                                
-                            ]
+                        "range": {
+                            "created_date": {
+                                "gte": mpl.since
+                            }
                         }
                     }
                 }
@@ -512,9 +500,9 @@ class JPER(object):
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "pub.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"pub.exact": repository_id}}
             else:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repo.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"repo.exact": repository_id}}
 
             app.logger.debug(str(repository_id) + ' list matches for query ' + json.dumps(qr))
         else:
@@ -558,18 +546,12 @@ class JPER(object):
         fnl.timestamp = dates.now()
         qr = {
             "query": {
-                "filtered": {
+                "bool": {
                     "filter": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "range": {
-                                        "created_date": {
-                                            "gte": fnl.since
-                                        }
-                                    }
-                                }                                
-                            ]
+                        "range": {
+                            "created_date": {
+                                "gte": fnl.since
+                            }
                         }
                     }
                 }
@@ -583,7 +565,7 @@ class JPER(object):
         }
         
         if provider_id is not None:
-            qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": provider_id } })
+            qr['query']['bool']["must"] = {"match": {"provider.id.exact": provider_id}}
 
             app.logger.debug(str(provider_id) + ' list failed notifications for query ' + json.dumps(qr))
         else:
@@ -618,18 +600,12 @@ class JPER(object):
         nl.timestamp = dates.now()
         qr = {
             "query": {
-                "filtered": {
+                "bool": {
                     "filter": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "range": {
-                                        "created_date": {
-                                            "gte": nl.since
-                                        }
-                                    }
-                                }                                
-                            ]
+                        "range": {
+                            "created_date": {
+                                "gte": nl.since
+                            }
                         }
                     }
                 }
@@ -644,9 +620,9 @@ class JPER(object):
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"provider.id.exact": repository_id}}
             else:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repositories.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"repositories.exact": repository_id}}
 
             app.logger.debug(str(repository_id) + ' bulk notifications for query ' + json.dumps(qr))
         else:
@@ -683,18 +659,12 @@ class JPER(object):
         mpl.timestamp = dates.now()
         qr = {
             "query": {
-                "filtered": {
+                "bool": {
                     "filter": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "range": {
-                                        "created_date": {
-                                            "gte": mpl.since
-                                        }
-                                    }
-                                }                                
-                            ]
+                        "range": {
+                            "created_date": {
+                                "gte": mpl.since
+                            }
                         }
                     }
                 }
@@ -707,9 +677,9 @@ class JPER(object):
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "pub.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"pub.exact": repository_id}}
             else:
-                qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "repo.exact": repository_id } })
+                qr['query']['bool']["must"] = {"match": {"repo.exact": repository_id}}
 
             app.logger.debug(str(repository_id) + ' bulk matches for query ' + json.dumps(qr))
         else:
@@ -744,18 +714,12 @@ class JPER(object):
         fnl.timestamp = dates.now()
         qr = {
             "query": {
-                "filtered": {
+                "bool": {
                     "filter": {
-                        "bool": {
-                            "must": [
-                                {
-                                    "range": {
-                                        "created_date": {
-                                            "gte": fnl.since
-                                        }
-                                    }
-                                }                                
-                            ]
+                        "range": {
+                            "created_date": {
+                                "gte": fnl.since
+                            }
                         }
                     }
                 }
@@ -764,7 +728,7 @@ class JPER(object):
         }
         
         if provider_id is not None:
-            qr['query']['filtered']['filter']['bool']['must'].append( { "term": { "provider.id.exact": provider_id } })
+            qr['query']['bool']["must"] = {"match": {"provider.id.exact": provider_id}}
 
             app.logger.debug(str(provider_id) + ' bulk failed notifications for query ' + json.dumps(qr))
         else:
