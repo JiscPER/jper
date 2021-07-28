@@ -2,6 +2,18 @@ import esprit
 import logging
 from service import models
 
+"""
+This script copies data from elasticsearch 2.4 with one index containing many types to
+elastic search 7, with each type in its own index.
+
+The application code has been migrated to work with elastic search 7
+
+Query the old es index directly using esprit, and load the data into the new es using the application, to ensure the data
+model is consistent.
+
+Most of the data is copied directly from one index type to the other, except for accounts and notifications.
+These are modified, as we no longer need to distinguish between standard and regular accounts.
+"""
 
 def old_es_connection():
     # Old ES data
