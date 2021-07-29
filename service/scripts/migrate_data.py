@@ -15,6 +15,7 @@ Most of the data is copied directly from one index type to the other, except for
 These are modified, as we no longer need to distinguish between standard and regular accounts.
 """
 
+
 def old_es_connection():
     # Old ES data
     host = 'localhost'
@@ -23,6 +24,352 @@ def old_es_connection():
     verify_ssl = False
     index_per_type = False
     return esprit.raw.Connection(host, index, port=port, verify_ssl=verify_ssl, index_per_type=index_per_type)
+
+
+def routed_mapping():
+    return {
+        "properties": {
+            "analysis_date": {
+                "type": "date"
+            },
+            "content": {
+                "properties": {
+                    "packaging_format": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    }
+                }
+            },
+            "created_date": {
+                "type": "date"
+            },
+            "embargo": {
+                "properties": {
+                    "duration": {
+                        "type": "long"
+                    }
+                }
+            },
+            "id": {
+                "type": "text",
+                "fields": {
+                    "exact": {
+                        "type": "keyword",
+                        "normalizer": "lowercase"
+                    }
+                }
+            },
+            "issn_data": {
+                "type": "text",
+                "fields": {
+                    "exact": {
+                        "type": "keyword",
+                        "normalizer": "lowercase"
+                    }
+                }
+            },
+            "last_updated": {
+                "type": "date"
+            },
+            "links": {
+                "properties": {
+                    "access": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "format": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "packaging": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "type": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "url": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    }
+                }
+            },
+            "location": {
+                "type": "geo_point"
+            },
+            "metadata": {
+                "properties": {
+                    "author": {
+                        "properties": {
+                            "affiliation": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            },
+                            "firstname": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            },
+                            "identifier": {
+                                "properties": {
+                                    "id": {
+                                        "type": "text",
+                                        "fields": {
+                                            "exact": {
+                                                "type": "keyword",
+                                                "normalizer": "lowercase"
+                                            }
+                                        }
+                                    },
+                                    "type": {
+                                        "type": "text",
+                                        "fields": {
+                                            "exact": {
+                                                "type": "keyword",
+                                                "normalizer": "lowercase"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "lastname": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            },
+                            "name": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "date_accepted": {
+                        "type": "date"
+                    },
+                    "date_submitted": {
+                        "type": "date"
+                    },
+                    "fpage": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "identifier": {
+                        "properties": {
+                            "id": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            },
+                            "type": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "issue": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "journal": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "license_ref": {
+                        "properties": {
+                            "title": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            },
+                            "type": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            },
+                            "url": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            },
+                            "version": {
+                                "type": "text",
+                                "fields": {
+                                    "exact": {
+                                        "type": "keyword",
+                                        "normalizer": "lowercase"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "lpage": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "publication_date": {
+                        "type": "date"
+                    },
+                    "publisher": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "subject": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "title": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    },
+                    "volume": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    }
+                }
+            },
+            "provider": {
+                "properties": {
+                    "id": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                "normalizer": "lowercase"
+                            }
+                        }
+                    }
+                }
+            },
+            "reason": {
+                "type": "text",
+                "fields": {
+                    "exact": {
+                        "type": "keyword",
+                        "normalizer": "lowercase"
+                    }
+                }
+            },
+            "repositories": {
+                "type": "text",
+                "fields": {
+                    "exact": {
+                        "type": "keyword",
+                        "normalizer": "lowercase"
+                    }
+                }
+            }
+        }
+    }
 
 
 def types_with_data(conn, logging):
@@ -48,7 +395,7 @@ def types_with_data(conn, logging):
     return data_types, routed_types
 
 
-def sort_accounts_and_notifications(conn, logging, routed_types):
+def sort_standard_accounts(conn, logging):
     standard_accounts = {}
     accounts_to_delete = {}
     accounts_to_rename = {}
@@ -70,7 +417,7 @@ def sort_accounts_and_notifications(conn, logging, routed_types):
         logging.error("No query data for match all accounts")
         return
     search_data = search_response.json()
-    number_of_matches = search_data.get('hits', {}).get('total', 0)
+    number_of_std_accounts = search_data.get('hits', {}).get('total', 0)
 
     # find matching regular account
     for doc in search_data.get('hits', {}).get('hits', []):
@@ -98,7 +445,7 @@ def sort_accounts_and_notifications(conn, logging, routed_types):
             if bibid in bibids_to_check:
                 accounts_to_check[doc['_id']] = {
                     'bibid': bibid,
-                    'matching_repo_id': matching_repo_data.get('hits', {}).get('hits', [])[0].get('_id')
+                    'main_repo_id': matching_repo_data.get('hits', {}).get('hits', [])[0].get('_id')
                 }
             else:
                 accounts_to_delete[doc['_id']] = {'bibid': bibid}
@@ -106,49 +453,9 @@ def sort_accounts_and_notifications(conn, logging, routed_types):
     logging.info("Number of accounts to be renamed: {dn}".format(dn=len(accounts_to_rename.keys())))
     logging.info("Number of accounts to be checked: {dn}".format(dn=len(accounts_to_check.keys())))
     total = len(accounts_to_rename.keys()) + len(accounts_to_check.keys()) + len(accounts_to_delete.keys())
-    if total != number_of_matches:
+    if total != number_of_std_accounts:
         logging.warning("Not all accounts have been tallied")
-    notifications_to_modify = check_account_notifications(conn, logging, accounts_to_check, routed_types)
-    logging.info("Number of unique notifications to be modified: {dn}".format(dn=len(notifications_to_modify.keys())))
-    return standard_accounts, accounts_to_delete, accounts_to_rename, notifications_to_modify
-
-
-def check_account_notifications(conn, logging, accounts_to_check, routed_types):
-    # to check routing data
-    """
-    accounts_to_check = {
-        'id1' : {
-            'bibid': 'repository bibid',
-            'matching_repo_id': 'matching_repo_id'
-        },
-        ...
-    }
-    1. get all notifications routed for this standard account
-    2. get all notifications routed for the matching account
-    3. get list of all missing notifications
-    """
-    # Get all notifications routed for the standard and matching account
-    notifications_to_modify = {}
-    missing_notification_count = 0
-    for acc_id, data in accounts_to_check.items():
-        std_notifications, std_count = get_account_notifications(conn, logging, acc_id, routed_types,
-                                                                 include_source=False, size=1000)
-        std_notification_ids = set([doc['_id'] for doc in std_notifications])
-        matching_notifications, matching_count = get_account_notifications(conn, logging, data['matching_repo_id'],
-                                                                           routed_types, include_source=False,
-                                                                           size=1000)
-        matching_notification_ids = set([doc['_id'] for doc in matching_notifications])
-        missing_notification_ids = std_notification_ids - matching_notification_ids
-        count = len(list(missing_notification_ids))
-        missing_notification_count += count
-        logging.info("Number of missing notifications for repository {r}: {dn}".format(r=data['bibid'][1:], dn=count))
-        for n_id in list(missing_notification_ids):
-            repos = notifications_to_modify.get(n_id, [])
-            repos.append(data['matching_repo_id'])
-            notifications_to_modify[n_id] = list(set(repos))
-        # accounts_to_check[acc_id]['missing_notification_ids'] = list(missing_notification_ids)
-    logging.info("Total number of missing notifications: {dn}".format(dn=missing_notification_count))
-    return notifications_to_modify
+    return standard_accounts, accounts_to_delete, accounts_to_rename, accounts_to_check
 
 
 def get_account_notifications(conn, logging, repository_id, routed_types, include_source=True, size=100):
@@ -168,6 +475,62 @@ def get_account_notifications(conn, logging, repository_id, routed_types, includ
     return search_data.get('hits', {}).get('hits', []), search_data.get('hits', {}).get('total', 0)
 
 
+def check_account_notifications(conn, logging, accounts_to_check, routed_types):
+    # to check routing data
+    """
+    accounts_to_check = {
+        'id1' : {
+            'bibid': 'repository bibid',
+            'main_repo_id': 'main_repo_id'
+        },
+        ...
+    }
+    1. get all notifications routed for this standard account
+    2. get all notifications routed for the matching account
+    3. get list of all missing notifications
+    """
+    # Get all notifications routed for the standard and matching account
+    notifications_to_modify = {}
+    missing_notification_count = 0
+    for std_acc_id, data in accounts_to_check.items():
+        std_notifications, scount = get_account_notifications(conn, logging, std_acc_id, routed_types,
+                                                                 include_source=False, size=10000)
+        std_notification_ids = set([doc['_id'] for doc in std_notifications])
+        main_acc_notifications, mcount = get_account_notifications(conn, logging, data['main_repo_id'],
+                                                                   routed_types, include_source=False, size=10000)
+        main_acc_notification_ids = set([doc['_id'] for doc in main_acc_notifications])
+        missing_notification_ids = std_notification_ids - main_acc_notification_ids
+        missing_count = len(list(missing_notification_ids))
+        unique_notification_ids = main_acc_notification_ids - std_notification_ids
+        unique_count = len(list(unique_notification_ids))
+        missing_notification_count += missing_count
+        logging.info("Number of missing notifications for repository {r}: {dn}".
+                     format(r=data['bibid'][1:], dn=missing_count))
+        with open('notifications_to_modify_{a}.log'.format(a=data['bibid']), 'w') as log_file:
+            log_file.write('Bibid: {a}\n'.format(a=data['bibid']))
+            log_file.write('Standard account id: {a}\n'.format(a=std_acc_id))
+            log_file.write('Main account id: {a}\n'.format(a=data['main_repo_id']))
+            log_file.write('Number of notifications in standard account search result: {n1}\n'.format(n1=scount))
+            log_file.write('Number of notifications in standard account: {n2}\n'.
+                           format(n2=len(list(std_notification_ids))))
+            log_file.write('Number of notifications in main account search result: {n1}\n'.format(n1=mcount))
+            log_file.write('Number of notifications in main account: {n2}\n'.
+                           format(n2=len(list(main_acc_notification_ids))))
+            log_file.write('Number of notifications missing in standard account: {n}\n'.format(n=missing_count))
+            log_file.write('Number of unique notifications in main account: {n}\n'.format(n=unique_count))
+            log_file.write('Total number of expected notifications in main account: {n}\n'.
+                           format(n=mcount + missing_count))
+            log_file.write('\n'.join(list(missing_notification_ids)))
+        for n_id in list(missing_notification_ids):
+            repos = notifications_to_modify.get(n_id, [])
+            repos.append(data['main_repo_id'])
+            notifications_to_modify[n_id] = list(set(repos))
+        # accounts_to_check[acc_id]['missing_notification_ids'] = list(missing_notification_ids)
+    logging.info("Total number of missing notifications: {dn}".format(dn=missing_notification_count))
+    logging.info("Number of unique notifications to be modified: {dn}".format(dn=len(notifications_to_modify.keys())))
+    return notifications_to_modify
+
+
 def rename_account(data):
     # change bibid
     data['repository'] = data.get('repository', {})
@@ -175,20 +538,6 @@ def rename_account(data):
     data['repository']['bibid'] = bibid[1:]
     # change email
     data['email'] = data.get('email', "{bid}@deepgreen.org".format(bid=bibid))[1:]
-    # data is modified by pointer, so don't have to return
-    return
-
-
-def add_repo_to_notification(data, new_repo_ids):
-    """
-    Copy missing notifications from standard to regular
-    a. Add matching_repo_id to list of repository ids in `repositories`
-    b. Change count in `reason` - "Matched to # qualified repositories."
-    """
-    repositories = data.get('repositories', [])
-    repositories = list(set(repositories + new_repo_ids))
-    data['repositories'] = repositories
-    data['reason'] = 'Matched to {num} qualified repositories.'.format(num=len(repositories))
     # data is modified by pointer, so don't have to return
     return
 
@@ -218,6 +567,20 @@ def filter_and_modify_account(logging, data, **func_args):
         ignore = True
         logging.info('Skipping account {aid}'.format(aid=data['id']))
     return ignore
+
+
+def add_repo_to_notification(data, new_repo_ids):
+    """
+    Copy missing notifications from standard to regular
+    a. Add new_repo_ids to list of repository ids in `repositories`
+    b. Change count in `reason` - "Matched to # qualified repositories."
+    """
+    repositories = data.get('repositories', [])
+    repositories = list(set(repositories + new_repo_ids))
+    data['repositories'] = repositories
+    data['reason'] = 'Matched to {num} qualified repositories.'.format(num=len(repositories))
+    # data is modified by pointer, so don't have to return
+    return
 
 
 def filter_and_modify_notification(logging, data, **func_args):
@@ -271,6 +634,8 @@ def migrate_record(conn, logging, index_type, modify_data_func=None, **func_args
         if modify_data_func:
             ignore = modify_data_func(logging, data, **func_args)
         if not ignore:
+            if index_type.startswith('routed'):
+                esprit.raw.put_mapping(conn, type=index_type, mapping=routed_mapping())
             mc = model_class(data)
             if index_type.startswith('routed'):
                 mc.save(type=index_type)
@@ -283,8 +648,8 @@ def migrate_data(conn, logging, migrate_all=True, migrate_account=True, migrate_
     # 1. Get types_with_data(conn)
     data_types, routed_types = types_with_data(conn, logging)
     # 2. Get list of all accounts and notifications that need sorting
-    standard_accounts, accounts_to_delete, accounts_to_rename, notifications_to_modify = \
-        sort_accounts_and_notifications(conn, logging, routed_types)
+    standard_accounts, accounts_to_delete, accounts_to_rename, accounts_to_check = sort_standard_accounts(conn, logging)
+    notifications_to_modify = check_account_notifications(conn, logging, accounts_to_check, routed_types)
     # 3. For each type except account, notification, sword_deposit_record and sword_repository_status
     #    For each record in that type:
     #        create a new record of that type with the _source data and save
@@ -306,8 +671,6 @@ def migrate_data(conn, logging, migrate_all=True, migrate_account=True, migrate_
     #         create a new record based on filter_and_modify_notification
     if migrate_notification:
         for index_type in routed_types:
-            if index_type in ['routed201907', 'routed201908']:
-                continue
             migrate_record(conn, logging, index_type, modify_data_func=filter_and_modify_notification,
                        notifications_to_modify=notifications_to_modify)
     return
