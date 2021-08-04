@@ -32,7 +32,7 @@ def _select_n(arr, n):
     """
     selection = []
 
-    idx = range(0, len(arr))
+    idx = list(range(0, len(arr)))
     for x in range(n):
         if len(idx) == 0:
             break

@@ -5,15 +5,12 @@ Webpage - Graphic User Interface for an harvester
 
 @author: Mateusz.Kasiuba
 '''
-import uuid, json, time, requests
-
 from service.models.harvester import HarvesterModel
 from service.forms.webservice import WebserviceForm
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
+from flask import Blueprint, request, flash, redirect
 from flask import render_template, abort
-from flask.ext.login import login_user, logout_user, current_user
-from datetime import datetime
+from flask_login import login_user, logout_user, current_user
 from octopus.core import app
 
 harvester = Blueprint('harvester', __name__)
@@ -22,7 +19,7 @@ harvesterModel = HarvesterModel()
 #This is part of their code in my opinion we should move this part of code in common class
 @harvester.before_request
 def restrict():
-    if current_user.is_anonymous():
+    if current_user.is_anonymous:
         if not request.path.endswith('account/login'):
             return redirect('account/login')
 # end part of their code should be move in common class

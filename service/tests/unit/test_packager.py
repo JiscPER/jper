@@ -5,15 +5,14 @@ Unit tests for the packaging system
 
 # from octopus.modules.es.testindex import ESTestCase
 from unittest import TestCase
-from service import packages
-from octopus.modules.store import store
 from copy import deepcopy
-
-from service.tests import fixtures
-from octopus.core import app
 from lxml import etree
-from octopus.lib import paths
 import os
+from service import packages
+from service.tests import fixtures
+from octopus.modules.store import store
+from octopus.core import app
+from octopus.lib import paths
 
 ## PACKAGE = "https://pubrouter.jisc.ac.uk/FilesAndJATS"
 ## TEST_FORMAT = "http://router.jisc.ac.uk/packages/OtherTestFormat"
@@ -130,7 +129,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message == "Zip file is corrupt - cannot read."
+                assert str(e) == "Zip file is corrupt - cannot read."
                 raise e
 
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, no_epmc=True, no_jats=True)
@@ -138,7 +137,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message == "No JATS fulltext or EPMC metadata found in package"
+                assert str(e) == "No JATS fulltext or EPMC metadata found in package"
                 raise e
 
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, invalid_epmc=True)
@@ -146,7 +145,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message.startswith("Unable to parse XML file in package")
+                assert str(e).startswith("Unable to parse XML file in package")
                 raise e
 
         fixtures.PackageFactory.make_custom_zip(self.custom_zip_path, invalid_jats=True)
@@ -154,7 +153,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, zip_path=self.custom_zip_path)
             except packages.PackageException as e:
-                assert e.message.startswith("Unable to parse XML file in package")
+                assert str(e).startswith("Unable to parse XML file in package")
                 raise e
 
     def test_04_valid_file_handles(self):
@@ -218,7 +217,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "No JATS fulltext or EPMC metadata found in metadata files"
+                assert str(e) == "No JATS fulltext or EPMC metadata found in metadata files"
                 raise e
 
         handles = fixtures.PackageFactory.custom_file_handles(invalid_epmc=True)
@@ -226,7 +225,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse filesandjats_epmc.xml file from store"
+                assert str(e) == "Unable to parse filesandjats_epmc.xml file from store"
                 raise e
 
         handles = fixtures.PackageFactory.custom_file_handles(invalid_jats=True)
@@ -234,7 +233,7 @@ class TestPackager(TestCase):
             try:
                 inst = packages.PackageFactory.incoming(PACKAGE, metadata_files=handles)
             except packages.PackageException as e:
-                assert e.message == "Unable to parse filesandjats_jats.xml file from store"
+                assert str(e) == "Unable to parse filesandjats_jats.xml file from store"
                 raise e
 
     def test_06_package_manager_ingest(self):
@@ -299,7 +298,7 @@ class TestPackager(TestCase):
             "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"
         ]
         grants = ["085475/B/08/Z", "085475/08/Z"]
-        keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", u'A\u03b2 oligomers',
+        keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", 'A\u03b2 oligomers',
                     "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
         emails = ["sghk200@sgul.ac.uk"]
         postcodes = ["SW1 5EY", "EH106KL"]
@@ -354,7 +353,7 @@ class TestPackager(TestCase):
         md = inst._epmc_metadata()
 
         # These are the results we would expect
-        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers."
+        title = "The elusive nature and diagnostics of misfolded Aβ oligomers."
         type = "Journal Article"
         lang = "eng"
         pubdate = "2015-03-19T00:00:00Z"
@@ -371,7 +370,7 @@ class TestPackager(TestCase):
             {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
             {"name" : "Wellcome Trust", "grant_number" : "085475/08/Z"}
         ]
-        subjects = ["Humans", "Glaucoma, Open-Angle", u'A\u03b2 Oligomers',
+        subjects = ["Humans", "Glaucoma, Open-Angle", 'A\u03b2 Oligomers',
                     "Neurodegeneration", "protein misfolding", "Fibrillogenesis", "Alzheimer's disease"]
 
         assert md.title == title
@@ -415,7 +414,7 @@ class TestPackager(TestCase):
         md = inst._jats_metadata()
 
         # These are the results we would expect
-        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers"
+        title = "The elusive nature and diagnostics of misfolded Aβ oligomers"
         publisher = "Frontiers Media S.A."
         accepted = "2015-02-24T00:00:00Z"
         submitted = "2014-12-15T00:00:00Z"
@@ -429,7 +428,7 @@ class TestPackager(TestCase):
             {"name" : "Maxim G. Ryadnov", "affiliation" : "1 Biotechnology Department, National Physical Laboratory, SW1 5EY Teddington, UK"},
             {"name" : "Brian M. Austen", "affiliation" : "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"}
         ]
-        subjects = ["Chemistry", u'A\u03b2 oligomers',
+        subjects = ["Chemistry", 'A\u03b2 oligomers',
                     "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
 
         assert md.title == title
@@ -464,7 +463,7 @@ class TestPackager(TestCase):
         md = inst.notification_metadata()
 
         # These are the results we would expect
-        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers"
+        title = "The elusive nature and diagnostics of misfolded Aβ oligomers"
         publisher = "Frontiers Media S.A."
         type = "Journal Article"
         lang = "eng"
@@ -486,8 +485,8 @@ class TestPackager(TestCase):
             {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
             {"name" : "Wellcome Trust", "grant_number" : "085475/08/Z"}
         ]
-        subjects = ["Chemistry", u'A\u03b2 oligomers', "neurodegeneration", "protein misfolding", "fibrillogenesis",
-                    "Alzheimer's disease", "Humans", "Glaucoma, Open-Angle", u'A\u03b2 Oligomers', "Neurodegeneration",
+        subjects = ["Chemistry", 'A\u03b2 oligomers', "neurodegeneration", "protein misfolding", "fibrillogenesis",
+                    "Alzheimer's disease", "Humans", "Glaucoma, Open-Angle", 'A\u03b2 Oligomers', "Neurodegeneration",
                     "Fibrillogenesis"]
 
         assert md.title == title
@@ -539,7 +538,7 @@ class TestPackager(TestCase):
         md, rm = packages.PackageManager.extract(STORE_ID, PACKAGE)
 
         # These are the results we would expect from the metadata (same as in the previous test)
-        title = u"The elusive nature and diagnostics of misfolded Aβ oligomers"
+        title = "The elusive nature and diagnostics of misfolded Aβ oligomers"
         publisher = "Frontiers Media S.A."
         type = "Journal Article"
         lang = "eng"
@@ -561,8 +560,8 @@ class TestPackager(TestCase):
             {"name" : "Wellcome Trust", "grant_number" : "085475/B/08/Z"},
             {"name" : "Wellcome Trust", "grant_number" : "085475/08/Z"}
         ]
-        subjects = ["Chemistry", u'A\u03b2 oligomers', "neurodegeneration", "protein misfolding", "fibrillogenesis",
-                    "Alzheimer's disease", "Humans", "Glaucoma, Open-Angle", u'A\u03b2 Oligomers', "Neurodegeneration",
+        subjects = ["Chemistry", 'A\u03b2 oligomers', "neurodegeneration", "protein misfolding", "fibrillogenesis",
+                    "Alzheimer's disease", "Humans", "Glaucoma, Open-Angle", 'A\u03b2 Oligomers', "Neurodegeneration",
                     "Fibrillogenesis"]
 
         assert md.title == title
@@ -613,7 +612,7 @@ class TestPackager(TestCase):
             "2 Basic Medical Sciences, St. George's University of London, EH106KL London, UK"
         ]
         grants = ["085475/B/08/Z", "085475/08/Z"]
-        keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", u'A\u03b2 oligomers',
+        keywords = ["Humans", "Glaucoma, Open-Angle", "Chemistry", 'A\u03b2 oligomers',
                     "neurodegeneration", "protein misfolding", "fibrillogenesis", "Alzheimer's disease"]
         emails = ["sghk200@sgul.ac.uk"]
         postcodes = ["SW1 5EY", "EH106KL"]
@@ -738,6 +737,3 @@ class TestPackager(TestCase):
 
         conversions = packages.PackageManager.convert(STORE_ID, PACKAGE, [TEST_FORMAT, SIMPLE_ZIP])
         assert len(conversions) == 0
-
-
-

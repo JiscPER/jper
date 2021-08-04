@@ -8,5 +8,7 @@ dist/*
 local.cfg
 
 .idea/
+service/tests/resources/report_test*.csv
+logfile.log
 
 

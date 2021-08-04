@@ -11,8 +11,7 @@ import utils.config as config
 import sys
 import contextlib
 import urllib3
-import elasticsearch as ES
-from elasticsearch import helpers
+import elasticsearch2 as ES
 import utils.exception.handler as EH
 import utils.logger.handler as LH
 from abc import abstractmethod, ABCMeta
@@ -239,7 +238,7 @@ class _U_ElasticSearchV1(U_AbstractConnector):
         """
         LH.logger.info("Executing search query on index {index}".format(index=index))
         try:
-            result = helpers.scan(client=self.connector,
+            result = ES.helpers.scan(client=self.connector,
                                   query=body,
                                   raise_on_error=True,
                                   index=index,
@@ -368,7 +367,7 @@ class _U_ElasticSearchV1(U_AbstractConnector):
                     }
                 actions.append(action)
             if len(actions) > 0:
-                response = helpers.bulk(self.connector, actions)
+                response = ES.helpers.bulk(self.connector, actions)
             self.connector.indices.refresh(index=index)
             return response
         except ES.ConnectionTimeout as err:

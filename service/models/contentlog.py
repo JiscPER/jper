@@ -1,5 +1,4 @@
 
-from octopus.core import app
 from service import dao
 from octopus.lib import dataobj
 

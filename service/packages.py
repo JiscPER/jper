@@ -8,15 +8,15 @@ Packages should then be configured through the PACKAGE_HANDLERS configuration op
 
 from octopus.core import app
 from octopus.lib import plugin
-import zipfile, os, shutil, hashlib, mimetypes
-from datetime import datetime
-from lxml import etree
+from octopus.modules.store import store
 from octopus.modules.epmc.models import JATS, EPMCMetadataXML, RSCMetadataXML
 # from octopus.modules.identifiers import postcode
 # 2017-01-19 TD : in the deepgreen setting, postcodes are not needed. They are rather counter-productive...
 from service import models
-from octopus.modules.store import store
-from StringIO import StringIO
+import zipfile, os, shutil, hashlib, mimetypes
+from datetime import datetime
+from lxml import etree
+from io import StringIO
 
 class PackageException(Exception):
     """
@@ -683,7 +683,7 @@ class FilesAndJATS(PackageHandler):
         sources = [("filesandjats_jats.xml", self.jats), ("filesandjats_epmc.xml", self.epmc)]
         for n, x in sources:
             if x is not None:
-                yield n, StringIO(x.tostring())
+                yield n, StringIO(x.tostring().decode('utf-8'))
 
     def notification_metadata(self):
         """
@@ -1016,7 +1016,7 @@ class FilesAndJATS(PackageHandler):
         # 2017-07-11 TD :
         # files and jats are already basically a METSMODS, so a straight copy
         # eer, well, almost...
-        #shutil.copyfile(in_path, out_path)
+        # shutil.copyfile(in_path, out_path)
         app.logger.debug("PackageHandler FilesAndJATS._metsmods_zip(): ... converting {x} into {y}.".format(x=in_path,y=out_path))
         try:
             zin = zipfile.ZipFile(in_path, "r", allowZip64=True)
@@ -1240,7 +1240,7 @@ class FilesAndJATS(PackageHandler):
             ag = grant.get("agency")
             if ag is not None:
                 obj["name"] = ag
-            if len(obj.keys()) > 0:
+            if len(list(obj.keys())) > 0:
                 md.add_project(obj)
 
         for kw in self.epmc.mesh_descriptors:

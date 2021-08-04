@@ -7,7 +7,7 @@ they are interested in.
 The content is accessible via a well-defined API with authorisation constraints.  Publishers and repositories have user
 accounts which give them access to this API.
 
-The API is then wrapped with convenience sercices that represent it in ways familiar to the user base, so that it can 
+The API is then wrapped with convenience services that represent it in ways familiar to the user base, so that it can
 either be accessed directly or via a familiar method such as FTP, Swordv2, or OAI-PMH.
 
 The below diagram shows, in broad terms, the structure of the application.

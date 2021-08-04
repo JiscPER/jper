@@ -84,12 +84,75 @@ Blueprint for providing account management
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="service.views.account-module.html#_list_request" class="summary-sig-name" onclick="show_private();">_list_request</a>(<span class="summary-sig-arg">repo_id</span>=<span class="summary-sig-default">None</span>)</span><br />
+          <td><span class="summary-sig"><a href="service.views.account-module.html#_list_failrequest" class="summary-sig-name" onclick="show_private();">_list_failrequest</a>(<span class="summary-sig-arg">provider_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">bulk</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Process a list request, either against the full dataset or the specific provider_id supplied
+This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+for the parameters of these kinds of requests.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#_list_failrequest">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#_list_matchrequest" class="summary-sig-name" onclick="show_private();">_list_matchrequest</a>(<span class="summary-sig-arg">repo_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">bulk</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Process a list request, either against the full dataset or the specific repo_id supplied
+This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+for the parameters of these kinds of requests.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#_list_matchrequest">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#_list_request" class="summary-sig-name" onclick="show_private();">_list_request</a>(<span class="summary-sig-arg">repo_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">bulk</span>=<span class="summary-sig-default">False</span>)</span><br />
       Process a list request, either against the full dataset or the specific repo_id supplied
 This function will pull the arguments it requires out of the Flask request object.  See the API documentation
 for the parameters of these kinds of requests.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.account-pysrc.html#_list_request">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#_download_request" class="summary-sig-name" onclick="show_private();">_download_request</a>(<span class="summary-sig-arg">repo_id</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">provider</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Process a download request, either against the full dataset or the specific repo_id supplied
+This function will pull the arguments it requires out of the Flask request object.
+See the API documentation for the parameters of these kinds of requests.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#_download_request">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -135,9 +198,57 @@ for the parameters of these kinds of requests.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#download" class="summary-sig-name">download</a>(<span class="summary-sig-arg">account_id</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#download">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="service.views.account-module.html#details" class="summary-sig-name">details</a>(<span class="summary-sig-arg">repo_id</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.views.account-pysrc.html#details">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#matching" class="summary-sig-name">matching</a>(<span class="summary-sig-arg">repo_id</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#matching">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.views.account-module.html#failing" class="summary-sig-name">failing</a>(<span class="summary-sig-arg">provider_id</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.views.account-pysrc.html#failing">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -347,6 +458,60 @@ for the parameters of these kinds of requests.</td>
         <a name="blueprint"></a><span class="summary-name">blueprint</span> = <code title="Blueprint('account', __name__)">Blueprint('account', __name__)</code>
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="service.views.account-module.html#ntable" class="summary-name">ntable</a> = <code title="{&quot;screen&quot;: [&quot;Send Date&quot;, [&quot;DOI&quot;, &quot;Publisher&quot;], [&quot;Publication Date&quot;, &quot;E\
+mbargo&quot;], &quot;Title&quot;, &quot;Analysis Date&quot;], &quot;header&quot;: [&quot;Send Date&quot;, &quot;DOI&quot;, &quot;P\
+ublisher&quot;, &quot;Publication Date&quot;, &quot;Embargo&quot;, &quot;Title&quot;, &quot;Analysis Date&quot;], &quot;\
+Analysis Date&quot;: &quot;notifications[*].analysis_date&quot;, &quot;Send Date&quot;: &quot;notifi\
+cations[*].created_date&quot;, &quot;Embargo&quot;: &quot;notifications[*].embargo.duratio\
+n&quot;, &quot;DOI&quot;: &quot;notifications[*].metadata.identifier[?(@.type=='doi')].id&quot;\
+, &quot;Publisher&quot;: &quot;notifications[*].metadata.publisher&quot;, &quot;Title&quot;: &quot;notifi\
+cations[*].metadata.title&quot;, &quot;Publication Date&quot;: &quot;notifications[*].meta\
+...">{&quot;screen&quot;: [&quot;Send Date&quot;, [&quot;DOI&quot;, &quot;Publisher&quot;], [&quot;Publ<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="service.views.account-module.html#mtable" class="summary-name">mtable</a> = <code title="{&quot;screen&quot;: [&quot;Analysis Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;License&quot;, &quot;Forwa\
+rded to {EZB-Id}&quot;, &quot;Term&quot;, &quot;Appears in {notification_field}&quot;], &quot;header\
+&quot;: [&quot;Analysis Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;License&quot;, &quot;Forwarded to&quot;\
+, &quot;Term&quot;, &quot;Appears in&quot;], &quot;Analysis Date&quot;: &quot;matches[*].created_date&quot;, &quot;\
+ISSN or EISSN&quot;: &quot;matches[*].alliance.issn&quot;, &quot;DOI&quot;: &quot;matches[*].allianc\
+e.doi&quot;, &quot;License&quot;: &quot;matches[*].alliance.link&quot;, &quot;Forwarded to&quot;: &quot;matche\
+s[*].bibid&quot;, &quot;Term&quot;: &quot;matches[*].provenance[0].term&quot;, &quot;Appears in&quot;: &quot;m\
+atches[*].provenance[0].notification_field&quot;}">{&quot;screen&quot;: [&quot;Analysis Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, <code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="service.views.account-module.html#ftable" class="summary-name">ftable</a> = <code title="{&quot;screen&quot;: [&quot;Send Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;Reason&quot;, &quot;Analysis D\
+ate&quot;], &quot;header&quot;: [&quot;Send Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;Reason&quot;, &quot;Anal\
+ysis Date&quot;], &quot;Send Date&quot;: &quot;failed[*].created_date&quot;, &quot;Analysis Date&quot;: &quot;\
+failed[*].analysis_date&quot;, &quot;ISSN or EISSN&quot;: &quot;failed[*].issn_data&quot;, &quot;DOI\
+&quot;: &quot;failed[*].metadata.identifier[?(@.type=='doi')].id&quot;, &quot;Reason&quot;: &quot;fa\
+iled[*].reason&quot;}">{&quot;screen&quot;: [&quot;Send Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;Rea<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="service.views.account-module.html#ctable" class="summary-name">ctable</a> = <code title="{&quot;screen&quot;: [&quot;Name Variants&quot;, &quot;Domains&quot;, &quot;Grant Numbers&quot;, &quot;Keywords&quot;], \
+&quot;header&quot;: [&quot;Name Variants&quot;, &quot;Domains&quot;, &quot;Grant Numbers&quot;, &quot;Dummy1&quot;, &quot;Dum\
+my2&quot;, &quot;Keywords&quot;], &quot;Name Variants&quot;: &quot;repoconfig[0].name_variants[*]&quot;, \
+&quot;Domains&quot;: &quot;repoconfig[0].domains[*]&quot;, &quot;Grant Numbers&quot;: &quot;repoconfig[0]\
+.grants[*]&quot;, &quot;Dummy1&quot;: &quot;repoconfig[0].author_ids[?(@.type=='xyz1')].id\
+&quot;, &quot;Dummy2&quot;: &quot;repoconfig[0].author_ids[?(@.type=='xyz2')].id&quot;, &quot;Keywor\
+ds&quot;: &quot;repoconfig[0].keywords[*]&quot;,}">{&quot;screen&quot;: [&quot;Name Variants&quot;, &quot;Domains&quot;, &quot;Grant Number<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
 </table>
 <!-- ==================== FUNCTION DETAILS ==================== -->
 <a name="section-FunctionDetails"></a>
@@ -366,6 +531,66 @@ for the parameters of these kinds of requests.</td>
   </td>
 </tr>
 </table>
+<a name="_list_failrequest"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_list_failrequest</span>(<span class="sig-arg">provider_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">bulk</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#_list_failrequest">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Process a list request, either against the full dataset or the specific provider_id supplied
+This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+for the parameters of these kinds of requests.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>provider_id</code></strong> - the provider id to limit the request to</li>
+        <li><strong class="pname"><code>bulk</code></strong> - (boolean) whether bulk (e.g. <em>not</em> paginated) is returned or not</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Flask response containing the list of notifications that are appropriate to the parameters</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_list_matchrequest"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_list_matchrequest</span>(<span class="sig-arg">repo_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">bulk</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#_list_matchrequest">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Process a list request, either against the full dataset or the specific repo_id supplied
+This function will pull the arguments it requires out of the Flask request object.  See the API documentation
+for the parameters of these kinds of requests.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>repo_id</code></strong> - the repo id to limit the request to</li>
+        <li><strong class="pname"><code>provider</code></strong> - (boolean) whether the repo_id belongs to a publisher or not</li>
+        <li><strong class="pname"><code>bulk</code></strong> - (boolean) whether bulk (e.g. <em>not</em> paginated) is returned or not</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Flask response containing the list of notifications that are appropriate to the parameters</dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="_list_request"></a>
 <div class="private">
 <table class="details" border="1" cellpadding="3"
@@ -373,7 +598,9 @@ for the parameters of these kinds of requests.</td>
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">_list_request</span>(<span class="sig-arg">repo_id</span>=<span class="sig-default">None</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_list_request</span>(<span class="sig-arg">repo_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">bulk</span>=<span class="sig-default">False</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="service.views.account-pysrc.html#_list_request">source&nbsp;code</a></span>&nbsp;
@@ -387,9 +614,39 @@ for the parameters of these kinds of requests.
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>repo_id</code></strong> - the repo id to limit the request to</li>
+        <li><strong class="pname"><code>provider</code></strong> - (boolean) whether the repo_id belongs to a publisher or not</li>
+        <li><strong class="pname"><code>bulk</code></strong> - (boolean) whether bulk (e.g. <em>not</em> paginated) is returned or not</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>Flask response containing the list of notifications that are appropriate to the parameters</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_download_request"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_download_request</span>(<span class="sig-arg">repo_id</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">provider</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#_download_request">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Process a download request, either against the full dataset or the specific repo_id supplied
+This function will pull the arguments it requires out of the Flask request object.
+See the API documentation for the parameters of these kinds of requests.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>repo_id</code></strong> - the repo id to limit the request to</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>StringIO containing the list of notifications that are appropriate to the parameters</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -439,6 +696,29 @@ for the parameters of these kinds of requests.
   </dl>
 </td></tr></table>
 </div>
+<a name="download"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">download</span>(<span class="sig-arg">account_id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#download">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route('/download/<account_id>', methods= ["GET", "POST"])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="details"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -458,6 +738,52 @@ for the parameters of these kinds of requests.
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@blueprint.route('/details/<repo_id>', methods= ["GET", "POST"])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="matching"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">matching</span>(<span class="sig-arg">repo_id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#matching">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route('/matching/<repo_id>', methods= ["GET", "POST"])</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="failing"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">failing</span>(<span class="sig-arg">provider_id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.views.account-pysrc.html#failing">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@blueprint.route('/failing/<provider_id>', methods= ["GET", "POST"])</code></li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -596,7 +922,7 @@ for the parameters of these kinds of requests.
   <dl class="fields">
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
-        <li><code>@blueprint.route('/<username>/config', methods= ['POST'])</code></li>
+        <li><code>@blueprint.route('/<username>/config', methods= ["GET", "POST"])</code></li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -719,6 +1045,123 @@ for the parameters of these kinds of requests.
 </td></tr></table>
 </div>
 <br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="ntable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ntable</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{&quot;screen&quot;: [&quot;Send Date&quot;, [&quot;DOI&quot;, &quot;Publisher&quot;], [&quot;Publication Date&quot;, &quot;E<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+mbargo&quot;], &quot;Title&quot;, &quot;Analysis Date&quot;], &quot;header&quot;: [&quot;Send Date&quot;, &quot;DOI&quot;, &quot;P<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ublisher&quot;, &quot;Publication Date&quot;, &quot;Embargo&quot;, &quot;Title&quot;, &quot;Analysis Date&quot;], &quot;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+Analysis Date&quot;: &quot;notifications[*].analysis_date&quot;, &quot;Send Date&quot;: &quot;notifi<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+cations[*].created_date&quot;, &quot;Embargo&quot;: &quot;notifications[*].embargo.duratio<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+n&quot;, &quot;DOI&quot;: &quot;notifications[*].metadata.identifier[?(@.type=='doi')].id&quot;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+, &quot;Publisher&quot;: &quot;notifications[*].metadata.publisher&quot;, &quot;Title&quot;: &quot;notifi<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+cations[*].metadata.title&quot;, &quot;Publication Date&quot;: &quot;notifications[*].meta<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="mtable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">mtable</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{&quot;screen&quot;: [&quot;Analysis Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;License&quot;, &quot;Forwa<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+rded to {EZB-Id}&quot;, &quot;Term&quot;, &quot;Appears in {notification_field}&quot;], &quot;header<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;: [&quot;Analysis Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;License&quot;, &quot;Forwarded to&quot;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+, &quot;Term&quot;, &quot;Appears in&quot;], &quot;Analysis Date&quot;: &quot;matches[*].created_date&quot;, &quot;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ISSN or EISSN&quot;: &quot;matches[*].alliance.issn&quot;, &quot;DOI&quot;: &quot;matches[*].allianc<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+e.doi&quot;, &quot;License&quot;: &quot;matches[*].alliance.link&quot;, &quot;Forwarded to&quot;: &quot;matche<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+s[*].bibid&quot;, &quot;Term&quot;: &quot;matches[*].provenance[0].term&quot;, &quot;Appears in&quot;: &quot;m<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+atches[*].provenance[0].notification_field&quot;}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ftable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ftable</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{&quot;screen&quot;: [&quot;Send Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;Reason&quot;, &quot;Analysis D<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ate&quot;], &quot;header&quot;: [&quot;Send Date&quot;, &quot;ISSN or EISSN&quot;, &quot;DOI&quot;, &quot;Reason&quot;, &quot;Anal<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ysis Date&quot;], &quot;Send Date&quot;: &quot;failed[*].created_date&quot;, &quot;Analysis Date&quot;: &quot;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+failed[*].analysis_date&quot;, &quot;ISSN or EISSN&quot;: &quot;failed[*].issn_data&quot;, &quot;DOI<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;: &quot;failed[*].metadata.identifier[?(@.type=='doi')].id&quot;, &quot;Reason&quot;: &quot;fa<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+iled[*].reason&quot;}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ctable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ctable</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{&quot;screen&quot;: [&quot;Name Variants&quot;, &quot;Domains&quot;, &quot;Grant Numbers&quot;, &quot;Keywords&quot;], <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;header&quot;: [&quot;Name Variants&quot;, &quot;Domains&quot;, &quot;Grant Numbers&quot;, &quot;Dummy1&quot;, &quot;Dum<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+my2&quot;, &quot;Keywords&quot;], &quot;Name Variants&quot;: &quot;repoconfig[0].name_variants[*]&quot;, <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;Domains&quot;: &quot;repoconfig[0].domains[*]&quot;, &quot;Grant Numbers&quot;: &quot;repoconfig[0]<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+.grants[*]&quot;, &quot;Dummy1&quot;: &quot;repoconfig[0].author_ids[?(@.type=='xyz1')].id<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;, &quot;Dummy2&quot;: &quot;repoconfig[0].author_ids[?(@.type=='xyz2')].id&quot;, &quot;Keywor<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ds&quot;: &quot;repoconfig[0].keywords[*]&quot;,}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -747,7 +1190,7 @@ for the parameters of these kinds of requests.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:07 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:49 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

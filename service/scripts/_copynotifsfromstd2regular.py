@@ -7,10 +7,10 @@ in some input CSV file (the same as for 'resetregularaccounts.py').
 """
 try:
     from octopus.core import add_configuration, app
-    from service.models import Account,RoutedNotification
+    from service.models import Account, RoutedNotification
 except:
-    print "ERROR: Need to run from a virtualenv enabled setting, i.e."
-    print "ERROR: run 'source ../../bin/activate' in some DG installation root folder first!"
+    print("ERROR: Need to run from a virtualenv enabled setting, i.e.")
+    print("ERROR: run 'source ../../bin/activate' in some DG installation root folder first!")
     exit(-1)
 
 import os, csv, glob
@@ -24,7 +24,7 @@ def make_hidden2regular(hidden, regular={}):
     for x in hidden:
         regids = []
         ezbid = hidden[x][1:].upper()
-        if ezbid in regular.values():
+        if ezbid in list(regular.values()):
             regids = [ y for y in regular if ezbid == regular[y] ]
         if len(regids) > 0:
             if x in hid2reg:
@@ -35,16 +35,16 @@ def make_hidden2regular(hidden, regular={}):
 
 
 def assign_hidnotes2regular(hid2reg={}, page_size=1000):
-    total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
+    total = RoutedNotification.query(size=0).get('hits',{}).get('total',{}).get('value', 0)
     if total <= 0:
-        print "ERROR: No routed notifications found."
+        print("ERROR: No routed notifications found.")
         return False
 
     pages = (total / page_size) + 1
 
-    for page in xrange(pages):
+    for page in range(pages):
         frm = page*page_size
-        print "% 8d" % frm
+        print("% 8d" % frm)
         for raw in RoutedNotification.query(_from=frm,size=page_size).get('hits',{}).get('hits',[]):
             if '_source' in raw:
                 typ = raw['_type']
@@ -60,8 +60,8 @@ def assign_hidnotes2regular(hid2reg={}, page_size=1000):
 
                 note.save(type=typ)
 
-    print
-    print "INFO: {total} routed notifications processed and adjusted.".format(total=total)
+    print()
+    print("INFO: {total} routed notifications processed and adjusted.".format(total=total))
 
     return True
 
@@ -80,8 +80,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.run is not True:
-        print "ERROR: '--run switch is needed!"
-        print
+        print("ERROR: '--run switch is needed!")
+        print()
         exit(-1)
 
     if args.config:
@@ -112,17 +112,17 @@ if __name__ == "__main__":
                     for row in reader:
                         if 'EZB-Id' in row and 'Institution' in row:
                             if 'Institution' in row['Institution']: continue
-                            part.append( unicode(row['EZB-Id'], 'utf-8') )
+                            part.append( str(row['EZB-Id'], 'utf-8') )
             except IOError:
-                print "ERROR: Could not read/parse '{x}' (IOError).".format(x=fname)
+                print("ERROR: Could not read/parse '{x}' (IOError).".format(x=fname))
 
-            print "INFO: Participant file '{x}' successfully read/parsed.".format(x=fname)
+            print("INFO: Participant file '{x}' successfully read/parsed.".format(x=fname))
 
         part = list(set(part))
-        filtered_reg = { rid : bibid for rid,bibid in regular.items() if bibid in part }
-        print "INFO: Participant files processed; total of {y} institution(s) listed.".format(y=len(part))
+        filtered_reg = { rid : bibid for rid,bibid in list(regular.items()) if bibid in part }
+        print("INFO: Participant files processed; total of {y} institution(s) listed.".format(y=len(part)))
 
-    print "INFO: Filter step with input CSV files left {y} receiving repository account(s) (of {z}).".format(y=len(filtered_reg), z=len(regular))
+    print("INFO: Filter step with input CSV files left {y} receiving repository account(s) (of {z}).".format(y=len(filtered_reg), z=len(regular)))
 
     ### hid2reg = make_hidden2regular(hidden,regular)
     hid2reg = make_hidden2regular(hidden,filtered_reg)
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     if len(hid2reg) > 0:
         rc = assign_hidnotes2regular(hid2reg=hid2reg, page_size=page_size)
     else:
-        print "INFO: No std/hidden accounts found in ES to be processed, stop."
+        print("INFO: No std/hidden accounts found in ES to be processed, stop.")
 
-    print
+    print()
     exit(0)

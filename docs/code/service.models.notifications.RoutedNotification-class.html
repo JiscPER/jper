@@ -61,40 +61,43 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class RoutedNotification</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.notifications-pysrc.html#RoutedNotification">source&nbsp;code</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_service__25" name="uml_class_diagram_for_service__25">
-<area shape="rect" id="node1_26" href="service.models.notifications.RoutedNotification-class.html#__init__" title="Create a new instance of the RoutedNotification object, optionally around the raw python dictionary." alt="" coords="377,559,596,579"/>
-<area shape="rect" id="node1_27" href="service.models.notifications.RoutedNotification-class.html#make_outgoing" title="Create an instance of an OutgoingNotification or ProviderOutgoingNotification (depending on the provider flag supplied) from this object." alt="" coords="377,579,596,599"/>
-<area shape="rect" id="node1" href="service.models.notifications.RoutedNotification-class.html" title="Class which represents a notification that has been received into the system and successfully routed to one or more repository accounts" alt="" coords="365,525,608,605"/>
-<area shape="rect" id="node2_28" href="service.models.notifications.BaseNotification-class.html#packaging_format" title="Get the packaging format identifier of the associated binary content" alt="" coords="17,400,357,420"/>
-<area shape="rect" id="node2_29" href="service.models.notifications.BaseNotification-class.html#links" title="Get the list of link objects associated with this notification" alt="" coords="17,420,357,440"/>
-<area shape="rect" id="node2_30" href="service.models.notifications.BaseNotification-class.html#add_link" title="Add a link object to the current list of links" alt="" coords="17,440,357,460"/>
-<area shape="rect" id="node2_31" href="service.models.notifications.BaseNotification-class.html#provider_id" title="Set the id of the provider of this notification, which should be their account name" alt="" coords="17,460,357,480"/>
-<area shape="rect" id="node2_32" href="service.models.notifications.BaseNotification-class.html#match_data" title="Get the match data object which corresponds to the metadata held in this notification" alt="" coords="17,480,357,500"/>
-<area shape="rect" id="node2" href="service.models.notifications.BaseNotification-class.html" title="Class to provide a baseline for all stored notifications (both routed and unrouted) in the core of the system" alt="" coords="5,366,369,506"/>
-<area shape="rect" id="node3_33" href="service.models.notifications.NotificationMetadata-class.html#title" title="Set the title of the work represented by this metadata" alt="" coords="83,40,293,60"/>
-<area shape="rect" id="node3_34" href="service.models.notifications.NotificationMetadata-class.html#version" title="Set the version of the work represented by this metadata" alt="" coords="83,60,293,80"/>
-<area shape="rect" id="node3_35" href="service.models.notifications.NotificationMetadata-class.html#type" title="Set the publication type of the work represented by this metadata" alt="" coords="83,80,293,100"/>
-<area shape="rect" id="node3_36" href="service.models.notifications.NotificationMetadata-class.html#publisher" title="Set the publisher of the work represented by this metadata" alt="" coords="83,100,293,120"/>
-<area shape="rect" id="node3_37" href="service.models.notifications.NotificationMetadata-class.html#language" title="Set the title of the work represented by this metadata. &#160;This method will attempt to coerce the language to the appropriate ISO language code, but if it fails it will accept the value anyway." alt="" coords="83,120,293,140"/>
-<area shape="rect" id="node3_38" href="service.models.notifications.NotificationMetadata-class.html#publication_date" title="Set the publication of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="83,140,293,160"/>
-<area shape="rect" id="node3_39" href="service.models.notifications.NotificationMetadata-class.html#date_accepted" title="Set the accepted&#45;for&#45;publication date of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="83,160,293,180"/>
-<area shape="rect" id="node3_40" href="service.models.notifications.NotificationMetadata-class.html#date_submitted" title="Set the submitted&#45;for&#45;publication date of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="83,180,293,200"/>
-<area shape="rect" id="node3_41" href="service.models.notifications.NotificationMetadata-class.html#identifiers" title="The list of identifier objects for the work represented by this metadata. &#160;The returned objects look like:" alt="" coords="83,200,293,220"/>
-<area shape="rect" id="node3_42" href="service.models.notifications.NotificationMetadata-class.html#get_identifiers" title="The list of identifiers for the work represented by this metadata, as filtered by type." alt="" coords="83,220,293,240"/>
-<area shape="rect" id="node3_43" href="service.models.notifications.NotificationMetadata-class.html#add_identifier" title="Add an identifier for the work, with the given id and type" alt="" coords="83,240,293,260"/>
-<area shape="rect" id="node3_44" href="service.models.notifications.NotificationMetadata-class.html#authors" title="Set the supplied list of author objects as the authors for this work." alt="" coords="83,260,293,280"/>
-<area shape="rect" id="node3_45" href="service.models.notifications.NotificationMetadata-class.html#add_author" title="Add a single author object to the existing list of author objects." alt="" coords="83,280,293,300"/>
-<area shape="rect" id="node3_46" href="service.models.notifications.NotificationMetadata-class.html#add_source_identifier" title="Add an identifier for the source (e.g. an ISSN for a journal)" alt="" coords="83,320,293,340"/>
-<area shape="rect" id="node3" href="service.models.notifications.NotificationMetadata-class.html" title="Class to represent the standard bibliographic metadata that a notification may contain" alt="" coords="71,6,305,346"/>
-<area shape="rect" id="node4_47" href="service.models.notifications.RoutingInformation-class.html#analysis_date" title="Set the date this notification was analysed for routing, as a string of the form YYYY&#45;MM&#45;DDTHH:MM:SSZ" alt="" coords="411,420,563,440"/>
-<area shape="rect" id="node4_48" href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" title="The date this notification was analysed for routing, as a datetime object" alt="" coords="411,440,563,460"/>
-<area shape="rect" id="node4_49" href="service.models.notifications.RoutingInformation-class.html#repositories" title="Set the list of repository ids to which this notification was routed" alt="" coords="411,460,563,480"/>
-<area shape="rect" id="node4" href="service.models.notifications.RoutingInformation-class.html" title="Class which provides some additional data to any notification regarding the routing status" alt="" coords="399,386,575,486"/>
-<area shape="rect" id="node5_50" href="service.dao.RoutedNotificationDAO-class.html#__type__" title="The base index type to use to store these objects &#45; this will be appended by the time&#45;boxing features of the DAO with the creation timestamp" alt="" coords="617,424,781,444"/>
-<area shape="rect" id="node5_51" href="service.dao.RoutedNotificationDAO-class.html#example" title="request a document which acts as an example for this type" alt="" coords="617,447,781,467"/>
-<area shape="rect" id="node5" href="service.dao.RoutedNotificationDAO-class.html" title="DAO for RoutedNotification" alt="" coords="605,399,793,473"/>
+<center>  <map id="uml_class_diagram_for_service__31" name="uml_class_diagram_for_service__31">
+<area shape="rect" id="node1_29" href="service.models.notifications.RoutedNotification-class.html#__init__" title="Create a new instance of the RoutedNotification object, optionally around the raw python dictionary." alt="" coords="420,573,667,593"/>
+<area shape="rect" id="node1_30" href="service.models.notifications.RoutedNotification-class.html#make_outgoing" title="Create an instance of an OutgoingNotification or ProviderOutgoingNotification (depending on the provider flag supplied) from this object." alt="" coords="420,593,667,613"/>
+<area shape="rect" id="node1" href="service.models.notifications.RoutedNotification-class.html" title="Class which represents a notification that has been received into the system and successfully routed to one or more repository accounts" alt="" coords="407,540,678,619"/>
+<area shape="rect" id="node2_31" href="service.models.notifications.BaseNotification-class.html#embargo" title="Set the number of month of a possible embargo of the publication" alt="" coords="17,395,399,415"/>
+<area shape="rect" id="node2_32" href="service.models.notifications.BaseNotification-class.html#packaging_format" title="Get the packaging format identifier of the associated binary content" alt="" coords="17,415,399,435"/>
+<area shape="rect" id="node2_33" href="service.models.notifications.BaseNotification-class.html#links" title="Get the list of link objects associated with this notification" alt="" coords="17,435,399,455"/>
+<area shape="rect" id="node2_34" href="service.models.notifications.BaseNotification-class.html#add_link" title="Add a link object to the current list of links" alt="" coords="17,455,399,475"/>
+<area shape="rect" id="node2_35" href="service.models.notifications.BaseNotification-class.html#provider_id" title="Set the id of the provider of this notification, which should be their account name" alt="" coords="17,475,399,495"/>
+<area shape="rect" id="node2_36" href="service.models.notifications.BaseNotification-class.html#match_data" title="Get the match data object which corresponds to the metadata held in this notification" alt="" coords="17,495,399,515"/>
+<area shape="rect" id="node2" href="service.models.notifications.BaseNotification-class.html" title="Class to provide a baseline for all stored notifications (both routed and unrouted) in the core of the system" alt="" coords="5,363,411,521"/>
+<area shape="rect" id="node3_37" href="service.dao.RoutedNotificationDAO-class.html#__type__" title="The base index type to use to store these objects &#45; this will be appended by the time&#45;boxing features of the DAO with the creation timestamp" alt="" coords="453,430,633,450"/>
+<area shape="rect" id="node3_38" href="service.dao.RoutedNotificationDAO-class.html#example" title="request a document which acts as an example for this type" alt="" coords="453,453,633,473"/>
+<area shape="rect" id="node3" href="service.dao.RoutedNotificationDAO-class.html" title="DAO for RoutedNotification" alt="" coords="441,405,645,479"/>
+<area shape="rect" id="node4_39" href="service.models.notifications.RoutingInformation-class.html#issn_data" title="Set the issn_data of this notification" alt="" coords="687,405,857,425"/>
+<area shape="rect" id="node4_40" href="service.models.notifications.RoutingInformation-class.html#reason" title="Set the reason why this notification was routed or rejected" alt="" coords="687,425,857,445"/>
+<area shape="rect" id="node4_41" href="service.models.notifications.RoutingInformation-class.html#analysis_date" title="Set the date this notification was analysed for routing, as a string of the form YYYY&#45;MM&#45;DDTHH:MM:SSZ" alt="" coords="687,445,857,465"/>
+<area shape="rect" id="node4_42" href="service.models.notifications.RoutingInformation-class.html#analysis_datestamp" title="The date this notification was analysed for routing, as a datetime object" alt="" coords="687,465,857,485"/>
+<area shape="rect" id="node4_43" href="service.models.notifications.RoutingInformation-class.html#repositories" title="Set the list of repository ids to which this notification was routed" alt="" coords="687,485,857,505"/>
+<area shape="rect" id="node4" href="service.models.notifications.RoutingInformation-class.html" title="Class which provides some additional data to any notification regarding the routing status" alt="" coords="675,373,869,511"/>
+<area shape="rect" id="node5_44" href="service.models.notifications.NotificationMetadata-class.html#title" title="Set the title of the work represented by this metadata" alt="" coords="89,37,327,57"/>
+<area shape="rect" id="node5_45" href="service.models.notifications.NotificationMetadata-class.html#journal" title="Set the journal name of the work represented by this metadata" alt="" coords="89,57,327,77"/>
+<area shape="rect" id="node5_46" href="service.models.notifications.NotificationMetadata-class.html#volume" title="Set the volume (number) of the work represented by this metadata" alt="" coords="89,77,327,97"/>
+<area shape="rect" id="node5_47" href="service.models.notifications.NotificationMetadata-class.html#issue" title="Set the issue (number) of the work represented by this metadata" alt="" coords="89,97,327,117"/>
+<area shape="rect" id="node5_48" href="service.models.notifications.NotificationMetadata-class.html#fpage" title="Set the first page (number) of the work represented by this metadata" alt="" coords="89,117,327,137"/>
+<area shape="rect" id="node5_49" href="service.models.notifications.NotificationMetadata-class.html#lpage" title="Set the last page (number) of the work represented by this metadata" alt="" coords="89,137,327,157"/>
+<area shape="rect" id="node5_50" href="service.models.notifications.NotificationMetadata-class.html#version" title="Set the version of the work represented by this metadata" alt="" coords="89,157,327,177"/>
+<area shape="rect" id="node5_51" href="service.models.notifications.NotificationMetadata-class.html#type" title="Set the publication type of the work represented by this metadata" alt="" coords="89,177,327,197"/>
+<area shape="rect" id="node5_52" href="service.models.notifications.NotificationMetadata-class.html#publisher" title="Set the publisher of the work represented by this metadata" alt="" coords="89,197,327,217"/>
+<area shape="rect" id="node5_53" href="service.models.notifications.NotificationMetadata-class.html#language" title="Set the title of the work represented by this metadata. &#160;This method will attempt to coerce the language to the appropriate ISO language code, but if it fails it will accept the value anyway." alt="" coords="89,217,327,237"/>
+<area shape="rect" id="node5_54" href="service.models.notifications.NotificationMetadata-class.html#publication_date" title="Set the publication of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="89,237,327,257"/>
+<area shape="rect" id="node5_55" href="service.models.notifications.NotificationMetadata-class.html#date_accepted" title="Set the accepted&#45;for&#45;publication date of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="89,257,327,277"/>
+<area shape="rect" id="node5_56" href="service.models.notifications.NotificationMetadata-class.html#date_submitted" title="Set the submitted&#45;for&#45;publication date of the work represented by this metadata, as a string. &#160;It will attempt to coerce to the correct ISO form (YYYY&#45;MM&#45;DDTHH:MM:SSZ) but will accept the value even if the coerce fails." alt="" coords="89,277,327,297"/>
+<area shape="rect" id="node5_57" href="service.models.notifications.NotificationMetadata-class.html#add_source_identifier" title="Add an identifier for the source (e.g. an ISSN for a journal)" alt="" coords="89,317,327,337"/>
+<area shape="rect" id="node5" href="service.models.notifications.NotificationMetadata-class.html" title="Class to represent the standard bibliographic metadata that a notification may contain" alt="" coords="77,5,339,344"/>
 </map>
-  <img src="uml_class_diagram_for_service__25.gif" alt='' usemap="#uml_class_diagram_for_service__25" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_service__31.gif" alt='' usemap="#uml_class_diagram_for_service__31" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
@@ -177,6 +180,24 @@ from this object.</td>
       Add a link object to the current list of links</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.add_link">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.BaseNotification-class.html#embargo" class="summary-sig-name">embargo</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the number of month of a possible embargo of the publication</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#BaseNotification.embargo">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -410,6 +431,24 @@ from this object.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#fpage" class="summary-sig-name">fpage</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the first page (number) of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.fpage">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#get_identifiers" class="summary-sig-name">get_identifiers</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">type</span>)</span><br />
       The list of identifiers for the work represented by this metadata, as filtered by type.</td>
@@ -432,6 +471,42 @@ from this object.</td>
       The list of identifier objects for the work represented by this metadata.  The returned objects look like:</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.identifiers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#issue" class="summary-sig-name">issue</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the issue (number) of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.issue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#journal" class="summary-sig-name">journal</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the journal name of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.journal">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -469,6 +544,24 @@ the appropriate ISO language code, but if it fails it will accept the value anyw
       Set the licence object</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.license">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#lpage" class="summary-sig-name">lpage</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the last page (number) of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.lpage">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -656,6 +749,24 @@ the appropriate ISO language code, but if it fails it will accept the value anyw
       
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.NotificationMetadata-class.html#volume" class="summary-sig-name">volume</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the volume (number) of the work represented by this metadata</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#NotificationMetadata.volume">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr bgcolor="#e8f0f8" >
   <th colspan="2" class="group-header"
     >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.models.notifications.RoutingInformation-class.html">RoutingInformation</a></th></tr>
@@ -687,6 +798,42 @@ the appropriate ISO language code, but if it fails it will accept the value anyw
       The date this notification was analysed for routing, as a datetime object</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.analysis_datestamp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#issn_data" class="summary-sig-name">issn_data</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the issn_data of this notification</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.issn_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.notifications.RoutingInformation-class.html#reason" class="summary-sig-name">reason</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the reason why this notification was routed or rejected</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.notifications-pysrc.html#RoutingInformation.reason">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -882,7 +1029,7 @@ from this object.</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:07 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:50 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

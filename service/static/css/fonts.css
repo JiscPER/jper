@@ -5,23 +5,23 @@
 @font-face {
   font-family: "Stag Sans Web Light";
   src: url('Fonts/StagSansWeb-Light.eot');
-  src: url('Fonts/StagSansWeb-Light.eot?#iefix') format("embedded-opentype"), url('Fonts/StagSansWeb-Light.woff') format("woff"), url("StagSansWeb-Light.ttf") format("truetype"), url("StagSansWeb-Light.svg#Stag Sans Web") format("svg");
+  src: url('Fonts/StagSansWeb-Light.eot?#iefix') format("embedded-opentype"), url('Fonts/StagSansWeb-Light.woff') format("woff"), url("fonts/StagSansWeb-Light.ttf") format("truetype"), url("fonts/StagSansWeb-Light.svg#Stag Sans Web") format("svg");
   font-weight: normal;
   font-style: normal;
   font-stretch: normal; }
 
 @font-face {
   font-family: "Stag Sans Web Book";
-  src: url("StagSansWeb-Book.eot");
-  src: url("StagSansWeb-Book.eot?#iefix") format("embedded-opentype"), url("StagSansWeb-Book.woff") format("woff"), url("StagSansWeb-Book.ttf") format("truetype"), url("StagSansWeb-Book.svg#Stag Sans Web") format("svg");
+  src: url("fonts/StagSansWeb-Book.eot");
+  src: url("fonts/StagSansWeb-Book.eot?#iefix") format("embedded-opentype"), url("fonts/StagSansWeb-Book.woff") format("woff"), url("fonts/StagSansWeb-Book.ttf") format("truetype"), url("fonts/StagSansWeb-Book.svg#Stag Sans Web") format("svg");
   font-weight: normal;
   font-style: normal;
   font-stretch: normal; }
 
 @font-face {
   font-family: "Stag Sans Web Medium";
-  src: url("StagSansWeb-Medium.eot");
-  src: url("StagSansWeb-Medium.eot?#iefix") format("embedded-opentype"), url("StagSansWeb-Medium.woff") format("woff"), url("StagSansWeb-Medium.ttf") format("truetype"), url("StagSansWeb-Medium.svg#Stag Sans Web") format("svg");
+  src: url("fonts/StagSansWeb-Medium.eot");
+  src: url("fonts/StagSansWeb-Medium.eot?#iefix") format("embedded-opentype"), url("fonts/StagSansWeb-Medium.woff") format("woff"), url("fonts/StagSansWeb-Medium.ttf") format("truetype"), url("fonts/StagSansWeb-Medium.svg#Stag Sans Web") format("svg");
   font-weight: normal;
   font-style: normal;
   font-stretch: normal; }

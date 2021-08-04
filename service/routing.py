@@ -4,10 +4,9 @@ RoutedNotifications or FailedNotifications
 """
 
 from octopus.lib import dates
-from octopus.modules.store import store
 from service import packages, models
 import esprit
-from service.web import app
+from octopus.core import app
 from flask import url_for
 from copy import deepcopy
 import uuid
@@ -38,22 +37,22 @@ def route(unrouted):
     :param unrouted: an UnroutedNotification object
     :return: True if the notification was routed to a repository, False if there were no matches
     """
-    app.logger.debug(u"Routing - Notification:{y}".format(y=unrouted.id))
+    app.logger.debug("Routing - Notification:{y}".format(y=unrouted.id))
 
     # first get the packaging system to load and retrieve all the metadata
     # and match data from the content file (if it exists)
     try:
         metadata, pmd = packages.PackageManager.extract(unrouted.id, unrouted.packaging_format)
     except packages.PackageException as e:
-        app.logger.debug(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
-        raise RoutingException(e.message)
+        app.logger.debug("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
+        raise RoutingException(str(e))
 
     # extract the match data from the notification and combine it with the match data from the package
     match_data = unrouted.match_data()
     if pmd is not None:
         match_data.merge(pmd)
 
-    app.logger.debug(u"Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
+    app.logger.debug("Routing - Notification:{y} match_data:{x}".format(y=unrouted.id, x=match_data))
     # iterate through all the repository configs, collecting match provenance and
     # id information
     # FIXME: at the moment this puts all the provenance in memory and then writes it all
@@ -69,25 +68,25 @@ def route(unrouted):
             prov.publisher = unrouted.provider_id
             #
             prov.notification = unrouted.id
-            app.logger.debug(u"Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
+            app.logger.debug("Routing - Notification:{y} matching against Repository:{x}".format(y=unrouted.id, x=rc.repository))
             match(match_data, rc, prov)
             if len(prov.provenance) > 0:
                 match_provenance.append(prov)
                 match_ids.append(rc.repository)
-                app.logger.debug(u"Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug("Routing - Notification:{y} successfully matched Repository:{x}".format(y=unrouted.id, x=rc.repository))
             else:
-                app.logger.debug(u"Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
+                app.logger.debug("Routing - Notification:{y} did not match Repository:{x}".format(y=unrouted.id, x=rc.repository))
 
     except esprit.tasks.ScrollException as e:
-        app.logger.error(u"Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=e.message))
-        raise RoutingException(e.message)
+        app.logger.error("Routing - Notification:{y} failed with error '{x}'".format(y=unrouted.id, x=str(e)))
+        raise RoutingException(str(e))
 
-    app.logger.debug(u"Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
+    app.logger.debug("Routing - Notification:{y} matched to {x} repositories".format(y=unrouted.id, x=len(match_ids)))
 
     # write all the match provenance out to the index (could be an empty list)
     for p in match_provenance:
         p.save()
-        app.logger.debug(u"Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
+        app.logger.debug("Routing - Provenance:{z} written for Notification:{y} for match to Repisitory:{x}".format(x=p.repository, y=unrouted.id, z=p.id))
 
     # if there are matches then the routing is successful, and we want to finalise the
     # notification for the routed index and its content for download
@@ -107,11 +106,11 @@ def route(unrouted):
             enhance(routed, metadata)
         links(routed)
         routed.save()
-        app.logger.debug(u"Routing - Notification:{y} successfully routed".format(y=unrouted.id))
+        app.logger.debug("Routing - Notification:{y} successfully routed".format(y=unrouted.id))
         return True
     else:
         # log the failure
-        app.logger.error(u"Routing - Notification:{y} was not routed".format(y=unrouted.id))
+        app.logger.error("Routing - Notification:{y} was not routed".format(y=unrouted.id))
 
         # if config says so, convert the unrouted notification to a failed notification, enhance and save
         # for later diagnosis
@@ -121,7 +120,7 @@ def route(unrouted):
             if metadata is not None:
                 enhance(failed, metadata)
             failed.save()
-            app.logger.debug(u"Routing - Notification:{y} as stored as a Failed Notification".format(y=unrouted.id))
+            app.logger.debug("Routing - Notification:{y} stored as a Failed Notification".format(y=unrouted.id))
 
         return False
 
@@ -157,10 +156,6 @@ def match(notification_data, repository_config, provenance):
         "author_ids" : {
             "author_ids" : author_match
         },
-        # 2018-08-18 TD : take out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
-        #"postcodes" : {
-        #    "postcodes" : postcode_match
-        #},
         "grants" : {
             "grants" : exact
         },
@@ -169,11 +164,17 @@ def match(notification_data, repository_config, provenance):
             "emails" : exact,
             "affiliations" : exact_substring,
             "author_ids" : author_string_match,
-            # 2016-08-18 TD : take out postcodes. See also comment just above.
-            # "postcodes" : postcode_match,
             "grants" : exact
         }
     }
+    # 2016-08-18 and 2018-08-18 TD : take out postcodes. In Germany, these are not as geo-local as in the UK, sigh.
+    # AR: Rather than comment out postcodes from models,
+    # I have added a config option and set the default to false, as tests were failing
+    if app.config.get("EXTRACT_POSTCODES", False):
+        match_algorithms["postcodes"] = {
+            "postcodes" : postcode_match
+        }
+        match_algorithms["strings"]["postcodes"] = postcode_match
 
     repo_property_values = {
         "author_ids" : author_id_string
@@ -185,8 +186,8 @@ def match(notification_data, repository_config, provenance):
 
     # do the required matches
     matched = False
-    for repo_property, sub in match_algorithms.iteritems():
-        for match_property, fn in sub.iteritems():
+    for repo_property, sub in match_algorithms.items():
+        for match_property, fn in sub.items():
             for rprop in getattr(rc, repo_property):
                 for mprop in getattr(md, match_property):
                     m = fn(rprop, mprop)
@@ -401,7 +402,7 @@ def repackage(unrouted, repo_ids):
         acc = models.Account.pull(rid)
         if acc is None:
             # realistically this shouldn't happen, but if it does just carry on
-            app.logger.warn(u"Repackaging - no account with id {x}; carrying on regardless".format(x=rid))
+            app.logger.warn("Repackaging - no account with id {x}; carrying on regardless".format(x=rid))
             continue
         for pack in acc.packaging:
             # if it's already in the conversion list, job done
@@ -496,7 +497,7 @@ def domain_url(domain, url):
     url = _normalise(url)
 
     if domain.endswith(url) or url.endswith(domain):
-        return u"Domain matched URL: '{d}' and '{u}' have the same root domains".format(d=od, u=ou)
+        return "Domain matched URL: '{d}' and '{u}' have the same root domains".format(d=od, u=ou)
 
     return False
 
@@ -531,7 +532,7 @@ def domain_email(domain, email):
     email = _normalise(email)
 
     if domain.endswith(email) or email.endswith(domain):
-        return u"Domain matched email address: '{d}' and '{e}' have the same root domains".format(d=od, e=oe)
+        return "Domain matched email address: '{d}' and '{e}' have the same root domains".format(d=od, e=oe)
 
     return False
 
@@ -550,7 +551,7 @@ def author_match(author_obj_1, author_obj_2):
     i2 = _normalise(author_obj_2.get("id", ""))
 
     if t1 == t2 and i1 == i2:
-        return u"Author ids matched: {t1} '{i1}' is the same as {t2} '{i2}'".format(t1=t1, i1=author_obj_1.get("id", ""), t2=t2, i2=author_obj_2.get("id", ""))
+        return "Author ids matched: {t1} '{i1}' is the same as {t2} '{i2}'".format(t1=t1, i1=author_obj_1.get("id", ""), t2=t2, i2=author_obj_2.get("id", ""))
 
     return False
 
@@ -566,7 +567,7 @@ def author_string_match(author_string, author_obj):
     nid = _normalise(author_obj.get("id", ""))
 
     if ns == nid:
-        return u"Author ids matched: '{s}' is the same as '{aid}'".format(s=author_string, aid=author_obj.get("id", ""))
+        return "Author ids matched: '{s}' is the same as '{aid}'".format(s=author_string, aid=author_obj.get("id", ""))
 
     return False
 
@@ -587,7 +588,7 @@ def postcode_match(pc1, pc2):
     npc2 = npc2.replace(" ", "")
 
     if npc1 == npc2:
-        return u"Postcodes matched: '{a}' is the same as '{b}'".format(a=pc1, b=pc2)
+        return "Postcodes matched: '{a}' is the same as '{b}'".format(a=pc1, b=pc2)
 
     return False
 
@@ -608,7 +609,7 @@ def exact_substring(s1, s2):
     s2 = _normalise(s2)
 
     if s1 in s2:
-        return u"'{a}' appears in '{b}'".format(a=os1, b=os2)
+        return "'{a}' appears in '{b}'".format(a=os1, b=os2)
 
     return False
 
@@ -629,7 +630,7 @@ def exact(s1, s2):
     s2 = _normalise(s2)
 
     if s1 == s2:
-        return u"'{a}' is an exact match with '{b}'".format(a=os1, b=os2)
+        return "'{a}' is an exact match with '{b}'".format(a=os1, b=os2)
 
     return False
 
@@ -662,4 +663,4 @@ def author_id_string(aob):
     :param aob: author object
     :return: string representation of author id
     """
-    return u"{x}: {y}".format(x=aob.get("type"), y=aob.get("id"))
+    return "{x}: {y}".format(x=aob.get("type"), y=aob.get("id"))

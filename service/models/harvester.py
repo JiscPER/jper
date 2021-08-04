@@ -1,9 +1,7 @@
-from __future__ import absolute_import
+
 import utils.connector.connector as DB
 import utils.config as config
-import json
 from werkzeug.datastructures import MultiDict
-import time
 from datetime import datetime
 import math
 
@@ -44,7 +42,8 @@ class HarvesterModel():
                                                            self.limit,
                                                            page_num*self.limit,
                                                            sort='name')
-        return result['hits'], int(math.ceil(float(result['total'])/float(self.limit)))
+        total = result.get('total',{}).get('value', 0)
+        return result['hits'], int(math.ceil(float(total)/float(self.limit)))
     
     def get_history(self, page_num = 0):
         '''
@@ -65,8 +64,8 @@ class HarvesterModel():
             history[idx]['_source']['end_date'] = self.__timestamp_to_date(history[idx]['_source']['end_date'])
             history[idx]['_source']['start_date'] = self.__timestamp_to_date(history[idx]['_source']['start_date'])
             history[idx]['_source']['date'] = self.__timestamp_to_datetime(history[idx]['_source']['date'])
-                                                                                                                            
-        return history, int(math.ceil(float(result['total'])/float(self.limit)))
+        total = result.get('total',{}).get('value', 0)
+        return history, int(math.ceil(float(total)/float(self.limit)))
     
     def __timestamp_to_date(self, timestamp):
         return datetime.fromtimestamp(int(timestamp/1000)).strftime('%Y-%m-%d')

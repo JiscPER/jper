@@ -11,19 +11,17 @@ try:
     from service.web import app
     from service import packages
     from flask import url_for
+    from werkzeug.routing import BuildError
 except:
-    print "ERROR: Need to run from a virtualenv enabled setting, i.e."
-    print "ERROR: run 'source ../../bin/activate' in some DG installation root folder first!"
+    print("ERROR: Need to run from a virtualenv enabled setting, i.e.")
+    print("ERROR: run 'source ../../bin/activate' in some DG installation root folder first!")
     exit(-1)
-
-import os
-
 
 
 def repair_notes4missing_zip_files(packageprefs, page_size=1000):
     #
     modified = 0
-    total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
+    total = RoutedNotification.query(size=0).get('hits',{}).get('total',{}).get('value', 0)
     if total <= 0:
         app.logger.error("PatchRouted4MissingZips - No routed notifications found.")
         # print "ERROR: No routed notifications found."
@@ -31,9 +29,9 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
     #
     pages = (total / page_size) + 1
     #
-    for page in xrange(pages):
+    for page in range(pages):
         frm = page*page_size
-        print "% 8d" % frm
+        print("% 8d" % frm)
         for raw in RoutedNotification.query(_from=frm,size=page_size).get('hits',{}).get('hits',[]):
             if '_source' in raw:
                 note_id = raw['_id']
@@ -77,9 +75,12 @@ def repair_notes4missing_zip_files(packageprefs, page_size=1000):
                         burl = app.config.get("BASE_URL")
                         if burl.endswith("/"):
                             burl = burl[:-1]
-                        url = burl + url_for("webapi.retrieve_content", 
+                        try:
+                            url = burl + url_for("webapi.retrieve_content",
                                              notification_id=note_id, 
                                              filename=d[2])
+                        except BuildError:
+                            url = burl + "/notification/{x}/content/{y}".format(x=note_id, y=d[2])
                     nl = {
                         "type": "package",
                         "format": "application/zip",
@@ -118,9 +119,9 @@ if __name__ == "__main__":
 
     if args.run is not True:
         app.logger.error("PatchRouted4MissingZips - Switch '--run' is missing! Stop.")
-        print
-        print "ERROR: '--run switch is needed!"
-        print
+        print()
+        print("ERROR: '--run switch is needed!")
+        print()
         exit(-1)
 
     if args.config:
@@ -141,5 +142,5 @@ if __name__ == "__main__":
         app.logger.error("PatchRouted4MissingZips - No packaging tags at all found in regular accounts -- somehow confused; stop.")
         # print "INFO: No packaging tags at all found in regular accounts -- somehow confused; stop."
 
-    print
+    print()
     exit(0)

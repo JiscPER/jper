@@ -3,11 +3,11 @@ Model objects used to represent system core notification objects
 """
 
 from octopus.lib import dataobj
+from octopus.modules.identifiers import postcode
+from octopus.core import app
 from service import dao
 from copy import deepcopy
-from octopus.modules.identifiers import postcode
-import requests, json
-from octopus.core import app
+
 
 class NotificationMetadata(dataobj.DataObj):
     """
@@ -478,7 +478,7 @@ class NotificationMetadata(dataobj.DataObj):
         # validate the object structure quickly
         allowed = ["name", "firstname", "lastname", "affiliation", "identifier"]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Author object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -563,7 +563,7 @@ class NotificationMetadata(dataobj.DataObj):
         # validate the object structure quickly
         allowed = ["name", "grant_number", "identifier"]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Project object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -659,7 +659,7 @@ class NotificationMetadata(dataobj.DataObj):
         """
         # validate the object structure quickly
         allowed = ["title", "type", "url", "version"]
-        for k in obj.keys():
+        for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("License object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -957,10 +957,12 @@ class BaseNotification(NotificationMetadata):
             if "affiliation" in a:
                 aff = a.get("affiliation")
                 md.add_affiliation(aff)
-                # 2019-02-20 TD : postcodes are not applicable in Germany
-                # codes = postcode.extract_all(aff)
-                # for code in codes:
-                #     md.add_postcode(code)
+                # 2019-02-20 TD : postcodes are not applicable in Germany AR: Rather than comment out, I have added a
+                # config option and set the default to false, as tests were failing
+                if app.config.get("EXTRACT_POSTCODES", False):
+                    codes = postcode.extract_all(aff)
+                    for code in codes:
+                        md.add_postcode(code)
 
             # other author ids
             for id in a.get("identifier", []):
@@ -1139,19 +1141,6 @@ class UnroutedNotification(BaseNotification, dao.UnroutedNotificationDAO):
         :param raw: python dict object containing the notification data
         """
         super(UnroutedNotification, self).__init__(raw=raw)
-
-    @classmethod
-    def bulk_delete(cls,ids):
-        """
-        Bulk delete all of the unrouted notifications specified by the ID
-
-        :param ids: ids of notifications to be deleted
-        """
-        data = ''
-        for i in ids:
-            data += json.dumps( {'delete':{'_id':i}} ) + '\n'
-        r = requests.post(app.config['ELASTIC_SEARCH_HOST'] + '/' + app.config['ELASTIC_SEARCH_INDEX'] + '/unrouted/_bulk', data=data)
-        return r.json()
         
     def make_routed(self):
         """
@@ -1606,9 +1595,9 @@ class RoutingMetadata(dataobj.DataObj):
 
         :return: True/False whether there is data or not
         """
-        if len(self.data.keys()) == 0:
+        if len(list(self.data.keys())) == 0:
             return False
-        for k, v in self.data.iteritems():
+        for k, v in self.data.items():
             if v is not None and len(v) > 0:
                 return True
         return False

@@ -5,7 +5,7 @@ Blueprint for providing reports UI
 import os, time, re
 
 from flask import Blueprint, request, url_for, render_template, redirect, send_from_directory, flash
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from service import reports
 from octopus.core import app
@@ -15,7 +15,7 @@ blueprint = Blueprint('reports', __name__)
 
 @blueprint.before_request
 def restrict():
-    if current_user.is_anonymous():
+    if current_user.is_anonymous:
         return redirect('/account/login')
     elif not current_user.has_role('admin'):
         return redirect(request.path.rsplit('/',1)[0] + '/login')
@@ -46,7 +46,7 @@ def index():
         overall = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('monthly')]
         details = [(fl,mt,nl,ym) for (fl,mt,nl,ym) in fls if not fl.endswith('.cfg') and fl.startswith('detailed') and int(ym.split('-')[0]) == tyear]
         if len(details) == 0:
-            for tmth in xrange(1,13):
+            for tmth in range(1,13):
                 fstem = "%04d-%02d.csv" % (tyear,tmth)
                 open(os.path.join(reportsdir,"detailed_routed_notifications_"+fstem), 'w').close()
                 open(os.path.join(reportsdir,"detailed_failed_notifications_"+fstem), 'w').close()
@@ -92,7 +92,7 @@ def refresh(yearmonth):
             reports.admin_failed_report(frm_date, to_date, reportsdir + "/detailed_failed_notifications_" + fstem)
 
     except Exception as e:
-        flash("Updating process encountered an error: {x}".format(x=e.message),"error")
+        flash("Updating process encountered an error: {x}".format(x=str(e)),"error")
         time.sleep(4)
 
     return redirect(url_for('.index'))

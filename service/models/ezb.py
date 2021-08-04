@@ -3,8 +3,8 @@ Model objects used to represent interactions with ezb items
 """
 
 from octopus.lib import dataobj
-from service import dao
 from octopus.core import app
+from service import dao
 import csv
 
 class Alliance(dataobj.DataObj, dao.AllianceDAO):
@@ -200,7 +200,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         # validate the object structure on-the-fly
         allowed = [ "name", "identifier" ]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Participant object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -239,8 +239,22 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"term":{key+'.exact':value}}})
-        if res.get('hits',{}).get('total',0) == 1:
+        if res.get('hits',{}).get('total',{}).get('value', 0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        else:
+            return None
+
+    @classmethod
+    def pull_by_participant_id(cls,value):
+        key = 'participant.identifier.id'
+        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
+        n = res.get('hits',{}).get('total',{}).get('value', 0)
+        if n > 10:
+            # re-query necessary as a precautionary measure because len(res) seems 
+            # to be restricted to 10 records only per default...
+            res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
+        if n > 0:
+            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(n) ]
         else:
             return None
 
@@ -273,7 +287,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
             return True
         elif jsoncontent is not None:
             # save the lines into the alliance data
-            for k in jsoncontent.keys():
+            for k in list(jsoncontent.keys()):
                 self.data[k] = jsoncontent[k]
             self.data['license_id'] = licid
             self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
@@ -574,7 +588,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         # validate the object structure on-the-fly
         allowed = [ "title", "publisher", "identifier", "link", "period", "embargo", "subject", "keyword" ]
         for obj in objlist:
-            for k in obj.keys():
+            for k in list(obj.keys()):
                 if k not in allowed:
                     raise dataobj.DataSchemaException("Journal object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
@@ -628,16 +642,15 @@ class License(dataobj.DataObj, dao.LicenseDAO):
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        nres = res.get('hits',{}).get('total',0)
+        nres = res.get('hits',{}).get('total',{}).get('value', 0)
         if nres > 0:
-            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in xrange(nres) ]
+            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(nres) ]
         else:
             return None
 
     @classmethod
     def pull_by_journal_id(cls,journal_id):
         return cls.pull_by_key('journal.identifier.id',journal_id)
-
 
     def set_license_data(self,ezbid,name,type='alliance',csvfile=None,jsoncontent=None):
         fields = ['name','type','identifier','journal']
@@ -702,7 +715,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
             return True
         elif jsoncontent is not None:
             # save the lines into the license fields
-            for k in jsoncontent.keys():
+            for k in list(jsoncontent.keys()):
                self.data[k] = jsoncontent[k]
             self.data['name'] = name.strip()
             self.data['type'] = type.strip()

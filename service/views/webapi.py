@@ -1,14 +1,17 @@
 """
 Blueprint which provides the RESTful web API for JPER
 """
-from flask import Blueprint, make_response, url_for, request, abort, redirect, current_app
+from flask import Blueprint, make_response, url_for, request, abort, redirect
 from flask import stream_with_context, Response
-import json, csv
+import json
+from io import TextIOWrapper
 from octopus.core import app
-from octopus.lib import webapp, dates
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from octopus.lib import webapp
+from octopus.lib import dates
+from flask_login import login_user, current_user
 from service.api import JPER, ValidationException, ParameterException, UnauthorisedException
 from service import models
+from werkzeug.routing import BuildError
 
 blueprint = Blueprint('webapi', __name__)
 
@@ -58,7 +61,10 @@ def _accepted(obj):
     root = request.url_root
     if root.endswith("/"):
         root = root[:-1]
-    url = root + url_for("webapi.retrieve_notification", notification_id=obj.id)
+    try:
+        url = root + url_for("webapi.retrieve_notification", notification_id=obj.id)
+    except BuildError:
+        url = root + "/notification/{x}".format(x=obj.id)
     resp = make_response(json.dumps({"status" : "accepted", "id" : obj.id, "location" : url }))
     resp.mimetype = "application/json"
     resp.headers["Location"] = url
@@ -82,7 +88,7 @@ def standard_authentication():
                 pass
 
     if remote_user:
-        print "remote user present " + remote_user
+        print("remote user present " + remote_user)
         app.logger.debug("Remote user connecting: {x}".format(x=remote_user))
         user = models.Account.pull(remote_user)
         if user:
@@ -90,7 +96,7 @@ def standard_authentication():
         else:
             abort(401)
     elif apik:
-        print "API key provided " + apik
+        print("API key provided " + apik)
         app.logger.debug("API key connecting: {x}".format(x=apik))
         res = models.Account.query(q='api_key:"' + apik + '"')['hits']['hits']
         if len(res) == 1:
@@ -105,7 +111,7 @@ def standard_authentication():
         # FIXME: this is not ideal, as it requires knowing where the blueprint is mounted
         if (request.path.startswith("/api/v1/notification") and "/content" not in request.path) or request.path.startswith("/api/v1/routed"):
             return
-        print "aborting, no user"
+        print("aborting, no user")
         app.logger.debug("Standard authentication failed")
         abort(401)
 
@@ -136,9 +142,8 @@ def _get_parts():
         if metadata.mimetype != "application/json":
             raise BadRequest("Content-Type for metadata part of multipart request must be application/json")
 
-        rawmd = metadata.stream.read()
         try:
-            md = json.loads(rawmd)
+            md = json.load(TextIOWrapper(metadata))
         except:
             raise BadRequest("Unable to parse metadata part of multipart request as valid json")
 
@@ -168,12 +173,12 @@ def validate():
     try:
         md, zipfile = _get_parts()
     except BadRequest as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     try:
         JPER.validate(current_user, md, zipfile)
     except ValidationException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     return '', 204
 
@@ -188,14 +193,14 @@ def create_notification():
     try:
         md, zipfile = _get_parts()
     except BadRequest as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     try:
         notification = JPER.create_notification(current_user, md, zipfile)
         if not notification:
             abort(401)
     except ValidationException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     return _accepted(notification)
 
@@ -305,7 +310,7 @@ def _list_request(repo_id=None):
     try:
         nlist = JPER.list_notifications(current_user, since, page=page, page_size=page_size, repository_id=repo_id)
     except ParameterException as e:
-        return _bad_request(e.message)
+        return _bad_request(str(e))
 
     resp = make_response(nlist.json())
     resp.mimetype = "application/json"
@@ -370,9 +375,9 @@ def config(repoid=None):
         else:
             try:
                 if request.files['file'].filename.endswith('.csv'):
-                    saved = rec.set_repo_config(csvfile=request.files['file'],repository=repoid)
+                    saved = rec.set_repo_config(csvfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
                 elif request.files['file'].filename.endswith('.txt'):
-                    saved = rec.set_repo_config(textfile=request.files['file'],repository=repoid)
+                    saved = rec.set_repo_config(textfile=TextIOWrapper(request.files['file'], encoding='utf-8'), repository=repoid)
             except:
                 saved = False
         if saved:

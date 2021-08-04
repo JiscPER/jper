@@ -9,8 +9,8 @@ The JSON structure of the model is as follows:
     }, 
     "embargo": {
         "duration": 0, 
-        "end": "2016-08-09T14:22:11Z", 
-        "start": "2016-08-09T14:22:11Z"
+        "end": "2021-01-21T13:44:22Z", 
+        "start": "2021-01-21T13:44:22Z"
     }, 
     "event": "string", 
     "links": [
@@ -24,23 +24,28 @@ The JSON structure of the model is as follows:
         "author": [
             {
                 "affiliation": "string", 
+                "firstname": "string", 
                 "identifier": [
                     {
                         "id": "string", 
                         "type": "string"
                     }
                 ], 
+                "lastname": "string", 
                 "name": "string"
             }
         ], 
-        "date_accepted": "2016-08-09T14:22:11Z", 
-        "date_submitted": "2016-08-09T14:22:11Z", 
+        "date_accepted": "2021-01-21T13:44:22Z", 
+        "date_submitted": "2021-01-21T13:44:22Z", 
+        "fpage": "string", 
         "identifier": [
             {
                 "id": "string", 
                 "type": "string"
             }
         ], 
+        "issue": "string", 
+        "journal": "string", 
         "language": "string", 
         "license_ref": {
             "title": "string", 
@@ -48,6 +53,7 @@ The JSON structure of the model is as follows:
             "url": "string", 
             "version": "string"
         }, 
+        "lpage": "string", 
         "project": [
             {
                 "grant_number": "string", 
@@ -60,7 +66,7 @@ The JSON structure of the model is as follows:
                 "name": "string"
             }
         ], 
-        "publication_date": "2016-08-09T14:22:11Z", 
+        "publication_date": "2021-01-21T13:44:22Z", 
         "publisher": "string", 
         "source": {
             "identifier": [
@@ -76,7 +82,8 @@ The JSON structure of the model is as follows:
         ], 
         "title": "string", 
         "type": "string", 
-        "version": "string"
+        "version": "string", 
+        "volume": "string"
     }, 
     "provider": {
         "agent": "string", 
@@ -98,18 +105,24 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | links.type | keyword for type of resource (e.g. splash, fulltext) - no restrictions on use in this version of the system | unicode |  |  |
 | links.url | URL to the associated resource.  All URLs provided by publishers should be publicly accessible for a minimum of 3 months from notification; URLs provided by the Router will be accessible to authenticated users for the same period. | unicode | URL |  |
 | metadata.author.affiliation | Author organisational affiliation | unicode |  |  |
+| metadata.author.firstname |  | unicode |  |  |
 | metadata.author.identifier.id | Author identifier (e.g. an ORCID) | unicode |  |  |
 | metadata.author.identifier.type | Type of author identifier (e.g. "orcid") - no vocabulary for this field in this version of the system | unicode |  |  |
+| metadata.author.lastname |  | unicode |  |  |
 | metadata.author.name | Author's name in full | unicode |  |  |
 | metadata.date_accepted | Date publication accepted for publication | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | metadata.date_submitted | Date article submitted for publication | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| metadata.fpage |  | unicode |  |  |
 | metadata.identifier.id | Identifier for the article (e.g. DOI) | unicode |  |  |
 | metadata.identifier.type | Identifier type (e.g. "doi") - no vocabulary for this field in this version of the system | unicode |  |  |
+| metadata.issue |  | unicode |  |  |
+| metadata.journal |  | unicode |  |  |
 | metadata.language | Language of the article | unicode | 3 letter ISO language code |  |
 | metadata.license_ref.title | Title or name of the licence applied to the article; free-text | unicode |  |  |
 | metadata.license_ref.type | Type of licence (most likely the same as the title); free-text | unicode |  |  |
 | metadata.license_ref.url | URL for information on the licence | unicode |  |  |
 | metadata.license_ref.version | Version of the licence | unicode |  |  |
+| metadata.lpage |  | unicode |  |  |
 | metadata.project.grant_number | Grant number for funding source behind this article | unicode |  |  |
 | metadata.project.identifier.id | Funder identifier (e.g. Ringold ID) | unicode |  |  |
 | metadata.project.identifier.type | Funder identifier type (e.g "ringold") - no vocabulary for this field in this version of the system | unicode |  |  |
@@ -123,5 +136,6 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | metadata.title | Title of the publication | unicode |  |  |
 | metadata.type | Type of publication | unicode |  |  |
 | metadata.version | Version of publication (e.g. AAM) | unicode |  |  |
+| metadata.volume |  | unicode |  |  |
 | provider.agent | Free-text field for identifying the API client used to create the notification | unicode |  |  |
 | provider.ref | Publisher's own identifier for the notification - free-text | unicode |  |  |

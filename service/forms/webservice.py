@@ -6,25 +6,22 @@ Form for webservice
 @author: Mateusz.Kasiuba
 '''
 
-from wtforms import Form, BooleanField, TextField, PasswordField, validators, SelectField
-import utils.config as config
+from wtforms import Form, BooleanField, TextField, validators, SelectField
 from engine.query.QueryInvoker import H_QueryInvoker
-from utils.config import MULTI_PAGE, FREQUENCY_DAILY, FREQUENCY_WEEKLY,\
-    FREQUENCY_MONTHLY
+from utils.config import MULTI_PAGE, FREQUENCY_DAILY, FREQUENCY_WEEKLY, FREQUENCY_MONTHLY
 from werkzeug.routing import ValidationError
-import re 
-import time
+import re, time, json
 from datetime import datetime
 
 
 def valid_url(form, url):
     try:
-        if(re.findall('\pageSize=\d+', form.url.data)):
+        if(re.findall('pageSize=\d+', form.url.data)):
             raise ValidationError(' Specify pageSize is not allowed')
         if(False == H_QueryInvoker().is_valid(MULTI_PAGE, form.url.data)):   
             raise ValidationError('0 results from %s for this engine' % MULTI_PAGE)
     except Exception as e:
-        raise ValidationError('Url is wrong check it again: ' + e.message)
+        raise ValidationError('Url is wrong check it again: ' + str(e))
 
     return True
 
@@ -32,7 +29,7 @@ def valid_query(form, query):
     try:
         json.loads(form.data.query)
     except Exception as e:
-        raise ValidationError('Query is wrong: ' + e.message)
+        raise ValidationError('Query is wrong: ' + str(e))
 
     return True
 
@@ -49,7 +46,7 @@ def valid_date(form, date):
     try:
         time.mktime(datetime.strptime(form.end_date.data, "%Y-%m-%d").timetuple())
     except Exception as e:
-        raise ValidationError('Date is wrong: ' + e.message)
+        raise ValidationError('Date is wrong: ' + str(e))
 
     return True
 
@@ -60,7 +57,7 @@ def valid_wait_window(form,wait):
         if(int(form.wait_window.data) < 0):
             raise ValidationError('Should be positive')
     except Exception as e:
-        raise ValidationError('Wait window is wrong: ' + e.message)
+        raise ValidationError('Wait window is wrong: ' + str(e))
 
     return True
 

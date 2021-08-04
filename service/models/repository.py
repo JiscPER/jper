@@ -3,8 +3,8 @@ Model objects used to represent interactions with repositories
 """
 
 from octopus.lib import dataobj
-from service import dao
 from octopus.core import app
+from service import dao
 import csv
 
 class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
@@ -42,7 +42,8 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 "keywords" : {"contains" : "field", "coerce" : "unicode"},
                 "grants" : {"contains" : "field", "coerce" : "unicode"},
                 "content_types" : {"contains" : "field", "coerce" : "unicode"},
-                "strings" : {"contains" : "field", "coerce" : "unicode"}
+                "strings" : {"contains" : "field", "coerce" : "unicode"},
+                "excluded_license": {"contains" : "field", "coerce" : "unicode"},
             },
             "structs" : {
                 "author_ids" : {
@@ -203,10 +204,32 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         """
         return self._get_list("strings", coerce=dataobj.to_unicode())
 
+    @property
+    def excluded_license(self):
+        """
+        List of licenses not associated with this repository
+
+        :return: excluded licenses
+        """
+        return self._get_list("excluded_license", coerce=self._utf8_unicode())
+
+    def add_excluded_license(self, excluded_license):
+        self._add_to_list("excluded_license", excluded_license, coerce=self._utf8_unicode())
+
+    def remove_excluded_license(self, excluded_license):
+        self._delete_from_list("excluded_license", excluded_license)
+
+    @excluded_license.setter
+    def excluded_license(self, excluded_license):
+        self._set_list("excluded_license", excluded_license, coerce=self._utf8_unicode())
+
+    def excludes_license(self, license):
+        return license in self.excluded_license
+
     @classmethod
     def pull_by_key(cls,key,value):
         res = cls.query(q={"query":{"term":{key+'.exact':value}}})
-        if res.get('hits',{}).get('total',0) == 1:
+        if res.get('hits',{}).get('total',{}).get('value', 0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )
         else:
             return None        
@@ -233,10 +256,10 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             lines = False
             inp = csv.DictReader(csvfile)
             for row in inp:
-                for x in row.keys():
+                for x in list(row.keys()):
                     # 2019-05-21 TD : A tiny safeguard with respect to forgotten commata
                     #                 'None' appears if there are less than fields in row.keys()
-                    if None in row.values():
+                    if None in list(row.values()):
                         continue
                     # 2019-05-21 TD
                     if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant' and len(row[x].strip()) > 1:
@@ -277,7 +300,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             return True
         elif jsoncontent is not None:
             # save the lines into the repo config
-            for k in jsoncontent.keys():
+            for k in list(jsoncontent.keys()):
                 self.data[k] = jsoncontent[k]
             self.data['repo'] = repoid
             # self.data['repository'] = repository
@@ -532,7 +555,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         """
         # validate the object structure quickly
         allowed = ["name", "id", "issn", "doi", "link", "embargo"]
-        for k in obj.keys():
+        for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("Alliance license object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 

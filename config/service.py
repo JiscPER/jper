@@ -3,6 +3,7 @@ Main configuration file for the application
 
 On deployment, desired configuration can be overridden by the provision of a local.cfg file
 """
+from octopus.lib import paths
 
 ##################################################
 # overrides for the webapp deployment
@@ -32,6 +33,9 @@ ELASTIC_SEARCH_INDEX = "jper"
 ELASTIC_SEARCH_VERSION = "2.3.3"
 # ELASTIC_SEARCH_VERSION = "1.5.2"
 """version of elasticsearch which we're using - matters for certain semantics of requests"""
+
+ELASTIC_INDEX_PER_TYPE = True
+"""Each type is saved in it's own index in elastic search, prefixed by the search index"""
 
 # Classes from which to retrieve ES mappings to be used in this application
 # Note: right now this is an empty list, as the ELASTIC_SEARCH_DEFAULT_MAPPING covers us
@@ -148,7 +152,6 @@ STORE_JPER_URL = 'http://store'
 """StoreJper's base url"""
 #STORE_JPER_URL = 'http://localhost:5999'
 
-from octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "live")
 """path to local directory for local file store (principally used for testing) - specified relative to this file"""
 

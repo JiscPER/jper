@@ -37,20 +37,14 @@ get all the submodules
     git submodule init
     git submodule update
 
-This will initialise and clone the esprit and magnificent octopus libraries
-
-Then get the submodules for Magnificent Octopus
-
-    cd myapp/magnificent-octopus
-    git submodule init
-    git submodule update
+This will initialise and clone the esprit libraries
 
 Create your virtualenv and activate it
 
     virtualenv /path/to/venv
     source /path/to/venv/bin/activate
 
-Install esprit and magnificent octopus:
+Install esprit:
 
     pip install -r requirements.txt
 

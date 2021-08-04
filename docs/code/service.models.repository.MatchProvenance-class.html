@@ -61,18 +61,21 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class MatchProvenance</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance">source&nbsp;code</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_service__29" name="uml_class_diagram_for_service__29">
-<area shape="rect" id="node1_7" href="service.models.repository.MatchProvenance-class.html#__init__" title="Create a new instance of the MatchProvenance object, optionally around the raw python dictionary." alt="" coords="17,133,495,153"/>
-<area shape="rect" id="node1_8" href="service.models.repository.MatchProvenance-class.html#repository" title="Set the repository id to which the match pertains" alt="" coords="17,153,495,173"/>
-<area shape="rect" id="node1_9" href="service.models.repository.MatchProvenance-class.html#notification" title="Set the notification id to which the match pertains" alt="" coords="17,173,495,193"/>
-<area shape="rect" id="node1_10" href="service.models.repository.MatchProvenance-class.html#provenance" title="List of match provenance events for the combination of the repository id and notification id represented by this object" alt="" coords="17,193,495,213"/>
-<area shape="rect" id="node1_11" href="service.models.repository.MatchProvenance-class.html#add_provenance" title="add a provenance record to the existing list of provenances" alt="" coords="17,213,495,233"/>
-<area shape="rect" id="node1" href="service.models.repository.MatchProvenance-class.html" title="Class to represent a record of a match between a RepositoryConfig and a RoutingMetadata object" alt="" coords="5,99,507,239"/>
-<area shape="rect" id="node2_12" href="service.dao.MatchProvenanceDAO-class.html#__type__" title="The index type to use to store these objects" alt="" coords="113,31,399,51"/>
-<area shape="rect" id="node2_13" href="service.dao.MatchProvenanceDAO-class.html#pull_by_notification" title="List all of the match provenance information for the requested notification" alt="" coords="113,53,399,73"/>
-<area shape="rect" id="node2" href="service.dao.MatchProvenanceDAO-class.html" title="DAO for MatchProvenance" alt="" coords="101,5,411,80"/>
+<center>  <map id="uml_class_diagram_for_service__35" name="uml_class_diagram_for_service__35">
+<area shape="rect" id="node1_10" href="service.models.repository.MatchProvenance-class.html#__init__" title="Create a new instance of the MatchProvenance object, optionally around the raw python dictionary." alt="" coords="17,130,559,150"/>
+<area shape="rect" id="node1_11" href="service.models.repository.MatchProvenance-class.html#repository" title="Set the repository id to which the match pertains" alt="" coords="17,150,559,170"/>
+<area shape="rect" id="node1_12" href="service.models.repository.MatchProvenance-class.html#bibid" title="Set the repository EZB&#45;Id to which the match pertains" alt="" coords="17,170,559,190"/>
+<area shape="rect" id="node1_13" href="service.models.repository.MatchProvenance-class.html#publisher" title="Set the publisher id to which the match pertains" alt="" coords="17,190,559,210"/>
+<area shape="rect" id="node1_14" href="service.models.repository.MatchProvenance-class.html#notification" title="Set the notification id to which the match pertains" alt="" coords="17,210,559,230"/>
+<area shape="rect" id="node1_15" href="service.models.repository.MatchProvenance-class.html#provenance" title="List of match provenance events for the combination of the repository id and notification id represented by this object" alt="" coords="17,230,559,250"/>
+<area shape="rect" id="node1_16" href="service.models.repository.MatchProvenance-class.html#add_provenance" title="add a provenance record to the existing list of provenances" alt="" coords="17,250,559,270"/>
+<area shape="rect" id="node1_17" href="service.models.repository.MatchProvenance-class.html#alliance" title="Set the alliance license object." alt="" coords="17,270,559,290"/>
+<area shape="rect" id="node1" href="service.models.repository.MatchProvenance-class.html" title="Class to represent a record of a match between a RepositoryConfig and a RoutingMetadata object" alt="" coords="5,97,571,296"/>
+<area shape="rect" id="node2_18" href="service.dao.MatchProvenanceDAO-class.html#__type__" title="The index type to use to store these objects" alt="" coords="125,30,449,50"/>
+<area shape="rect" id="node2_19" href="service.dao.MatchProvenanceDAO-class.html#pull_by_notification" title="List all of the match provenance information for the requested notification" alt="" coords="125,53,449,73"/>
+<area shape="rect" id="node2" href="service.dao.MatchProvenanceDAO-class.html" title="DAO for MatchProvenance" alt="" coords="113,5,461,79"/>
 </map>
-  <img src="uml_class_diagram_for_service__29.gif" alt='' usemap="#uml_class_diagram_for_service__29" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_service__35.gif" alt='' usemap="#uml_class_diagram_for_service__35" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
@@ -139,6 +142,42 @@ raw python dictionary.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#bibid" class="summary-sig-name">bibid</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the repository EZB-Id to which the match pertains</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.bibid">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#publisher" class="summary-sig-name">publisher</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the publisher id to which the match pertains</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.publisher">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#notification" class="summary-sig-name">notification</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">val</span>)</span><br />
       Set the notification id to which the match pertains</td>
@@ -184,6 +223,24 @@ represented by this object</td>
       add a provenance record to the existing list of provenances</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.add_provenance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.repository.MatchProvenance-class.html#alliance" class="summary-sig-name">alliance</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">obj</span>)</span><br />
+      Set the alliance license object.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.alliance">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -335,6 +392,62 @@ object, and an exception will be raised if it does not validate</p>
   </dl>
 </td></tr></table>
 </div>
+<a name="bibid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">bibid</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.bibid">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the repository EZB-Id to which the match pertains
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - EZB-Id (or any more 'human' readable unique(!) repository id...)</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@bibid.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="publisher"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">publisher</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.publisher">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the publisher id to which the match pertains
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - publisher id</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@publisher.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="notification"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -431,6 +544,50 @@ represented by this object</p>
   </dl>
 </td></tr></table>
 </div>
+<a name="alliance"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">alliance</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">obj</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.repository-pysrc.html#MatchProvenance.alliance">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Set the alliance license object.</p>
+<p>The object will be validated and types coerced as needed.</p>
+<p>The supplied object should be structured as follows:</p>
+<dl class="rst-docutils">
+<dt>::</dt>
+<dd><dl class="rst-first rst-docutils">
+<dt>{</dt>
+<dd>&quot;name&quot; : &quot;&lt;name of license as per entry in EZB&gt;&quot;,
+&quot;id&quot; : &quot;&lt;license_id&gt;&quot;,
+&quot;issn&quot; : &quot;&lt;issn (or eissn!) of the involved journal&gt;,
+&quot;doi&quot; : &quot;&lt;DOI of the involved article&gt;,
+&quot;link&quot; : &quot;&lt;url of license information (e.g. as given by EZB)&gt;&quot;,
+&quot;embargo&quot; : &lt;number of month(s)&gt; (integer)</dd>
+</dl>
+<p class="rst-last">}</p>
+</dd>
+</dl>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>obj</code></strong> - the alliance license object as a dict</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@alliance.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -460,7 +617,7 @@ represented by this object</p>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Aug  9 16:22:08 2016
+    Generated by Epydoc 3.0.1 on Fri Jan 22 11:50:50 2021
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

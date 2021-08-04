@@ -7,7 +7,6 @@ Could take its time, so be informed by now!
 """
 from octopus.core import add_configuration, app
 from service import reports
-#from datetime import datetime
 import os, time
 
 if __name__ == "__main__":
@@ -36,7 +35,7 @@ if __name__ == "__main__":
         app.config['DEBUG'] = False
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_SERVER_HOST', 'localhost'), port=app.config.get('DEBUG_SERVER_PORT', 51234), stdoutToServer=True, stderrToServer=True)
-        print "STARTED IN REMOTE DEBUG MODE"
+        print("STARTED IN REMOTE DEBUG MODE")
 
     # if not args.from_date or not args.to_date:
     #     parser.print_help()
@@ -48,7 +47,7 @@ if __name__ == "__main__":
     
     reportsdir = app.config.get('REPORTSDIR','/home/green/jper_reports')
 
-    for mnth in xrange(1,13):
+    for mnth in range(1,13):
         nxmth = (mnth+1) % 13
         from_date = "%04d-%02d-01T00:00:00Z" % (year,mnth)
         fstem = "%04d-%02d.csv" % (year,mnth)
@@ -60,14 +59,14 @@ if __name__ == "__main__":
         fname = os.path.join(reportsdir,"detailed_routed_notifications_" + fstem)
         reports.admin_routed_report(from_date, to_date, fname)
         lines = sum(1 for l in open(fname))
-        print "Report written to '{f}',\nsize: {s} lines.".format(f=fname,s=lines)
+        print("Report written to '{f}',\nsize: {s} lines.".format(f=fname,s=lines))
         #
         fname = os.path.join(reportsdir,"detailed_failed_notifications_" + fstem)
         reports.admin_failed_report(from_date, to_date, fname)
         lines = sum(1 for l in open(fname))
-        print "Report written to '{f}',\nsize: {s} lines.".format(f=fname,s=lines)
+        print("Report written to '{f}',\nsize: {s} lines.".format(f=fname,s=lines))
         #
-        print
+        print()
 
-    print "All done."
-    print
+    print("All done.")
+    print()

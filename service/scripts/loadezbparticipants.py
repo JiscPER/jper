@@ -9,8 +9,7 @@ So be warned/informed now!
 """
 from octopus.core import add_configuration, app
 from service.models import License, Alliance
-# from datetime import datetime
-import os, requests, csv
+import requests, csv, os
 import lxml.html
 
 EZB_SEARCH_HOST = "http://rzbvm016.ur.de"
@@ -20,40 +19,40 @@ EZB_SEARCH_PAGE = "OA_participants"
 """page name in the EZB instance"""
 
 
-def upload_csv(newf,alid):
+def upload_csv(newf, alid):
     try:
-         with open( newf, 'rb' ) as fd:
-             license = License.pull_by_key('identifier.id',alid)
-             if len(license)>0:
-                 alliance = Alliance.pull_by_key('identifier.id',alid)
-                 if not alliance:
-                     alliance = Alliance()
-                 alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
-                 print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
-             else:
-                 print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
+        with open(newf, 'r') as fd:
+            license = License.pull_by_key('identifier.id', alid)
+            if license and len(license) > 0:
+                alliance = Alliance.pull_by_key('identifier.id', alid)
+                if not alliance:
+                    alliance = Alliance()
+                alliance.set_alliance_data(license[0].id, alid, csvfile=fd)
+                print("INFO: data for alliance '{a}' uploaded to system.".format(a=alid))
+            else:
+                print("WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid))
     except Exception as e:
-         print "WARNING: could not process .csv file '{x}' for database upload.".format(x=newf)
-         print "WARNING: message: '{x}'".format(x=e.message)
+        print("WARNING: could not process .csv file '{x}' for database upload.".format(x=newf))
+        print("WARNING: message: '{x}'".format(x=str(e)))
 
 
-def close_and_upload_csv(csvfile,newf,alid):
+def close_and_upload_csv(csvfile, newf, alid):
     try:
         if csvfile and not csvfile.closed: 
             csvfile.close()
-            with open( newf, 'rb' ) as fd:
-                license = License.pull_by_key('identifier.id',alid)
-                if len(license)>0:
-                    alliance = Alliance.pull_by_key('identifier.id',alid)
+            with open( newf, 'r' ) as fd:
+                license = License.pull_by_key('identifier.id', alid)
+                if license and len(license)>0:
+                    alliance = Alliance.pull_by_key('identifier.id', alid)
                     if not alliance:
                         alliance = Alliance()
-                    alliance.set_alliance_data(license[0].id,alid,csvfile=fd)
-                    print "INFO: data for alliance '{a}' uploaded to system.".format(a=alid)
+                    alliance.set_alliance_data(license[0].id, alid, csvfile=fd)
+                    print("INFO: data for alliance '{a}' uploaded to system.".format(a=alid))
                 else:
-                    print "WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid)
+                    print("WARNING: alliance '{a}' not found in system; skipping: data not uploaded.".format(a=alid))
     except Exception as e:
-         print "WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf)
-         print "WARNING: message: '{x}'".format(x=e.message)
+        print("WARNING: could not reopen .csv file '{x}' for database upload.".format(x=newf))
+        print("WARNING: message: '{x}'".format(x=str(e)))
 
 
 if __name__ == "__main__":
@@ -89,14 +88,14 @@ if __name__ == "__main__":
 
     if args.source:
         newf = args.source
-        t = newf.find('_')
-        alid = newf[:t].upper()
-        upload_csv(newf,alid)
+        filename = os.path.basename(newf)
+        t = filename.find('_')
+        alid = filename[:t].upper()
+        upload_csv(newf, alid)
         exit(0)
 
-
-    fname = app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE) # + "-EZB_current.csv"
-    ia = app.config.get('EZB_SEARCH_HOST',EZB_SEARCH_HOST) + '/' + app.config.get('EZB_SEARCH_PAGE',EZB_SEARCH_PAGE)
+    fname = app.config.get('EZB_SEARCH_PAGE', EZB_SEARCH_PAGE) # + "-EZB_current.csv"
+    ia = app.config.get('EZB_SEARCH_HOST', EZB_SEARCH_HOST) + '/' + app.config.get('EZB_SEARCH_PAGE', EZB_SEARCH_PAGE)
 
     ae = requests.get(ia)
 
@@ -104,11 +103,11 @@ if __name__ == "__main__":
         try:
             tree = lxml.html.fromstring(ae.content)
         except:
-            print "ERROR: Could not parse .html page as tree."
-            print
+            print("ERROR: Could not parse .html page as tree.")
+            print()
             exit(-3)
 
-        print "INFO: xml tree read."
+        print("INFO: xml tree read.")
 
         newf = "dummy"
         alid = "0"
@@ -121,33 +120,34 @@ if __name__ == "__main__":
                 continue
             if el.tag == 'h3':                              # h3 headline as AL seperator
 
-                close_and_upload_csv(csvfile,newf,alid)     # first, pass all collected data so far to Alliance class
+                close_and_upload_csv(csvfile, newf, alid)   # first, pass all collected data so far to Alliance class
                                                             #        (i.e. import *previous* AL data to database)
                 item = el.text.strip()
                 s = item.rfind('(')
-                t = item.rfind(')',s)
+                t = item.rfind(')', s)
                 alid = "0"
                 if s >= 0 and t > s:
                     alid = item[s+1:t].upper()
-                newf = "{x}-EZB_current-{a}.csv".format(a=alid,x=fname)
+                newf = "{x}-EZB_current-{a}.csv".format(a=alid, x=fname)
                 try:
-                    csvfile = open( newf, 'wb' )
+                    csvfile = open(newf, 'w')
                     outp = csv.DictWriter(csvfile, fieldnames=fieldnames,
                                                    delimiter='\t', quoting=csv.QUOTE_ALL,
                                                    lineterminator='\n')
                     outp.writeheader()
                 except IOError:
-                    print "ERROR: could not write .csv file '{x}' (IOError).".format(x=newf)
-                    print
+                    print("ERROR: could not write .csv file '{x}' (IOError).".format(x=newf))
+                    print()
                     exit(-4)
 
             item = el.tail
 
             if item and item.startswith(': '):           # kill leading colon ': ' and, if necessary,
-                item = item[1:].replace(u"\u0096",'-')   # funny hyphens...
+                item = item[1:].replace("\u0096", '-')   # funny hyphens...
             if el.text == 'Institution':
                 if len(part) > 0:
-                    if outp: outp.writerow(part)
+                    if outp:
+                        outp.writerow(part)
                     part = {}
                 part[el.text] = item.strip().encode('utf-8')
             elif el.text == 'EZB-Id':
@@ -155,13 +155,14 @@ if __name__ == "__main__":
             elif el.text == 'Sigel':
                 part[el.text] = item.strip().encode('utf-8')
             elif el.text is None and item:
-                part['Institution'] = part.get('Institution',"") + " \r" + item.strip().encode('utf-8')
+                part['Institution'] = part.get('Institution', "") + " \r" + item.strip().encode('utf-8')
 
         if len(part) > 0:
-            if outp: outp.writerow(part)
+            if outp:
+                outp.writerow(part)
 
-        close_and_upload_csv(csvfile,newf,alid)
+        print(csvfile, newf, alid)
+        close_and_upload_csv(csvfile, newf, alid)
 
     else:
-        print "ERROR: web page '{x}' not available (http {y}).".format(x=ia,y=ea.status_code)
-
+        print("ERROR: web page '{x}' not available (http {y}).".format(x=ia, y=ae.status_code))
