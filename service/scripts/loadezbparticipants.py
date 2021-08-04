@@ -20,11 +20,10 @@ EZB_SEARCH_PAGE = "OA_participants"
 
 
 def upload_csv(newf, alid):
-    print(newf, alid)
     try:
         with open(newf, 'r') as fd:
             license = License.pull_by_key('identifier.id', alid)
-            if len(license) > 0:
+            if license and len(license) > 0:
                 alliance = Alliance.pull_by_key('identifier.id', alid)
                 if not alliance:
                     alliance = Alliance()
@@ -43,7 +42,7 @@ def close_and_upload_csv(csvfile, newf, alid):
             csvfile.close()
             with open( newf, 'r' ) as fd:
                 license = License.pull_by_key('identifier.id', alid)
-                if len(license)>0:
+                if license and len(license)>0:
                     alliance = Alliance.pull_by_key('identifier.id', alid)
                     if not alliance:
                         alliance = Alliance()

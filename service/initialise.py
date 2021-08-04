@@ -5,17 +5,11 @@ The main initialise() function is run when the app is started every time
 """
 
 from octopus.core import app
-from werkzeug.security import generate_password_hash
-import requests, json, logging, os, scheduler
+import logging, os
+from service import scheduler
 from logging import Formatter
 from logging.handlers import RotatingFileHandler
-
-# Elasticsearch hostname
-ELASTIC_SEARCH_HOST = "http://gateway:9200"
-
-# JPER index name in the elasticsearch instance
-ELASTIC_SEARCH_INDEX = "jper"
-
+from service.models import Account
 
 def initialise():
     """
@@ -31,21 +25,23 @@ def initialise():
 
     :return:
     """
-    i = app.config['ELASTIC_SEARCH_HOST'] + '/' + app.config['ELASTIC_SEARCH_INDEX'] + '/'
-    un = 'admin'
-    ia = i + '/account/' + un
-    ae = requests.get(ia)
-    if ae.status_code != 200:
-        su = {
-            "id": un,
-            "role": ["admin"],
-            "email": "green@deepgreen.org",
-            "api_key": "admin",
-            "password": generate_password_hash(un)
-        }
-        c = requests.post(ia, data=json.dumps(su))
-        print("first superuser account created for user " + un + " with password " + un) 
+    username = 'admin'
+    params = {
+        "id": username,
+        "role": ["admin"],
+        "email": "green@deepgreen.org",
+        "api_key": "admin",
+        "password": username
+    }
+    a = Account.pull('admin')
+    if not a:
+        a = Account()
+        a.add_account(params)
+        a.save()
+        print("first superuser account created for user " + username + " with password " + username)
         print("THIS FIRST SUPERUSER ACCOUNT IS INSECURE! GENERATE A NEW PASSWORD FOR IT IMMEDIATELY! OR CREATE A NEW ACCOUNT AND DELETE THIS ONE...")
+    else:
+        print("Account for 'admin' exists")
                 
     file_handler = RotatingFileHandler(app.config.get('LOGFILE', '/home/green/jperlog'), maxBytes=1000000000, backupCount=5)
     lvl = app.config.get('LOGLEVEL', 'info')

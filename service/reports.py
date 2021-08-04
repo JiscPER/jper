@@ -38,7 +38,10 @@ def admin_routed_report(from_date, to_date, reportfile):
         writer.writerow( ('Send Date','Analysis Date','Publisher','ISSN','DOI','Repository','Reason','Match Date','Id') )
         # go through each routed notification 
         q = AdminReportQuery(from_date, to_date)
-        for note in RoutedNotification.scroll(q.query(), page_size=2000, keepalive="25m"):
+        types = None
+        if RoutedNotification.__conn__.index_per_type:
+            types = 'routed20*'
+        for note in RoutedNotification.scroll(q.query(), page_size=2000, keepalive="25m", types=types):
             assert isinstance(note, RoutedNotification)
             nid = note.id
             created = note.created_date
@@ -139,7 +142,10 @@ def publisher_report(from_date, to_date, reportfile):
     # something is a md-only or a with-content notification, and at the same time count the 
     # unique md-only vs with-content notifications that were routed *OR* not
     q = DeliveryReportQuery(from_date, to_date)
-    for note in RoutedNotification.scroll(q.query(), page_size=200, keepalive="25m"):
+    types = None
+    if RoutedNotification.__conn__.index_per_type:
+        types = 'routed20*'
+    for note in RoutedNotification.scroll(q.query(), page_size=200, keepalive="25m", types=types):
         assert isinstance(note, RoutedNotification)
         nm = note.analysis_datestamp.month
 
@@ -374,7 +380,10 @@ def delivery_report(from_date, to_date, reportfile):
     # a md-only or a with-content notification, and at the same time count the unique md-only vs with-content
     # notifications that were routed
     q = DeliveryReportQuery(from_date, to_date)
-    for note in RoutedNotification.scroll(q.query(), page_size=200, keepalive="25m"):
+    types = None
+    if RoutedNotification.__conn__.index_per_type:
+        types = 'routed20*'
+    for note in RoutedNotification.scroll(q.query(), page_size=200, keepalive="25m", types=types):
         assert isinstance(note, RoutedNotification)
         nm = note.analysis_datestamp.month
 

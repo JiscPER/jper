@@ -9,7 +9,7 @@ So be warned/informed now!
 """
 try:
     from octopus.core import add_configuration, app
-    from service.models import Account,RepositoryConfig
+    from service.models import Account, RepositoryConfig
 except:
     print("ERROR: Need to run from a virtualenv enabled setting, i.e.")
     print("ERROR: run 'source ../../bin/activate' in some DG installation root folder first!")

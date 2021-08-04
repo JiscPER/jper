@@ -33,7 +33,7 @@ def make_hidden2regular(hidden, regular={}):
 
 
 def assign_hidnotes2regular(hid2reg={}, page_size=1000):
-    total = RoutedNotification.query(size=0).get('hits',{}).get('total',0)
+    total = RoutedNotification.query(size=0).get('hits',{}).get('total',{}).get('value', 0)
     if total <= 0:
         print("ERROR: No routed notifications found.")
         return False

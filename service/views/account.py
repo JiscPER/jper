@@ -23,57 +23,56 @@ blueprint = Blueprint('account', __name__)
 
 # Notification table/csv for repositories
 ntable = {
-    "screen": ["Send Date", ["DOI", "Publisher"], ["Publication Date", "Embargo"], "Title", "Analysis Date"],
-    "header": ["Send Date", "DOI", "Publisher", "Publication Date", "Embargo", "Title", "Analysis Date"],
-    "Analysis Date": "notifications[*].analysis_date",
-    "Send Date": "notifications[*].created_date",
-    "Embargo": "notifications[*].embargo.duration",
-    "DOI": "notifications[*].metadata.identifier[?(@.type=='doi')].id",
-    "Publisher": "notifications[*].metadata.publisher",
-    "Title": "notifications[*].metadata.title",
-    "Publication Date": "notifications[*].metadata.publication_date"
+            "screen" : ["Send Date", ["DOI","Publisher"], ["Publication Date", "Embargo"], "Title", "Analysis Date"],
+            "header" : ["Send Date", "DOI", "Publisher", "Publication Date", "Embargo", "Title", "Analysis Date"],
+     "Analysis Date" : "notifications[*].analysis_date",
+         "Send Date" : "notifications[*].created_date",
+           "Embargo" : "notifications[*].embargo.duration",
+               "DOI" : "notifications[*].metadata.identifier[?(@.type=='doi')].id",
+         "Publisher" : "notifications[*].metadata.publisher",
+             "Title" : "notifications[*].metadata.title",
+  "Publication Date" : "notifications[*].metadata.publication_date"
 }
 
 # Matching table/csv for providers (with detailed reasoning)
 mtable = {
-    "screen": ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term",
-               "Appears in {notification_field}"],
-    "header": ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
-    "Analysis Date": "matches[*].created_date",
-    "ISSN or EISSN": "matches[*].alliance.issn",
-    "DOI": "matches[*].alliance.doi",
-    "License": "matches[*].alliance.link",
-    "Forwarded to": "matches[*].bibid",
-    "Term": "matches[*].provenance[0].term",
-    "Appears in": "matches[*].provenance[0].notification_field"
+         "screen" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to {EZB-Id}", "Term", "Appears in {notification_field}"],
+         "header" : ["Analysis Date", "ISSN or EISSN", "DOI", "License", "Forwarded to", "Term", "Appears in"],
+  "Analysis Date" : "matches[*].created_date",
+  "ISSN or EISSN" : "matches[*].alliance.issn",
+            "DOI" : "matches[*].alliance.doi",
+        "License" : "matches[*].alliance.link",
+   "Forwarded to" : "matches[*].bibid",
+           "Term" : "matches[*].provenance[0].term",
+     "Appears in" : "matches[*].provenance[0].notification_field"
 }
 
 # Rejected table/csv for providers
 ftable = {
-    "screen": ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
-    "header": ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
-    "Send Date": "failed[*].created_date",
-    "Analysis Date": "failed[*].analysis_date",
-    "ISSN or EISSN": "failed[*].issn_data",
-    "DOI": "failed[*].metadata.identifier[?(@.type=='doi')].id",
-    "Reason": "failed[*].reason"
+         "screen" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
+         "header" : ["Send Date", "ISSN or EISSN", "DOI", "Reason", "Analysis Date"],
+      "Send Date" : "failed[*].created_date",
+  "Analysis Date" : "failed[*].analysis_date",
+  "ISSN or EISSN" : "failed[*].issn_data",
+            "DOI" : "failed[*].metadata.identifier[?(@.type=='doi')].id",
+         "Reason" : "failed[*].reason"
 }
 
 # Config table/csv for repositories
 ctable = {
-    # "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
-    # "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
-    "screen": ["Name Variants", "Domains", "Grant Numbers", "Keywords"],
-    "header": ["Name Variants", "Domains", "Grant Numbers", "Dummy1", "Dummy2", "Keywords"],
-    "Name Variants": "repoconfig[0].name_variants[*]",
-    "Domains": "repoconfig[0].domains[*]",
-    #     "Postcodes" : "repoconfig[0].postcodes[*]",
-    "Grant Numbers": "repoconfig[0].grants[*]",
-    "Dummy1": "repoconfig[0].author_ids[?(@.type=='xyz1')].id",
-    "Dummy2": "repoconfig[0].author_ids[?(@.type=='xyz2')].id",
-    #        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
-    # "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
-    "Keywords": "repoconfig[0].keywords[*]",
+        # "screen" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+        # "header" : ["Name Variants", "Domains", "Grant Numbers", "ORCIDs", "Author Emails", "Keywords"],
+        "screen" : ["Name Variants", "Domains", "Grant Numbers", "Keywords"],
+        "header" : ["Name Variants", "Domains", "Grant Numbers", "Dummy1", "Dummy2", "Keywords"],
+ "Name Variants" : "repoconfig[0].name_variants[*]",
+       "Domains" : "repoconfig[0].domains[*]",
+#     "Postcodes" : "repoconfig[0].postcodes[*]",
+ "Grant Numbers" : "repoconfig[0].grants[*]",
+        "Dummy1" : "repoconfig[0].author_ids[?(@.type=='xyz1')].id",
+        "Dummy2" : "repoconfig[0].author_ids[?(@.type=='xyz2')].id",
+#        "ORCIDs" : "repoconfig[0].author_ids[?(@.type=='orcid')].id",
+# "Author Emails" : "repoconfig[0].author_ids[?(@.type=='email')].id",
+      "Keywords" : "repoconfig[0].keywords[*]",
 }
 
 
@@ -579,7 +578,7 @@ def apikey(username):
     if current_user.id != username and not current_user.is_super:
         abort(401)
     acc = models.Account.pull(username)
-    acc.data['api_key'] = str(uuid.uuid4())
+    acc.api_key = str(uuid.uuid4())
     acc.save()
     time.sleep(2)
     flash('Thank you. Your API key has been updated.', "success")
@@ -740,57 +739,12 @@ def register():
     vals = request.json if request.json else request.values
 
     if request.method == 'POST' and form.validate():
-        # From here!
-        api_key = str(uuid.uuid4())
+        role = vals.get('radio', None)
         account = models.Account()
-        account.data['email'] = vals['email']
-        account.data['api_key'] = api_key
-        account.data['role'] = []
-
-        if vals.get('repository_name', False):
-            account.data['repository'] = {
-                'name': vals['repository_name']
-            }
-            if vals.get('repository_software', False):
-                account.data['repository']['software'] = vals['repository_software']
-            if vals.get('repository_url', False):
-                account.data['repository']['url'] = vals['repository_url']
-            if vals.get('repository_bibid', False):
-                account.data['repository']['bibid'] = vals['repository_bibid'].upper()
-            if vals.get('repository_sigel', False):
-                account.data['repository']['sigel'] = vals['repository_sigel'].split(',')
-
-        if vals.get('sword_username', False):
-            account.data['sword'] = {
-                'username': vals['sword_username']
-            }
-            if vals.get('sword_password', False):
-                account.data['sword']['password'] = vals['sword_password']
-            if vals.get('sword_collection', False):
-                account.data['sword']['collection'] = vals['sword_collection']
-
-        if vals.get('packaging', False):
-            account.data['packaging'] = vals['packaging'].split(',')
-
-        if vals.get('embargo_duration', False):
-            account.data['embargo'] = {'duration': vals['embargo_duration']}
-
-        if vals.get('license_title', False):
-            account.data['license'] = {'title': vals['license_title']}
-            if vals.get('license_type', False):
-                account.data['license']['type'] = vals['license_type']
-            if vals.get('license_url', False):
-                account.data['license']['url'] = vals['license_url']
-            if vals.get('license_version', False):
-                account.data['license']['version'] = vals['license_version']
-
-        account.set_password(vals['password'])
-        if vals['radio'] != 'publisher':
-            account.add_role(vals['radio'])
+        account.add_account(vals)
         account.save()
-        if vals['radio'] == 'publisher':
+        if role == 'publisher':
             account.become_publisher()
-        # To here! it should be a method in model not part of the controller!
         time.sleep(1)
         flash('Account created for ' + account.id, 'success')
         return redirect('/account')
