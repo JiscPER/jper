@@ -400,7 +400,7 @@ def sort_standard_accounts(conn, logging):
     accounts_to_delete = {}
     accounts_to_rename = {}
     accounts_to_check = {}
-    bibids_to_check = ['aTIHO', 'aUBPO', 'aGFZPO', 'aGSF', 'aFHRT', 'aFHBOG', 'aUBKL', 'aUBMZ']
+    bibids_to_check = ['aTIHO', 'aUBPO', 'aGSF', 'aFHRT', 'aFHBOG', 'aUBKL', 'aUBMZ']
 
     # find standard accounts
     q = {
@@ -607,8 +607,6 @@ def filter_and_modify_notification(logging, data, **func_args):
 
 def model_for_type(index_type):
     models_by_type = {
-        # sword_deposit_record
-        # sword_repository_status
         'account': models.Account,
         'alliance': models.Alliance,
         'contentlog': models.ContentLog,
