@@ -265,7 +265,6 @@ def _notifications_for_display(results, table):
             cell.append(val)
             key = header.lower().replace(' ', '_')
             row[key] = cell
-            # row.append(cell)
         notifications.append(row)
     return notifications
 
