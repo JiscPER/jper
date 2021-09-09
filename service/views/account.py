@@ -248,7 +248,7 @@ def _notifications_for_display(results, table):
     notifications = []
     # header
     header_row = ['id']
-    for header in table['header']:
+    for header in table['screen']:
         if isinstance(header, list):
             header_row.append(' / '.join(header))
         else:
@@ -259,7 +259,7 @@ def _notifications_for_display(results, table):
         row = {
             'id': _get_notification_value('id', result)
         }
-        for header in table['header']:
+        for header in table['screen']:
             if not isinstance(header, list):
                 header = [header]
             cell = []
