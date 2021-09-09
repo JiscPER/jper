@@ -31,7 +31,7 @@
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
 
-			<table id="publisherTable">
+			<table id="publisherTable" class="tablesorter-green">
 
 			</table>
 				
@@ -97,36 +97,7 @@
 			<td>'+out[tbl.header[6]][variable]+'</td> \
 			</tr>');
 	}
-/*
-	for (variable in obj.matches) {
-		var prov = obj.matches[variable].provenance;
-		var bibid = obj.matches[variable].repo;
-		var issn = 'n/a';
-		var doi = 'n/a';
-		var link = 'n/a';
-                if ('alliance' in obj.matches[variable]) {
-			issn = obj.matches[variable].alliance.issn;
-			doi = obj.matches[variable].alliance.doi;
-			link = obj.matches[variable].alliance.link;
-		}
-		if ('bibid' in obj.matches[variable]) {
-			bibid = obj.matches[variable].bibid;
-		}
-		$('#publisherTable tr:last').after('<tr>\
-			<td>'+obj.matches[variable].created_date+'</td> \
-			<td>'+issn+'</td> \
-			<td>'+doi+'</td> \
-			<td>'+link+'</td> \
-			<td>'+bibid+'</td> \
-			<td>'+prov[0].term+'</td> \
-			<td>'+prov[0].notification_field+'</td> \
-		</tr>');
-	//node[id] = new PrettyJSON.view.Node({
-	//	el : $('#'+id),
-	//	data : obj.matches[variable]
-	// });
-	}
-*/
+    $("#publisherTable").tablesorter();
 </script>
 
 

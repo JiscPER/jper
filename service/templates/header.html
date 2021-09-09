@@ -1,29 +1,5 @@
 <header class="masthead" role="banner" data-mobilemenu="">
-    <!--
-    <div class="masthead__top">
-        <div class="inner">
-            <a id="skiplinks" class="visuallyhidden focusable in-page" href="#main" tabindex="1">
-                <span>Skip to main content</span>
-            </a>
-                    <nav class="masthead__topnav">
-                    <ul id="nav" class="topnav__list" data-dropdown="">
-                    <li class="topnav__item"><a href="https://deepgreen.kobv.de/de/deepgreen/">DG Project</a>
-                    </li>
-                    <li class="topnav__item">
-                    <a href="https://www.kobv.de/" target="_blank">KOBV</a>
-                    </li> 
-                    <li class="topnav__item"><a href="https://jisc.ac.uk/" target="_blank">JISC</a>
-                    </li>
-                    <li class="topnav__item ">
-                        <a href="https://jisc.ac.uk/rd" target="_blank">R&D</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    -->
     <div class="masthead__main">
-    	<!-- <div class="outer"><a href="/" target="_blank"><img src="/static/DeepGreen_Logo_abgestimmt_160211.png" width="125px" height="93px"></a></div> -->
         <div class="inner">
             <p class="masthead__title masthead__title--short">
             	<a href="/" title="DeepGreen Prototype">DeepGreen
@@ -64,23 +40,6 @@
                         {% endif %}">
                             <a href="{{ url_for('reports.index') }}">Reports</a>
                         </li>
-                        <!--
-                        <li class="nav__item has-popup 
-                        	{% if request.path == url_for('harvester.webservice') or 
-                        		request.path == url_for('harvester.history') or
-                        		request.path == url_for('harvester.manage')%}
-                         	is-active
-                        	{% endif %}">
-	                    	<a >Harvester</a>
-                            <div class="submenu">
-                                <ul>
-                                    <li><a href="{{ url_for('harvester.manage') }}">Add web service</a></li>
-                                    <li><a href="{{ url_for('harvester.webservice') }}">WebService List</a></li>
-                                    <li><a href="{{ url_for('harvester.history') }}">History List</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        -->
                     {% endif %}
                     {% endif %}
                     </ul>

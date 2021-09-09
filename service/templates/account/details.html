@@ -26,16 +26,18 @@
 		<div class="col span-12">{% from
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
-		<table id="dataAOTable">
-            <tr>
-                {#  First row of results is header #}
-                {% for header in results[0] %}
-                    {% if header != 'id' %}
-                        {# First column is id, which we will ignore #}
-                        <th>{{ header }}</th>
-                    {%  endif %}
-                {% endfor %}
-            </tr>
+		<table id="dataAOTable" class="tablesorter-green">
+            <thead>
+                <tr>
+                    <th class="sorter-iso8601date">Send Date</th>
+                    <th>DOI</th>
+                    <th>Publisher</th>
+                    <th class="sorter-iso8601date">Publication date</th>
+                    <th>Embargo</th>
+                    <th>Title</th>
+                    <th class="sorter-iso8601date">Analysis Date</th>
+                </tr>
+            </thead>
             {%  for notification in results[1:] %}
                 {#  First row of results is header. So getting notifications from 2nd row #}
                 {#  First column is id #}
@@ -43,12 +45,18 @@
                 <tr class="notification" data-raw="{{ notification['json'] }}">
                     {# Second column is date created. Need link to toggle #}
                     <td class="toggle">{{"<br>".join(notification['send_date']) | safe }}</td>
-                    <td>{{"<br>".join(notification['doi_publisher']) | safe }}</td>
-                    <td>{{"<br>".join(notification['publication_date_embargo']) | safe }}</td>
+                    <td>{{"<br>".join(notification['doi']) | safe }}</td>
+                    <td>{{"<br>".join(notification['publisher']) | safe }}</td>
+                    <td>{{"<br>".join(notification['publication_date']) | safe }}</td>
+                    {% if notification['embargo'][0] > 0 %}
+                        <td>{{notification['embargo'][0] }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
                     <td>{{"<br>".join(notification['title']) | safe }}</td>
                     <td>{{"<br>".join(notification['analysis_date']) | safe }}</td>
                 </tr>
-                <tr style="display: none;">
+                <tr class="cssIgnoreRow" style="display: none;">
                     <td colspan="5">
                         <div class="col span-1 expand" data="{{ n_id }}">
                             <span class="down-arrow"></span>
@@ -91,6 +99,8 @@
 	$('.toggle').on('click',function(){
 		$(this).parent().next().toggle();
 	});
+
+    $("#dataAOTable").tablesorter();
 
 </script>
 {% endblock %}
