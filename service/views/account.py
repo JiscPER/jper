@@ -262,6 +262,13 @@ def _notifications_for_display(results, table):
         for header in table['header']:
             cell = []
             val = _get_notification_value(header, result)
+            # if header == "Embargo":
+            #     new_val = ""
+            #     if val and val > 0:
+            #         new_val = "+{embargo}m".format(embargo=val)
+            #     cell.append(new_val)
+            # else:
+            #     cell.append(val)
             cell.append(val)
             key = header.lower().replace(' ', '_')
             row[key] = cell
