@@ -26,92 +26,62 @@
 		<div class="col span-12">{% from
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
-		<table id="dataAOTable">
-
+		<table id="dataAOTable" class="tablesorter-green">
+            <thead>
+                <tr>
+                    <th class="sorter-iso8601date">Send Date</th>
+                    <th>DOI</th>
+                    <th>Publisher</th>
+                    <th class="sorter-iso8601date">Publication date</th>
+                    <th>Embargo</th>
+                    <th>Title</th>
+                    <th class="sorter-iso8601date">Analysis Date</th>
+                </tr>
+            </thead>
+            {%  for notification in results[1:] %}
+                {#  First row of results is header. So getting notifications from 2nd row #}
+                {#  First column is id #}
+                {% set n_id = notification['id'] %}
+                <tr class="notification" data-raw="{{ notification['json'] }}">
+                    {# Second column is date created. Need link to toggle #}
+                    <td class="toggle">{{"<br>".join(notification['send_date']) | safe }}</td>
+                    <td>{{"<br>".join(notification['doi']) | safe }}</td>
+                    <td>{{"<br>".join(notification['publisher']) | safe }}</td>
+                    <td>{{"<br>".join(notification['publication_date']) | safe }}</td>
+                    {% if notification['embargo'][0] > 0 %}
+                        <td>{{notification['embargo'][0] }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>{{"<br>".join(notification['title']) | safe }}</td>
+                    <td>{{"<br>".join(notification['analysis_date']) | safe }}</td>
+                </tr>
+                <tr class="cssIgnoreRow" style="display: none;">
+                    <td colspan="5">
+                        <div class="col span-1 expand" data="{{ n_id }}">
+                            <span class="down-arrow"></span>
+                        </div>
+                        <div class="col span-1 collapse" data="{{ n_id }}">
+                            <span class="up-arrow"></span>
+                        </div>
+                        <div class="col span-12" id="{{ n_id }}"></div>
+                </td></tr>
+            {% endfor %}
 		</table>
 		{% from "harvester/helpers/pagination.html" import render_pagination%}
 		{{ render_pagination(num_of_pages,page_num,link) }}
-		<div class="row">
-			<div class="col span-1"></div>
-			<div class="col span-1"></div>
-			<div class="col span-1"></div>
-		</div>
 
 		<div id='elem'></div>
 	</div>
 </div>
-<!--
-		<table id="dataAOTable">
-			<tr>
-				<th>Send&nbsp;Date</th>
-				<th>DOI / Publisher</th>
-				<th>Title</th>
-				<th>Analysis&nbsp;Date</th>
-			</tr>
-
-		</table>
--->
 <script>
 	// obj to render.
 	var obj = JSON.parse({{ repo|tojson|safe }});
-	var tbl = JSON.parse({{ tabl|tojson|safe }});
-	
-	var out = [];
-	for (j in tbl.header) {
-		var hdr = tbl.header[j];
-		out[hdr] = jsonpath.query(obj, tbl[hdr]);
-	}
-
 	var ids = jsonpath.query(obj, 'notifications[*].id');
-	// var created = jsonpath.query(obj, 'notifications[*].created_date');
-	// //var events = jsonpath.query(obj, 'notifications[*].event');
-	// var dois = jsonpath.query(obj, 'notifications[*].metadata.identifier[?(@.type=="doi")].id');
-	// var publs = jsonpath.query(obj, 'notifications[*].metadata.publisher');
-	// var titles = jsonpath.query(obj, 'notifications[*].metadata.title');
-	// var analysis = jsonpath.query(obj, 'notifications[*].analysis_date');
 	var node = [];
-	
-        $('#dataAOTable').prepend('<tr>\
-		<th>'+tbl.header[0]+'</th> \
-		<th>'+tbl.header[1]+" / "+tbl.header[2]+'</th> \
-		<th>'+tbl.header[3]+" / "+tbl.header[4]+'</th> \
-		<th>'+tbl.header[5]+'</th> \
-		<th>'+tbl.header[6]+'</th> \
-		</tr>');
 
 	for (variable in ids) {
 		var id = ids[variable];
-        // STL 2020-09-26 Work around for missing field publisher in Wiley data
-		//  $('#dataAOTable tr:last').after('<tr>\
-		//  		<td class="toggle">'+out[tbl.header[0]][variable]+'</td> \
-		//  		<td>'+out[tbl.header[1]][variable]+'<br>'+"("+out[tbl.header[2]][variable]+")"+'</td> \
-		//  		<td>'+out[tbl.header[3]][variable].substr(0,10)+'<br>'+"(+"+out[tbl.header[4]][variable]+"M)"+'</td> \
-		//  		<td>'+out[tbl.header[5]][variable]+'</td> \
-		//  		<td>'+out[tbl.header[6]][variable]+'</td> \
-		//  		</tr> \
-		//  		<tr style="display: none;"> <td colspan="5"><div class="col span-1 expand" data="'+id+'"> \
-		//  			<span class="down-arrow"></span> \
-		//  		</div> \
-		//  		<div class="col span-1 collapse" data="'+id+'"> \
-		//  			<span class="up-arrow"></span> \
-		//  		</div> \
-		//  		<div class="col span-12" id="'+id+'"></div> \
-		//  		</td></tr>');		
-		$('#dataAOTable tr:last').after('<tr>\
-				<td class="toggle">'+out[tbl.header[0]][variable]+'</td> \
-				<td>'+out[tbl.header[1]][variable]+'<br>'+'</td> \
-				<td>'+out[tbl.header[3]][variable].substr(0,10)+'<br>'+"(+"+out[tbl.header[4]][variable]+"M)"+'</td> \
-				<td>'+out[tbl.header[5]][variable]+'</td> \
-				<td>'+out[tbl.header[6]][variable]+'</td> \
-				</tr> \
-				<tr style="display: none;"> <td colspan="5"><div class="col span-1 expand" data="'+id+'"> \
-					<span class="down-arrow"></span> \
-				</div> \
-				<div class="col span-1 collapse" data="'+id+'"> \
-					<span class="up-arrow"></span> \
-				</div> \
-				<div class="col span-12" id="'+id+'"></div> \
-				</td></tr>');		
 		node[id] = new PrettyJSON.view.Node({
 			el : $('#'+id),
 			data : obj.notifications[variable]
@@ -129,6 +99,8 @@
 	$('.toggle').on('click',function(){
 		$(this).parent().next().toggle();
 	});
+
+    $("#dataAOTable").tablesorter();
 
 </script>
 {% endblock %}

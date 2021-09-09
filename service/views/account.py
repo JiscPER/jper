@@ -221,6 +221,54 @@ def _validate_page_size():
     return page_size
 
 
+def _get_notification_value(header, notification):
+    if header == 'id':
+        return notification.get('id', '')
+    elif header == 'Analysis Date':
+        return notification.get('analysis_date', '')
+    elif header == 'Send Date':
+        return notification.get('created_date', '')
+    elif header == 'Embargo':
+        return notification.get('embargo', {}).get('duration', '')
+    elif header == 'DOI':
+        identifiers = notification.get('metadata', {}).get('identifier', [])
+        for identifier in identifiers:
+            if identifier.get('type', '') == 'doi':
+                return identifier.get('id', '')
+    elif header == 'Publisher':
+        return notification.get('metadata', {}).get('publisher', '')
+    elif header == 'Title':
+        return notification.get('metadata', {}).get('title', '')
+    elif header == 'Publication Date':
+        return notification.get('metadata', {}).get('publication_date', '')
+    return ''
+
+
+def _notifications_for_display(results, table):
+    notifications = []
+    # header
+    header_row = ['id']
+    for header in table['header']:
+        if isinstance(header, list):
+            header_row.append(' / '.join(header))
+        else:
+            header_row.append(header)
+    notifications.append(header_row)
+    # results
+    for result in results.get('notifications', []):
+        row = {
+            'id': _get_notification_value('id', result)
+        }
+        for header in table['header']:
+            cell = []
+            val = _get_notification_value(header, result)
+            cell.append(val)
+            key = header.lower().replace(' ', '_')
+            row[key] = cell
+        notifications.append(row)
+    return notifications
+
+
 @blueprint.before_request
 def restrict():
     if current_user.is_anonymous:
@@ -304,13 +352,14 @@ def details(repo_id):
         link += '/' + acc.id + '?since=01/06/2019&api_key=' + acc.data['api_key']
 
     results = json.loads(data)
+    data_to_display = _notifications_for_display(results, ntable)
 
     page_num = int(request.values.get("page", app.config.get("DEFAULT_LIST_PAGE_START", 1)))
     num_of_pages = int(math.ceil(results['total'] / results['pageSize']))
     if provider:
         return render_template('account/matching.html', repo=data, tabl=[json.dumps(mtable)],
                                num_of_pages=num_of_pages, page_num=page_num, link=link, date=date)
-    return render_template('account/details.html', repo=data, tabl=[json.dumps(ntable)],
+    return render_template('account/details.html', repo=data, results=data_to_display,
                            num_of_pages=num_of_pages, page_num=page_num, link=link, date=date)
 
 

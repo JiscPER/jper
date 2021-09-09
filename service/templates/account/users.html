@@ -9,14 +9,14 @@
 			<button type="button" class="btn btn--3d btn--primary">Add&nbsp;a&nbsp;user</button>
 		</a>
 		{% endif %}
-		<table data-rwdtable data-rwdtable-sortable class="content-table" id="users">
+		<table class="tablesorter-green" id="users">
 			<thead>
 				<tr>
-					<th scope="col" class="persist essential" data-sort-default>User Name</th>
-					<th scope="col" class="persist essential">Account type</th>
+					<th>User Name</th>
+					<th>Account type</th>
 					<!-- th scope="col" class="optional">ID</th -->
-					<th scope="col" class="persist">ID</th>
-					<th scope="col" class="persist">Manage</th>
+					<th>ID</th>
+					<th>Manage</th>
 				</tr>
 			</thead>
 
@@ -33,4 +33,9 @@
 		</table>
 	</div>
 </div>
+<script>
+    $(function() {
+        $("#users").tablesorter();
+    });
+</script>
 {% endblock %} 

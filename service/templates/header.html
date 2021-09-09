@@ -1,29 +1,5 @@
 <header class="masthead" role="banner" data-mobilemenu="">
-    <!--
-    <div class="masthead__top">
-        <div class="inner">
-            <a id="skiplinks" class="visuallyhidden focusable in-page" href="#main" tabindex="1">
-                <span>Skip to main content</span>
-            </a>
-                    <nav class="masthead__topnav">
-                    <ul id="nav" class="topnav__list" data-dropdown="">
-                    <li class="topnav__item"><a href="https://deepgreen.kobv.de/de/deepgreen/">DG Project</a>
-                    </li>
-                    <li class="topnav__item">
-                    <a href="https://www.kobv.de/" target="_blank">KOBV</a>
-                    </li> 
-                    <li class="topnav__item"><a href="https://jisc.ac.uk/" target="_blank">JISC</a>
-                    </li>
-                    <li class="topnav__item ">
-                        <a href="https://jisc.ac.uk/rd" target="_blank">R&D</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    -->
     <div class="masthead__main">
-    	<!-- <div class="outer"><a href="/" target="_blank"><img src="/static/DeepGreen_Logo_abgestimmt_160211.png" width="125px" height="93px"></a></div> -->
         <div class="inner">
             <p class="masthead__title masthead__title--short">
             	<a href="/" title="DeepGreen Prototype">DeepGreen
@@ -38,32 +14,6 @@
             <div class="nav-wrapper" data-mobilemenu="">
               	<nav class="masthead__nav header___nav--primary" role="navigation" data-dropdown="">
                     <ul>                    
-                       
-                       <li class="nav__item has-popup {% if request.path == url_for ('about.deepgreen') or request.path == url_for ('about.jisc') %} is-active {% endif %}">
-                       	
-                       	<a>About</a>
-                       	<div class="submenu submenu--left">
-                       		<ul>
-                       			<li><a href="https://deepgreen.kobv.de/en/project-deepgreen/" target="_blank">DeepGreen</a></li>
-                       			<li><a href="{{ url_for('about.impressum') }}">Impressum</a></li>
-                       			<!-- <li><a href="{{ url_for('about.jisc') }}">JISC</a></li> -->
-                       		</ul>
-                       	</div>
-                       </li>
-                        <li class="nav__item has-popup {% if request.path == url_for ('about.institutions') or request.path == url_for ('about.publishers') or request.path == url_for ('about.resources') %} is-active {% endif %}">
-
-
-                        <a>Information</a>
-                            <div class="submenu submenu--left">
-                                <ul>
-                                    <li><a href="{{ url_for('about.institutions') }}">Information for Institutions</a></li>
-                                    <li><a href="{{ url_for('about.publishers') }}">Information for Publishers</a></li>
-                                    <li><a href="{{ url_for('about.resources') }}">Technical Details</a> </li>
-					<li><a href="{{ url_for('about.faq') }}">FAQ</a></li>
-                                </ul>
-                             </div>
-                        </li>
-
 
                     {% if not current_user.is_anonymous  %}
                         
@@ -90,23 +40,6 @@
                         {% endif %}">
                             <a href="{{ url_for('reports.index') }}">Reports</a>
                         </li>
-                        <!--
-                        <li class="nav__item has-popup 
-                        	{% if request.path == url_for('harvester.webservice') or 
-                        		request.path == url_for('harvester.history') or
-                        		request.path == url_for('harvester.manage')%}
-                         	is-active
-                        	{% endif %}">
-	                    	<a >Harvester</a>
-                            <div class="submenu">
-                                <ul>
-                                    <li><a href="{{ url_for('harvester.manage') }}">Add web service</a></li>
-                                    <li><a href="{{ url_for('harvester.webservice') }}">WebService List</a></li>
-                                    <li><a href="{{ url_for('harvester.history') }}">History List</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        -->
                     {% endif %}
                     {% endif %}
                     </ul>
