@@ -248,7 +248,7 @@ def _notifications_for_display(results, table):
     notifications = []
     # header
     header_row = ['id']
-    for header in table['screen']:
+    for header in table['header']:
         if isinstance(header, list):
             header_row.append(' / '.join(header))
         else:
@@ -259,20 +259,11 @@ def _notifications_for_display(results, table):
         row = {
             'id': _get_notification_value('id', result)
         }
-        for header in table['screen']:
-            if not isinstance(header, list):
-                header = [header]
+        for header in table['header']:
             cell = []
-            for sub_header in header:
-                val = _get_notification_value(sub_header, result)
-                if sub_header == "Embargo":
-                    new_val = ""
-                    if val and val > 0:
-                        new_val = "+{embargo}m".format(embargo=val)
-                    cell.append(new_val)
-                else:
-                    cell.append(val)
-            key = ' '.join(header).lower().replace(' ', '_')
+            val = _get_notification_value(header, result)
+            cell.append(val)
+            key = header.lower().replace(' ', '_')
             row[key] = cell
             # row.append(cell)
         notifications.append(row)
