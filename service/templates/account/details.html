@@ -42,9 +42,10 @@
                 {#  First row of results is header. So getting notifications from 2nd row #}
                 {#  First column is id #}
                 {% set n_id = notification['id'] %}
-                <tr class="notification" data-raw="{{ notification['json'] }}">
-                    {# Second column is date created. Need link to toggle #}
-                    <td class="toggle">{{"<br>".join(notification['send_date']) | safe }}</td>
+                <tr class="tablesorter-hasChildRow">
+                    <td><a href="#" class="toggle">
+                        {{"<br>".join(notification['send_date']) | safe }}
+                        </a></td>
                     <td>{{"<br>".join(notification['doi']) | safe }}</td>
                     <td>{{"<br>".join(notification['publisher']) | safe }}</td>
                     <td>{{"<br>".join(notification['publication_date']) | safe }}</td>
@@ -56,8 +57,8 @@
                     <td>{{"<br>".join(notification['title']) | safe }}</td>
                     <td>{{"<br>".join(notification['analysis_date']) | safe }}</td>
                 </tr>
-                <tr class="cssIgnoreRow" style="display: none;">
-                    <td colspan="5">
+                <tr class="tablesorter-childRow collapse" >
+                    <td colspan="7">
                         <div class="col span-1 expand" data="{{ n_id }}">
                             <span class="down-arrow"></span>
                         </div>
@@ -95,12 +96,20 @@
 	$('.collapse').on('click', function() {
 		node[$(this).attr('data')].collapseAll();
 	});
-	
-	$('.toggle').on('click',function(){
-		$(this).parent().next().toggle();
-	});
 
     $("#dataAOTable").tablesorter();
+    $('.tablesorter-childRow td').hide();
+    $('.tablesorter').delegate('.toggle', 'click' ,function() {
+
+        // use "nextUntil" to toggle multiple child rows
+        // toggle table cells instead of the row
+        // $(this).closest('tr').nextUntil('tr:not(.tablesorter-childRow)').find('td').toggle();
+        // in v2.5.12, the parent row now has the class tablesorter-hasChildRow
+        // so you can use this code as well
+        $(this).closest('tr').nextUntil('tr.tablesorter-hasChildRow').find('td').toggle();
+
+        return false;
+    });
 
 </script>
 {% endblock %}
