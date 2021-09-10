@@ -20,7 +20,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         "contact_name" : "<name of key contact>",
         "password" : "<hashed password for ui login>",
         "api_key" : "<api key for api auth>",
-        "role" : ["<account role: repository, publisher, admin, passive, active>"],
+        "role" : ["<account role: repository, publisher, admin, passive, active, subject_repository>"],
 
         "repository" : {
             "name" : "<name of the repository>",
@@ -197,7 +197,9 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         self._set_list("role", role, coerce=self._utf8_unicode())
 
     def add_role(self, role):
-        self._add_to_list("role", role, coerce=self._utf8_unicode(), unique=True)
+        #  admin, publisher, repository, passive, active, subject_repository
+        if role in ['admin', 'publisher', 'repository', 'passive', 'active', 'subject_repository']:
+            self._add_to_list("role", role, coerce=self._utf8_unicode(), unique=True)
 
     def remove_role(self, role):
         self._delete_from_list("role", role)
