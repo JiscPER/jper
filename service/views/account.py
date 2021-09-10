@@ -499,7 +499,19 @@ def username(username):
             else:
                 flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
-    elif request.method == 'POST':
+
+    if acc.has_role('repository'):
+        repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
+        licenses = get_matching_licenses(acc.id)
+        license_ids = json.dumps([license['id'] for license in licenses])
+        sword_status = models.sword.RepositoryStatus.pull(acc.id)
+    else:
+        repoconfig = None
+        licenses = None
+        license_ids = None
+        sword_status = None
+
+    if request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
 
@@ -509,25 +521,17 @@ def username(username):
         if 'password' in request.values and not request.values['password'].startswith('sha1'):
             if len(request.values['password']) < 8:
                 flash("Sorry. Password must be at least eight characters long", "error")
-                return render_template('account/user.html', account=acc)
+                return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
+                                       license_ids=license_ids, sword_status=sword_status)
             else:
                 acc.set_password(request.values['password'])
 
         acc.save()
         time.sleep(2)
         flash("Record updated", "success")
-        return render_template('account/user.html', account=acc)
+        return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
+                               license_ids=license_ids, sword_status=sword_status)
     elif current_user.id == acc.id or current_user.is_super:
-        if acc.has_role('repository'):
-            repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
-            licenses = get_matching_licenses(acc.id)
-            license_ids = json.dumps([license['id'] for license in licenses])
-            sword_status = models.sword.RepositoryStatus.pull(acc.id)
-        else:
-            repoconfig = None
-            licenses = None
-            license_ids = None
-            sword_status = None
         return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
                                license_ids=license_ids, sword_status=sword_status)
     else:
