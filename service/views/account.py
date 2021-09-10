@@ -280,9 +280,20 @@ def restrict():
 def index():
     if not current_user.is_super:
         abort(401)
-    users = [[i['_source']['id'], i['_source']['email'], i['_source'].get('role', [])] for i in
-             models.Account().query(q='*', size=10000).get('hits', {}).get('hits', [])]
-    return render_template('account/users.html', users=users)
+    users = []
+    for u in models.Account().query(q='*', size=10000).get('hits', {}).get('hits', []):
+        user = {
+            'id': u.get('_source', {}).get('id', ''),
+            'email': u.get('_source', {}).get('email', ''),
+            'role': u.get('_source', {}).get('role', [])
+        }
+        users.append(user)
+    sword_status = {}
+    for s in models.sword.RepositoryStatus().query(q='*', size=10000).get('hits', {}).get('hits', []):
+        acc_id = s.get('_source', {}).get('id')
+        if acc_id:
+            sword_status[acc_id] = s.get('_source', {}).get('status', '')
+    return render_template('account/users.html', users=users, sword_status=sword_status)
 
 
 # 2016-11-15 TD : enable download option ("csv", for a start...)
@@ -511,12 +522,14 @@ def username(username):
             repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
             licenses = get_matching_licenses(acc.id)
             license_ids = json.dumps([license['id'] for license in licenses])
+            sword_status = models.sword.RepositoryStatus.pull(acc.id)
         else:
             repoconfig = None
             licenses = None
             license_ids = None
+            sword_status = None
         return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
-                               license_ids=license_ids)
+                               license_ids=license_ids, sword_status=sword_status)
     else:
         abort(404)
 
