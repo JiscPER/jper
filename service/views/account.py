@@ -280,9 +280,20 @@ def restrict():
 def index():
     if not current_user.is_super:
         abort(401)
-    users = [[i['_source']['id'], i['_source']['email'], i['_source'].get('role', [])] for i in
-             models.Account().query(q='*', size=10000).get('hits', {}).get('hits', [])]
-    return render_template('account/users.html', users=users)
+    users = []
+    for u in models.Account().query(q='*', size=10000).get('hits', {}).get('hits', []):
+        user = {
+            'id': u.get('_source', {}).get('id', ''),
+            'email': u.get('_source', {}).get('email', ''),
+            'role': u.get('_source', {}).get('role', [])
+        }
+        users.append(user)
+    sword_status = {}
+    for s in models.sword.RepositoryStatus().query(q='*', size=10000).get('hits', {}).get('hits', []):
+        acc_id = s.get('_source', {}).get('id')
+        if acc_id:
+            sword_status[acc_id] = s.get('_source', {}).get('status', '')
+    return render_template('account/users.html', users=users, sword_status=sword_status)
 
 
 # 2016-11-15 TD : enable download option ("csv", for a start...)
@@ -488,7 +499,19 @@ def username(username):
             else:
                 flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
-    elif request.method == 'POST':
+
+    if acc.has_role('repository'):
+        repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
+        licenses = get_matching_licenses(acc.id)
+        license_ids = json.dumps([license['id'] for license in licenses])
+        sword_status = models.sword.RepositoryStatus.pull(acc.id)
+    else:
+        repoconfig = None
+        licenses = None
+        license_ids = None
+        sword_status = None
+
+    if request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
 
@@ -498,25 +521,19 @@ def username(username):
         if 'password' in request.values and not request.values['password'].startswith('sha1'):
             if len(request.values['password']) < 8:
                 flash("Sorry. Password must be at least eight characters long", "error")
-                return render_template('account/user.html', account=acc)
+                return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
+                                       license_ids=license_ids, sword_status=sword_status)
             else:
                 acc.set_password(request.values['password'])
 
         acc.save()
         time.sleep(2)
         flash("Record updated", "success")
-        return render_template('account/user.html', account=acc)
-    elif current_user.id == acc.id or current_user.is_super:
-        if acc.has_role('repository'):
-            repoconfig = models.RepositoryConfig.pull_by_repo(acc.id)
-            licenses = get_matching_licenses(acc.id)
-            license_ids = json.dumps([license['id'] for license in licenses])
-        else:
-            repoconfig = None
-            licenses = None
-            license_ids = None
         return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
-                               license_ids=license_ids)
+                               license_ids=license_ids, sword_status=sword_status)
+    elif current_user.id == acc.id or current_user.is_super:
+        return render_template('account/user.html', account=acc, repoconfig=repoconfig, licenses=licenses,
+                               license_ids=license_ids, sword_status=sword_status)
     else:
         abort(404)
 
@@ -730,6 +747,34 @@ def changerole(username, role):
         return redirect(url_for('.username', username=username))
     else:
         abort(401)
+
+
+@blueprint.route('/<username>/sword_activate', methods=['POST'])
+def sword_activate(username):
+    if current_user.id != username and not current_user.is_super:
+        abort(401)
+    acc = models.Account.pull(username)
+    sword_status = models.sword.RepositoryStatus.pull(acc.id)
+    if sword_status and sword_status.status == 'failing':
+        sword_status.activate()
+        sword_status.save()
+    time.sleep(2)
+    flash('The sword connection has been activated.', "success")
+    return redirect(url_for('.username', username=username))
+
+
+@blueprint.route('/<username>/sword_deactivate', methods=['POST'])
+def sword_deactivate(username):
+    if current_user.id != username and not current_user.is_super:
+        abort(401)
+    acc = models.Account.pull(username)
+    sword_status = models.sword.RepositoryStatus.pull(acc.id)
+    if sword_status and sword_status.status in ['succeeding', 'problem']:
+        sword_status.deactivate()
+        sword_status.save()
+    time.sleep(2)
+    flash('The sword connection has been deactivated.', "success")
+    return redirect(url_for('.username', username=username))
 
 
 @blueprint.route('/<username>/matches')

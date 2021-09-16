@@ -9,29 +9,63 @@
 			<button type="button" class="btn btn--3d btn--primary">Add&nbsp;a&nbsp;user</button>
 		</a>
 		{% endif %}
-		<table class="tablesorter-green" id="users">
-			<thead>
-				<tr>
-					<th>User Name</th>
-					<th>Account type</th>
-					<!-- th scope="col" class="optional">ID</th -->
-					<th>ID</th>
-					<th>Manage</th>
-				</tr>
-			</thead>
+        <table class="tablesorter-green" id="users">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User Name</th>
+                    <th>Account type</th>
+                    <th>Sword status</th>
+                    <th>Manage</th>
+                </tr>
+            </thead>
 
-			<tbody>
-				{% for user in users %}
-				<tr>
-					<td>{{user[1]}}</td>
-					<td>{% for r in user[2] %}{{r}};{% endfor %}</td>
-					<td>{{user[0]}}</td>
-					<td><a href="/account/{{user[0]}}">Manage</a></td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    {# column: id #}
+                    <td>{{user['id']}}</td>
+                    {# column: email #}
+                    <td>{{user['email']}}</td>
+                    {# column: role #}
+                    {% if 'admin' in user['role'] %}
+                        <td>Admin</td>
+                    {% elif 'publisher' in user['role'] %}
+                        <td>Publisher</td>
+                    {% elif 'repository' in user['role'] and 'subject_repository' in user['role'] %}
+                        {% if 'passive' in user['role'] %}
+                            <td>Subject repository (passive)</td>
+                        {% else %}
+                            <td>Subject repository</td>
+                        {% endif %}
+                    {% elif 'repository' in user['role'] %}
+                        {% if 'passive' in user['role'] %}
+                            <td>Repository (passive)</td>
+                        {% else %}
+                            <td>Repository</td>
+                        {% endif %}
+                    {% else %}
+                       <td>Unknown</td>
+                    {%  endif %}
+                    {# column: sword status #}
+                    {% if user['id'] in sword_status %}
+                        <td>{{ sword_status[user['id']] }}</td>
+                    {%  elif 'repository' in user['role'] %}
+                        <td>-</td>
+                    {%  elif 'publisher' in user['role'] %}
+                        <td>-</td>
+                    {%  elif 'admin' in user['role'] %}
+                        <td>-</td>
+                    {% else %}
+                        <td>unknown</td>
+                    {% endif %}
+                    {# column: manage #}
+                    <td><a href="/account/{{user['id']}}">Manage</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 <script>
     $(function() {

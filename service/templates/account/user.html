@@ -275,7 +275,43 @@
 			</form>
 			
 		</div>
-	
+
+        {% if sword_status %}
+            <div class="box box--padding-large box--brd-mgreyblue">
+                <h3>Manage SWORD Status</h3>
+                <div class="row dl-table">
+                    <dl>
+                        <dt>Sword status</dt>
+                        <dd>{{ sword_status.status }} (more information <a href="#">here</a>)</dd>
+                        {% if sword_status.status == "problem" %}
+                            <dt>Number of retires</dt>
+                            <dd>{{ sword_status.retries }}</dd>
+                            <dt>Date tried</dt>
+                            <dd>{{ sword_status.last_tried }}</dd>
+                        {% endif %}
+                        <dt>Date created</dt>
+                        <dd>{{ sword_status.created_date }}</dd>
+                        <dt>Date updated</dt>
+                        <dd>{{ sword_status.last_updated }}</dd>
+                        <dt>Date deposited</dt>
+                        <dd>{{ sword_status.last_deposit_date }}</dd>
+                        <dt>id</dt>
+                        <dd>{{ sword_status.id }}</dd>
+                    </dl>
+                    {% set sword_action = "deactivate" %}
+                    {% set action_label = "De-activate sword connection" %}
+                    {% if sword_status.status == 'failing' %}
+                        {% set sword_action = "activate" %}
+                        {% set action_label = "Activate sword connection" %}
+                    {% endif %}
+                    <form class="form" method="POST" action="{{request.path}}/sword_{{sword_action}}" id="sword_{{sword_action}}">
+                        <div class="form-fields__item--text form-fields__item--single">
+                            <input type="submit" value="{{ action_label }}">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
 		
 	{% endif %}
 		<div class="box box--padding-large box--brd-mgreyblue">
