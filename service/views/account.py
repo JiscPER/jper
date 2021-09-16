@@ -749,6 +749,34 @@ def changerole(username, role):
         abort(401)
 
 
+@blueprint.route('/<username>/sword_activate', methods=['POST'])
+def sword_activate(username):
+    if current_user.id != username and not current_user.is_super:
+        abort(401)
+    acc = models.Account.pull(username)
+    sword_status = models.sword.RepositoryStatus.pull(acc.id)
+    if sword_status and sword_status.status == 'failing':
+        sword_status.activate()
+        sword_status.save()
+    time.sleep(2)
+    flash('The sword connection has been activated.', "success")
+    return redirect(url_for('.username', username=username))
+
+
+@blueprint.route('/<username>/sword_deactivate', methods=['POST'])
+def sword_deactivate(username):
+    if current_user.id != username and not current_user.is_super:
+        abort(401)
+    acc = models.Account.pull(username)
+    sword_status = models.sword.RepositoryStatus.pull(acc.id)
+    if sword_status and sword_status.status in ['succeeding', 'problem']:
+        sword_status.deactivate()
+        sword_status.save()
+    time.sleep(2)
+    flash('The sword connection has been deactivated.', "success")
+    return redirect(url_for('.username', username=username))
+
+
 @blueprint.route('/<username>/matches')
 def matches():
     return redirect(url_for('.username/match.html', username=username))
