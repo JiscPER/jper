@@ -27,4 +27,4 @@ from service.models.account import Account
 from service.models.contentlog import ContentLog
 from service.models.ezb import Alliance, License
 from service.models.xslt import XSLT
-from service.models.sword import RepositoryStatus, DepositRecord
+from service.models.sword import RepositoryStatus, DepositRecord, RepositoryDepositLog

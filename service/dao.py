@@ -9,8 +9,10 @@ query methods as required
 
 from octopus.modules.es import dao
 
+
 class ContentLogDAO(dao.ESDAO):
     __type__ = 'contentlog'
+
 
 class UnroutedNotificationDAO(dao.ESDAO):
     """
@@ -28,6 +30,7 @@ class UnroutedNotificationDAO(dao.ESDAO):
         from service.tests import fixtures
         return cls(fixtures.NotificationFactory.unrouted_notification())
 
+
 class RoutedNotificationDAO(dao.TimeBoxedTypeESDAO):
     """
     DAO for RoutedNotification
@@ -38,7 +41,8 @@ class RoutedNotificationDAO(dao.TimeBoxedTypeESDAO):
     """
 
     __type__ = 'routed'
-    """ The base index type to use to store these objects - this will be appended by the time-boxing features of the DAO with the creation timestamp """
+    """ The base index type to use to store these objects - 
+    this will be appended by the time-boxing features of the DAO with the creation timestamp """
 
     @classmethod
     def example(cls):
@@ -47,6 +51,7 @@ class RoutedNotificationDAO(dao.TimeBoxedTypeESDAO):
         """
         from service.tests import fixtures
         return cls(fixtures.NotificationFactory.routed_notification())
+
 
 # class StalledNotificationDAO(dao.ESDAO):
 #     """
@@ -64,6 +69,7 @@ class FailedNotificationDAO(dao.ESDAO):
     __type__ = "failed"
     """ The index type to use to store these objects """
 
+
 class RepositoryConfigDAO(dao.ESDAO):
     """
     DAO for RepositoryConfig
@@ -71,6 +77,7 @@ class RepositoryConfigDAO(dao.ESDAO):
 
     __type__ = 'repo_config'
     """ The index type to use to store these objects """
+
 
 class MatchProvenanceDAO(dao.ESDAO):
     """
@@ -91,11 +98,13 @@ class MatchProvenanceDAO(dao.ESDAO):
         q = MatchProvNotificationQuery(notification_id, size=size)
         return cls.object_query(q=q.query())
 
+
 class MatchProvNotificationQuery(object):
     """
     Query wrapper which generates an ES query for retrieving match provenance objects
     based on the notification to which they are attached
     """
+
     def __init__(self, notification_id, size=10):
         """
         Set the parameters of the query
@@ -113,11 +122,12 @@ class MatchProvNotificationQuery(object):
         :return: a python dictionary containing the ES query, ready for JSON serialisation
         """
         return {
-            "query" : {
-                "term" : {"notification.exact" : self.notification_id}
+            "query": {
+                "term": {"notification.exact": self.notification_id}
             },
-            "size" : self.size
+            "size": self.size
         }
+
 
 class RetrievalRecordDAO(dao.ESDAO):
     """
@@ -126,6 +136,7 @@ class RetrievalRecordDAO(dao.ESDAO):
 
     __type__ = "retrieval"
     """ The index type to use to store these objects """
+
 
 class AccountDAO(dao.ESDAO):
     """
@@ -144,6 +155,7 @@ class AllianceDAO(dao.ESDAO):
     __type__ = "alliance"
     """ The index type to use to store these objects """
 
+
 class LicenseDAO(dao.ESDAO):
     """
     DAO for License (DeepGreen add-on)
@@ -152,11 +164,13 @@ class LicenseDAO(dao.ESDAO):
     __type__ = "license"
     """ The index type to use to store these objects """
 
+
 class RepositoryStatusDAO(dao.ESDAO):
     """
     DAO for RepositoryStatus
     """
     __type__ = "sword_repository_status"
+
 
 class DepositRecordDAO(dao.ESDAO):
     """
@@ -178,10 +192,12 @@ class DepositRecordDAO(dao.ESDAO):
         if len(obs) > 0:
             return obs[0]
 
+
 class DepositRecordQuery(object):
     """
     Query generator for retrieving deposit records by notification id and repository id
     """
+
     def __init__(self, notification_id, repository_id):
         self.notification_id = notification_id
         self.repository_id = repository_id
@@ -193,25 +209,27 @@ class DepositRecordQuery(object):
         :return: elasticsearch query
         """
         return {
-            "query" : {
-                "bool" : {
-                    "must" : [
+            "query": {
+                "bool": {
+                    "must": [
                         # {"term" : {"repository.exact" : self.repository_id}},
                         # 2018-03-07 TD : as of fix 2016-08-26 in models/sword.py
                         #                 this has to match 'repo.exact' instead!
                         #                 What a bug, good grief!
-                        {"term" : {"repo.exact" : self.repository_id}},
-                        {"term" : {"notification.exact" : self.notification_id}}
+                        {"term": {"repo.exact": self.repository_id}},
+                        {"term": {"notification.exact": self.notification_id}}
                     ]
                 }
             },
-            "sort" : {"last_updated" : {"order" : "desc"}}
+            "sort": {"last_updated": {"order": "desc"}}
         }
+
 
 class SwordAccountQuery(object):
     """
     Query generator for accounts which have sword activated
     """
+
     def __init__(self):
         pass
 
@@ -222,9 +240,56 @@ class SwordAccountQuery(object):
         :return: elasticsearch query
         """
         return {
-            "query" : {
-                "query_string" : {
-                    "query" : "_exists_:sword.collection AND sword.collection:/.+/"
+            "query": {
+                "query_string": {
+                    "query": "_exists_:sword.collection AND sword.collection:/.+/"
                 }
             }
+        }
+
+
+class RepositoryDepositLogDAO(dao.ESDAO):
+    """
+    DAO for RepositoryDepositLog
+    """
+    __type__ = "sword_repository_deposit_log"
+
+    @classmethod
+    def pull_by_id(cls, repository_id):
+        """
+        Get exactly one deposit record back associated with the notification_id and the repository_id
+
+        :param repository_id:
+        :return:
+        """
+        q = RepositoryDepositLogQuery(repository_id)
+        obs = cls.object_query(q=q.query())
+        if len(obs) > 0:
+            return obs[0]
+
+
+class RepositoryDepositLogQuery(object):
+    """
+    Query generator for retrieving deposit records by notification id and repository id
+    """
+
+    def __init__(self, repository_id):
+        self.repository_id = repository_id
+
+    def query(self):
+        """
+        Return the query as a python dict suitable for json serialisation
+
+        :return: elasticsearch query
+        """
+        return {
+            "query": {
+                "bool": {
+                    "must": {
+                        "term": {"repo.exact": self.repository_id}
+                    }
+                }
+            },
+            "sort": {"last_updated": {"order": "desc"}},
+            "size": 1
         }
