@@ -33,8 +33,10 @@ if __name__ == "__main__":
         exit(0)
 
     with open(args.table, 'r') as csvfile:
-        license = License()
+        matching_license = None
         j = 0
+        ezbid = None
+        name = None
         for row in csvfile:
             j = j + 1
             if j == 1:
@@ -42,6 +44,11 @@ if __name__ == "__main__":
                name = name[name.find(':') + 2:]
                ezbid = name[name.find('[') + 1:name.find(']')].upper()
             if j == 4: break
-
-        license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
+        if ezbid:
+            matching_licenses = License.pull_by_key('identifier.id.exact', ezbid)
+            if matching_licenses and len(matching_licenses)>0:
+                matching_license = matching_licenses[0]
+        if not matching_license:
+            matching_license = License()
+        matching_license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
 

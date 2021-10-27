@@ -78,7 +78,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         }
         self._add_struct(struct)
         super(Alliance, self).__init__(raw=raw)
-        
+
     @property
     def name(self):
         """
@@ -279,7 +279,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
                                 participant['identifier'] = participant.get('identifier',[]) + [{"type":"sigel","id":sgl.strip()}]
 
                 self.data['participant'] = self.data.get('participant',[]) + [participant]
-            
+
             app.logger.debug("Extracted complex participant data for license: {x} ({y})".format(x=licid,y=ezbid))
             self.data['license_id'] = licid
             self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
@@ -663,7 +663,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 year = { "type": "year" }
                 volume = { "type": "volume" }
                 issue = { "type": "issue" }
-                journal['embargo'] = { "duration":6 }
+                journal['embargo'] = { "duration": 0}
                 journal['period'] = [ year, volume, issue ]
                 for x in inp.fieldnames:
                     if x == 'EZB-Id':
@@ -693,15 +693,17 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                     elif x == 'erstes Jahr' and len(row[x].strip()) > 1:
                          year['start'] = row[x].strip()
                     elif x == 'erstes volume' and len(row[x].strip()) > 0:
-                         volume['start'] = row[x].strip() 
+                         volume['start'] = row[x].strip()
                     elif x == 'erstes issue' and len(row[x].strip()) > 0:
                          issue['start'] = row[x].strip()
                     elif x == 'letztes Jahr' and len(row[x].strip()) > 1:
-                         year['end'] = row[x].strip()  
+                         year['end'] = row[x].strip()
                     elif x == 'letztes volume' and len(row[x].strip()) > 0:
                          volume['end'] = row[x].strip()
                     elif x == 'letztes issue' and len(row[x].strip()) > 0:
-                         issue['end'] = row[x].strip() 
+                         issue['end'] = row[x].strip()
+                    elif x == 'Embargo' and len(row[x].strip()) > 0 and row[x].strip().isnumeric():
+                        journal['embargo']['duration'] = int(row[x].strip())
 
                 journal['period'] = [ year, volume, issue ]
                 if journal not in self.data.get('journal',[]):
