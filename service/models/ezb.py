@@ -7,6 +7,7 @@ from octopus.core import app
 from service import dao
 import csv
 
+
 class Alliance(dataobj.DataObj, dao.AllianceDAO):
     """
     Class to represent the alliance license information as provided by EZB (Regensburg).  The alliance 
@@ -28,6 +29,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
                         ]
     }
     '''
+
     def __init__(self, raw=None):
         """
         Create a new instance of the Alliance object, optionally around the raw python dictionary.
@@ -35,41 +37,41 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         :param raw: python dict object containing alliance data of participating institutions
         """
         struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "created_date" : {"coerce" : "utcdatetime"},
-                "last_updated" : {"coerce" : "utcdatetime"},
-                "name" : {"coerce" : "unicode"},
-                "license_id" : {"coerce" : "unicode"}
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "created_date": {"coerce": "utcdatetime"},
+                "last_updated": {"coerce": "utcdatetime"},
+                "name": {"coerce": "unicode"},
+                "license_id": {"coerce": "unicode"}
             },
             # not (yet?) needed here
             # "objects" : [ 
             # ],
-            "lists" : {
-                "identifier" : {"contains" : "object"},
-                "participant" : {"contains" : "object"}
+            "lists": {
+                "identifier": {"contains": "object"},
+                "participant": {"contains": "object"}
             },
-            "required" : [],
+            "required": [],
 
-            "structs" : {
-                "identifier" : {
-                    "fields" : {
-                        "type" : {"coerce" : "unicode"},
-                        "id" : {"coerce" : "unicode"}
+            "structs": {
+                "identifier": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"}
                     }
                 },
-                "participant" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"}
+                "participant": {
+                    "fields": {
+                        "name": {"coerce": "unicode"}
                     },
-                    "lists" : {
-                        "identifier" : {"contains" : "object"}
+                    "lists": {
+                        "identifier": {"contains": "object"}
                     },
-                    "structs" : {
-                        "identifier" : {
-                            "fields" : {
-                                "type" : {"coerce" : "unicode"},
-                                "id" : {"coerce" : "unicode"}
+                    "structs": {
+                        "identifier": {
+                            "fields": {
+                                "type": {"coerce": "unicode"},
+                                "id": {"coerce": "unicode"}
                             }
                         }
                     }
@@ -78,7 +80,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         }
         self._add_struct(struct)
         super(Alliance, self).__init__(raw=raw)
-        
+
     @property
     def name(self):
         """
@@ -128,7 +130,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         """
         return self._get_list("identifier")
 
-    def get_identifier(self, type):
+    def get_identifier(self, id_type):
         """
         The list of identifiers, as filtered by type.
 
@@ -139,11 +141,11 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         ids = self._get_list("identifier")
         res = []
         for i in ids:
-            if i.get("type") == type:
+            if i.get("type") == id_type:
                 res.append(i.get("id"))
         return res
 
-    def add_identifier(self, id, type):
+    def add_identifier(self, id, id_type):
         """
         Add an identifier for the alliance package, with the given id and type
 
@@ -151,10 +153,10 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         :param type: the type of identifier (e.g. "ezb")
         :return:
         """
-        if id is None or type is None:
+        if id is None or id_type is None:
             return
         uc = dataobj.to_unicode()
-        obj = {"id" : self._coerce(id, uc), "type" : self._coerce(type, uc)}
+        obj = {"id": self._coerce(id, uc), "type": self._coerce(id_type, uc)}
         self._delete_from_list("identifier", matchsub=obj, prune=False)
         self._add_to_list("identifier", obj)
 
@@ -198,15 +200,16 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         :return: 
         """
         # validate the object structure on-the-fly
-        allowed = [ "name", "identifier" ]
+        allowed = ["name", "identifier"]
         for obj in objlist:
             for k in list(obj.keys()):
                 if k not in allowed:
-                    raise dataobj.DataSchemaException("Participant object must only contain the following keys: {x}".format(x=", ".join(allowed)))
+                    raise dataobj.DataSchemaException(
+                        "Participant object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
             # coerce the values of some of the keys
             uc = dataobj.to_unicode()
-            for k in [ "name" ]:
+            for k in ["name"]:
                 if k in obj:
                     obj[k] = self._coerce(obj[k], uc)
 
@@ -237,30 +240,33 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         self._add_to_list("participant", part_object)
 
     @classmethod
-    def pull_by_key(cls,key,value):
-        res = cls.query(q={"query":{"term":{key+'.exact':value}}})
-        if res.get('hits',{}).get('total',{}).get('value', 0) == 1:
-            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+    def pull_by_key(cls, key, value):
+        res = cls.query(q={"query": {"term": {key + '.exact': value}}})
+        if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
+            return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
             return None
 
     @classmethod
-    def pull_by_participant_id(cls,value):
+    def pull_by_participant_id(cls, value):
         key = 'participant.identifier.id'
-        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        n = res.get('hits',{}).get('total',{}).get('value', 0)
+        res = cls.query(
+            q={"query": {"query_string": {"query": value, "default_field": key, "default_operator": "AND"}}})
+        n = res.get('hits', {}).get('total', {}).get('value', 0)
         if n > 10:
             # re-query necessary as a precautionary measure because len(res) seems 
             # to be restricted to 10 records only per default...
-            res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
+            res = cls.query(
+                q={"query": {"query_string": {"query": value, "default_field": key, "default_operator": "AND"}}},
+                size=n)
         if n > 0:
-            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(n) ]
+            return [cls.pull(res['hits']['hits'][k]['_source']['id']) for k in range(n)]
         else:
             return None
 
-    def set_alliance_data(self,license,ezbid,csvfile=None,jsoncontent=None):
+    def set_alliance_data(self, license, ezbid, csvfile=None, jsoncontent=None):
         licid = license
-        fields = ['name','license_id','identifier','participant']
+        fields = ['name', 'license_id', 'identifier', 'participant']
         for f in fields:
             if f in self.data: del self.data[f]
         if csvfile is not None:
@@ -271,18 +277,20 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
                     if x == 'Institution':
                         participant['name'] = row[x].strip()
                     elif x == 'EZB-Id':
-                        participant['identifier'] = participant.get('identifier',[]) + [{"type":"ezb","id":row[x].strip()}]
+                        participant['identifier'] = participant.get('identifier', []) + [
+                            {"type": "ezb", "id": row[x].strip()}]
                     elif x == 'Sigel':
                         # remove double sigel items by 'list(set(...))' trick!
                         for sgl in list(set(row[x].strip().split(','))):
                             if len(sgl.strip()) > 0:
-                                participant['identifier'] = participant.get('identifier',[]) + [{"type":"sigel","id":sgl.strip()}]
+                                participant['identifier'] = participant.get('identifier', []) + [
+                                    {"type": "sigel", "id": sgl.strip()}]
 
-                self.data['participant'] = self.data.get('participant',[]) + [participant]
-            
-            app.logger.debug("Extracted complex participant data for license: {x} ({y})".format(x=licid,y=ezbid))
+                self.data['participant'] = self.data.get('participant', []) + [participant]
+
+            app.logger.debug("Extracted complex participant data for license: {x} ({y})".format(x=licid, y=ezbid))
             self.data['license_id'] = licid
-            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.data['identifier'] = self.data.get('identifier', []) + [{"type": "ezb", "id": ezbid.strip()}]
             self.save()
             return True
         elif jsoncontent is not None:
@@ -290,12 +298,12 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
             for k in list(jsoncontent.keys()):
                 self.data[k] = jsoncontent[k]
             self.data['license_id'] = licid
-            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.data['identifier'] = self.data.get('identifier', []) + [{"type": "ezb", "id": ezbid.strip()}]
             self.save()
-            app.logger.debug("Saved participant data for license: {x} ({y})".format(x=licid,y=ezbid))
+            app.logger.debug("Saved participant data for license: {x} ({y})".format(x=licid, y=ezbid))
             return True
         else:
-            app.logger.error("Could not save any participant data for license: {x} ({y})".format(x=licid,y=ezbid))
+            app.logger.error("Could not save any participant data for license: {x} ({y})".format(x=licid, y=ezbid))
             return False
 
 
@@ -352,6 +360,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         ]
     }
     '''
+
     def __init__(self, raw=None):
         """
         Create a new instance of the License object, optionally around the raw python dictionary.
@@ -359,71 +368,71 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         :param raw: python dict object containing all data concering the legal license agreement
         """
         struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "created_date" : {"coerce" : "utcdatetime"},
-                "last_updated" : {"coerce" : "utcdatetime"},
-                "name" : {"coerce" : "unicode"},
-                "type" : {"coerce" : "unicode", "allowed_values" : ["alliance", "national", "open", "gold", "deal","fid"]}
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "created_date": {"coerce": "utcdatetime"},
+                "last_updated": {"coerce": "utcdatetime"},
+                "name": {"coerce": "unicode"},
+                "type": {"coerce": "unicode", "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid"]}
             },
             # not (yet?) needed here
             # "objects" : [ 
             # ],
-            "lists" : {
-                "identifier" : {"contains" : "object"},
-                "journal" : {"contains" : "object"}
+            "lists": {
+                "identifier": {"contains": "object"},
+                "journal": {"contains": "object"}
             },
-            "required" : [],
+            "required": [],
 
-            "structs" : {
-                "identifier" : {
-                    "fields" : {
-                        "type" : {"coerce" : "unicode"},
-                        "id" : {"coerce" : "unicode"}
-                     },
-                     "required" : []
-                },
-                "journal" : {
-                    "fields" : {
-                        "title" : {"coerce" : "unicode"},
-                        "publisher" : {"coerce" : "unicode"},
+            "structs": {
+                "identifier": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"}
                     },
-                    "objects" : [
+                    "required": []
+                },
+                "journal": {
+                    "fields": {
+                        "title": {"coerce": "unicode"},
+                        "publisher": {"coerce": "unicode"},
+                    },
+                    "objects": [
                         "embargo"
                     ],
-                    "lists" : {
-                        "identifier" : {"contains" : "object"},
-                        "link" : {"contains" : "object"},
-                        "period" : {"contains" : "object"},
-                        "subject" : {"contains" : "field", "coerce" : "unicode"},
+                    "lists": {
+                        "identifier": {"contains": "object"},
+                        "link": {"contains": "object"},
+                        "period": {"contains": "object"},
+                        "subject": {"contains": "field", "coerce": "unicode"},
                         # 2018-08-08 TD : added field 'keyword' to the database structure
-                        "keyword" : {"contains" : "field", "coerce" : "unicode"}
+                        "keyword": {"contains": "field", "coerce": "unicode"}
                     },
-                    "required" : [],
+                    "required": [],
 
-                    "structs" : {
-                        "embargo" : {
-                            "fields" : {
-                                "duration" : {"coerce" : "integer"}
+                    "structs": {
+                        "embargo": {
+                            "fields": {
+                                "duration": {"coerce": "integer"}
                             }
                         },
-                        "identifier" : {
-                            "fields" : {
-                                "type" : {"coerce" : "unicode"},
-                                "id" : {"coerce" : "unicode"}
+                        "identifier": {
+                            "fields": {
+                                "type": {"coerce": "unicode"},
+                                "id": {"coerce": "unicode"}
                             }
                         },
-                        "link" : {
-                            "fields" : {
-                                "type" : {"coerce" : "unicode"},
-                                "url" : {"coerce" : "unicode"}
+                        "link": {
+                            "fields": {
+                                "type": {"coerce": "unicode"},
+                                "url": {"coerce": "unicode"}
                             }
                         },
-                        "period" : {
-                            "fields" : {
-                                "type" : {"coerce" : "unicode"},
-                                "start" : {"coerce" : "unicode"},
-                                "end" : {"coerce" : "unicode"}
+                        "period": {
+                            "fields": {
+                                "type": {"coerce": "unicode"},
+                                "start": {"coerce": "unicode"},
+                                "end": {"coerce": "unicode"}
                             }
                         }
                     }
@@ -469,7 +478,8 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         :param val: the license package type
         """
         if val not in ["alliance", "national", "open", "gold", "deal", "fid"]:
-            raise dataobj.DataSchemaException("license type must be one of 'alliance', 'national', 'deal', 'open', 'fid' or 'gold'")
+            raise dataobj.DataSchemaException(
+                "license type must be one of 'alliance', 'national', 'deal', 'open', 'fid' or 'gold'")
 
         self._set_single("type", val, coerce=dataobj.to_unicode())
 
@@ -512,7 +522,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         if id is None or type is None:
             return
         uc = dataobj.to_unicode()
-        obj = {"id" : self._coerce(id, uc), "type" : self._coerce(type, uc)}
+        obj = {"id": self._coerce(id, uc), "type": self._coerce(type, uc)}
         self._delete_from_list("identifier", matchsub=obj, prune=False)
         self._add_to_list("identifier", obj)
 
@@ -586,15 +596,16 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         :return: 
         """
         # validate the object structure on-the-fly
-        allowed = [ "title", "publisher", "identifier", "link", "period", "embargo", "subject", "keyword" ]
+        allowed = ["title", "publisher", "identifier", "link", "period", "embargo", "subject", "keyword"]
         for obj in objlist:
             for k in list(obj.keys()):
                 if k not in allowed:
-                    raise dataobj.DataSchemaException("Journal object must only contain the following keys: {x}".format(x=", ".join(allowed)))
+                    raise dataobj.DataSchemaException(
+                        "Journal object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
             # coerce the values of some of the keys
             uc = dataobj.to_unicode()
-            for k in [ "title", "publisher" ]:
+            for k in ["title", "publisher"]:
                 if k in obj:
                     obj[k] = self._coerce(obj[k], uc)
 
@@ -640,34 +651,35 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         self._add_to_list("journal", journal_object)
 
     @classmethod
-    def pull_by_key(cls,key,value):
-        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        nres = res.get('hits',{}).get('total',{}).get('value', 0)
+    def pull_by_key(cls, key, value):
+        res = cls.query(
+            q={"query": {"query_string": {"query": value, "default_field": key, "default_operator": "AND"}}})
+        nres = res.get('hits', {}).get('total', {}).get('value', 0)
         if nres > 0:
-            return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(nres) ]
+            return [cls.pull(res['hits']['hits'][k]['_source']['id']) for k in range(nres)]
         else:
             return None
 
     @classmethod
-    def pull_by_journal_id(cls,journal_id):
-        return cls.pull_by_key('journal.identifier.id',journal_id)
+    def pull_by_journal_id(cls, journal_id):
+        return cls.pull_by_key('journal.identifier.id', journal_id)
 
-    def set_license_data(self,ezbid,name,type='alliance',csvfile=None,jsoncontent=None):
-        fields = ['name','type','identifier','journal']
+    def set_license_data(self, ezbid, name, type='alliance', csvfile=None, jsoncontent=None):
+        fields = ['name', 'type', 'identifier', 'journal']
         for f in fields:
             if f in self.data: del self.data[f]
         if csvfile is not None:
             inp = csv.DictReader(csvfile, delimiter='\t', quoting=csv.QUOTE_ALL)
             for row in inp:
                 journal = {}
-                year = { "type": "year" }
-                volume = { "type": "volume" }
-                issue = { "type": "issue" }
-                journal['embargo'] = { "duration":6 }
-                journal['period'] = [ year, volume, issue ]
+                year = {"type": "year"}
+                volume = {"type": "volume"}
+                issue = {"type": "issue"}
+                journal['embargo'] = {"duration": 0}
+                journal['period'] = [year, volume, issue]
                 for x in inp.fieldnames:
                     if x == 'EZB-Id':
-                        journal['identifier'] = journal.get('identifier',[]) + [{"type":"ezb","id":row[x].strip()}]
+                        journal['identifier'] = journal.get('identifier', []) + [{"type": "ezb", "id": row[x].strip()}]
                     elif x == 'Titel':
                         journal['title'] = row[x].strip()
                     elif x == 'Verlag':
@@ -679,47 +691,51 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                     elif x == 'E-ISSN':
                         for eissn in row[x].strip().split(';'):
                             if len(eissn) > 0:
-                                journal['identifier'] = journal.get('identifier',[]) + [{"type":"eissn","id":eissn.strip()}]
+                                journal['identifier'] = journal.get('identifier', []) + [
+                                    {"type": "eissn", "id": eissn.strip()}]
                     elif x == 'P-ISSN':
                         for issn in row[x].strip().split(';'):
                             if len(issn) > 0:
-                                journal['identifier'] = journal.get('identifier',[]) + [{"type":"issn","id":issn.strip()}]
+                                journal['identifier'] = journal.get('identifier', []) + [
+                                    {"type": "issn", "id": issn.strip()}]
                     elif x == 'ZDB-Nummer':
-                        journal['identifier'] = journal.get('identifier',[]) + [{"type":"zdb","id":row[x].strip()}]
+                        journal['identifier'] = journal.get('identifier', []) + [{"type": "zdb", "id": row[x].strip()}]
                     elif x == 'FrontdoorURL':
-                        journal['link'] = journal.get('link',[]) + [{"type":"ezb","url":row[x].strip()}]
+                        journal['link'] = journal.get('link', []) + [{"type": "ezb", "url": row[x].strip()}]
                     elif x == 'Link zur Zeitschrift':
-                        journal['link'] = journal.get('link',[]) + [{"type":"pub","url":row[x].strip()}]
+                        journal['link'] = journal.get('link', []) + [{"type": "pub", "url": row[x].strip()}]
                     elif x == 'erstes Jahr' and len(row[x].strip()) > 1:
-                         year['start'] = row[x].strip()
+                        year['start'] = row[x].strip()
                     elif x == 'erstes volume' and len(row[x].strip()) > 0:
-                         volume['start'] = row[x].strip() 
+                        volume['start'] = row[x].strip()
                     elif x == 'erstes issue' and len(row[x].strip()) > 0:
-                         issue['start'] = row[x].strip()
+                        issue['start'] = row[x].strip()
                     elif x == 'letztes Jahr' and len(row[x].strip()) > 1:
-                         year['end'] = row[x].strip()  
+                        year['end'] = row[x].strip()
                     elif x == 'letztes volume' and len(row[x].strip()) > 0:
-                         volume['end'] = row[x].strip()
+                        volume['end'] = row[x].strip()
                     elif x == 'letztes issue' and len(row[x].strip()) > 0:
-                         issue['end'] = row[x].strip() 
+                        issue['end'] = row[x].strip()
+                    elif x == 'Embargo' and len(row[x].strip()) > 0 and row[x].strip().isnumeric():
+                        journal['embargo']['duration'] = int(row[x].strip())
 
-                journal['period'] = [ year, volume, issue ]
-                if journal not in self.data.get('journal',[]):
-                    self.data['journal'] = self.data.get('journal',[]) + [journal]
+                journal['period'] = [year, volume, issue]
+                if journal not in self.data.get('journal', []):
+                    self.data['journal'] = self.data.get('journal', []) + [journal]
 
             app.logger.debug("Extracted complex data from .csv file for license: {x}".format(x=ezbid))
             self.data['name'] = name.strip()
             self.data['type'] = type.strip()
-            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.data['identifier'] = self.data.get('identifier', []) + [{"type": "ezb", "id": ezbid.strip()}]
             self.save()
             return True
         elif jsoncontent is not None:
             # save the lines into the license fields
             for k in list(jsoncontent.keys()):
-               self.data[k] = jsoncontent[k]
+                self.data[k] = jsoncontent[k]
             self.data['name'] = name.strip()
             self.data['type'] = type.strip()
-            self.data['identifier'] = self.data.get('identifier',[]) + [{"type":"ezb","id":ezbid.strip()}]
+            self.data['identifier'] = self.data.get('identifier', []) + [{"type": "ezb", "id": ezbid.strip()}]
             self.save()
             app.logger.debug("Saved data for license: {x}".format(x=ezbid))
             return True
