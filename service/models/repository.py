@@ -285,7 +285,7 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                         self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x].strip()]
                     elif x.strip().lower().replace(' ','').replace('s','') == 'domain' and len(row[x].strip()) > 1:
                         self.data['domains'] = self.data.get('domains',[]) + [row[x].strip()]
-                    elif x.strip().lower().replace(' ','') == 'institutionalidentifier"' and len(row[x].strip()) > 1:
+                    elif x.strip().lower().replace(' ','') == 'institutionalidentifier' and len(row[x].strip()) > 1:
                         self.data['institutional_identifier'] = row[x].strip()
             app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=repoid))
             # app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
