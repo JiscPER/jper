@@ -47,8 +47,10 @@ if __name__ == "__main__":
         if ezbid:
             matching_licenses = License.pull_by_key('identifier.id.exact', ezbid)
             if matching_licenses and len(matching_licenses)>0:
+                print('Updating existing license')
                 matching_license = matching_licenses[0]
         if not matching_license:
+            print('Adding new license')
             matching_license = License()
         matching_license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
 
