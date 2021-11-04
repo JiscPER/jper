@@ -81,7 +81,9 @@ print_table(obj.grants,'grants', 'Grants');
 // // 2019-02-25 TD : give it a new try; together with the keyword field!
 // print_table(obj.author_ids,'author_ids', 'Author IDs (email,ORCID,...)');
 print_table(obj.keywords,'keywords', 'Keywords');
-print_table(obj.institutional_identifier,'institutional_identifier', 'Institutional identifier');
+var a = []
+a.push(obj.institutional_identifier)
+print_table(a,'institutional_identifier', 'Institutional identifier');
 
 $('#updated').append(obj.last_updated);
 $('#created').append(obj.created_date);
