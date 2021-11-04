@@ -10,6 +10,8 @@ To start the application directly using the python web server, you can just do
 Refer to server installation documentation for more details how to deploy in production.
 """
 from octopus.core import app, initialise, add_configuration
+from flask import request, redirect
+from flask_login import current_user
 
 
 if __name__ == "__main__":
@@ -60,6 +62,9 @@ def index():
 
     :return: Flask response for rendered index page
     """
+    if current_user.is_anonymous:
+        if not request.path.endswith('login'):
+            return redirect('/account/login')
     return render_template("index.html")
 
 
