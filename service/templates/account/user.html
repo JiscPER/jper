@@ -191,7 +191,7 @@
 			<h3>Filter</h3>
 			<div class="row">
 				<form class="form" method="POST" action="{{request.path}}/excluded_license" enctype="multipart/form-data">
-					<p>Your institution appears in the following licenses. More information <a href="https://deepgreen.kobv.de/de/erweiterte-testphase-des-deepgreen-projektes/lizenzinformationen/" target="_blank">here</a></p>
+					<p>Your institution appears in the following licenses. More information <a href="https://info.oa-deepgreen.de/unterstuetzer/#Verlage" target="_blank">here</a></p>
 					<p>Please uncheck all licenses you don’t want to receive articles from:</p>
 					{% for license in licenses %}
 						{% set check = "" %}
@@ -282,7 +282,7 @@
                 <div class="row dl-table">
                     <dl>
                         <dt>Sword status</dt>
-                        <dd>{{ sword_status.status }} (more information <a href="#">here</a>) <br/>
+                        <dd>{{ sword_status.status }}<br/>
                             <a target="_blank"  href="/account/sword_logs/{{account.id}}">View logs from last deposit</a>
                         </dd>
                         {% if sword_status.status == "problem" %}
