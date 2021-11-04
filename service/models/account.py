@@ -198,7 +198,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
 
     def add_role(self, role):
         #  admin, publisher, repository, passive, active, subject_repository
-        if role in ['admin', 'publisher', 'repository', 'passive', 'active', 'subject_repository']:
+        if role in ['admin', 'publisher', 'repository', 'passive', 'active', 'subject_repository', 'match_all']:
             self._add_to_list("role", role, coerce=self._utf8_unicode(), unique=True)
 
     def remove_role(self, role):

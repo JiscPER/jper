@@ -4,7 +4,7 @@ Models for representing the sword objects supporting the deposit run
 
 from octopus.lib import dataobj, dates
 from service import dao
-from datetime import datetime
+
 
 class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
     """
@@ -25,6 +25,7 @@ class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
             "last_tried" : "<datestamp of last attempted deposit>"
         }
     """
+
     def __init__(self, raw=None):
         """
         Create a new instance of the RepositoryStatus object, optionally around the
@@ -36,14 +37,14 @@ class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
         :param raw: python dict object containing the metadata
         """
         struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "last_updated" : {"coerce" : "utcdatetime"},
-                "created_date" : {"coerce" : "utcdatetime"},
-                "last_deposit_date" : {"coerce" : "utcdatetime"},
-                "status" : {"coerce" : "unicode", "allowed_values" : ["succeeding", "failing", "problem"]},
-                "retries" : {"coerce" : "integer"},
-                "last_tried" : {"coerce" : "utcdatetime"}
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "last_updated": {"coerce": "utcdatetime"},
+                "created_date": {"coerce": "utcdatetime"},
+                "last_deposit_date": {"coerce": "utcdatetime"},
+                "status": {"coerce": "unicode", "allowed_values": ["succeeding", "failing", "problem"]},
+                "retries": {"coerce": "integer"},
+                "last_tried": {"coerce": "utcdatetime"}
             }
         }
 
@@ -84,7 +85,8 @@ class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
 
         :param val: current status, must be one of succeeding, problem, failing
         """
-        self._set_single("status", val, coerce=dataobj.to_unicode(), allowed_values=["succeeding", "problem", "failing"])
+        self._set_single("status", val, coerce=dataobj.to_unicode(),
+                         allowed_values=["succeeding", "problem", "failing"])
 
     @property
     def retries(self):
@@ -132,7 +134,8 @@ class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
     @last_tried.setter
     def last_tried(self, val):
         """
-        Set the last tried date, in the event that a repository is suffering a problem. as a string of the form YYYY-MM-DDTHH:MM:SSZ
+        Set the last tried date, in the event that a repository is suffering a problem.
+        as a string of the form YYYY-MM-DDTHH:MM:SSZ
 
         :param val: last tried date
         """
@@ -146,7 +149,8 @@ class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
 
         This will set the last_tried date, and increment the number of retries by 1, and set the status to "problem".
 
-        If the new retry number is greater than the supplied limit, the number of last_tried date will be removed, retries will be set to 0, and the status set to "failing"
+        If the new retry number is greater than the supplied limit, the number of last_tried date will be removed,
+        retries will be set to 0, and the status set to "failing"
 
         :param limit: maximum number of retries before repository is considered to be completely failing
         """
@@ -214,6 +218,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
             "completed_status" : "<deposited|none|failed>"
         }
     """
+
     def __init__(self, raw=None):
         """
         Create a new instance of the RepositoryStatus object, optionally around the
@@ -225,23 +230,29 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :param raw: python dict object containing the metadata
         """
         struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "last_updated" : {"coerce" : "utcdatetime"},
-                "created_date" : {"coerce" : "utcdatetime"},
-                "repo" : {"coerce" : "unicode"},
-                # "repository" : {"coerce" : "unicode"},
-                # 2016-08-26 TD : index mapping exception fix for ES 2.3.3
-                "notification" : {"coerce" : "unicode"},
-                "deposit_date" : {"coerce" : "utcdatetime"},
-                # 2020-01-09 TD : including an additional allowed_value : "invalidxml"
-                #                 (this is mainly induced by a broken OPUS4 sword implementation;
-                #                 fixed from v4.7.x onwards)
-                # 2020-01-13 TD : ... and yet the allowed_value : "payloadtoolarge"
-                # "metadata_status" : {"coerce" : "unicode", "allowed_values" : [u"deposited", u"failed"]},
-                "metadata_status" : {"coerce" : "unicode", "allowed_values" : ["deposited", "failed", "invalidxml", "payloadtoolarge"]},
-                "content_status" : {"coerce" : "unicode", "allowed_values" : ["deposited", "failed", "none"]},
-                "completed_status" : {"coerce" : "unicode", "allowed_values" : ["deposited", "failed", "none"]},
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "last_updated": {"coerce": "utcdatetime"},
+                "created_date": {"coerce": "utcdatetime"},
+                "repo": {"coerce": "unicode"},
+                "notification": {"coerce": "unicode"},
+                "deposit_date": {"coerce": "utcdatetime"},
+                "metadata_status": {"coerce": "unicode",
+                                    "allowed_values": ["deposited", "failed", "invalidxml", "payloadtoolarge"]},
+                "content_status": {"coerce": "unicode", "allowed_values": ["deposited", "failed", "none"]},
+                "completed_status": {"coerce": "unicode", "allowed_values": ["deposited", "failed", "none"]},
+            },
+            "lists": {
+                "messages": {"contains": "object"}
+            },
+            "structs": {
+                "messages": {
+                    "fields": {
+                        "date": {"coerce": "utcdatetime"},
+                        "level": {"coerce": "unicode"},
+                        "message": {"coerce": "unicode"}
+                    }
+                }
             }
         }
 
@@ -303,6 +314,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :return: notification id
         """
         return self._get_single("notification", coerce=dataobj.to_unicode())
+
     # 2018-03-08 TD : end of convenience routines
 
     @notification.setter
@@ -363,8 +375,8 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :param val: metadata deposit status
         :return:
         """
-        #self._set_single("metadata_status", val, coerce=dataobj.to_unicode(), allowed_values=[u"deposited", u"failed"])
-        self._set_single("metadata_status", val, coerce=dataobj.to_unicode(), allowed_values=["deposited", "failed", "invalidxml", "payloadtoolarge"])
+        self._set_single("metadata_status", val, coerce=dataobj.to_unicode(),
+                         allowed_values=["deposited", "failed", "invalidxml", "payloadtoolarge"])
 
     @property
     def content_status(self):
@@ -383,7 +395,8 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :param val: content deposit status
         :return:
         """
-        self._set_single("content_status", val, coerce=dataobj.to_unicode(), allowed_values=["deposited", "none", "failed"])
+        self._set_single("content_status", val, coerce=dataobj.to_unicode(),
+                         allowed_values=["deposited", "none", "failed"])
 
     @property
     def completed_status(self):
@@ -402,7 +415,39 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :param val: completed request status
         :return:
         """
-        self._set_single("completed_status", val, coerce=dataobj.to_unicode(), allowed_values=["deposited", "none", "failed"])
+        self._set_single("completed_status", val, coerce=dataobj.to_unicode(),
+                         allowed_values=["deposited", "none", "failed"])
+
+    @property
+    def messages(self):
+        """
+        The list of log objects for the deposit record.  The returned objects look like:
+
+        ::
+
+            {"date" : "<utc date>", "level" : "<log level>", "message": "<log message>" }
+
+        :return: List of python dict objects containing the log information
+        """
+        return self._get_list("messages")
+
+    def add_message(self, level, message):
+        """
+        Add a log message to the deposit record
+
+        :param level: the current log level (ERROR, WARN, DEBUG)
+        :param message: the message to log
+        :return:
+        """
+        if message is None:
+            return
+        uc = dataobj.to_unicode()
+        obj = {
+            "level": self._coerce(level, uc),
+            "message": self._coerce(message, uc),
+            "date": self._coerce(dates.now(), dataobj.date_str())
+        }
+        self._add_to_list("messages", obj)
 
     def was_successful(self):
         """
@@ -420,3 +465,151 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         cds = self.content_status in ["deposited", "none"]
         comp = self.completed_status in ["deposited", "none"]
         return mds and cds and comp
+
+
+class RepositoryDepositLog(dataobj.DataObj, dao.RepositoryDepositLogDAO):
+    """
+    Class to represent the operational deposit logs of a repository account, one for each run
+
+    Structured as follows:
+
+    ::
+
+        {
+            "id" : "<opaque id of the deposit log>",
+            "last_updated" : "<date this record was last updated>",
+            "created_date" : "<date this record was created>",
+            "repo" : "<id of the repository">,
+            "status" : "<succeeding|failing|problem>",
+            "messages": <list of log messages"
+        }
+    """
+
+    def __init__(self, raw=None):
+        """
+        Create a new instance of the RepositoryStatus object, optionally around the
+        raw python dictionary.
+
+        If supplied, the raw dictionary will be validated against the allowed structure of this
+        object, and an exception will be raised if it does not validate
+
+        :param raw: python dict object containing the metadata
+        """
+        struct = {
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "last_updated": {"coerce": "utcdatetime"},
+                "created_date": {"coerce": "utcdatetime"},
+                "repo": {"coerce": "unicode"},
+                "status": {"coerce": "unicode", "allowed_values": ["succeeding", "failing", "problem"]},
+            },
+            "lists": {
+                "messages": {"contains": "object"}
+            },
+            "structs": {
+                "messages": {
+                    "fields": {
+                        "date": {"coerce": "utcdatetime"},
+                        "level": {"coerce": "unicode"},
+                        "message": {"coerce": "unicode"},
+                        "notification": {"coerce": "unicode"},
+                        "deposit_record": {"coerce": "unicode"}
+                    }
+                }
+            }
+        }
+
+        self._add_struct(struct)
+        super(RepositoryDepositLog, self).__init__(raw=raw)
+
+    @property
+    def status(self):
+        """
+        Current status of the repository in terms of deposit (succeeding, failing, problem)
+
+        :return: the current deposit status
+        """
+        return self._get_single("status", coerce=dataobj.to_unicode())
+
+    @status.setter
+    def status(self, val):
+        """
+        Set the current status of the repository deposit
+
+        :param val: current status, must be one of succeeding, problem, failing
+        """
+        self._set_single("status", val, coerce=dataobj.to_unicode(),
+                         allowed_values=["succeeding", "problem", "failing"])
+
+    @property
+    def repository(self):
+        """
+        The repository account id this deposit was to
+
+        :return: account id
+        """
+        return self._get_single("repo", coerce=dataobj.to_unicode())
+
+    @repository.setter
+    def repository(self, val):
+        """
+        Set the repository account id
+
+        :param val: account id
+        :return:
+        """
+        self._set_single("repo", val, coerce=dataobj.to_unicode())
+
+    @property
+    def repo(self):
+        """
+        The repository account id this deposit was to
+
+        :return: account id
+        """
+        return self._get_single("repo", coerce=dataobj.to_unicode())
+
+    @repo.setter
+    def repo(self, val):
+        """
+        Set the repository account id
+
+        :param val: account id
+        :return:
+        """
+        self._set_single("repo", val, coerce=dataobj.to_unicode())
+
+    @property
+    def messages(self):
+        """
+        The list of log objects for the repository status record. The returned objects look like:
+
+        ::
+
+            {"date" : "<utc date>", "level" : "<log level>", "message": "<log message>" }
+
+        :return: List of python dict objects containing the log information
+        """
+        return self._get_list("messages")
+
+    def add_message(self, level, message, notification=None, deposit_record=None):
+        """
+        Add a log message to the deposit record
+
+        :param level: the current log level (ERROR, WARN, DEBUG)
+        :param message: the message to log
+        :param notification: the corresponding notification id
+        :param deposit_record: the corresponding deposit_record id
+        :return:
+        """
+        if message is None:
+            return
+        uc = dataobj.to_unicode()
+        obj = {
+            "date": self._coerce(dates.now(), dataobj.date_str()),
+            "level": self._coerce(level, uc),
+            "message": self._coerce(message, uc),
+            "notification": self._coerce(notification, uc),
+            "deposit_record": self._coerce(deposit_record, uc),
+        }
+        self._add_to_list("messages", obj)

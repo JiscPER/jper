@@ -1,8 +1,8 @@
 """
-This is a script to load complex .csv journal data of a Alliance License 
+This is a script to load complex .csv journal data of a Alliance License
 in a live system,  as it could be obtained from EZB anchor search, for example.
 
-All records are put into a new License class. This means historical data will 
+All records are put into a new License class. This means historical data will
 be kept.
 """
 from octopus.core import add_configuration, app
@@ -40,17 +40,16 @@ if __name__ == "__main__":
         for row in csvfile:
             j = j + 1
             if j == 1:
-               name = row.replace('"', '').strip()
-               name = name[name.find(':') + 2:]
-               ezbid = name[name.find('[') + 1:name.find(']')].upper()
+                name = row.replace('"', '').strip()
+                name = name[name.find(':') + 2:]
+                ezbid = name[name.find('[') + 1:name.find(']')].upper()
             if j == 4: break
         if ezbid:
             matching_licenses = License.pull_by_key('identifier.id.exact', ezbid)
             if matching_licenses and len(matching_licenses)>0:
-                print('Updating existing license')
+                print('Updating existing license for #{x}'.format(x=ezbid))
                 matching_license = matching_licenses[0]
         if not matching_license:
-            print('Adding new license')
+            print('Adding new license for {x}'.format(x=ezbid))
             matching_license = License()
         matching_license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
-
