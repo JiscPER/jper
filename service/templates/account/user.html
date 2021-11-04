@@ -282,7 +282,9 @@
                 <div class="row dl-table">
                     <dl>
                         <dt>Sword status</dt>
-                        <dd>{{ sword_status.status }} (more information <a href="#">here</a>)</dd>
+                        <dd>{{ sword_status.status }} (more information <a href="#">here</a>) <br/>
+                            <a target="_blank"  href="/account/sword_logs/{{account.id}}">View logs from last deposit</a>
+                        </dd>
                         {% if sword_status.status == "problem" %}
                             <dt>Number of retires</dt>
                             <dd>{{ sword_status.retries }}</dd>

@@ -5,6 +5,7 @@ Models for representing the sword objects supporting the deposit run
 from octopus.lib import dataobj, dates
 from service import dao
 
+
 class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
     """
     Class to represent the operational status of a repository account
@@ -242,13 +243,13 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
                 "completed_status": {"coerce": "unicode", "allowed_values": ["deposited", "failed", "none"]},
             },
             "lists": {
-                "logs": {"contains": "object"}
+                "messages": {"contains": "object"}
             },
             "structs": {
-                "logs": {
+                "messages": {
                     "fields": {
                         "date": {"coerce": "utcdatetime"},
-                        "level": {"coerce": "utcdatetime"},
+                        "level": {"coerce": "unicode"},
                         "message": {"coerce": "unicode"}
                     }
                 }
@@ -418,7 +419,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
                          allowed_values=["deposited", "none", "failed"])
 
     @property
-    def logs(self):
+    def messages(self):
         """
         The list of log objects for the deposit record.  The returned objects look like:
 
@@ -428,9 +429,9 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
 
         :return: List of python dict objects containing the log information
         """
-        return self._get_list("logs")
+        return self._get_list("messages")
 
-    def add_log(self, level, message):
+    def add_message(self, level, message):
         """
         Add a log message to the deposit record
 
@@ -446,7 +447,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
             "message": self._coerce(message, uc),
             "date": self._coerce(dates.now(), dataobj.date_str())
         }
-        self._add_to_list("log", obj)
+        self._add_to_list("messages", obj)
 
     def was_successful(self):
         """
@@ -466,7 +467,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         return mds and cds and comp
 
 
-class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
+class RepositoryDepositLog(dataobj.DataObj, dao.RepositoryDepositLogDAO):
     """
     Class to represent the operational deposit logs of a repository account, one for each run
 
@@ -480,7 +481,7 @@ class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
             "created_date" : "<date this record was created>",
             "repo" : "<id of the repository">,
             "status" : "<succeeding|failing|problem>",
-            "logs": <list of log messages"
+            "messages": <list of log messages"
         }
     """
 
@@ -503,13 +504,13 @@ class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
                 "status": {"coerce": "unicode", "allowed_values": ["succeeding", "failing", "problem"]},
             },
             "lists": {
-                "logs": {"contains": "object"}
+                "messages": {"contains": "object"}
             },
             "structs": {
-                "logs": {
+                "messages": {
                     "fields": {
                         "date": {"coerce": "utcdatetime"},
-                        "level": {"coerce": "utcdatetime"},
+                        "level": {"coerce": "unicode"},
                         "message": {"coerce": "unicode"},
                         "notification": {"coerce": "unicode"},
                         "deposit_record": {"coerce": "unicode"}
@@ -579,7 +580,7 @@ class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
         self._set_single("repo", val, coerce=dataobj.to_unicode())
 
     @property
-    def logs(self):
+    def messages(self):
         """
         The list of log objects for the repository status record. The returned objects look like:
 
@@ -589,9 +590,9 @@ class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
 
         :return: List of python dict objects containing the log information
         """
-        return self._get_list("logs")
+        return self._get_list("messages")
 
-    def add_log(self, level, message, notification=None, deposit_record=None):
+    def add_message(self, level, message, notification=None, deposit_record=None):
         """
         Add a log message to the deposit record
 
@@ -611,4 +612,4 @@ class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
             "notification": self._coerce(notification, uc),
             "deposit_record": self._coerce(deposit_record, uc),
         }
-        self._add_to_list("log", obj)
+        self._add_to_list("messages", obj)

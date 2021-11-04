@@ -264,7 +264,7 @@ class RepositoryDepositLogDAO(dao.ESDAO):
         """
         q = RepositoryDepositLogQuery(repository_id)
         obs = cls.object_query(q=q.query())
-        if len(obs) > 0:
+        if obs and len(obs) > 0:
             return obs[0]
 
 
