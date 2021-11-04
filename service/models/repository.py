@@ -30,7 +30,8 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                 "id" : {"coerce" : "unicode"},
                 "created_date" : {"coerce" : "unicode"},
                 "last_updated" : {"coerce" : "unicode"},
-                "repo" : {"coerce" : "unicode"}
+                "repo" : {"coerce" : "unicode"},
+                "institutional_identifier": {"coerce" : "unicode"},
                 # "repository" : {"coerce" : "unicode"}
                 # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
             },
@@ -205,6 +206,15 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         return self._get_list("strings", coerce=dataobj.to_unicode())
 
     @property
+    def institutional_identifier(self):
+        """
+        Institutional identifier which may be used to match against this repository
+
+        :return: institutional_identifier
+        """
+        return self._get_single("institutional_identifier", coerce=dataobj.to_unicode())
+
+    @property
     def excluded_license(self):
         """
         List of licenses not associated with this repository
@@ -248,7 +258,8 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         # 2019-02-25 TD : /German/ Postcodes are not sensible for DeepGreen, thus now disabled 
         # 2019-03-27 TD : Due to data privacy issues, Author Emails and ORCIDs will not be read until further notice (see also the comment below)
         #
-        fields = ['domains','name_variants','author_ids','postcodes','grants','keywords','content_types','strings']
+        fields = ['domains','name_variants','author_ids','postcodes','grants','keywords',
+                  'content_types','strings','institutional_identifier']
         for f in fields:
             if f in self.data: del self.data[f]
         if csvfile is not None:
@@ -274,14 +285,8 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                         self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x].strip()]
                     elif x.strip().lower().replace(' ','').replace('s','') == 'domain' and len(row[x].strip()) > 1:
                         self.data['domains'] = self.data.get('domains',[]) + [row[x].strip()]
-                    #
-                    # 2019-03-27 TD : !!!ATTENTION!!! Author Emails and ORCIDS will be disabled here. No such items will be taken up by DeepGreen now.
-                    # 
-                    #elif x.strip().lower().replace(' ','').replace('s','').replace('email','') == 'author' and len(row[x].strip()) > 1:
-                    #    self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"email","id":row[x].strip()}]
-                    #elif x.strip().lower().replace(' ','').replace('s','') == 'orcid' and len(row[x].strip()) > 1:
-                    #    self.data['author_ids'] = self.data.get('author_ids',[]) + [{"type":"orcid","id":row[x].strip()}]
-                    # 2019-03-27 TD
+                    elif x.strip().lower().replace(' ','') == 'institutionalidentifier"' and len(row[x].strip()) > 1:
+                        self.data['institutional_identifier'] = row[x].strip()
             app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=repoid))
             # app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
             self.data['repo'] = repoid
