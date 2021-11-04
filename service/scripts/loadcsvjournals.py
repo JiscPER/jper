@@ -47,17 +47,9 @@ if __name__ == "__main__":
         if ezbid:
             matching_licenses = License.pull_by_key('identifier.id.exact', ezbid)
             if matching_licenses and len(matching_licenses)>0:
-<<<<<<< Updated upstream
-                matching_license = matching_licenses[0]
-        if not matching_license:
-            matching_license = License()
-        matching_license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
-
-=======
                 print('Updating existing license for #{x}'.format(x=ezbid))
                 matching_license = matching_licenses[0]
         if not matching_license:
             print('Adding new license for {x}'.format(x=ezbid))
             matching_license = License()
         matching_license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
->>>>>>> Stashed changes
