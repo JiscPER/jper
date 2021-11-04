@@ -190,6 +190,28 @@ def _download_request(repo_id=None, provider=False):
     return nbulk.json()
 
 
+def _sword_logs(repo_id):
+    """
+    Obtain the sword logs for the latest run along with the logs from each associated deposit record
+
+    :param repo_id: the repo id to limit the request to
+    :return: Sword log data
+    """
+    logs = None
+    try:
+        logs = models.RepositoryDepositLog().pull_by_id(repo_id)
+        deposit_record_logs = {}
+        if logs and logs.messages:
+            for msg in logs.messages:
+                if msg.get('deposit_record', None) and msg['deposit_record'] != "None":
+                    detailed_log = models.DepositRecord.pull(msg['deposit_record'])
+                    if detailed_log and detailed_log.messages:
+                        deposit_record_logs[msg['deposit_record']] = detailed_log.messages
+    except ParameterException as e:
+        return _bad_request(str(e))
+    return logs, deposit_record_logs
+
+
 def _validate_since():
     since = request.values.get("since", None)
     if since is None or since == "":
@@ -426,6 +448,20 @@ def failing(provider_id):
     num_of_pages = int(math.ceil(results['total'] / results['pageSize']))
     return render_template('account/failing.html', repo=data, tabl=[json.dumps(ftable)], num_of_pages=num_of_pages,
                            page_num=page_num, link=link, date=date)
+
+
+@blueprint.route('/sword_logs/<repo_id>', methods=["GET"])
+def sword_logs(repo_id):
+    acc = models.Account.pull(repo_id)
+    if acc is None:
+        abort(404)
+    if not acc.has_role('repository'):
+        abort(404)
+
+    logs_data, deposit_record_logs = _sword_logs(repo_id)
+
+    return render_template('account/sword_log.html', logs_data=logs_data, deposit_record_logs=deposit_record_logs, account=acc,
+                           api_base_url=app.config.get("API_BASE_URL"))
 
 
 @blueprint.route("/configview", methods=["GET", "POST"])
