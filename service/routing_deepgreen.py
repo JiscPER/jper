@@ -130,8 +130,8 @@ def _route(unrouted):
                 if al:
                     # collect all EZB-Ids of participating institutions of AL
                     for participant in al.participants:
-                        for i in participant["identifier"]:
-                            if i.get("type") == "ezb":
+                        for i in participant.get("identifier", []):
+                            if i.get("type", None) == "ezb" and i.get('id', None):
                                 # note: only first ISSN record found in current license will be considered!
                                 part_bibids.append((i.get("id"), lic_data[0]))
 
