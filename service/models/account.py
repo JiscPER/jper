@@ -39,7 +39,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         "sword" : {
             "username" : "<username for the router to authenticate with the repository>",
             "password" : "<reversibly encrypted password for the router to authenticate with the repository>",
-            "collection" : "<url for deposit collection to receive content from the router>"
+            "collection" : "<url for deposit collection to receive content from the router>",
+            "deposit_method" : "<single zip file / individual files>"
         },
 
         "packaging" : [
@@ -108,7 +109,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     #                 "fields": {
     #                     "username": {"coerce": "unicode"},
     #                     "password": {"coerce": "unicode"},
-    #                     "collection": {"coerce": "unicode"}
+    #                     "collection": {"coerce": "unicode"},
+    #                     "deposit_method": {"coerce": "unicode"}
     #                 }
     #             },
     #             "embargo": {
@@ -395,7 +397,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
             {
                 "username" : "<username>",
                 "password" : "<password>",
-                "collection" : "<name of collection>"
+                "collection" : "<name of collection>",
+                "deposit_method" : "<single zip file / individual files>"
             }
 
         :return: The sword information as a python dict object
@@ -415,14 +418,15 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
             {
                 "username" : "<username>",
                 "password" : "<password>",
-                "collection" : "<name of collection>"
+                "collection" : "<name of collection>",
+                "deposit_method" : "<single zip file / individual files>"
             }
 
         :param obj: the sword object as a dict
         :return:
         """
         # validate the object structure quickly
-        allowed = ["username", "password", "collection"]
+        allowed = ["username", "password", "collection", "deposit_method"]
         for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("Sword object must only contain the following keys: {x}".format(x=", ".join(allowed)))
@@ -431,6 +435,11 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         uc = dataobj.to_unicode()
         for k in allowed:
             if k in obj:
+                if k == 'deposit_method':
+                    if obj[k].strip().lower() not in ["single zip file", "individual files"]:
+                        raise dataobj.DataSchemaException("Sword deposit method must only contain " +
+                                                          "'single zip file' or 'individual files'")
+                    obj[k] = obj[k].strip().lower()
                 obj[k] = self._coerce(obj[k], uc)
 
         # finally write it
@@ -440,23 +449,43 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def sword_collection(self):
         return self._get_single("sword.collection", coerce=self._utf8_unicode())
 
-    # 2017-05-18 TD : fixed an unnoticed inconsistency up to now: change of "sword_repository" to "sword"
-    #
+    @sword_collection.setter
+    def sword_collection(self, val):
+        self._set_single("sword.collection", val, coerce=self._utf8_unicode())
+
     @property
     def sword_username(self):
         return self._get_single("sword.username", coerce=self._utf8_unicode())
 
-    # 2017-05-18 TD : fixed an unnoticed inconsistency up to now: change of "sword_repository" to "sword"
-    #
+    @sword_username.setter
+    def sword_username(self, val):
+        self._set_single("sword.username", val, coerce=self._utf8_unicode())
+
     @property
     def sword_password(self):
         return self._get_single("sword.password", coerce=self._utf8_unicode())
 
+    @sword_password.setter
+    def sword_password(self, val):
+        self._set_single("sword.password", val, coerce=self._utf8_unicode())
+
+    @property
+    def sword_deposit_method(self):
+        return self._get_single("sword.deposit_method", coerce=self._utf8_unicode())
+
+    @sword_deposit_method.setter
+    def sword_deposit_method(self, val):
+        if val.strip().lower() not in ["single zip file", "individual files"]:
+            raise dataobj.DataSchemaException("Sword deposit method must only contain " +
+                                              "'single zip file' or 'individual files'")
+        self._set_single("sword.deposit_method", val.strip().lower(), coerce=self._utf8_unicode())
+
     # 2017-05-18 TD : fixed an unnoticed inconsistency up to now: change of "sword_repository" to "sword"
-    def add_sword_credentials(self, username, password, collection):
-        self._set_single("sword.username", username, coerce=self._utf8_unicode())
-        self._set_single("sword.password", password, coerce=self._utf8_unicode())
-        self._set_single("sword.collection", collection, coerce=self._utf8_unicode())
+    def add_sword_credentials(self, username, password, collection, deposit_method):
+        self.sword_username = username
+        self.sword_password = password
+        self.sword_collection = collection
+        self.sword_deposit_method = deposit_method
 
     @property
     def embargo(self):

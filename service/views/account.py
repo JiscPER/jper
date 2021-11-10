@@ -663,6 +663,10 @@ def repoinfo(username):
         acc.data['sword']['collection'] = request.values['sword_collection'].strip()
     else:
         acc.data['sword']['collection'] = ''
+    if request.values.get('sword_deposit_method', False):
+        acc.data['sword']['deposit_method'] = request.values['sword_deposit_method'].strip()
+    else:
+        acc.data['sword']['deposit_method'] = ''
 
     if request.values.get('packaging', False):
         acc.data['packaging'] = [s.strip() for s in request.values['packaging'].split(',')]

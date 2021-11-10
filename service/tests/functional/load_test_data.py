@@ -48,6 +48,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--to", help="url of sword collection to deposit to")
     parser.add_argument("-u", "--username", help="username of sword account in repository")
     parser.add_argument("-l", "--login", help="login password of sword account in repository")
+    parser.add_argument("-m", "--method", help="deposit method for sword account in repository")
 
     args = parser.parse_args()
 
@@ -96,8 +97,10 @@ if __name__ == "__main__":
 
         # should it do sword deposit
         if random() < float(args.sword):
-            acc.add_sword_credentials(args.username, args.login, args.to)
-
+            acc.sword_username = args.username
+            acc.sword_password = args.login
+            acc.sword_collection = args.to
+            acc.sword_deposit_method = args.method
         acc.save()
 
     # load the publisher accounts
