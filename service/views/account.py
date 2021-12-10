@@ -217,10 +217,6 @@ def _sword_logs(repo_id, from_date, to_date):
                                 deposit_record_logs[msg['deposit_record']] = detailed_log.messages
     except ParameterException as e:
         return _bad_request(str(e))
-    print('-'*50)
-    print(logs)
-    print('-'*50)
-    print(deposit_record_logs)
     return logs, deposit_record_logs
 
 
@@ -469,7 +465,6 @@ def sword_logs(repo_id):
         abort(404)
     if not acc.has_role('repository'):
         abort(404)
-    print(repo_id)
     latest_log = models.RepositoryDepositLog().pull_by_repo(repo_id)
     last_updated = dates.parse(latest_log.last_updated).strftime("%A %d. %B %Y %H:%M:%S")
     deposit_dates_raw = models.RepositoryDepositLog().pull_deposit_days(repo_id)
@@ -491,8 +486,6 @@ def sword_logs(repo_id):
     from_date_display = str(dates.parse(from_date).strftime("%d/%m/%Y"))
     if not to_date:
         to_date = dates.format(dates.parse(from_date) + timedelta(days=1))
-    print("From date: #{f} , #{d}".format(f=from_date, d=from_date_display))
-    print("To date: #{f} , #{d}".format(f=to_date, d=to_date_display))
     logs_data, deposit_record_logs = _sword_logs(repo_id, from_date, to_date)
     return render_template('account/sword_log.html', last_updated=last_updated, status=latest_log.status, logs_data=logs_data, deposit_record_logs=deposit_record_logs,
                            account=acc, api_base_url=app.config.get("API_BASE_URL"), from_date=from_date_display,
