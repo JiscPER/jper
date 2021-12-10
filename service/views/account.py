@@ -18,6 +18,7 @@ from jsonpath_rw_ext import parse
 from itertools import zip_longest
 from service import models
 from io import StringIO, TextIOWrapper, BytesIO
+from datetime import timedelta
 
 blueprint = Blueprint('account', __name__)
 
@@ -86,7 +87,7 @@ def _list_failrequest(provider_id=None, bulk=False):
     :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
-    since = _validate_since()
+    since = _validate_date(param='since')
     page = _validate_page()
     page_size = _validate_page_size()
 
@@ -112,7 +113,7 @@ def _list_matchrequest(repo_id=None, provider=False, bulk=False):
     :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
-    since = _validate_since()
+    since = _validate_date(param='since')
     page = _validate_page()
     page_size = _validate_page_size()
 
@@ -142,7 +143,7 @@ def _list_request(repo_id=None, provider=False, bulk=False):
     :param bulk: (boolean) whether bulk (e.g. *not* paginated) is returned or not
     :return: Flask response containing the list of notifications that are appropriate to the parameters
     """
-    since = _validate_since()
+    since = _validate_date(param='since')
     page = _validate_page()
     page_size = _validate_page_size()
 
@@ -190,30 +191,41 @@ def _download_request(repo_id=None, provider=False):
     return nbulk.json()
 
 
-def _sword_logs(repo_id):
+def _sword_logs(repo_id, from_date, to_date):
     """
-    Obtain the sword logs for the latest run along with the logs from each associated deposit record
+    Obtain the sword logs for the date range with the logs from each associated deposit record
 
     :param repo_id: the repo id to limit the request to
+    :param from_date:
+    :param to_date:
+
     :return: Sword log data
     """
     logs = None
     try:
-        logs = models.RepositoryDepositLog().pull_by_id(repo_id)
+        logs_raw = models.RepositoryDepositLog().pull_by_date_range(repo_id, from_date, to_date)
+        logs = logs_raw.get('hits', {}).get('hits', {})
         deposit_record_logs = {}
-        if logs and logs.messages:
-            for msg in logs.messages:
-                if msg.get('deposit_record', None) and msg['deposit_record'] != "None":
-                    detailed_log = models.DepositRecord.pull(msg['deposit_record'])
-                    if detailed_log and detailed_log.messages:
-                        deposit_record_logs[msg['deposit_record']] = detailed_log.messages
+        if logs and len(logs) > 0:
+            for log in logs:
+                info = log.get('_source', {})
+                if info and info.get('messages', []):
+                    for msg in info['messages']:
+                        if msg.get('deposit_record', None) and msg['deposit_record'] != "None":
+                            detailed_log = models.DepositRecord.pull(msg['deposit_record'])
+                            if detailed_log and detailed_log.messages:
+                                deposit_record_logs[msg['deposit_record']] = detailed_log.messages
     except ParameterException as e:
         return _bad_request(str(e))
+    print('-'*50)
+    print(logs)
+    print('-'*50)
+    print(deposit_record_logs)
     return logs, deposit_record_logs
 
 
-def _validate_since():
-    since = request.values.get("since", None)
+def _validate_date(param='since'):
+    since = request.values.get(param, None)
     if since is None or since == "":
         return _bad_request("Missing required parameter 'since'")
 
@@ -457,11 +469,34 @@ def sword_logs(repo_id):
         abort(404)
     if not acc.has_role('repository'):
         abort(404)
-
-    logs_data, deposit_record_logs = _sword_logs(repo_id)
-
-    return render_template('account/sword_log.html', logs_data=logs_data, deposit_record_logs=deposit_record_logs, account=acc,
-                           api_base_url=app.config.get("API_BASE_URL"))
+    print(repo_id)
+    latest_log = models.RepositoryDepositLog().pull_by_repo(repo_id)
+    last_updated = dates.parse(latest_log.last_updated).strftime("%A %d. %B %Y %H:%M:%S")
+    deposit_dates_raw = models.RepositoryDepositLog().pull_deposit_days(repo_id)
+    deposit_dates = deposit_dates_raw.get('aggregations', {}).get('deposits_by_day', {}).get('buckets', [])
+    # get logs for specified date
+    to_date = None
+    to_date_display = ''
+    if request.args.get('to', None) and len(request.args.get('to')) > 0:
+        to_date = _validate_date(param='to')
+        to_date_display = str(dates.parse(to_date).strftime("%d/%m/%Y"))
+    from_date = None
+    if request.args.get('from', None) and len(request.args.get('from')) > 0:
+        from_date = _validate_date(param='from')
+    if request.args.get('date', None) and len(request.args.get('date')) > 0:
+        from_date = _validate_date(param='date')
+        to_date = dates.format(dates.parse(from_date) + timedelta(days=1))
+    if not from_date:
+        from_date = deposit_dates[0].get('key_as_string').split('T')[0]
+    from_date_display = str(dates.parse(from_date).strftime("%d/%m/%Y"))
+    if not to_date:
+        to_date = dates.format(dates.parse(from_date) + timedelta(days=1))
+    print("From date: #{f} , #{d}".format(f=from_date, d=from_date_display))
+    print("To date: #{f} , #{d}".format(f=to_date, d=to_date_display))
+    logs_data, deposit_record_logs = _sword_logs(repo_id, from_date, to_date)
+    return render_template('account/sword_log.html', last_updated=last_updated, status=latest_log.status, logs_data=logs_data, deposit_record_logs=deposit_record_logs,
+                           account=acc, api_base_url=app.config.get("API_BASE_URL"), from_date=from_date_display,
+                           to_date=to_date_display, deposit_dates=deposit_dates, )
 
 
 @blueprint.route("/configview", methods=["GET", "POST"])
