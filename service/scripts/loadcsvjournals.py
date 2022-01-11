@@ -7,6 +7,40 @@ be kept.
 """
 from octopus.core import add_configuration, app
 from service.models import License
+import os
+
+
+def load_csv_journal(license_file, type_of_license):
+    accepted_licenses = ["alliance", "national", "deal", "gold", "fid"]
+    if type_of_license not in accepted_licenses:
+        print('Type of license has to be #{l}'.format(l=accepted_licenses.join(', ')))
+        return False
+    if not os.path.isfile(license_file):
+        print('file does not exists #{f}'.format(f=license_file))
+        return False
+    with open(license_file, 'r') as csvfile:
+        matching_license = None
+        j = 0
+        ezbid = None
+        name = None
+        for row in csvfile:
+            j = j + 1
+            if j == 1:
+                name = row.replace('"', '').strip()
+                name = name[name.find(':') + 2:]
+                ezbid = name[name.find('[') + 1:name.find(']')].upper()
+            if j == 4: break
+        if ezbid:
+            matching_licenses = License.pull_by_key('identifier.id.exact', ezbid)
+            if matching_licenses and len(matching_licenses)>0:
+                print('Updating existing license for #{x}'.format(x=ezbid))
+                matching_license = matching_licenses[0]
+        if not matching_license:
+            print('Adding new license for {x}'.format(x=ezbid))
+            matching_license = License()
+        matching_license.set_license_data(ezbid, name, type=type_of_license, csvfile=csvfile)
+    return
+
 
 if __name__ == "__main__":
     import argparse
@@ -32,24 +66,5 @@ if __name__ == "__main__":
         parser.print_help()
         exit(0)
 
-    with open(args.table, 'r') as csvfile:
-        matching_license = None
-        j = 0
-        ezbid = None
-        name = None
-        for row in csvfile:
-            j = j + 1
-            if j == 1:
-                name = row.replace('"', '').strip()
-                name = name[name.find(':') + 2:]
-                ezbid = name[name.find('[') + 1:name.find(']')].upper()
-            if j == 4: break
-        if ezbid:
-            matching_licenses = License.pull_by_key('identifier.id.exact', ezbid)
-            if matching_licenses and len(matching_licenses)>0:
-                print('Updating existing license for #{x}'.format(x=ezbid))
-                matching_license = matching_licenses[0]
-        if not matching_license:
-            print('Adding new license for {x}'.format(x=ezbid))
-            matching_license = License()
-        matching_license.set_license_data(ezbid, name, type=args.licence, csvfile=csvfile)
+    load_csv_journal(args.table, args.licence)
+
