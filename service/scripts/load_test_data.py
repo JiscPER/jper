@@ -116,8 +116,6 @@ class LoadTestData:
             'EZB-NALIX-00498_OA_participants_current.csv',
             'EZB-NALJB-00504_NL_participants_current.csv',
             'EZB-NALJC-00505_NL_participants_current.csv',
-            'PUB-FRONT-00001_OA_2020-12-16_participants.csv',
-            'PUB-MDPI0-00001_OA_2020-12-16_participants.csv',
             'EZB-SAGE-00001_OA_participants_2021-05-04.csv'
         ]
 
