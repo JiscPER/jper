@@ -367,8 +367,8 @@ class JPER(object):
                 if link.get('proxy',False) == pid:
                     lurl = link['url']
             return lurl
-        
-            
+
+
     @classmethod
     def get_public_url(cls, account, notification_id, content_id):
         urn = models.UnroutedNotification.pull(notification_id)
@@ -383,8 +383,8 @@ class JPER(object):
 
     @classmethod
     def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None, provider=False):
-    # def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
-    # 2016-09-07 TD : trial to make some publisher's reporting available
+        # def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
+        # 2016-09-07 TD : trial to make some publisher's reporting available
         """
         List notification which meet the criteria specified by the parameters
 
@@ -427,7 +427,7 @@ class JPER(object):
             "from": (page - 1) * page_size,
             "size": page_size
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -502,7 +502,7 @@ class JPER(object):
             "from": (page - 1) * page_size,
             "size": page_size
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -569,7 +569,7 @@ class JPER(object):
             "from": (page - 1) * page_size,
             "size": page_size
         }
-        
+
         if provider_id is not None:
             qr['query']['bool']["must"] = {"match": {"provider.id.exact": provider_id}}
 
@@ -586,7 +586,7 @@ class JPER(object):
 
     @classmethod
     def bulk_notifications(cls, account, since, repository_id=None, provider=False):
-    # 2016-09-07 TD : trial to make some publisher's reporting available
+        # 2016-09-07 TD : trial to make some publisher's reporting available
         """
         Bulk list notification which meet the criteria specified by the parameters
 
@@ -618,7 +618,7 @@ class JPER(object):
             },
             "sort": [{"created_date":{"order":"desc"}}],
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -681,7 +681,7 @@ class JPER(object):
             "sort": [{"created_date":{"order":"desc"}}],
             # 2016-09-06 TD : change of sort order newest first
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -734,7 +734,7 @@ class JPER(object):
             },
             "sort": [{"created_date":{"order":"desc"}}],
         }
-        
+
         if provider_id is not None:
             qr['query']['bool']["must"] = {"match": {"provider.id.exact": provider_id}}
 
