@@ -28,3 +28,4 @@ from service.models.contentlog import ContentLog
 from service.models.ezb import Alliance, License
 from service.models.xslt import XSLT
 from service.models.sword import RepositoryStatus, DepositRecord, RepositoryDepositLog
+from service.models.requestnotification import RequestNotification
