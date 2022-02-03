@@ -55,7 +55,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
             "title" : "<license title>",
             "type" : "<license type>",
             "url" : "<license url>",
-            "version" : "<license version>"
+            "version" : "<license version>",
+            "gold_license" : [<license type> | <license url>]
         }
     }
     '''
@@ -276,6 +277,8 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
                 "name" : "<name of repository>",
                 "url" : "<url>",
                 "software" : "<software>",
+                "bibid": "<bibid>",
+                "sigel": ["<seal>"]
             }
 
         :param obj: the repository object as a dict
@@ -550,6 +553,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
                 "type" : "<type>",
                 "url" : "<url>",
                 "version" : "<version>",
+                "gold_license": [<license type> | <license url>]
             }
 
         :return: The license information as a python dict object
@@ -577,7 +581,7 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         :return:
         """
         # validate the object structure quickly
-        allowed = ["title", "type", "url", "version"]
+        allowed = ["title", "type", "url", "version", "gold_license"]
         for k in list(obj.keys()):
             if k not in allowed:
                 raise dataobj.DataSchemaException("License object must only contain the following keys: {x}".format(x=", ".join(allowed)))
@@ -586,7 +590,11 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         uc = dataobj.to_unicode()
         for k in allowed:
             if k in obj:
-                obj[k] = self._coerce(obj[k], uc)
+                if k == 'gold_license':
+                    obj['gold_license'] = obj['gold_license'].split(',')
+                    obj['gold_license'] = [self._coerce(v.strip(), self._utf8_unicode()) for v in obj['gold_license'] if v is not None]
+                else:
+                    obj[k] = self._coerce(obj[k], uc)
 
         # finally write it
         self._set_single("license", obj)
@@ -816,7 +824,7 @@ def coerce_account_hash(account_hash):
         'repository': ['repository_name', 'repository_software', 'repository_url', 'repository_bibid', 'repository_sigel'],
         'sword': ['sword_username', 'sword_password', 'sword_collection'],
         'embargo': ['embargo_duration',],
-        'license': ['license_title', 'license_type', 'license_url', 'license_version']
+        'license': ['license_title', 'license_type', 'license_url', 'license_version', 'license_gold_license']
     }
     for parent, props in nested_properties.items():
         parent_hash = account_hash.pop(parent, {})
@@ -828,6 +836,8 @@ def coerce_account_hash(account_hash):
             if label == 'bibid':
                 val = val.upper()
             elif label == 'sigel':
+                val = val.split(',')
+            elif label == 'gold_license':
                 val = val.split(',')
             parent_hash[label] = val
         if parent_hash:

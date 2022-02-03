@@ -629,36 +629,26 @@ def pubinfo(username):
     if current_user.id != acc.id and not current_user.is_super:
         abort(401)
 
-    if 'embargo' not in acc.data:
-        acc.data['embargo'] = {}
-    # 2016-07-12 TD: proper handling of two independent forms using hidden input fields
     if request.values.get('embargo_form', False):
         if request.values.get('embargo_duration', False):
-            acc.data['embargo']['duration'] = request.values['embargo_duration']
+            acc.embargo = {'duration': request.values['embargo_duration']}
         else:
-            acc.data['embargo']['duration'] = 0
+            acc.embargo = {'duration': 0}
 
-    if 'license' not in acc.data:
-        acc.data['license'] = {}
-    # 2016-07-12 TD: proper handling of two independent forms using hidden input fields
+    license_details = {}
     if request.values.get('license_form', False):
         if request.values.get('license_title', False):
-            acc.data['license']['title'] = request.values['license_title']
-        else:
-            acc.data['license']['title'] = ""
+            license_details['title'] = request.values['license_title']
         if request.values.get('license_type', False):
-            acc.data['license']['type'] = request.values['license_type']
-        else:
-            acc.data['license']['type'] = ""
+            license_details['type'] = request.values['license_type']
         if request.values.get('license_url', False):
-            acc.data['license']['url'] = request.values['license_url']
-        else:
-            acc.data['license']['url'] = ""
+            license_details['url'] = request.values['license_url']
         if request.values.get('license_version', False):
-            acc.data['license']['version'] = request.values['license_version']
-        else:
-            acc.data['license']['version'] = ""
-
+            license_details['version'] = request.values['license_version']
+        if request.values.get('license_gold_license', False):
+            license_details['gold_license'] = request.values['license_gold_license']
+    if license_details:
+        acc.license = license_details
     acc.save()
     time.sleep(2)
     flash('Thank you. Your publisher details have been updated.', "success")
