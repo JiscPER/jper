@@ -41,6 +41,7 @@ class UnauthorisedException(Exception):
     """
     pass
 
+
 class JPER(object):
     """
     Main Python API for interacting with the JPER system
@@ -366,8 +367,8 @@ class JPER(object):
                 if link.get('proxy',False) == pid:
                     lurl = link['url']
             return lurl
-        
-            
+
+
     @classmethod
     def get_public_url(cls, account, notification_id, content_id):
         urn = models.UnroutedNotification.pull(notification_id)
@@ -382,8 +383,8 @@ class JPER(object):
 
     @classmethod
     def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None, provider=False):
-    # def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
-    # 2016-09-07 TD : trial to make some publisher's reporting available
+        # def list_notifications(cls, account, since, page=None, page_size=None, repository_id=None):
+        # 2016-09-07 TD : trial to make some publisher's reporting available
         """
         List notification which meet the criteria specified by the parameters
 
@@ -426,7 +427,7 @@ class JPER(object):
             "from": (page - 1) * page_size,
             "size": page_size
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -441,7 +442,16 @@ class JPER(object):
             types = 'routed20*'
         res = models.RoutedNotification.query(q=qr, types=types)
         app.logger.debug('List notifications query resulted ' + json.dumps(res))
-        nl.notifications = [models.RoutedNotification(i['_source']).make_outgoing(provider=provider).data for i in res.get('hits',{}).get('hits',[])]
+        nl.notifications = []
+        for note in res.get('hits',{}).get('hits',[]):
+            data = models.RoutedNotification(note['_source']).make_outgoing(provider=provider).data
+            deposit_count, deposit_date, deposit_status = JperHelper().get_deposit_record(data['id'], repository_id, 1)
+            if deposit_count > 0:
+                data['deposit_count'] = deposit_count
+                data['deposit_date'] = deposit_date
+                data['deposit_status'] = deposit_status
+            data['request_status'] = JperHelper().get_request_status(data['id'], repository_id, 1)
+            nl.notifications.append(data)
         nl.total = res.get('hits',{}).get('total',{}).get('value', 0)
         return nl
 
@@ -492,7 +502,7 @@ class JPER(object):
             "from": (page - 1) * page_size,
             "size": page_size
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -559,7 +569,7 @@ class JPER(object):
             "from": (page - 1) * page_size,
             "size": page_size
         }
-        
+
         if provider_id is not None:
             qr['query']['bool']["must"] = {"match": {"provider.id.exact": provider_id}}
 
@@ -576,7 +586,7 @@ class JPER(object):
 
     @classmethod
     def bulk_notifications(cls, account, since, repository_id=None, provider=False):
-    # 2016-09-07 TD : trial to make some publisher's reporting available
+        # 2016-09-07 TD : trial to make some publisher's reporting available
         """
         Bulk list notification which meet the criteria specified by the parameters
 
@@ -607,12 +617,8 @@ class JPER(object):
                 }
             },
             "sort": [{"created_date":{"order":"desc"}}],
-            ## "sort": [{"analysis_date":{"order":"desc"}}],
-            ## 2018-03-07 TD : change of sort key to 'created_date', but still newest first
-            # "sort": [{"analysis_date":{"order":"asc"}}],
-            # 2016-09-06 TD : change of sort order newest first
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -629,7 +635,13 @@ class JPER(object):
         if models.RoutedNotification.__conn__.index_per_type:
             types = 'routed20*'
         for rn in models.RoutedNotification.iterate(q=qr, types=types):
-            nl.notifications.append(rn.make_outgoing(provider=provider).data)
+            data = rn.make_outgoing(provider=provider).data
+            deposit_count, deposit_date, deposit_status = JperHelper().get_deposit_record(data['id'], repository_id, 1)
+            if deposit_count > 0:
+                data['deposit_count'] = deposit_count
+                data['deposit_date'] = deposit_date
+                data['deposit_status'] = deposit_status
+            nl.notifications.append(data)
         nl.total = len(nl.notifications)
         return nl
 
@@ -669,7 +681,7 @@ class JPER(object):
             "sort": [{"created_date":{"order":"desc"}}],
             # 2016-09-06 TD : change of sort order newest first
         }
-        
+
         if repository_id is not None:
             # 2016-09-07 TD : trial to filter for publisher's reporting
             if provider:
@@ -722,7 +734,7 @@ class JPER(object):
             },
             "sort": [{"created_date":{"order":"desc"}}],
         }
-        
+
         if provider_id is not None:
             qr['query']['bool']["must"] = {"match": {"provider.id.exact": provider_id}}
 
@@ -736,3 +748,25 @@ class JPER(object):
         fnl.total = len(fnl.failed)
         return fnl
 
+
+class JperHelper:
+
+    @classmethod
+    def get_deposit_record(self, notification_id, account_id, size=1):
+        dr = models.DepositRecord().pull_by_ids_raw(notification_id, account_id, size)
+        deposit_count = dr.get('hits',{}).get('total',{}).get('value', 0)
+        deposit_date = None
+        deposit_status = None
+        if deposit_count > 0:
+            dr_info = dr.get('hits', {}).get('hits', {})[0].get('_source', {})
+            deposit_date = dr_info.get('deposit_date', '')
+            deposit_status = dr_info.get('completed_status', '')
+        return deposit_count, deposit_date, deposit_status
+
+    @classmethod
+    def get_request_status(self, notification_id, account_id, size=1):
+        rn = models.RequestNotification().pull_by_ids(notification_id, account_id, size)
+        status = None
+        if rn is not None:
+            status = rn.status
+        return status

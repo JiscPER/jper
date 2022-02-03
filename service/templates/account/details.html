@@ -1,74 +1,130 @@
 {% extends "base.html" %} {% block content %}
 <div class="row">
 	<div class="col span-12">
-		<div class="cms">
+		<div class="cms" id="form_alert">
 			<h1>Routed Notification History</h1>
 		</div>
-		<div class="row">
-		<form class="form" action="" method="GET">
-			<div class="col span-6">
+    </div></div>
+    <div class="row">
+        <div class="col span-12">
+            <form class="form" action="" method="GET">
+                <div class="col span-6">
 
-				<ul class="form-fields">
-					<li class="form-fields__item--text"><label> <span
-							class="form-fields__label-text">Show notification until:</span> <input type="text"
-							name="since" value="{{date}}">
-					</label>
-					<button class="btn btn--3d btn--primary move-up" type="submit">Send</button>
-					</li>
-				</ul>
+                    <ul class="form-fields">
+                        <li class="form-fields__item--text"><label> <span
+                                class="form-fields__label-text">Show notification until:</span> <input type="text"
+                                name="since" value="{{date}}">
+                        </label>
+                        <button class="btn btn--3d btn--primary move-up" type="submit">Send</button>
+                        </li>
+                    </ul>
 
 
-			</div>
-			<div class="col span-5">
-			</div>
-		</form>
-		</div>
+                </div>
+                <div class="col span-5">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
 		<div class="col span-12">{% from
 			"harvester/helpers/pagination.html" import render_pagination%} {{
 			render_pagination(num_of_pages,page_num,link) }}</div>
-		<table id="dataAOTable" class="tablesorter-green">
-            <thead>
-                <tr>
-                    <th class="sorter-iso8601date">Send Date</th>
-                    <th>DOI</th>
-                    <th>Publisher</th>
-                    <th class="sorter-iso8601date">Publication date</th>
-                    <th>Embargo</th>
-                    <th>Title</th>
-                    <th class="sorter-iso8601date">Analysis Date</th>
-                </tr>
-            </thead>
-            {%  for notification in results[1:] %}
-                {#  First row of results is header. So getting notifications from 2nd row #}
-                {#  First column is id #}
-                {% set n_id = notification['id'] %}
-                <tr class="tablesorter-hasChildRow">
-                    <td><a href="#" class="toggle">
-                        {{"<br>".join(notification['send_date']) | safe }}
-                        </a></td>
-                    <td>{{"<br>".join(notification['doi']) | safe }}</td>
-                    <td>{{"<br>".join(notification['publisher']) | safe }}</td>
-                    <td>{{"<br>".join(notification['publication_date']) | safe }}</td>
-                    {% if notification['embargo'][0] > 0 %}
-                        <td>{{notification['embargo'][0] }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    <td>{{"<br>".join(notification['title']) | safe }}</td>
-                    <td>{{"<br>".join(notification['analysis_date']) | safe }}</td>
-                </tr>
-                <tr class="tablesorter-childRow collapse" >
-                    <td colspan="7">
-                        <div class="col span-1 expand" data="{{ n_id }}">
-                            <span class="down-arrow"></span>
-                        </div>
-                        <div class="col span-1 collapse" data="{{ n_id }}">
-                            <span class="up-arrow"></span>
-                        </div>
-                        <div class="col span-12" id="{{ n_id }}"></div>
-                </td></tr>
-            {% endfor %}
-		</table>
+    </div>
+
+    <div class="row">
+        <div class="col span-12">
+            <div class="col span-6">
+                <ul class="form-fields">
+                    <li class="form-fields__item--text">
+                        <label>
+                            <span>Select notifications for deposit:</span>
+                        </label>
+                        <button class="btn btn--3d btn--primary move-up" id="select_all_notifications">Select all on this page</button>
+                    </li>
+                </ul>
+                <form class="form" action="/account/{{repo_id}}/request_deposit" method="POST" id="form_request_deposits">
+                    <input type="hidden" name="notification_ids" value=""/>
+                    <ul class="form-fields">
+                        <li class="form-fields__item--text">
+                            <label>
+                                <span>Deposit selected notifications:</span>
+                            </label>
+                            <button class="btn btn--3d btn--primary move-up" type="submit">Deposit</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col span-12">
+            <table id="dataAOTable" class="tablesorter-green">
+                <thead>
+                    <tr>
+                        <th>Select to deposit</th>
+                        <th class="sorter-iso8601date">Send Date</th>
+                        <th>DOI</th>
+                        <th>Publisher</th>
+                        <th class="sorter-iso8601date">Publication date</th>
+                        <th>Embargo</th>
+                        <th>Title</th>
+                        <th class="sorter-iso8601date">Analysis Date</th>
+                        <th>Deposit details</th>
+                    </tr>
+                </thead>
+                {%  for notification in results[1:] %}
+                    {#  First row of results is header. So getting notifications from 2nd row #}
+                    {#  First column is id #}
+                    {% set n_id = notification['id'] %}
+                    <tr class="tablesorter-hasChildRow">
+                        <td>
+                            <input type="checkbox" id="request_{{notification['id']}}" value="{{notification['id']}}" name='request_notification' class="request_notification_checkbox">
+                        </td>
+                        <td><a href="#" class="toggle">
+                            {{"<br>".join(notification['send_date']) | safe }}
+                            </a></td>
+                        <td>{{"<br>".join(notification['doi']) | safe }}</td>
+                        <td>{{"<br>".join(notification['publisher']) | safe }}</td>
+                        <td>{{"<br>".join(notification['publication_date']) | safe }}</td>
+                        {% if notification['embargo'][0] > 0 %}
+                            <td>{{notification['embargo'][0] }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        <td>{{"<br>".join(notification['title']) | safe }}</td>
+                        <td>{{"<br>".join(notification['analysis_date']) | safe }}</td>
+                        <td>
+                            {% if notification['deposit_count'][0] > 0 %}
+                                {% if notification['deposit_count'][0] > 1 %}
+                                    Number of deposit attempts: {{ notification['deposit_count'][0] | safe }} <br>
+                                {%  endif %}
+                                Date of deposit: {{ notification['deposit_date'][0] | safe }} <br>
+                                Status: {{ notification['deposit_status'][0] | safe }} <br>
+                            {% endif %}
+                            {%  if (not notification.get('request_status')[0]) or (notification['request_status'][0] and notification['deposit_status'][0] != 'queued') %}
+                                <br>
+                                <form method="POST" action="/account/{{repo_id}}/request_deposit" class="form_request_a_deposit">
+                                    <input type="hidden" value="" name='notification_ids' data-nid="{{notification['id']}}">
+                                    <button class="btn btn--3d btn--primary move-up" type="submit">Request deposit</button>
+                                </form>
+                            {%  endif %}
+                        </td>
+                    </tr>
+                    <tr class="tablesorter-childRow collapse" >
+                        <td colspan="9">
+                            <div class="col span-1 expand" data="{{ n_id }}">
+                                <span class="down-arrow"></span>
+                            </div>
+                            <div class="col span-1 collapse" data="{{ n_id }}">
+                                <span class="up-arrow"></span>
+                            </div>
+                            <div class="col span-14" id="{{ n_id }}"></div>
+                    </td></tr>
+                {% endfor %}
+            </table>
 		{% from "harvester/helpers/pagination.html" import render_pagination%}
 		{{ render_pagination(num_of_pages,page_num,link) }}
 
@@ -110,6 +166,68 @@
 
         return false;
     });
+
+    // on page load, ensure button text reflects checkbox state
+    function toggle_button_text() {
+        if ($(".request_notification_checkbox").is(':checked')) {
+            $('#select_all_notifications').text("Remove selection from this page");
+        } else {
+            $('#select_all_notifications').text("Select all on this page");
+        }
+    }
+    toggle_button_text();
+
+    $('#select_all_notifications').on('click', function() {
+        if ($(".request_notification_checkbox").is(':checked')) {
+            // uncheck all
+            $(".request_notification_checkbox").prop('checked', false);
+            $( this ).text("Select all on this page");
+        } else {
+            $(".request_notification_checkbox").prop('checked', true);
+            $( this ).text("Remove selection from this page");
+        }
+    });
+
+    function _submit_notifications_for_deposit(formobj, ids) {
+        formobj.find("input[name='notification_ids']").val(JSON.stringify(ids));
+        let actionUrl = formobj.attr('action');
+        console.log(actionUrl);
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: formobj.serialize(), // serializes the form's elements.
+            success: function(data)
+            {
+                let msg = '<article class="box box--padding-large box--success fade in" data-alert="alert">' + data + '</article>';
+                console.log(msg);
+                $('#form_alert').append(msg);
+            }
+        });
+    }
+
+    $('#form_request_deposits').on('submit', function(event) {
+        event.preventDefault();
+        // gather all of the ids
+        let ids = [];
+        $(".request_notification_checkbox:checked").each(function(){
+            ids.push($(this).val());
+        });
+        let formobj = $(this);
+        _submit_notifications_for_deposit(formobj, ids)
+    });
+
+    $('.form_request_a_deposit').on('submit', function(event) {
+        event.preventDefault();
+        // gather all of the ids
+        let ids = [];
+        let formobj = $(this);
+        let ele = formobj.find("input[name='notification_ids']")
+        let data = ele.data( "nid" );
+        ids.push(data);
+        _submit_notifications_for_deposit(formobj, ids)
+    });
+
 
 </script>
 {% endblock %}

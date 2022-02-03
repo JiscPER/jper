@@ -179,18 +179,33 @@ class DepositRecordDAO(dao.ESDAO):
     __type__ = "sword_deposit_record"
 
     @classmethod
-    def pull_by_ids(cls, notification_id, repository_id):
+    def pull_by_ids(cls, notification_id, repository_id, size=None):
         """
         Get exactly one deposit record back associated with the notification_id and the repository_id
 
         :param notification_id:
         :param repository_id:
+        :param size:
         :return:
         """
-        q = DepositRecordQuery(notification_id, repository_id)
+        q = DepositRecordQuery(notification_id, repository_id, size)
         obs = cls.object_query(q=q.query())
         if len(obs) > 0:
             return obs[0]
+
+    @classmethod
+    def pull_by_ids_raw(cls, notification_id, repository_id, size=None):
+        """
+        Get exactly one deposit record back associated with the notification_id and the repository_id
+
+        :param notification_id:
+        :param repository_id:
+        :param size:
+        :return:
+        """
+        q = DepositRecordQuery(notification_id, repository_id, size)
+        obs = cls.query(q=q.query())
+        return obs
 
 
 class DepositRecordQuery(object):
@@ -198,9 +213,10 @@ class DepositRecordQuery(object):
     Query generator for retrieving deposit records by notification id and repository id
     """
 
-    def __init__(self, notification_id, repository_id):
+    def __init__(self, notification_id, repository_id, size=None):
         self.notification_id = notification_id
         self.repository_id = repository_id
+        self.size = size
 
     def query(self):
         """
@@ -208,7 +224,7 @@ class DepositRecordQuery(object):
 
         :return: elasticsearch query
         """
-        return {
+        q = {
             "query": {
                 "bool": {
                     "must": [
@@ -223,6 +239,114 @@ class DepositRecordQuery(object):
             },
             "sort": {"last_updated": {"order": "desc"}}
         }
+        if self.size:
+            q['size'] = self.size
+        return q
+
+
+class RequestNotification(dao.ESDAO):
+    """
+    DAO for RequestNotification
+    """
+
+    __type__ = 'request'
+    """ The index type to use to store these objects """
+
+    @classmethod
+    def pull_by_ids(cls, notification_id, repository_id, status=None, size=None):
+        """
+        Get exactly one deposit record back associated with the notification_id and the repository_id, with a particular status
+
+        :param notification_id:
+        :param repository_id:
+        :param status:
+        :param size:
+        :return:
+        """
+        q = RequestNotificationQuery(notification_id, repository_id, status, size)
+        obs = cls.object_query(q=q.query())
+        if len(obs) > 0:
+            return obs[0]
+
+    @classmethod
+    def pull_by_status(cls, status, size=None):
+        """
+        Get exactly one deposit record back associated with the notification_id and the repository_id
+
+        :param status:
+        :param size:
+        :return:
+        """
+        q = RequestNotificationStatusQuery(status, size)
+        obs = cls.object_query(q=q.query())
+        if len(obs) > 0:
+            return obs
+
+
+class RequestNotificationQuery(object):
+    """
+    Query generator for retrieving deposit records by notification id and repository id
+    """
+
+    def __init__(self, notification_id, repository_id, status=None, size=None):
+        self.notification_id = notification_id
+        self.repository_id = repository_id
+        self.status = status
+        self.size = size
+
+    def query(self):
+        """
+        Return the query as a python dict suitable for json serialisation
+
+        :return: elasticsearch query
+        """
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"account_id.exact": self.repository_id}},
+                        {"term": {"notification_id.exact": self.notification_id}}
+                    ]
+                }
+            },
+            "sort": {"last_updated": {"order": "desc"}}
+        }
+        if self.status:
+            q["query"]["bool"]["must"].append({"term": {"status.exact": self.status}})
+        if self.size:
+            q['size'] = self.size
+        return q
+
+
+class RequestNotificationStatusQuery(object):
+    """
+    Query generator for retrieving deposit records by notification id and repository id
+    """
+
+    def __init__(self, status, size=None):
+        self.status = status
+        self.size = size
+
+    def query(self):
+        """
+        Return the query as a python dict suitable for json serialisation
+
+        :return: elasticsearch query
+        """
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"status.exact": self.status}}
+                    ]
+                }
+            },
+            "sort": {"last_updated": {"order": "desc"}}
+        }
+        if self.size:
+            q['size'] = self.size
+        return q
+
 
 
 class SwordAccountQuery(object):
