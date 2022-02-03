@@ -253,19 +253,34 @@ class RequestNotification(dao.ESDAO):
     """ The index type to use to store these objects """
 
     @classmethod
-    def pull_by_ids(cls, notification_id, repository_id, size=None):
+    def pull_by_ids(cls, notification_id, repository_id, status=None, size=None):
         """
-        Get exactly one deposit record back associated with the notification_id and the repository_id
+        Get exactly one deposit record back associated with the notification_id and the repository_id, with a particular status
 
         :param notification_id:
         :param repository_id:
+        :param status:
         :param size:
         :return:
         """
-        q = RequestNotificationQuery(notification_id, repository_id, size)
+        q = RequestNotificationQuery(notification_id, repository_id, status, size)
         obs = cls.object_query(q=q.query())
         if len(obs) > 0:
             return obs[0]
+
+    @classmethod
+    def pull_by_status(cls, status, size=None):
+        """
+        Get exactly one deposit record back associated with the notification_id and the repository_id
+
+        :param status:
+        :param size:
+        :return:
+        """
+        q = RequestNotificationStatusQuery(status, size)
+        obs = cls.object_query(q=q.query())
+        if len(obs) > 0:
+            return obs
 
 
 class RequestNotificationQuery(object):
@@ -273,9 +288,10 @@ class RequestNotificationQuery(object):
     Query generator for retrieving deposit records by notification id and repository id
     """
 
-    def __init__(self, notification_id, repository_id, size=None):
+    def __init__(self, notification_id, repository_id, status=None, size=None):
         self.notification_id = notification_id
         self.repository_id = repository_id
+        self.status = status
         self.size = size
 
     def query(self):
@@ -288,12 +304,40 @@ class RequestNotificationQuery(object):
             "query": {
                 "bool": {
                     "must": [
-                        # {"term" : {"repository.exact" : self.repository_id}},
-                        # 2018-03-07 TD : as of fix 2016-08-26 in models/sword.py
-                        #                 this has to match 'repo.exact' instead!
-                        #                 What a bug, good grief!
                         {"term": {"account_id.exact": self.repository_id}},
                         {"term": {"notification_id.exact": self.notification_id}}
+                    ]
+                }
+            },
+            "sort": {"last_updated": {"order": "desc"}}
+        }
+        if self.status:
+            q["query"]["bool"]["must"].append({"term": {"status.exact": self.status}})
+        if self.size:
+            q['size'] = self.size
+        return q
+
+
+class RequestNotificationStatusQuery(object):
+    """
+    Query generator for retrieving deposit records by notification id and repository id
+    """
+
+    def __init__(self, status, size=None):
+        self.status = status
+        self.size = size
+
+    def query(self):
+        """
+        Return the query as a python dict suitable for json serialisation
+
+        :return: elasticsearch query
+        """
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"status.exact": self.status}}
                     ]
                 }
             },
@@ -302,6 +346,7 @@ class RequestNotificationQuery(object):
         if self.size:
             q['size'] = self.size
         return q
+
 
 
 class SwordAccountQuery(object):

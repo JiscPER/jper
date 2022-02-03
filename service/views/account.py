@@ -417,7 +417,7 @@ def details(repo_id):
         return render_template('account/matching.html', repo=data, tabl=[json.dumps(mtable)],
                                num_of_pages=num_of_pages, page_num=page_num, link=link, date=date)
     return render_template('account/details.html', repo=data, results=data_to_display,
-                           num_of_pages=num_of_pages, page_num=page_num, link=link, date=date)
+                           num_of_pages=num_of_pages, page_num=page_num, link=link, date=date, repo_id=repo_id)
 
 
 # 2016-10-19 TD : restructure matching and(!!) failing history output (primarily for publishers) -- start --
@@ -887,7 +887,7 @@ def excluded_license(username):
     return redirect(url_for('.username', username=username))
 
 
-@blueprint.route('/<username>/request', methods=["POST"])
+@blueprint.route('/<username>/request_deposit', methods=["POST"])
 def resend_notification(username):
     if current_user.id != username and not current_user.is_super:
         abort(401)
@@ -898,19 +898,24 @@ def resend_notification(username):
     # 1. Use bulk api to create notification records
     # 2. Get the url to return the user to
     # 3. If all notifications to be resent, get from and to date and redo the query?
-    notification_ids = request.form.getlist('notification_ids')
-    return_path = request.values['return_path']
-    # notification_id = request.values['notification_id']
-    print(notification_ids)
-    print(return_path)
+    notification_ids = json.loads(request.form.get('notification_ids'))
+    count = 0
+    duplicate = 0
     for n_id in list(notification_ids):
-        rec = models.RequestNotification()
-        rec.account_id = username
-        rec.notification_id = n_id
-        rec.status = 'queued'
-        rec.save()
-        time.sleep(1)
-    return redirect(url_for('.username', username=username))
+        rec = models.RequestNotification.pull_by_ids(n_id, username, status='queued', size=1)
+        if not rec:
+            rec = models.RequestNotification()
+            rec.account_id = username
+            rec.notification_id = n_id
+            rec.status = 'queued'
+            rec.save()
+            count += 1
+        else:
+            duplicate += 1
+    msg = "Queued {n} notifications for deposit".format(n=count)
+    if duplicate > 0:
+        msg = msg + '<br>' + '{n} notifications are already waiting in queue'.format(n=duplicate)
+    return msg, 201
 
 
 @blueprint.route('/login', methods=['GET', 'POST'])

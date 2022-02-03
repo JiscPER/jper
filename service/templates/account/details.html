@@ -1,11 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <div class="row">
 	<div class="col span-12">
-		<div class="cms">
+		<div class="cms" id="form_alert">
 			<h1>Routed Notification History</h1>
 		</div>
     </div></div>
-
     <div class="row">
         <div class="col span-12">
             <form class="form" action="" method="GET">
@@ -37,17 +36,16 @@
     <div class="row">
         <div class="col span-12">
             <div class="col span-6">
-                <form class="form" action="" method="GET">
-                    <ul class="form-fields">
-                        <li class="form-fields__item--text">
-                            <label>
-                                <span>Select notifications for deposit:</span>
-                            </label>
-                            <button class="btn btn--3d btn--primary move-up" type="submit">Select all</button>
-                        </li>
-                    </ul>
-                </form>
-                <form class="form" action="" method="POST">
+                <ul class="form-fields">
+                    <li class="form-fields__item--text">
+                        <label>
+                            <span>Select notifications for deposit:</span>
+                        </label>
+                        <button class="btn btn--3d btn--primary move-up" id="select_all_notifications">Select all on this page</button>
+                    </li>
+                </ul>
+                <form class="form" action="/account/{{repo_id}}/request_deposit" method="POST" id="form_request_deposits">
+                    <input type="hidden" name="notification_ids" value=""/>
                     <ul class="form-fields">
                         <li class="form-fields__item--text">
                             <label>
@@ -57,6 +55,7 @@
                         </li>
                     </ul>
                 </form>
+            </div>
         </div>
     </div>
 
@@ -82,7 +81,7 @@
                     {% set n_id = notification['id'] %}
                     <tr class="tablesorter-hasChildRow">
                         <td>
-                            <input type="checkbox" id="request_{{notification['id']}}" value="{{notification['id']}}" name='request_notification'>
+                            <input type="checkbox" id="request_{{notification['id']}}" value="{{notification['id']}}" name='request_notification' class="request_notification_checkbox">
                         </td>
                         <td><a href="#" class="toggle">
                             {{"<br>".join(notification['send_date']) | safe }}
@@ -107,9 +106,8 @@
                             {% endif %}
                             {%  if (not notification.get('request_status')[0]) or (notification['request_status'][0] and notification['deposit_status'][0] != 'queued') %}
                                 <br>
-                                <form method="POST" action="/account/{{current_user.id}}/request" enctype="multipart/form-data">
-                                    <input type="hidden" value="{{notification['id'][0]}}" name='notification_ids'>
-                                    <input type="hidden" value="{{ url_for(request.endpoint, **request.view_args) }}" name='return_path'>
+                                <form method="POST" action="/account/{{repo_id}}/request_deposit" class="form_request_a_deposit">
+                                    <input type="hidden" value="" name='notification_ids' data-nid="{{notification['id']}}">
                                     <button class="btn btn--3d btn--primary move-up" type="submit">Request deposit</button>
                                 </form>
                             {%  endif %}
@@ -168,6 +166,68 @@
 
         return false;
     });
+
+    // on page load, ensure button text reflects checkbox state
+    function toggle_button_text() {
+        if ($(".request_notification_checkbox").is(':checked')) {
+            $('#select_all_notifications').text("Remove selection from this page");
+        } else {
+            $('#select_all_notifications').text("Select all on this page");
+        }
+    }
+    toggle_button_text();
+
+    $('#select_all_notifications').on('click', function() {
+        if ($(".request_notification_checkbox").is(':checked')) {
+            // uncheck all
+            $(".request_notification_checkbox").prop('checked', false);
+            $( this ).text("Select all on this page");
+        } else {
+            $(".request_notification_checkbox").prop('checked', true);
+            $( this ).text("Remove selection from this page");
+        }
+    });
+
+    function _submit_notifications_for_deposit(formobj, ids) {
+        formobj.find("input[name='notification_ids']").val(JSON.stringify(ids));
+        let actionUrl = formobj.attr('action');
+        console.log(actionUrl);
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: formobj.serialize(), // serializes the form's elements.
+            success: function(data)
+            {
+                let msg = '<article class="box box--padding-large box--success fade in" data-alert="alert">' + data + '</article>';
+                console.log(msg);
+                $('#form_alert').append(msg);
+            }
+        });
+    }
+
+    $('#form_request_deposits').on('submit', function(event) {
+        event.preventDefault();
+        // gather all of the ids
+        let ids = [];
+        $(".request_notification_checkbox:checked").each(function(){
+            ids.push($(this).val());
+        });
+        let formobj = $(this);
+        _submit_notifications_for_deposit(formobj, ids)
+    });
+
+    $('.form_request_a_deposit').on('submit', function(event) {
+        event.preventDefault();
+        // gather all of the ids
+        let ids = [];
+        let formobj = $(this);
+        let ele = formobj.find("input[name='notification_ids']")
+        let data = ele.data( "nid" );
+        ids.push(data);
+        _submit_notifications_for_deposit(formobj, ids)
+    });
+
 
 </script>
 {% endblock %}
