@@ -41,6 +41,7 @@ class UnauthorisedException(Exception):
     """
     pass
 
+
 class JPER(object):
     """
     Main Python API for interacting with the JPER system
@@ -190,29 +191,25 @@ class JPER(object):
         # add a check for default embargo if the account has a non-zero value set for it
         # incoming notification structure is demonstrated in the account model and also documented at:
         # https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md
-        if 'embargo' in account.data:
-            if 'duration' in account.data['embargo']:
-                if 'embargo' not in notification: notification['embargo'] = {}
-                if 'duration' not in notification['embargo']: notification['embargo']['duration'] = account.data['embargo']['duration']
+        if notification.get('embargo', {}).get('duration', None) is None:
+            if account.data.get('embargo, {}').get('duration', None) is not None:
+                notification['embargo'] = {'duration': account.data['embargo']['duration']}
 
         # add a check for default license if the account has a non-null value set for it
         # incoming notification structure is demonstrated in the account model and also documented at:
         # https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md
-        if 'license' in account.data:
-            if 'title' in account.data['license']:
-                # 2016-06-28 TD : additional safety check for bare-minimum JSON notification
-                if 'metadata' not in notification: notification['metadata'] = {}
-                if 'license_ref' not in notification['metadata']: 
-                    notification['metadata']['license_ref'] = {}
-                    # 2016-10-24 TD : bug fix!
-                    # if 'title' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['title'] = account.data['license']['title']
-                    # if 'type' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['type'] = account.data['license']['type']
-                    # if 'url' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['url'] = account.data['license']['url']
-                    # if 'version' not in notification['metadata']['license_ref']: notification['metadata']['license_ref']['version'] = account.data['license']['version']
-                    if 'title' in account.data['license']: notification['metadata']['license_ref']['title'] = account.data['license']['title']
-                    if 'type' in account.data['license']: notification['metadata']['license_ref']['type'] = account.data['license']['type']
-                    if 'url' in account.data['license']: notification['metadata']['license_ref']['url'] = account.data['license']['url']
-                    if 'version' in account.data['license']: notification['metadata']['license_ref']['version'] = account.data['license']['version']
+        if 'metadata' not in notification:
+            notification['metadata'] = {}
+        if 'license_ref' not in notification['metadata']:
+            notification['metadata']['license_ref'] = {}
+        if not notification['metadata']['license_ref'].get('title', None) and account.data.get('license', {}).get('title', None):
+            notification['metadata']['license_ref']['title'] = account.data['license']['title']
+        if not notification['metadata']['license_ref'].get('type', None) and account.data.get('license', {}).get('type', None):
+            notification['metadata']['license_ref']['type'] = account.data['license']['type']
+        if not notification['metadata']['license_ref'].get('url', None) and account.data.get('license', {}).get('url', None):
+            notification['metadata']['license_ref']['url'] = account.data['license']['url']
+        if not notification['metadata']['license_ref'].get('version', None) and account.data.get('license', {}).get('version', None):
+            notification['metadata']['license_ref']['version'] = account.data['license']['version']
 
         # attempt to serialise the record
         try:

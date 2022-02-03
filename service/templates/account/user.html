@@ -102,6 +102,12 @@
 				       		<input type="text" name="license_version" class="form-control"	value="{{account.data.get('license',{}).get('version','')}}">
 				   		
 				   	</li>
+                    <li class="form-fields__item--text">
+                        <span class="form-fields__label-text">Gold license</span>
+                        <input type="text" class="form-control" name="license_gold_license"
+                               placeholder="(comma separated)"
+                               value="{{','.join(account.data.get('license',{}).get('gold_license',[]))}}" />
+                    </li>
 			   	</ul>
 				
 				<button class="btn btn--3d" id="update_license" type="submit">Update license</button>

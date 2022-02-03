@@ -107,6 +107,8 @@ def _route(unrouted):
 
     part_bibids = []
 
+    gold_article_license = _is_article_license_gold(metadata, unrouted.provider_id)
+
     for issn in issn_data:
         # are there licenses stored for this ISSN?
         # 2016-10-12 TD : an ISSN could appear in more than one license !
@@ -120,12 +122,12 @@ def _route(unrouted):
             lic_data = get_current_license_data(lic, publ_year, issn, doi)
             if len(lic_data) == 0:
                 continue
-            if lic.type == "gold":
+            if lic.type == "gold" or (lic.type == "hybrid" and gold_article_license):
                 for bibid in bibids:
                     # All repositories except subject repositories get publications with gold license
                     if bibid not in subject_repo_bibids:
                         part_bibids.append((bibid, lic_data[0]))
-            if lic.type == "alliance" or lic.type == "national" or lic.type == "deal" or lic.type == "fid":
+            elif lic.type in ["alliance", "national", "deal", "fid", "hybrid"]:
                 al = models.Alliance.pull_by_key("license_id", lic.id)
                 if al:
                     # collect all EZB-Ids of participating institutions of AL
@@ -926,6 +928,20 @@ def _normalise(s):
     #                 all sorts of diacritical signs
     s = unicodedata.normalize('NFD', s)
     return s
+
+
+def _is_article_license_gold(metadata, provider_id):
+    # ToDo - read article license
+    if metadata.license:
+        license_typ = metadata.license.get('type', None)
+        license_url = metadata.license.get('url', None)
+        provider = models.Account.get(provider_id)
+        gold_license = []
+        if provider.license and provider.license.get('gold_license', []):
+            gold_license = provider.license.get('gold_license')
+        if license_typ in gold_license or license_url in gold_license:
+            return True
+    return False
 
 
 def has_match_all(acc_id):
