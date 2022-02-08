@@ -25,7 +25,7 @@ from service.models.api import NotificationList, IncomingNotification, OutgoingN
 from service.models.api import MatchProvenanceList, FailedNotificationList
 from service.models.account import Account
 from service.models.contentlog import ContentLog
-from service.models.ezb import Alliance, License, FileHistory
+from service.models.ezb import Alliance, License, LicRelatedFile
 from service.models.xslt import XSLT
 from service.models.sword import RepositoryStatus, DepositRecord, RepositoryDepositLog
 from service.models.requestnotification import RequestNotification

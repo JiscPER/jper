@@ -147,12 +147,12 @@ class AccountDAO(dao.ESDAO):
     """ The index type to use to store these objects """
 
 
-class FileHistoryDAO(dao.ESDAO):
+class LicRelatedFileDAO(dao.ESDAO):
     """
-    DAO for FileHistory
+    DAO for LicRelatedFile
     """
 
-    __type__ = "file_history"
+    __type__ = "lic_related_file"
     """ The index type to use to store these objects """
 
 

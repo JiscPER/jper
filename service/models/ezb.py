@@ -744,7 +744,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
             return False
 
 
-class FileHistory(dataobj.DataObj, dao.FileHistoryDAO):
+class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
 
     def __init__(self, raw=None):
         struct = {
@@ -767,4 +767,4 @@ class FileHistory(dataobj.DataObj, dao.FileHistoryDAO):
         }
 
         self._add_struct(struct)
-        super(FileHistory, self).__init__(raw=raw)
+        super(LicRelatedFile, self).__init__(raw=raw)
