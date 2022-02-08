@@ -742,3 +742,29 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         else:
             app.logger.error("Could not save any data for license: {x}".format(x=ezbid))
             return False
+
+
+class FileHistory(dataobj.DataObj, dao.FileHistoryDAO):
+
+    def __init__(self, raw=None):
+        struct = {
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "file_name": {"coerce": "unicode"},
+                "type": {"coerce": "unicode",
+                         "allowed_values": ['license', "alliance", "national", "open", "gold", "deal", "fid"]},
+                "ezb_id": {"coerce": "unicode"},
+                "status": {"coerce": "unicode", "allowed_values": [
+                    "validation failed", "validation passed",
+                    "active", "archived",
+                ]},
+                "admin_notes": {"coerce": "unicode"},
+                "validation_notes": {"coerce": "unicode"},
+                "created_date": {"coerce": "utcdatetime"},
+                "last_updated": {"coerce": "utcdatetime"},
+                "record_id": {"coerce": "unicode"},
+            },
+        }
+
+        self._add_struct(struct)
+        super(FileHistory, self).__init__(raw=raw)

@@ -147,6 +147,15 @@ class AccountDAO(dao.ESDAO):
     """ The index type to use to store these objects """
 
 
+class FileHistoryDAO(dao.ESDAO):
+    """
+    DAO for FileHistory
+    """
+
+    __type__ = "file_history"
+    """ The index type to use to store these objects """
+
+
 class AllianceDAO(dao.ESDAO):
     """
     DAO for Alliance (DeepGreen add-on)
@@ -348,7 +357,6 @@ class RequestNotificationStatusQuery(object):
         return q
 
 
-
 class SwordAccountQuery(object):
     """
     Query generator for accounts which have sword activated
@@ -416,7 +424,7 @@ class RepositoryDepositLogDAO(dao.ESDAO):
         """
         q = RepositoryDepositLogQuery()
         obs = cls.query(q=q.get_pagination_records_query(repository_id, page=page,
-                                                                records_per_page=records_per_page))
+                                                         records_per_page=records_per_page))
         return obs
 
     @classmethod
@@ -499,14 +507,14 @@ class RepositoryDepositLogQuery(object):
             "query": {
                 "bool": {
                     "must": {
-                        "term": { "repo.exact": repository_id }
+                        "term": {"repo.exact": repository_id}
                     }
                 }
             },
             "sort": {"last_updated": {"order": "desc"}},
             "size": records_per_page,
             "from": num_from,
-            "fields" : ["id", "last_updated"],
+            "fields": ["id", "last_updated"],
             "_source": False
         }
 
@@ -515,7 +523,7 @@ class RepositoryDepositLogQuery(object):
             "query": {
                 "bool": {
                     "must": [{
-                        "term": { "repo.exact": repo_id }
+                        "term": {"repo.exact": repo_id}
                     }, {
                         "range": {
                             "last_updated": {
@@ -536,7 +544,7 @@ class RepositoryDepositLogQuery(object):
             "query": {
                 "bool": {
                     "must": {
-                        "term": { "repo.exact": repo_id }
+                        "term": {"repo.exact": repo_id}
                     }
                 }
             },
@@ -545,7 +553,7 @@ class RepositoryDepositLogQuery(object):
                     "date_histogram": {
                         "field": "last_updated",
                         "calendar_interval": "day",
-                        "order": { "_key": "desc" },
+                        "order": {"_key": "desc"},
                         "min_doc_count": 1
                     }
                 }
