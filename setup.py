@@ -5,6 +5,7 @@ setup(
     version = '1.0.0-p3',
     packages = find_packages(),
     install_requires = [
+        "openpyxl==3.0.9",
         "werkzeug==1.0.1",
         "Flask==1.1.2",
         "Flask-Login==0.5.0",

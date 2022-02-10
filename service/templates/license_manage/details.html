@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<h1>License File Management</h1>
+
+
+<form id="upload-license-form" method="POST" action="/license-manage/upload-license" enctype="multipart/form-data">
+    <h2>Upload License</h2>
+    <div class="lic_upload">
+        <div>
+            <label for="lic_type">License type:</label>
+            <select name="lic_type" id="lic_type">
+                {% for lic_type in allowed_lic_types %}
+                <option value="{{ lic_type }}">{{ lic_type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="admin_notes">Admin Notes: </label>
+            <textarea name="admin_notes" id="admin_notes"></textarea>
+        </div>
+        <div>
+            <input type="file" name="file" id="upload-btn" class="input--large" />
+        </div>
+        <div>
+            <input type="submit" value="Submit" />
+        </div>
+    </div>
+</form>
+
+
+
+<h2>Current License Files</h2>
+
+
+
+<h2>History</h2>
+
+
+lkajdlkasjdlkasjdklasjdkljslakdas
+
+<style>
+    .lic_upload {
+        /*border: #0a0a0a 1px solid;*/
+        margin: 15px;
+    }
+
+
+</style>
+
+<script>
+
+    // $('#upload-btn').change(() => {
+    //     // KTODO test and handle filename empty
+    //     $('#upload-license-form').submit()
+    // })
+
+
+</script>
+
+
+
+
+{% endblock %}

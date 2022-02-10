@@ -2,10 +2,13 @@
 Model objects used to represent interactions with ezb items
 """
 
-from octopus.lib import dataobj
-from octopus.core import app
-from service import dao
 import csv
+
+from octopus.core import app
+from octopus.lib import dataobj
+from service import dao
+
+LRF_ALLOWED_TYPE_VALUES = ["alliance", "national", "open", "gold", "deal", "fid"]
 
 
 class Alliance(dataobj.DataObj, dao.AllianceDAO):
@@ -752,7 +755,7 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
                 "id": {"coerce": "unicode"},
                 "file_name": {"coerce": "unicode"},
                 "type": {"coerce": "unicode",
-                         "allowed_values": ['license', "alliance", "national", "open", "gold", "deal", "fid"]},
+                         "allowed_values": LRF_ALLOWED_TYPE_VALUES},
                 "ezb_id": {"coerce": "unicode"},
                 "status": {"coerce": "unicode", "allowed_values": [
                     "validation failed", "validation passed",
