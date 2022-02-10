@@ -40,11 +40,11 @@ class LicenseFile:
     def versioned_filename(self):
         idx = self.filename.rfind('.')
         if idx == -1:
-            name = self.filename[:idx]
-            fmt = self.filename[idx + 1:]
-        else:
             name = self.filename
             fmt = ''
+        else:
+            name = self.filename[:idx]
+            fmt = self.filename[idx + 1:]
 
         date_str = self.version_datetime.strftime('%Y%m%dT%H%M%S')
         return f'{name}.{date_str}.{fmt}'
@@ -144,7 +144,7 @@ def upload_license():
 
     # save file to hard disk
     lic_related_path = app.config.get('LIC_RELATED_FILE_DIR', '/data/lic_related_file')
-    Path(lic_related_path).write_text(lic_file.versioned_filename)
+    Path(lic_related_path).joinpath(lic_file.versioned_filename).write_bytes(file_bytes)
 
     # save license to db
     lic = _load_or_create_lic(lic_file.ezb_id)
