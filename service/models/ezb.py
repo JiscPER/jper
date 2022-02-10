@@ -8,7 +8,8 @@ from octopus.core import app
 from octopus.lib import dataobj
 from service import dao
 
-LRF_ALLOWED_TYPE_VALUES = ["alliance", "national", "open", "gold", "deal", "fid"]
+LRF_TYPES = ["alliance", "national", "open", "gold", "deal", "fid"]
+LRF_STATUS = ["validation failed", "validation passed", "active", "archived", ]
 
 
 class Alliance(dataobj.DataObj, dao.AllianceDAO):
@@ -325,6 +326,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         "created_date" : "<date item created>",
         "last_updated" : "<date item last modified>",
 
+        "status": "<status of this license, e.g. active, inactive>",
         "name" : "<(human readable) name of the (alliance) license>",
         "type" : "<type of license, e.g. 'alliance', 'national', 'open', ...>",
         "identifier" : [ 
@@ -376,7 +378,9 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 "created_date": {"coerce": "utcdatetime"},
                 "last_updated": {"coerce": "utcdatetime"},
                 "name": {"coerce": "unicode"},
-                "type": {"coerce": "unicode", "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid"]}
+                "type": {"coerce": "unicode",
+                         "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid"]},
+                "status": {"coerce": "unicode", "allowed_values": ['active', 'inactive']},
             },
             # not (yet?) needed here
             # "objects" : [ 
@@ -445,6 +449,14 @@ class License(dataobj.DataObj, dao.LicenseDAO):
 
         self._add_struct(struct)
         super(License, self).__init__(raw=raw)
+
+    @property
+    def status(self):
+        return self._get_single("status", coerce=dataobj.to_unicode())
+
+    @status.setter
+    def status(self, val):
+        self._set_single("status", val, coerce=dataobj.to_unicode())
 
     @property
     def name(self):
@@ -667,7 +679,8 @@ class License(dataobj.DataObj, dao.LicenseDAO):
     def pull_by_journal_id(cls, journal_id):
         return cls.pull_by_key('journal.identifier.id', journal_id)
 
-    def set_license_data(self, ezbid, name, type='alliance', csvfile=None, jsoncontent=None):
+    def set_license_data(self, ezbid, name, type='alliance', csvfile=None, jsoncontent=None,
+                         init_status='active'):
         fields = ['name', 'type', 'identifier', 'journal']
         for f in fields:
             if f in self.data: del self.data[f]
@@ -730,6 +743,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
             self.data['name'] = name.strip()
             self.data['type'] = type.strip()
             self.data['identifier'] = self.data.get('identifier', []) + [{"type": "ezb", "id": ezbid.strip()}]
+            self.data['status'] = init_status
             self.save()
             return True
         elif jsoncontent is not None:
@@ -753,21 +767,38 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
         struct = {
             "fields": {
                 "id": {"coerce": "unicode"},
-                "file_name": {"coerce": "unicode"},
-                "type": {"coerce": "unicode",
-                         "allowed_values": LRF_ALLOWED_TYPE_VALUES},
-                "ezb_id": {"coerce": "unicode"},
-                "status": {"coerce": "unicode", "allowed_values": [
-                    "validation failed", "validation passed",
-                    "active", "archived",
-                ]},
-                "admin_notes": {"coerce": "unicode"},
-                "validation_notes": {"coerce": "unicode"},
                 "created_date": {"coerce": "utcdatetime"},
                 "last_updated": {"coerce": "utcdatetime"},
+                "file_name": {"coerce": "unicode"},
+                "type": {"coerce": "unicode",
+                         "allowed_values": LRF_TYPES},
+                "ezb_id": {"coerce": "unicode"},
+                "status": {"coerce": "unicode", "allowed_values": LRF_STATUS},
+                "upload_date": {"coerce": "utcdatetime"},
+                "admin_notes": {"coerce": "unicode"},
+                "validation_notes": {"coerce": "unicode"},
                 "record_id": {"coerce": "unicode"},
+
+                # if this record is for participant, it will contain lic_related_file_id of licnese
+                "lic_related_file_id": {"coerce": "unicode"},
             },
         }
 
         self._add_struct(struct)
         super(LicRelatedFile, self).__init__(raw=raw)
+
+    @property
+    def status(self):
+        return self._get_single("status", coerce=dataobj.to_unicode())
+
+    @status.setter
+    def status(self, val):
+        self._set_single("status", val, coerce=dataobj.to_unicode())
+
+    @property
+    def record_id(self):
+        return self._get_single("record_id", coerce=dataobj.to_unicode())
+
+    @record_id.setter
+    def record_id(self, val):
+        self._set_single("record_id", val, coerce=dataobj.to_unicode())

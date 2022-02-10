@@ -6,6 +6,7 @@ Each DAO is an extension of the octopus ESDAO utility class which provides all o
 so these DAOs mostly just provide information on where to persist the data, and some additional storage-layer
 query methods as required
 """
+from typing import Iterable
 
 from octopus.modules.es import dao
 
@@ -155,6 +156,16 @@ class LicRelatedFileDAO(dao.ESDAO):
     __type__ = "lic_related_file"
     """ The index type to use to store these objects """
 
+    @classmethod
+    def pull_actives(cls):
+        # KTODO any one call this method ??
+        res = cls.object_query(q={"query": {"term": {'status.exact': 'active'}}})
+        return res
+
+    @classmethod
+    def object_query_one(cls, *args, **kwargs):
+        results = cls.object_query(*args, **kwargs)
+
 
 class AllianceDAO(dao.ESDAO):
     """
@@ -172,6 +183,12 @@ class LicenseDAO(dao.ESDAO):
 
     __type__ = "license"
     """ The index type to use to store these objects """
+
+    @classmethod
+    def pull_actives(cls):
+        # KTODO any one call this method ??
+        res = cls.object_query(q={"query": {"term": {'status.exact': 'active'}}})
+        return res
 
 
 class RepositoryStatusDAO(dao.ESDAO):
