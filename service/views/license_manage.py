@@ -1,13 +1,14 @@
 import csv
 import dataclasses
 import io
+import itertools
 import logging
 import os
 import re
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Callable
 
 import chardet
 import openpyxl
@@ -83,39 +84,46 @@ def abort_if_not_admin():
         abort(401)
 
 
+def _split_list_by_cond_fn(cond_fn: Callable[[any], bool],
+                           obj_list: list[any], ) -> tuple[Iterable, Iterable]:
+    return filter(cond_fn, obj_list), itertools.filterfalse(cond_fn, obj_list)
+
+
+def _to_active_lr_rows(lic_lrf: LicRelatedFile, parti_lr_files: list[LicRelatedFile]) -> ActiveLicRelatedRow:
+    parti = [lr for lr in parti_lr_files if lr.lic_related_file_id == lic_lrf.id]
+    parti = parti and parti[0]
+    if parti:
+        parti_filename = parti.file_name
+        parti_upload_date = parti.upload_date
+    else:
+        parti_filename = ''
+        parti_upload_date = ''
+
+    return ActiveLicRelatedRow(lic_lrf.id, lic_lrf.file_name, lic_lrf.upload_date, lic_lrf.type,
+                               parti_filename, parti_upload_date)
+
+
 @blueprint.route('/')
 def details():
     abort_if_not_admin()
 
     lic_related_files = [l for l in LicRelatedFile.object_query()]
-    active_lr_files: list[LicRelatedFile] = [l for l in lic_related_files if l.status == 'active']
-    history_list = (l.data for l in lic_related_files if l.status != 'active')
-
-    # prepare active_list
-    active_list: list[ActiveLicRelatedRow] = []
+    active_lr_files, inactive_lr_files = _split_list_by_cond_fn(lambda l: l.status == 'active',
+                                                                lic_related_files)
+    active_lr_files = list(active_lr_files)
 
     # if lic_related_file_id is None, this record must be license file
-    _todo_list = (lr for lr in active_lr_files
-                  if lr.lic_related_file_id is None)
-    for lic_lrf in _todo_list:
-        parti = [lr for lr in active_lr_files if lr.lic_related_file_id == lic_lrf.id]
-        parti = parti and parti[0]
-        if parti:
-            parti_filename = parti.file_name
-            parti_upload_date = parti.upload_date
-        else:
-            parti_filename = ''
-            parti_upload_date = ''
+    lic_lr_files, parti_lr_files = _split_list_by_cond_fn(lambda l: l.lic_related_file_id is None,
+                                                          active_lr_files)
+    parti_lr_files = list(parti_lr_files)
 
-        active_list.append(
-            ActiveLicRelatedRow(lic_lrf.id, lic_lrf.file_name, lic_lrf.upload_date, lic_lrf.type,
-                                parti_filename, parti_upload_date)
-        )
-
+    # prepare active_list
+    active_list: Iterable[ActiveLicRelatedRow] = (_to_active_lr_rows(lic_lrf, parti_lr_files)
+                                                  for lic_lrf in lic_lr_files)
     return render_template('license_manage/details.html',
                            allowed_lic_types=LRF_TYPES,
                            active_list=active_list,
-                           history_list=history_list,
+                           history_list=(l.data for l in inactive_lr_files),
                            )
 
 
