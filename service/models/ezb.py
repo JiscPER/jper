@@ -806,3 +806,36 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
     @record_id.setter
     def record_id(self, val):
         self._set_single("record_id", val, coerce=dataobj.to_unicode())
+
+    @property
+    def file_name(self):
+        return self._get_single("file_name", coerce=dataobj.to_unicode())
+
+    @file_name.setter
+    def file_name(self, val):
+        self._set_single("file_name", val, coerce=dataobj.to_unicode())
+
+    @property
+    def lic_related_file_id(self):
+        return self._get_single("lic_related_file_id", coerce=dataobj.to_unicode())
+
+    @lic_related_file_id.setter
+    def lic_related_file_id(self, val):
+        self._set_single("lic_related_file_id", val, coerce=dataobj.to_unicode())
+
+    @property
+    def upload_date(self):
+        return self._get_single("upload_date", coerce=dataobj.date_str())
+
+    @upload_date.setter
+    def upload_date(self, val):
+        self._set_single("upload_date", val, coerce=dataobj.date_str(), allow_coerce_failure=True,
+                         allow_none=False, ignore_none=True)
+
+    @property
+    def type(self):
+        return self._get_single("type", coerce=dataobj.to_unicode())
+
+    @type.setter
+    def type(self, val):
+        self._set_single("type", val, coerce=dataobj.to_unicode())

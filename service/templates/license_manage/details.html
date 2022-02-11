@@ -45,34 +45,31 @@
     </thead>
     {% for l in active_list %}
     <tr>
-        <td> {{ l.get('file_name') }}</td>
-        <td> {{ l.get('upload_date') }}</td>
-        <td> {{ l.get('type') }}</td>
+        <td> {{ l.lic_filename }}</td>
+        <td> {{ l.lic_upload_date }}</td>
+        <td> {{ l.lic_type }}</td>
         <td>
-            <!-- KTODO participant list -->
+            {% if l.parti_filename  %}
+                {{ l.parti_filename }}
+            {% endif %}
 
+            {% if not l.parti_filename  %}
             <form method="POST"
                   action="{{ url_for('license-manage.upload_participant') }}"
-                  enctype="multipart/form-data"
-            >
-                <!-- KTODO update_license -->
-                <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                  enctype="multipart/form-data" >
+                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
                 <input type="file" name="file" class="hide_file_upload submit_on_change"/>
-                <button class="long_act_btn add_parti_btn">
-                    Add
-                </button>
+                <button class="long_act_btn add_parti_btn"> Add </button>
             </form>
-
-
+            {% endif %}
         </td>
         <td>
-
-
+            {{ l.parti_upload_date }}
         </td>
         <td>
             <form method="POST" action="{{ url_for('license-manage.update_license') }}">
                 <!-- KTODO update_license -->
-                <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
                 <button type="submit" class="long_act_btn">
                     License
                 </button>
@@ -80,7 +77,7 @@
 
             <form method="POST" action="{{ url_for('license-manage.update_participant') }}">
                 <!-- KTODO update_participant -->
-                <input type="hidden" name="lc_lrf_id" value="{{ l.get('id') }}">
+                <input type="hidden" name="lc_lrf_id" value="{{ l.lic_lrf_id }}">
                 <button type="submit" class="long_act_btn">
                     Participant
                 </button>
@@ -88,14 +85,14 @@
         </td>
         <td>
             <form method="POST" action="{{ url_for('license-manage.deactivate_license') }}">
-                <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
                 <button type="submit" class="long_act_btn">
                     License
                 </button>
             </form>
 
             <form method="POST" action="{{ url_for('license-manage.deactivate_participant') }}">
-                <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
                 <!-- KTODO hide this button if participant not exist -->
                 <!-- KTODO form fields -->
                 <button type="submit" class="long_act_btn">

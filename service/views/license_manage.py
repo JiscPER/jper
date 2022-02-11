@@ -67,6 +67,16 @@ class ParticipantFile:
                                           self.version_datetime)
 
 
+@dataclasses.dataclass
+class ActiveLicRelatedRow:
+    lic_lrf_id:str
+    lic_filename: str
+    lic_upload_date: str
+    lic_type: str
+    parti_filename: str
+    parti_upload_date: str
+
+
 def abort_if_not_admin():
     # KTODO change it to Decorators
     if not current_user.is_super:
@@ -77,11 +87,30 @@ def abort_if_not_admin():
 def details():
     abort_if_not_admin()
 
-    lic_related_files = [l.data for l in LicRelatedFile.object_query()]
-    active_list = (l for l in lic_related_files if l.get('status') == 'active')
-    history_list = (l for l in lic_related_files if l.get('status') != 'active')
+    lic_related_files = [l for l in LicRelatedFile.object_query()]
+    active_lr_files: list[LicRelatedFile] = [l for l in lic_related_files if l.status == 'active']
+    history_list = (l.data for l in lic_related_files if l.status != 'active')
 
-    # KTODO handle query participant
+    # prepare active_list
+    active_list: list[ActiveLicRelatedRow] = []
+
+    # if lic_related_file_id is None, this record must be license file
+    _todo_list = (lr for lr in active_lr_files
+                  if lr.lic_related_file_id is None)
+    for lic_lrf in _todo_list:
+        parti = [lr for lr in active_lr_files if lr.lic_related_file_id == lic_lrf.id]
+        parti = parti and parti[0]
+        if parti:
+            parti_filename = parti.file_name
+            parti_upload_date = parti.upload_date
+        else:
+            parti_filename = ''
+            parti_upload_date = ''
+
+        active_list.append(
+            ActiveLicRelatedRow(lic_lrf.id, lic_lrf.file_name, lic_lrf.upload_date, lic_lrf.type,
+                                parti_filename, parti_upload_date)
+        )
 
     return render_template('license_manage/details.html',
                            allowed_lic_types=LRF_TYPES,
