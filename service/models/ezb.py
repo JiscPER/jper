@@ -46,7 +46,10 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
                 "created_date": {"coerce": "utcdatetime"},
                 "last_updated": {"coerce": "utcdatetime"},
                 "name": {"coerce": "unicode"},
-                "license_id": {"coerce": "unicode"}
+                "license_id": {"coerce": "unicode"},
+                "status": {"coerce": "unicode",
+                           "allowed_values": ['active', 'inactive']},  # KTODO only query active
+
             },
             # not (yet?) needed here
             # "objects" : [ 
@@ -84,6 +87,14 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         }
         self._add_struct(struct)
         super(Alliance, self).__init__(raw=raw)
+
+    @property
+    def status(self):
+        return self._get_single("status", coerce=dataobj.to_unicode())
+
+    @status.setter
+    def status(self, val):
+        self._set_single("status", val, coerce=dataobj.to_unicode())
 
     @property
     def name(self):
@@ -268,11 +279,13 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         else:
             return None
 
-    def set_alliance_data(self, license, ezbid, csvfile=None, jsoncontent=None):
+    def set_alliance_data(self, license, ezbid, csvfile=None, jsoncontent=None, init_status='active'):
         licid = license
         fields = ['name', 'license_id', 'identifier', 'participant']
         for f in fields:
             if f in self.data: del self.data[f]
+
+        self.data['status'] = init_status
         if csvfile is not None:
             inp = csv.DictReader(csvfile, delimiter='\t', quoting=csv.QUOTE_ALL)
             for row in inp:
@@ -380,7 +393,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 "name": {"coerce": "unicode"},
                 "type": {"coerce": "unicode",
                          "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid"]},
-                "status": {"coerce": "unicode", "allowed_values": ['active', 'inactive']},
+                "status": {"coerce": "unicode", "allowed_values": ['active', 'inactive']},  # KTODO only query active
             },
             # not (yet?) needed here
             # "objects" : [ 

@@ -127,7 +127,7 @@
         <td> {{ l.get('status') }}</td>
         <td> {{ l.get('upload_date') }}</td>
         <td>
-            <form method="POST" action="{{ url_for('license-manage.active_license') }}">
+            <form method="POST" action="{{ url_for('license-manage.active_lic_related_file') }}">
                 <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
                 <input type="submit" value="Active"/>
             </form>

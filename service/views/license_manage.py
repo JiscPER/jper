@@ -69,7 +69,7 @@ class ParticipantFile:
 
 @dataclasses.dataclass
 class ActiveLicRelatedRow:
-    lic_lrf_id:str
+    lic_lrf_id: str
     lic_filename: str
     lic_upload_date: str
     lic_type: str
@@ -218,10 +218,8 @@ def upload_license():
     return redirect('/license-manage/')
 
 
-@blueprint.route('/active-license', methods=['POST'])
-def active_license():
-    # KTODO rename active-lic-related-file
-    # KTODO support active participant
+@blueprint.route('/active-lic-related_file', methods=['POST'])
+def active_lic_related_file():
     abort_if_not_admin()
 
     # active lic_related_file
@@ -230,14 +228,15 @@ def active_license():
     lr_file.status = 'active'
     lr_file.save()
 
-    # active license
-    lic: License = object_query_first(License, lr_file.record_id)
-    if lic:
-        lic.status = 'active'
-        lic.save()
+    # active
+    record_cls = Alliance if lr_file.lic_related_file_id else License
+    record = object_query_first(record_cls, lr_file.record_id)
+    if record:
+        record.status = 'active'
+        record.save()
         # KTODO wait / blocking for lic saved to db
     else:
-        log.warning(f'license not found lic_id[{lr_file.record_id}] lrf_id[{lrf_id}]')
+        log.warning(f'license / alliance not found record_id[{lr_file.record_id}] lrf_id[{lrf_id}]')
 
     return redirect(url_for('license-manage.details'))
 
@@ -302,7 +301,8 @@ def upload_participant():
 
     # save participant to db
     alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()
-    alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str)
+    alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str,
+                               init_status='inactive')
 
     # save lic_related_file to db
     lr_file_raw = dict(file_name=parti_file.versioned_filename,
