@@ -246,14 +246,14 @@ def _save_lic_related_file(filename: str, file_bytes: bytes):
 def upload_participant():
     abort_if_not_admin()
 
-    lrf_id = request.values.get('lrf_id')
-    lr_file: LicRelatedFile = _check_and_find_lic_related_file(lrf_id)
+    lic_lrf_id = request.values.get('lrf_id')
+    lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
     # validate
-    lic: License = object_query_first(License, lr_file.record_id)
+    lic: License = object_query_first(License, lic_lr_file.record_id)
     lic_ezb_id = lic and lic.get_first_ezb_id()
     if lic_ezb_id is None:
-        log.warning(f'ezb_id not found -- {lr_file.record_id}')
+        log.warning(f'ezb_id not found -- {lic_lr_file.record_id}')
         abort(404)
 
     # load parti_file
@@ -266,14 +266,14 @@ def upload_participant():
         csv_str = _load_parti_csv_str_by_xls_bytes(file_bytes)
     else:
         abort(400, f'Invalid file format [{filename}]')
-    parti_file = ParticipantFile(lrf_id, csv_str, filename)
+    parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
 
     # save file to hard disk
     _save_lic_related_file(parti_file.versioned_filename, file_bytes)
 
     # save participant to db
     alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()
-    alliance.set_alliance_data(lr_file.record_id, lic_ezb_id, csvfile=csv_str)
+    alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str)
 
     # save lic_related_file to db
     lr_file_raw = dict(file_name=parti_file.versioned_filename,
@@ -282,7 +282,8 @@ def upload_participant():
                        status='validation passed',
                        admin_notes=None,
                        record_id=alliance.id,
-                       upload_date=dates.format(parti_file.version_datetime), )
+                       upload_date=dates.format(parti_file.version_datetime),
+                       lic_related_file_id=lic_lr_file.id)
     models.LicRelatedFile(raw=lr_file_raw).save()
 
     # KTODO wait / blocking for lr_file saved to db
