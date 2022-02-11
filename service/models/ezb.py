@@ -450,6 +450,10 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         self._add_struct(struct)
         super(License, self).__init__(raw=raw)
 
+    def get_first_ezb_id(self) -> str:
+        ids = [_id for _id in self.get_identifier('ezb') if _id]
+        return ids[0] if ids else None
+
     @property
     def status(self):
         return self._get_single("status", coerce=dataobj.to_unicode())

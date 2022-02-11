@@ -21,14 +21,13 @@
             <textarea name="admin_notes" id="admin_notes"></textarea>
         </div>
         <div>
-            <input type="file" name="file" id="upload-btn" class="input--large" />
+            <input type="file" name="file" id="upload-btn" class="input--large"/>
         </div>
         <div>
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Submit"/>
         </div>
     </div>
 </form>
-
 
 
 <h2>Current License Files</h2>
@@ -46,27 +45,61 @@
     </thead>
     {% for l in active_list %}
     <tr>
-        <td> {{ l.get('file_name') }} </td>
-        <td> {{ l.get('upload_date') }} </td>
-        <td> {{ l.get('type') }} </td>
-        <td> <!-- KTODO participant list --> </td>
-        <td> <!-- KTODO participant upload_date --> </td>
-        <td> <button>Update</button> </td> <!-- KTODO update button -->
+        <td> {{ l.get('file_name') }}</td>
+        <td> {{ l.get('upload_date') }}</td>
+        <td> {{ l.get('type') }}</td>
+        <td>
+            <!-- KTODO participant list -->
+
+            <form method="POST"
+                  action="{{ url_for('license-manage.upload_participant') }}"
+                  enctype="multipart/form-data"
+            >
+                <!-- KTODO update_license -->
+                <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                <input type="file" name="file" class="hide_file_upload submit_on_change"/>
+                <button class="long_act_btn add_parti_btn">
+                    Add
+                </button>
+            </form>
+
+
+        </td>
+        <td>
+
+
+        </td>
+        <td>
+            <form method="POST" action="{{ url_for('license-manage.update_license') }}">
+                <!-- KTODO update_license -->
+                <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                <button type="submit" class="long_act_btn">
+                    License
+                </button>
+            </form>
+
+            <form method="POST" action="{{ url_for('license-manage.update_participant') }}">
+                <!-- KTODO update_participant -->
+                <input type="hidden" name="lc_lrf_id" value="{{ l.get('id') }}">
+                <button type="submit" class="long_act_btn">
+                    Participant
+                </button>
+            </form>
+        </td>
         <td>
             <form method="POST" action="{{ url_for('license-manage.deactivate_license') }}">
                 <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
-                <button type="submit" class="deactivate_btn" >
-                    Deactivate <br/>
-                    License and Participant
+                <button type="submit" class="long_act_btn">
+                    License
                 </button>
             </form>
 
             <form method="POST" action="{{ url_for('license-manage.deactivate_participant') }}">
                 <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                <!-- KTODO hide this button if participant not exist -->
                 <!-- KTODO form fields -->
-                <button type="submit" class="deactivate_btn">
-                    Deactivate <br/>
-                    Participant only
+                <button type="submit" class="long_act_btn">
+                    Participant
                 </button>
             </form>
         </td>
@@ -75,7 +108,6 @@
 
 
 </table>
-
 
 
 <h2>History</h2>
@@ -93,24 +125,24 @@
 
     {% for l in history_list %}
     <tr>
-        <td> {{ l.get('file_name') }} </td>
-        <td> {{ l.get('type') }} </td>
-        <td> {{ l.get('status') }} </td>
-        <td> {{ l.get('upload_date') }} </td>
+        <td> {{ l.get('file_name') }}</td>
+        <td> {{ l.get('type') }}</td>
+        <td> {{ l.get('status') }}</td>
+        <td> {{ l.get('upload_date') }}</td>
         <td>
             <form method="POST" action="{{ url_for('license-manage.active_license') }}">
                 <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
-                <input type="submit" value="Active" />
+                <input type="submit" value="Active"/>
             </form>
         </td>
-        <td> <button>Delete</button> </td> <!-- KTODO delete button -->
+        <td>
+            <button>Delete</button>
+        </td> <!-- KTODO delete button -->
     </tr>
     {% endfor %}
 </table>
 
 
-
-lkajdlkasjdlkasjdklasjdkljslakdas
 
 <style>
     .lic_upload {
@@ -118,15 +150,34 @@ lkajdlkasjdlkasjdklasjdkljslakdas
         margin: 15px;
     }
 
-    .deactivate_btn {
-        width: 160px;
-        font-size: 14px;
+    .long_act_btn {
+        width: 80px;
+        font-size: 13px;
+    }
+    .hide_file_upload {
+        display: none;
     }
 
 
 </style>
 
 <script>
+
+
+    $('.add_parti_btn').click((e) => {
+        e.preventDefault()
+        const jq_form = $(e.target.parentElement)
+        const jq_file = jq_form.find('input[type=file]')
+        jq_file.trigger('click')
+    })
+
+    $('.submit_on_change').change((e) => {
+        const jq_file = $(e.target)
+        if (jq_file[0].files.length){
+            jq_file.parent('form').submit()
+        }
+    })
+
 
     // $('#upload-btn').change(() => {
     //     // KTODO test and handle filename empty
@@ -135,8 +186,6 @@ lkajdlkasjdlkasjdklasjdkljslakdas
 
 
 </script>
-
-
 
 
 {% endblock %}

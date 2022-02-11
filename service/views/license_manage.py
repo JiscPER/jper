@@ -1,12 +1,13 @@
 import csv
 import dataclasses
-import datetime
 import io
 import logging
 import os
 import re
 import tempfile
+from datetime import datetime
 from pathlib import Path
+from typing import Iterable
 
 import chardet
 import openpyxl
@@ -14,40 +15,56 @@ from flask import Blueprint, abort, render_template, request, redirect, url_for
 from flask_login.utils import current_user
 
 from octopus.core import app
+from octopus.lib import dates
 from service import models
 from service.__utils.ez_dao_utils import object_query_first
 from service.models import License
-from service.models.ezb import LRF_TYPES, LicRelatedFile
+from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance
 
 blueprint = Blueprint('license-manage', __name__)
 
 log: logging.Logger = app.logger
 
 
+def _create_versioned_filename(filename: str,
+                               version_datetime: datetime) -> str:
+    idx = filename.rfind('.')
+    if idx == -1:
+        name = filename
+        fmt = ''
+    else:
+        name = filename[:idx]
+        fmt = filename[idx + 1:]
+
+    date_str = version_datetime.strftime('%Y%m%dT%H%M%S')
+    return f'{name}.{date_str}.{fmt}'
+
+
 @dataclasses.dataclass
 class LicenseFile:
     ezb_id: str
     name: str
-    table_str: str
+    table_str: str  # table data as csv string
     filename: str
-    version_datetime: datetime.datetime = None
-
-    def __post_init__(self):
-        if self.version_datetime is None:
-            self.version_datetime = datetime.datetime.now()
+    version_datetime: datetime = dataclasses.field(default_factory=datetime.now)
 
     @property
     def versioned_filename(self):
-        idx = self.filename.rfind('.')
-        if idx == -1:
-            name = self.filename
-            fmt = ''
-        else:
-            name = self.filename[:idx]
-            fmt = self.filename[idx + 1:]
+        return _create_versioned_filename(self.filename,
+                                          self.version_datetime)
 
-        date_str = self.version_datetime.strftime('%Y%m%dT%H%M%S')
-        return f'{name}.{date_str}.{fmt}'
+
+@dataclasses.dataclass
+class ParticipantFile:
+    lic_ezb_id: str
+    table_str: str
+    filename: str
+    version_datetime: datetime = dataclasses.field(default_factory=datetime.now)
+
+    @property
+    def versioned_filename(self):
+        return _create_versioned_filename(self.filename,
+                                          self.version_datetime)
 
 
 def abort_if_not_admin():
@@ -90,16 +107,7 @@ def _load_lic_file_by_csv_bytes(file_bytes: bytes, filename: str) -> LicenseFile
     return LicenseFile(ezb_id, name, table_str, filename=filename)
 
 
-def _load_lic_file_by_xls_bytes(file_bytes: bytes, filename: str) -> LicenseFile:
-    workbook = openpyxl.load_workbook(io.BytesIO(file_bytes))
-    sheet = workbook.active
-
-    rows = [[c.value for c in r] for r in sheet.rows]
-    headers = rows[4]
-    data = rows[5:]
-
-    name, ezb_id = _extract_name_ezb_id_by_line(rows[0][0])
-
+def _convert_data_to_csv_str(headers: list, data: Iterable[list]) -> str:
     dict_rows = [{headers[col_idx]: row[col_idx] for col_idx in range(len(headers))}
                  for row in data]
 
@@ -114,7 +122,23 @@ def _load_lic_file_by_xls_bytes(file_bytes: bytes, filename: str) -> LicenseFile
         table_str = tmp_file.read()
 
     os.remove(tmp_file_path)
+    return table_str
 
+
+def _load_rows_by_xls_bytes(xls_bytes: bytes) -> list[list]:
+    workbook = openpyxl.load_workbook(io.BytesIO(xls_bytes))
+    sheet = workbook.active
+    rows = [[c.value for c in r] for r in sheet.rows]
+    return rows
+
+
+def _load_lic_file_by_xls_bytes(xls_bytes: bytes, filename: str) -> LicenseFile:
+    rows = _load_rows_by_xls_bytes(xls_bytes)
+    headers = rows[4]
+    data = rows[5:]
+    table_str = _convert_data_to_csv_str(headers, data)
+
+    name, ezb_id = _extract_name_ezb_id_by_line(rows[0][0])
     return LicenseFile(ezb_id, name, table_str, filename=filename)
 
 
@@ -131,7 +155,7 @@ def upload_license():
     if 'file' not in request.files:
         abort(400, 'parameter "file" not found')
 
-    # load csv_rows
+    # load lic_file
     filename = request.files['file'].filename
     file_bytes = request.files['file'].stream.read()
     lic_file = None
@@ -143,8 +167,7 @@ def upload_license():
         abort(400, f'Invalid file format [{filename}]')
 
     # save file to hard disk
-    lic_related_path = app.config.get('LIC_RELATED_FILE_DIR', '/data/lic_related_file')
-    Path(lic_related_path).joinpath(lic_file.versioned_filename).write_bytes(file_bytes)
+    _save_lic_related_file(lic_file.versioned_filename, file_bytes)
 
     # save license to db
     lic = _load_or_create_lic(lic_file.ezb_id)
@@ -153,30 +176,39 @@ def upload_license():
                          init_status='inactive')
 
     # save lic_related_file to db
-    lic_related_file = _create_lic_related_file(lic_file, lic_type,
-                                                admin_notes, lic.id)
-    lic_related_file.save()
+    lic_related_file_raw = dict(file_name=lic_file.versioned_filename,
+                                type=lic_type,
+                                ezb_id=lic_file.ezb_id,
+                                status='validation passed',
+                                admin_notes=admin_notes,
+                                record_id=lic.id,
+                                upload_date=dates.format(lic_file.version_datetime), )
+    models.LicRelatedFile(raw=lic_related_file_raw).save()
 
+    # KTODO wait / blocking for lr_file saved to db
     return redirect('/license-manage/')
 
 
 @blueprint.route('/active-license', methods=['POST'])
 def active_license():
+    # KTODO rename active-lic-related-file
+    # KTODO support active participant
     abort_if_not_admin()
 
     # active lic_related_file
     lrf_id = request.values.get('lrf_id')
-    lic_file = _check_and_find_lic_related_file(lrf_id)
-    lic_file.status = 'active'
-    lic_file.save()
+    lr_file = _check_and_find_lic_related_file(lrf_id)
+    lr_file.status = 'active'
+    lr_file.save()
 
     # active license
-    lic: License = object_query_first(License, lic_file.record_id)
+    lic: License = object_query_first(License, lr_file.record_id)
     if lic:
         lic.status = 'active'
         lic.save()
+        # KTODO wait / blocking for lic saved to db
     else:
-        log.warning(f'license not found lic_id[{lic_file.record_id}] lrf_id[{lrf_id}]')
+        log.warning(f'license not found lic_id[{lr_file.record_id}] lrf_id[{lrf_id}]')
 
     return redirect(url_for('license-manage.details'))
 
@@ -193,12 +225,92 @@ def _check_and_find_lic_related_file(lrf_id: str) -> LicRelatedFile:
     return lic_file
 
 
+def _load_parti_csv_str_by_xls_bytes(xls_bytes: bytes) -> str:
+    rows = _load_rows_by_xls_bytes(xls_bytes)
+    if len(rows) == 0:
+        return ''
+
+    table_str = _convert_data_to_csv_str(rows[0], rows[1:])
+    return table_str
+
+
+def _save_lic_related_file(filename: str, file_bytes: bytes):
+    path = app.config.get('LIC_RELATED_FILE_DIR', '/data/lic_related_file')
+    path = Path(path)
+    if not path.exists():
+        path.mkdir(exist_ok=True, parents=True)
+    path.joinpath(filename).write_bytes(file_bytes)
+
+
+@blueprint.route('/upload-participant', methods=['POST'])
+def upload_participant():
+    abort_if_not_admin()
+
+    lrf_id = request.values.get('lrf_id')
+    lr_file: LicRelatedFile = _check_and_find_lic_related_file(lrf_id)
+
+    # validate
+    lic: License = object_query_first(License, lr_file.record_id)
+    lic_ezb_id = lic and lic.get_first_ezb_id()
+    if lic_ezb_id is None:
+        log.warning(f'ezb_id not found -- {lr_file.record_id}')
+        abort(404)
+
+    # load parti_file
+    filename = request.files['file'].filename
+    file_bytes = request.files['file'].stream.read()
+    csv_str: str = None
+    if filename.lower().endswith('.csv'):
+        csv_str = _decode_csv_bytes(file_bytes)
+    elif any(filename.lower().endswith(fmt) for fmt in ['xls', 'xlsx']):
+        csv_str = _load_parti_csv_str_by_xls_bytes(file_bytes)
+    else:
+        abort(400, f'Invalid file format [{filename}]')
+    parti_file = ParticipantFile(lrf_id, csv_str, filename)
+
+    # save file to hard disk
+    _save_lic_related_file(parti_file.versioned_filename, file_bytes)
+
+    # save participant to db
+    alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()
+    alliance.set_alliance_data(lr_file.record_id, lic_ezb_id, csvfile=csv_str)
+
+    # save lic_related_file to db
+    lr_file_raw = dict(file_name=parti_file.versioned_filename,
+                       type=None,
+                       ezb_id=lic_ezb_id,
+                       status='validation passed',
+                       admin_notes=None,
+                       record_id=alliance.id,
+                       upload_date=dates.format(parti_file.version_datetime), )
+    models.LicRelatedFile(raw=lr_file_raw).save()
+
+    # KTODO wait / blocking for lr_file saved to db
+    return redirect('/license-manage/')
+
+
+@blueprint.route('/update-license')
+def update_license():
+    abort_if_not_admin()
+
+    lrf_id = request.values.get('lrf_id')
+    lr_file: LicRelatedFile = _check_and_find_lic_related_file(lrf_id)
+
+    # KTODO
+
+
+@blueprint.route('/update-participant')
+def update_participant():
+    abort_if_not_admin()
+    # KTODO
+
+
 @blueprint.route('/deactivate-license')
 def deactivate_license():
     abort_if_not_admin()
 
     lrf_id = request.values.get('lrf_id')
-    lic_file = _check_and_find_lic_related_file(lrf_id)
+    lr_file = _check_and_find_lic_related_file(lrf_id)
     # KTODO
 
 
@@ -238,21 +350,6 @@ def _extract_name_ezb_id_by_line(line: str) -> tuple[str, str]:
         return name.strip(), ezb_id.strip()
     else:
         raise ValueError(f'first line not found [{line}]')
-
-
-def _create_lic_related_file(lic_file: LicenseFile, lic_type: str, admin_notes: str,
-                             record_id: str) -> models.LicRelatedFile:
-    lic_related_file_raw = dict(
-        file_name=lic_file.versioned_filename,
-        type=lic_type,
-        ezb_id=lic_file.ezb_id,
-        status='validation passed',
-        admin_notes=admin_notes,
-        record_id=record_id,
-        upload_date=lic_file.version_datetime,
-    )
-    lic_related_file = models.LicRelatedFile(raw=lic_related_file_raw)
-    return lic_related_file
 
 
 def main3():
