@@ -1,4 +1,5 @@
 import csv
+import time
 import dataclasses
 import io
 import itertools
@@ -18,6 +19,7 @@ from flask_login.utils import current_user
 from octopus.core import app
 from octopus.lib import dates
 from service import models
+from service.__utils import ez_dao_utils
 from service.__utils.ez_dao_utils import object_query_first
 from service.models import License
 from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance
@@ -74,6 +76,7 @@ class ActiveLicRelatedRow:
     lic_filename: str
     lic_upload_date: str
     lic_type: str
+    parti_lrf_id: str
     parti_filename: str
     parti_upload_date: str
 
@@ -89,18 +92,21 @@ def _split_list_by_cond_fn(cond_fn: Callable[[any], bool],
     return filter(cond_fn, obj_list), itertools.filterfalse(cond_fn, obj_list)
 
 
-def _to_active_lr_rows(lic_lrf: LicRelatedFile, parti_lr_files: list[LicRelatedFile]) -> ActiveLicRelatedRow:
+def _to_active_lr_rows(lic_lrf: LicRelatedFile,
+                       parti_lr_files: list[LicRelatedFile]) -> ActiveLicRelatedRow:
     parti = [lr for lr in parti_lr_files if lr.lic_related_file_id == lic_lrf.id]
     parti = parti and parti[0]
     if parti:
         parti_filename = parti.file_name
         parti_upload_date = parti.upload_date
+        parti_lrf_id = parti.id
     else:
         parti_filename = ''
         parti_upload_date = ''
+        parti_lrf_id = ''
 
     return ActiveLicRelatedRow(lic_lrf.id, lic_lrf.file_name, lic_lrf.upload_date, lic_lrf.type,
-                               parti_filename, parti_upload_date)
+                               parti_lrf_id, parti_filename, parti_upload_date)
 
 
 @blueprint.route('/')
@@ -220,10 +226,15 @@ def upload_license():
                                 admin_notes=admin_notes,
                                 record_id=lic.id,
                                 upload_date=dates.format(lic_file.version_datetime), )
-    models.LicRelatedFile(raw=lic_related_file_raw).save()
+    _save_new_lrf(lic_related_file_raw)
+    return redirect(url_for('license-manage.details'))
 
-    # KTODO wait / blocking for lr_file saved to db
-    return redirect('/license-manage/')
+
+def _save_new_lrf(lrf_raw: dict, blocking=True):
+    new_lrf = models.LicRelatedFile(raw=lrf_raw)
+    new_lrf.save()
+    if blocking:
+        ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
 
 
 @blueprint.route('/active-lic-related_file', methods=['POST'])
@@ -235,6 +246,7 @@ def active_lic_related_file():
     lr_file = _check_and_find_lic_related_file(lrf_id)
     lr_file.status = 'active'
     lr_file.save()
+    # KTODO what if related lic already have active parti
 
     # active
     record_cls = Alliance if lr_file.lic_related_file_id else License
@@ -242,11 +254,21 @@ def active_lic_related_file():
     if record:
         record.status = 'active'
         record.save()
-        # KTODO wait / blocking for lic saved to db
     else:
         log.warning(f'license / alliance not found record_id[{lr_file.record_id}] lrf_id[{lrf_id}]')
 
+    _wait_unit_status(lr_file.id, 'active')
     return redirect(url_for('license-manage.details'))
+
+
+def _wait_unit_status(lrf_id: str, target_status):
+    def _is_updated():
+        _obj = object_query_first(LicRelatedFile, lrf_id)
+        if _obj:
+            return _obj.status == target_status
+        return False
+
+    ez_dao_utils.wait_unit(_is_updated)
 
 
 def _check_and_find_lic_related_file(lrf_id: str) -> LicRelatedFile:
@@ -321,13 +343,11 @@ def upload_participant():
                        record_id=alliance.id,
                        upload_date=dates.format(parti_file.version_datetime),
                        lic_related_file_id=lic_lr_file.id)
-    models.LicRelatedFile(raw=lr_file_raw).save()
-
-    # KTODO wait / blocking for lr_file saved to db
-    return redirect('/license-manage/')
+    _save_new_lrf(lr_file_raw)
+    return redirect(url_for('license-manage.details'))
 
 
-@blueprint.route('/update-license')
+@blueprint.route('/update-license', methods=['POST'])
 def update_license():
     abort_if_not_admin()
 
@@ -337,25 +357,40 @@ def update_license():
     # KTODO
 
 
-@blueprint.route('/update-participant')
+@blueprint.route('/update-participant', methods=['POST'])
 def update_participant():
     abort_if_not_admin()
     # KTODO
 
 
-@blueprint.route('/deactivate-license')
+@blueprint.route('/deactivate-license', methods=['POST'])
 def deactivate_license():
     abort_if_not_admin()
 
     lrf_id = request.values.get('lrf_id')
     lr_file = _check_and_find_lic_related_file(lrf_id)
+
     # KTODO
 
 
-@blueprint.route('/deactivate-participant')
+@blueprint.route('/deactivate-participant', methods=['POST'])
 def deactivate_participant():
     abort_if_not_admin()
-    # KTODO
+
+    lrf_id = request.values.get('lrf_id')
+    lr_file = _check_and_find_lic_related_file(lrf_id)
+    lr_file.status = "archived"
+    lr_file.save()
+
+    alli: Alliance = object_query_first(Alliance, lr_file.record_id)
+    if alli is None:
+        log.warning(f'alliance[{lr_file.record_id}]] not found')
+    else:
+        alli.status = 'inactive'
+        alli.save()
+
+    _wait_unit_status(lr_file.id, 'archived')
+    return redirect(url_for('license-manage.details'))
 
 
 def _load_or_create_lic(ezb_id: str) -> License:

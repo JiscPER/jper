@@ -85,19 +85,20 @@
         </td>
         <td>
             <form method="POST" action="{{ url_for('license-manage.deactivate_license') }}">
-                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
+                <input type="hidden" name="lic_lrf_id" value="{{ l.lic_lrf_id }}">
+                <input type="hidden" name="parti_lrf_id" value="{{ l.parti_lrf_id }}">
                 <button type="submit" class="long_act_btn">
                     License
                 </button>
             </form>
 
             <form method="POST" action="{{ url_for('license-manage.deactivate_participant') }}">
-                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
-                <!-- KTODO hide this button if participant not exist -->
-                <!-- KTODO form fields -->
+                {% if l.parti_lrf_id %}
+                <input type="hidden" name="lrf_id" value="{{ l.parti_lrf_id }}">
                 <button type="submit" class="long_act_btn">
                     Participant
                 </button>
+                {% endif %}
             </form>
         </td>
     </tr>

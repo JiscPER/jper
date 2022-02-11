@@ -162,10 +162,6 @@ class LicRelatedFileDAO(dao.ESDAO):
         res = cls.object_query(q={"query": {"term": {'status.exact': 'active'}}})
         return res
 
-    @classmethod
-    def object_query_one(cls, *args, **kwargs):
-        results = cls.object_query(*args, **kwargs)
-
 
 class AllianceDAO(dao.ESDAO):
     """
