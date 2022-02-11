@@ -1,5 +1,4 @@
 import csv
-import time
 import dataclasses
 import io
 import itertools
@@ -9,10 +8,11 @@ import re
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, Callable
+from typing import Iterable, Callable, Type
 
 import chardet
 import openpyxl
+from esprit.dao import DomainObject
 from flask import Blueprint, abort, render_template, request, redirect, url_for
 from flask_login.utils import current_user
 
@@ -246,7 +246,6 @@ def active_lic_related_file():
     lr_file = _check_and_find_lic_related_file(lrf_id)
     lr_file.status = 'active'
     lr_file.save()
-    # KTODO what if related lic already have active parti
 
     # active
     record_cls = Alliance if lr_file.lic_related_file_id else License
@@ -366,30 +365,33 @@ def update_participant():
 @blueprint.route('/deactivate-license', methods=['POST'])
 def deactivate_license():
     abort_if_not_admin()
+    _deactivate_lrf_by_lrf_id(request.values.get('lic_lrf_id'), Alliance)
+    _deactivate_lrf_by_lrf_id(request.values.get('parti_lrf_id'), Alliance)
+    return redirect(url_for('license-manage.details'))
 
-    lrf_id = request.values.get('lrf_id')
-    lr_file = _check_and_find_lic_related_file(lrf_id)
 
-    # KTODO
+def _deactivate_lrf_by_lrf_id(parti_lrf_id: str,
+                              record_cls: Type[DomainObject]):
+    lr_file = _check_and_find_lic_related_file(parti_lrf_id)
+    lr_file.status = "archived"
+    lr_file.save()
+
+    record = object_query_first(record_cls, lr_file.record_id)
+    if record is None:
+        log.warning(f'alliance[{lr_file.record_id}]] not found')
+    else:
+        record.status = 'inactive'
+        record.save()
+
+    _wait_unit_status(lr_file.id, 'archived')
 
 
 @blueprint.route('/deactivate-participant', methods=['POST'])
 def deactivate_participant():
     abort_if_not_admin()
 
-    lrf_id = request.values.get('lrf_id')
-    lr_file = _check_and_find_lic_related_file(lrf_id)
-    lr_file.status = "archived"
-    lr_file.save()
+    _deactivate_lrf_by_lrf_id(request.values.get('lrf_id'), Alliance)
 
-    alli: Alliance = object_query_first(Alliance, lr_file.record_id)
-    if alli is None:
-        log.warning(f'alliance[{lr_file.record_id}]] not found')
-    else:
-        alli.status = 'inactive'
-        alli.save()
-
-    _wait_unit_status(lr_file.id, 'archived')
     return redirect(url_for('license-manage.details'))
 
 
