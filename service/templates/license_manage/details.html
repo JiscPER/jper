@@ -140,8 +140,13 @@
             </form>
         </td>
         <td>
-            <button>Delete</button>
-        </td> <!-- KTODO delete button -->
+            {% if l.get('status') in allowed_del_status %}
+            <form method="POST" action="{{ url_for('license-manage.delete_lic_related_file') }}">
+                <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
+                <input type="submit" value="Delete"/>
+            </form>
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>

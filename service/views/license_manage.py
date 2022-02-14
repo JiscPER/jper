@@ -27,6 +27,8 @@ blueprint = Blueprint('license-manage', __name__)
 
 log: logging.Logger = app.logger
 
+ALLOWED_DEL_STATUS = ["validation failed", "archived"]
+
 
 def _create_versioned_filename(filename: str,
                                version_datetime: datetime) -> str:
@@ -135,7 +137,7 @@ def details():
                            allowed_lic_types=LRF_TYPES,
                            active_list=active_list,
                            history_list=(l.data for l in inactive_lr_files),
-                           )
+                           allowed_del_status=ALLOWED_DEL_STATUS, )
 
 
 def _load_lic_file_by_csv_bytes(file_bytes: bytes, filename: str) -> LicenseFile:
@@ -278,11 +280,11 @@ def _check_and_find_lic_related_file(lrf_id: str) -> LicRelatedFile:
     if not lrf_id:
         _abort()
 
-    lic_file: LicRelatedFile = object_query_first(LicRelatedFile, lrf_id)
-    if not lic_file:
+    lr_file: LicRelatedFile = object_query_first(LicRelatedFile, lrf_id)
+    if not lr_file:
         _abort()
 
-    return lic_file
+    return lr_file
 
 
 def _load_parti_csv_str_by_xls_bytes(xls_bytes: bytes) -> str:
@@ -295,11 +297,16 @@ def _load_parti_csv_str_by_xls_bytes(xls_bytes: bytes) -> str:
 
 
 def _save_lic_related_file(filename: str, file_bytes: bytes):
+    path = _path_lic_related_file(filename)
+    if not path.parent.exists():
+        path.parent.mkdir(exist_ok=True, parents=True)
+    path.write_bytes(file_bytes)
+
+
+def _path_lic_related_file(filename: str) -> Path:
     path = app.config.get('LIC_RELATED_FILE_DIR', '/data/lic_related_file')
     path = Path(path)
-    if not path.exists():
-        path.mkdir(exist_ok=True, parents=True)
-    path.joinpath(filename).write_bytes(file_bytes)
+    return path.joinpath(filename)
 
 
 @blueprint.route('/upload-participant', methods=['POST'])
@@ -402,6 +409,29 @@ def deactivate_license():
     _deactivate_lrf_by_lrf_id(request.values.get('lic_lrf_id'), License)
     if request.values.get('parti_lrf_id'):
         _deactivate_lrf_by_lrf_id(request.values.get('parti_lrf_id'), Alliance)
+    return redirect(url_for('license-manage.details'))
+
+
+@blueprint.route('/delete-lic-related-file', methods=['POST'])
+def delete_lic_related_file():
+    abort_if_not_admin()
+
+    # delete record LicRelatedFile
+    lrf_id = request.values.get('lrf_id')
+    lr_file = _check_and_find_lic_related_file(lrf_id)
+    lr_file.delete()
+
+    # delete file from hard disk
+    path = _path_lic_related_file(filename=lr_file.file_name)
+    if path.is_file():
+        log.info(f'remove file[{path.as_posix()}]')
+        os.remove(path)
+    else:
+        log.warning(f'skip remove -- file not found [{path.as_posix()}] ')
+
+    # make sure removed from db
+    ez_dao_utils.wait_unit_id_not_found(LicRelatedFile, lrf_id)
+
     return redirect(url_for('license-manage.details'))
 
 

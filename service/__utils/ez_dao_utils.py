@@ -34,6 +34,10 @@ def wait_unit_id_found(domain_obj_cls: Type[DomainObject], _id: str):
     wait_unit(lambda: domain_obj_cls.count(ez_query_maker.by_id(_id)) > 0)
 
 
+def wait_unit_id_not_found(domain_obj_cls: Type[DomainObject], _id: str):
+    wait_unit(lambda: domain_obj_cls.count(ez_query_maker.by_id(_id)) == 0)
+
+
 def pull_all_by_key(domain_obj_cls: Type[DomainObject], key, value, use_exact=True) -> Iterable:
     exact_str = '.exact' if use_exact else ''
     res = domain_obj_cls.query(q={"query": {"term": {key + exact_str: value}}})
