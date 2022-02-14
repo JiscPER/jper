@@ -143,9 +143,9 @@ def details():
                            allowed_del_status=ALLOWED_DEL_STATUS, )
 
 
-def _load_rows_by_csv_bytes(csv_bytes: bytes) -> list[list]:
-    csv_str = _decode_csv_bytes(csv_bytes)
-    return [row for row in csv.reader(io.StringIO(csv_str), delimiter='\t', quoting=csv.QUOTE_ALL)]
+def _load_rows_by_csv_str(csv_str: str) -> list[list]:
+    return [row for row in csv.reader(io.StringIO(csv_str), delimiter='\t',
+                                      quoting=csv.QUOTE_ALL)]
 
 
 def _to_csv_str(headers: list, data: Iterable[list]) -> str:
@@ -208,7 +208,8 @@ def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '', ):
     if any(filename.lower().endswith(fmt) for fmt in ['.xls', '.xlsx']):
         rows = _load_rows_by_xls_bytes(file_bytes)
     else:
-        rows = _load_rows_by_csv_bytes(file_bytes)
+        csv_str = _decode_csv_bytes(file_bytes)
+        rows = _load_rows_by_csv_str(csv_str)
 
     # validate and abort if failed
     try:
@@ -287,6 +288,16 @@ class ValidEmptyOrHttpLink:
             return None
         else:
             return f'column [{self.col_name}][{_val}] must be start with http'
+
+
+def _validate_parti_lrf(rows: list[list]):
+    header_row_idx = 0
+    n_cols = 3
+    if len(rows) < header_row_idx + 1:
+        raise ValueError('header not found')
+
+    if len(rows[0]) < n_cols:
+        raise ValueError(f'csv should have {n_cols} columns')
 
 
 def _validate_lic_lrf(rows: list[list]):
@@ -444,6 +455,10 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file, ):
         csv_str = _load_parti_csv_str_by_xls_bytes(file_bytes)
     else:
         abort(400, f'Invalid file format [{filename}]')
+
+    rows = _load_rows_by_csv_str(csv_str)
+    _validate_parti_lrf(rows)
+
     parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
 
     # save file to hard disk
