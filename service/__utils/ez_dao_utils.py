@@ -31,7 +31,7 @@ def wait_unit(cond_fn: Callable[[], bool], timeout=10, sleep_sec=0.1):
 
 
 def wait_unit_id_found(domain_obj_cls: Type[DomainObject], _id: str):
-    wait_unit(lambda: domain_obj_cls.count(ez_query_maker.query_by_id(_id)) > 0)
+    wait_unit(lambda: domain_obj_cls.count(ez_query_maker.by_id(_id)) > 0)
 
 
 def pull_all_by_key(domain_obj_cls: Type[DomainObject], key, value, use_exact=True) -> Iterable:

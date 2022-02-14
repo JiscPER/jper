@@ -1,4 +1,4 @@
-def query_by_id(id_str: str) -> dict:
+def by_id(id_str: str) -> dict:
     return {
         'query': {
             'bool': {
