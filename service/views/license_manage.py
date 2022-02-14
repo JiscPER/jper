@@ -8,7 +8,7 @@ import re
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, Callable, Type
+from typing import Iterable, Callable, Type, Optional
 
 import chardet
 import openpyxl
@@ -31,7 +31,10 @@ ALLOWED_DEL_STATUS = ["validation failed", "archived"]
 
 
 def _create_versioned_filename(filename: str,
-                               version_datetime: datetime) -> str:
+                               version_datetime: datetime = None) -> str:
+    if version_datetime is None:
+        version_datetime = datetime.now()
+
     idx = filename.rfind('.')
     if idx == -1:
         name = filename
@@ -140,20 +143,9 @@ def details():
                            allowed_del_status=ALLOWED_DEL_STATUS, )
 
 
-def _load_lic_file_by_csv_bytes(file_bytes: bytes, filename: str) -> LicenseFile:
-    csv_str = _decode_csv_bytes(file_bytes)
-
-    # find header line index
-    header_idx = 0
-    for _ in range(4):  # header in line 4
-        header_idx = csv_str.find('\n', header_idx + 1)
-        if header_idx == -1:
-            raise ValueError('header index not found')
-    table_str = csv_str[header_idx + 1:]
-
-    first_line = csv_str[:csv_str.find('\n')]
-    name, ezb_id = _extract_name_ezb_id_by_line(first_line)
-    return LicenseFile(ezb_id, name, table_str, filename=filename)
+def _load_rows_by_csv_bytes(csv_bytes: bytes) -> list[list]:
+    csv_str = _decode_csv_bytes(csv_bytes)
+    return [row for row in csv.reader(io.StringIO(csv_str), delimiter='\t', quoting=csv.QUOTE_ALL)]
 
 
 def _to_csv_str(headers: list, data: Iterable[list]) -> str:
@@ -181,12 +173,10 @@ def _load_rows_by_xls_bytes(xls_bytes: bytes) -> list[list]:
     return rows
 
 
-def _load_lic_file_by_xls_bytes(xls_bytes: bytes, filename: str) -> LicenseFile:
-    rows = _load_rows_by_xls_bytes(xls_bytes)
+def _load_lic_file_by_rows(rows: list[list], filename: str) -> LicenseFile:
     headers = rows[4]
     data = rows[5:]
     table_str = _to_csv_str(headers, data)
-
     name, ezb_id = _extract_name_ezb_id_by_line(rows[0][0])
     return LicenseFile(ezb_id, name, table_str, filename=filename)
 
@@ -210,13 +200,30 @@ def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '', ):
     # load lic_file
     filename = file.filename
     file_bytes = file.stream.read()
-    lic_file = None
-    if filename.lower().endswith('.csv'):
-        lic_file = _load_lic_file_by_csv_bytes(file_bytes, filename=filename)
-    elif any(filename.lower().endswith(fmt) for fmt in ['xls', 'xlsx']):
-        lic_file = _load_lic_file_by_xls_bytes(file_bytes, filename=filename)
-    else:
+
+    filename_lower: str = filename.lower().strip()
+    if all(not filename_lower.endswith(f) for f in ['.csv', '.xls', '.xlsx']):
         abort(400, f'Invalid file format [{filename}]')
+
+    if any(filename.lower().endswith(fmt) for fmt in ['.xls', '.xlsx']):
+        rows = _load_rows_by_xls_bytes(file_bytes)
+    else:
+        rows = _load_rows_by_csv_bytes(file_bytes)
+
+    # validate and abort if failed
+    try:
+        _validate_lic_lrf(rows)
+    except ValueError as e:
+        lrf_raw = dict(file_name=filename,
+                       type=lic_type,
+                       status='validation failed',
+                       admin_notes=admin_notes,
+                       validation_notes=str(e),
+                       )
+        LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        abort(400, f'file validation fail --- {str(e)}')
+        return
+    lic_file = _load_lic_file_by_rows(rows, filename=filename)
 
     # save file to hard disk
     _save_lic_related_file(lic_file.versioned_filename, file_bytes)
@@ -237,6 +244,79 @@ def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '', ):
                    upload_date=dates.format(lic_file.version_datetime), )
     lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=True)
     return lrf
+
+
+def _find_idx(header_row, col_name):
+    for i, v in enumerate(header_row):
+        if v == col_name:
+            return i
+    raise ValueError(f'colum not found [{col_name}]')
+
+
+def _is_empty_or_int(header_row, row, col_name):
+    _val = row[_find_idx(header_row, col_name)].strip()
+    return not _val or _val.isdigit()
+
+
+def _is_empty_or_http(header_row, row, col_name):
+    _val = row[_find_idx(header_row, col_name)].strip()
+    return not _val or _val.startswith('http')
+
+
+class ValidEmptyOrInt:
+    def __init__(self, col_name: str, header_row: list):
+        self.col_name = col_name
+        self.col_idx = _find_idx(header_row, col_name)
+
+    def validate(self, row: list) -> Optional[str]:
+        _val = row[self.col_idx].strip()
+        if not _val or _val.isdigit():
+            return None
+        else:
+            return f'column [{self.col_name}][{_val}] must be int'
+
+
+class ValidEmptyOrHttpLink:
+    def __init__(self, col_name: str, header_row: list):
+        self.col_name = col_name
+        self.col_idx = _find_idx(header_row, col_name)
+
+    def validate(self, row: list) -> Optional[str]:
+        _val = row[self.col_idx].strip()
+        if not _val or _val.startswith('http'):
+            return None
+        else:
+            return f'column [{self.col_name}][{_val}] must be start with http'
+
+
+def _validate_lic_lrf(rows: list[list]):
+    n_cols = 17
+    header_row_idx = 4
+
+    if len(rows) == 0 or len(rows[0]) == 0:
+        raise ValueError('first line not found')
+    _extract_name_ezb_id_by_line(rows[0][0])
+
+    if len(rows) < header_row_idx + 1:
+        raise ValueError('header not found')
+
+    if len(rows) < n_cols:
+        raise ValueError(f'csv should have {n_cols} columns')
+
+    header_row = rows[header_row_idx]
+    validate_fn_list = [
+        ValidEmptyOrInt('erstes Jahr', header_row),
+        ValidEmptyOrInt('erstes volume', header_row),
+        ValidEmptyOrInt('Embargo', header_row),
+        ValidEmptyOrHttpLink('Link zur Zeitschrift', header_row),
+        ValidEmptyOrHttpLink('FrontdoorURL', header_row),
+    ]
+
+    row_validator_list = itertools.product(rows[header_row_idx + 1:], validate_fn_list)
+    err_msgs = (validator.validate(row) for row, validator in row_validator_list)
+    err_msgs = filter(None, err_msgs)
+    for err_msg in err_msgs:
+        raise ValueError(err_msg)
 
 
 @blueprint.route('/active-lic-related_file', methods=['POST'])
@@ -517,15 +597,21 @@ def _extract_name_ezb_id_by_line(line: str) -> tuple[str, str]:
         name, ezb_id = results[0]
         return name.strip(), ezb_id.strip()
     else:
-        raise ValueError(f'first line not found [{line}]')
+        raise ValueError(f'name and ezb_id not found[{line}]')
 
 
 def main3():
-    with open('/home/kk/tmp/testing.csv', mode='rb') as f:
+    # file_path = '/home/kk/tmp/testing_err1.csv'
+    file_path = '/home/kk/tmp/testing_err2.csv'
+    with open(file_path, mode='rb') as f:
         b = f.read()
 
-    lic_file = _load_lic_file_by_csv_bytes(b, 'abc.csv')
-    print(lic_file.versioned_filename)
+    rows = _load_rows_by_csv_bytes(b)
+    _validate_lic_lrf(rows)
+    print(rows)
+
+    # lic_file = _load_lic_file_by_csv_bytes(b, 'abc.csv')
+    # print(lic_file.versioned_filename)
 
 
 def main4():
@@ -533,7 +619,7 @@ def main4():
         xls_bytes = f.read()
         # w = openpyxl.load_workbook(io.BytesIO(f.read()))
 
-    result = _load_lic_file_by_xls_bytes(xls_bytes)
+    result = _load_lic_file_by_xls_bytes(xls_bytes, 'abc.xlsx')
     print(result)
 
     # sheet = w.active
@@ -554,4 +640,4 @@ def main5():
 
 
 if __name__ == '__main__':
-    main5()
+    main3()
