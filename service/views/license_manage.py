@@ -219,14 +219,14 @@ def upload_license():
                          init_status='inactive')
 
     # save lic_related_file to db
-    lic_related_file_raw = dict(file_name=lic_file.versioned_filename,
-                                type=lic_type,
-                                ezb_id=lic_file.ezb_id,
-                                status='validation passed',
-                                admin_notes=admin_notes,
-                                record_id=lic.id,
-                                upload_date=dates.format(lic_file.version_datetime), )
-    _save_new_lrf(lic_related_file_raw)
+    lrf_raw = dict(file_name=lic_file.versioned_filename,
+                   type=lic_type,
+                   ezb_id=lic_file.ezb_id,
+                   status='validation passed',
+                   admin_notes=admin_notes,
+                   record_id=lic.id,
+                   upload_date=dates.format(lic_file.version_datetime), )
+    LicRelatedFile.save_by_raw(lrf_raw, blocking=True)
     return redirect(url_for('license-manage.details'))
 
 
@@ -342,7 +342,7 @@ def upload_participant():
                        record_id=alliance.id,
                        upload_date=dates.format(parti_file.version_datetime),
                        lic_related_file_id=lic_lr_file.id)
-    _save_new_lrf(lr_file_raw)
+    LicRelatedFile.save_by_raw(lr_file_raw, blocking=True)
     return redirect(url_for('license-manage.details'))
 
 

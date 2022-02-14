@@ -7,6 +7,7 @@ import csv
 from octopus.core import app
 from octopus.lib import dataobj
 from service import dao
+from service.__utils import ez_dao_utils
 
 LRF_TYPES = ["alliance", "national", "open", "gold", "deal", "fid"]
 LRF_STATUS = ["validation failed", "validation passed", "active", "archived", ]
@@ -803,6 +804,13 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
 
         self._add_struct(struct)
         super(LicRelatedFile, self).__init__(raw=raw)
+
+    @classmethod
+    def save_by_raw(cls, lrf_raw: dict, blocking=False):
+        new_lrf = cls(raw=lrf_raw)
+        new_lrf.save()
+        if blocking:
+            ez_dao_utils.wait_unit_id_found(cls, new_lrf.id)
 
     @property
     def status(self):
