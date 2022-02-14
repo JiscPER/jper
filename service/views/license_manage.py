@@ -18,7 +18,6 @@ from flask_login.utils import current_user
 
 from octopus.core import app
 from octopus.lib import dates
-from service import models
 from service.__utils import ez_dao_utils
 from service.__utils.ez_dao_utils import object_query_first
 from service.models import License
@@ -126,6 +125,9 @@ def details():
     # prepare active_list
     active_list: Iterable[ActiveLicRelatedRow] = (_to_active_lr_rows(lic_lrf, parti_lr_files)
                                                   for lic_lrf in lic_lr_files)
+
+    # KTODO add disable btn message for parti msg
+
     return render_template('license_manage/details.html',
                            allowed_lic_types=LRF_TYPES,
                            active_list=active_list,
@@ -136,21 +138,20 @@ def details():
 def _load_lic_file_by_csv_bytes(file_bytes: bytes, filename: str) -> LicenseFile:
     csv_str = _decode_csv_bytes(file_bytes)
 
-    first_line = csv_str[:csv_str.find('\n')]
-    name, ezb_id = _extract_name_ezb_id_by_line(first_line)
-
     # find header line index
     header_idx = 0
     for _ in range(4):  # header in line 4
         header_idx = csv_str.find('\n', header_idx + 1)
         if header_idx == -1:
             raise ValueError('header index not found')
-
     table_str = csv_str[header_idx + 1:]
+
+    first_line = csv_str[:csv_str.find('\n')]
+    name, ezb_id = _extract_name_ezb_id_by_line(first_line)
     return LicenseFile(ezb_id, name, table_str, filename=filename)
 
 
-def _convert_data_to_csv_str(headers: list, data: Iterable[list]) -> str:
+def _to_csv_str(headers: list, data: Iterable[list]) -> str:
     dict_rows = [{headers[col_idx]: row[col_idx] for col_idx in range(len(headers))}
                  for row in data]
 
@@ -179,7 +180,7 @@ def _load_lic_file_by_xls_bytes(xls_bytes: bytes, filename: str) -> LicenseFile:
     rows = _load_rows_by_xls_bytes(xls_bytes)
     headers = rows[4]
     data = rows[5:]
-    table_str = _convert_data_to_csv_str(headers, data)
+    table_str = _to_csv_str(headers, data)
 
     name, ezb_id = _extract_name_ezb_id_by_line(rows[0][0])
     return LicenseFile(ezb_id, name, table_str, filename=filename)
@@ -228,13 +229,6 @@ def upload_license():
                    upload_date=dates.format(lic_file.version_datetime), )
     LicRelatedFile.save_by_raw(lrf_raw, blocking=True)
     return redirect(url_for('license-manage.details'))
-
-
-def _save_new_lrf(lrf_raw: dict, blocking=True):
-    new_lrf = models.LicRelatedFile(raw=lrf_raw)
-    new_lrf.save()
-    if blocking:
-        ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
 
 
 @blueprint.route('/active-lic-related_file', methods=['POST'])
@@ -287,7 +281,7 @@ def _load_parti_csv_str_by_xls_bytes(xls_bytes: bytes) -> str:
     if len(rows) == 0:
         return ''
 
-    table_str = _convert_data_to_csv_str(rows[0], rows[1:])
+    table_str = _to_csv_str(rows[0], rows[1:])
     return table_str
 
 
@@ -354,6 +348,8 @@ def update_license():
     lr_file: LicRelatedFile = _check_and_find_lic_related_file(lrf_id)
 
     # KTODO
+
+    # KTODO change parti_lrf.lic_related_file_id to new_lic_lrf.id
 
 
 @blueprint.route('/update-participant', methods=['POST'])
