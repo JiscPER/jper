@@ -45,12 +45,18 @@
     </thead>
     {% for l in active_list %}
     <tr>
-        <td> {{ l.lic_filename }}</td>
+        <td>
+            <a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=l.lic_lrf_id ) }}">
+                {{ l.lic_filename }}
+            </a>
+        </td>
         <td> {{ l.lic_upload_date }}</td>
         <td> {{ l.lic_type }}</td>
         <td>
             {% if l.parti_filename  %}
+            <a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=l.parti_lrf_id ) }}">
                 {{ l.parti_filename }}
+            </a>
             {% endif %}
 
             {% if not l.parti_filename  %}
@@ -129,7 +135,11 @@
 
     {% for l in history_list %}
     <tr>
-        <td> {{ l.get('file_name') }}</td>
+        <td>
+            <a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=l.get('id') ) }}">
+                {{ l.get('file_name') }}
+            </a>
+        </td>
         <td> {{ l.get('type') }}</td>
         <td> {{ l.get('status') }}</td>
         <td> {{ l.get('upload_date') }}</td>

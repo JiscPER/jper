@@ -13,7 +13,7 @@ from typing import Iterable, Callable, Type
 import chardet
 import openpyxl
 from esprit.dao import DomainObject
-from flask import Blueprint, abort, render_template, request, redirect, url_for
+from flask import Blueprint, abort, render_template, request, redirect, url_for, send_file
 from flask_login.utils import current_user
 
 from octopus.core import app
@@ -433,6 +433,34 @@ def delete_lic_related_file():
     ez_dao_utils.wait_unit_id_not_found(LicRelatedFile, lrf_id)
 
     return redirect(url_for('license-manage.details'))
+
+
+@blueprint.route('/download-lic-related-file')
+def download_lic_related_file():
+    abort_if_not_admin()
+
+    lrf_id = request.values.get('lrf_id')
+    lr_file = _check_and_find_lic_related_file(lrf_id)
+
+    file_path = _path_lic_related_file(lr_file.file_name)
+
+    # check file exist
+    if not file_path.is_file():
+        log.warning(f'file not found [{file_path.as_posix()}]')
+        abort(404)
+
+    # define mimetype
+    _path_str = file_path.as_posix().lower()
+    if _path_str.endswith('.xls'):
+        mimetype = 'application/vnd.ms-excel'
+    elif _path_str.endswith('.xlsx'):
+        mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    else:
+        mimetype = 'text/csv'
+
+    return send_file(io.BytesIO(file_path.read_bytes()),
+                     as_attachment=True, attachment_filename=lr_file.file_name,
+                     mimetype=mimetype)
 
 
 def _deactivate_lrf_by_lrf_id(lrf_id: str,
