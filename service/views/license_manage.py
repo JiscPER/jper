@@ -306,46 +306,9 @@ def _save_lic_related_file(filename: str, file_bytes: bytes):
 def upload_participant():
     abort_if_not_admin()
 
-    lic_lrf_id = request.values.get('lic_lrf_id')
-    lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
+    _upload_new_parti_lrf(request.values.get('lic_lrf_id'),
+                          request.files.get('file'))
 
-    # validate
-    lic: License = object_query_first(License, lic_lr_file.record_id)
-    lic_ezb_id = lic and lic.get_first_ezb_id()
-    if lic_ezb_id is None:
-        log.warning(f'ezb_id not found -- {lic_lr_file.record_id}')
-        abort(404)
-
-    # load parti_file
-    filename = request.files['file'].filename
-    file_bytes = request.files['file'].stream.read()
-    csv_str: str = None
-    if filename.lower().endswith('.csv'):
-        csv_str = _decode_csv_bytes(file_bytes)
-    elif any(filename.lower().endswith(fmt) for fmt in ['xls', 'xlsx']):
-        csv_str = _load_parti_csv_str_by_xls_bytes(file_bytes)
-    else:
-        abort(400, f'Invalid file format [{filename}]')
-    parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
-
-    # save file to hard disk
-    _save_lic_related_file(parti_file.versioned_filename, file_bytes)
-
-    # save participant to db
-    alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()
-    alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str,
-                               init_status='inactive')
-
-    # save lic_related_file to db
-    lr_file_raw = dict(file_name=parti_file.versioned_filename,
-                       type=None,
-                       ezb_id=lic_ezb_id,
-                       status='validation passed',
-                       admin_notes=None,
-                       record_id=alliance.id,
-                       upload_date=dates.format(parti_file.version_datetime),
-                       lic_related_file_id=lic_lr_file.id)
-    LicRelatedFile.save_by_raw(lr_file_raw, blocking=True)
     return redirect(url_for('license-manage.details'))
 
 
@@ -374,10 +337,63 @@ def update_license():
     return redirect(url_for('license-manage.details'))
 
 
+def _upload_new_parti_lrf(lic_lrf_id: str, file, ):
+    lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
+
+    # validate
+    lic: License = object_query_first(License, lic_lr_file.record_id)
+    lic_ezb_id = lic and lic.get_first_ezb_id()
+    if lic_ezb_id is None:
+        log.warning(f'ezb_id not found -- {lic_lr_file.record_id}')
+        abort(404)
+
+    # load parti_file
+    filename = file.filename
+    file_bytes = file.stream.read()
+    csv_str: str = None
+    if filename.lower().endswith('.csv'):
+        csv_str = _decode_csv_bytes(file_bytes)
+    elif any(filename.lower().endswith(fmt) for fmt in ['xls', 'xlsx']):
+        csv_str = _load_parti_csv_str_by_xls_bytes(file_bytes)
+    else:
+        abort(400, f'Invalid file format [{filename}]')
+    parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
+
+    # save file to hard disk
+    _save_lic_related_file(parti_file.versioned_filename, file_bytes)
+
+    # save participant to db
+    alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()
+    alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str,
+                               init_status='inactive')
+
+    # save lic_related_file to db
+    lr_file_raw = dict(file_name=parti_file.versioned_filename,
+                       type=None,
+                       ezb_id=lic_ezb_id,
+                       status='validation passed',
+                       admin_notes=None,
+                       record_id=alliance.id,
+                       upload_date=dates.format(parti_file.version_datetime),
+                       lic_related_file_id=lic_lr_file.id)
+    LicRelatedFile.save_by_raw(lr_file_raw, blocking=True)
+    return lr_file_raw
+
+
 @blueprint.route('/update-participant', methods=['POST'])
 def update_participant():
     abort_if_not_admin()
-    # KTODO
+    lic_lrf_id = request.values.get('lic_lrf_id')
+    _check_and_find_lic_related_file(lic_lrf_id)
+
+    # save new parti
+    _upload_new_parti_lrf(lic_lrf_id, request.files.get('file'))
+
+    # deactivate old parti
+    parti_lrf_id = request.values.get('parti_lrf_id')
+    _deactivate_lrf_by_lrf_id(parti_lrf_id, Alliance)
+
+    return redirect(url_for('license-manage.details'))
 
 
 @blueprint.route('/deactivate-license', methods=['POST'])
