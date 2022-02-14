@@ -18,7 +18,7 @@ from flask_login.utils import current_user
 
 from octopus.core import app
 from octopus.lib import dates
-from service.__utils import ez_dao_utils
+from service.__utils import ez_dao_utils, ez_query_maker
 from service.__utils.ez_dao_utils import object_query_first
 from service.models import License
 from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance
@@ -112,7 +112,10 @@ def _to_active_lr_rows(lic_lrf: LicRelatedFile,
 def details():
     abort_if_not_admin()
 
-    lic_related_files = [l for l in LicRelatedFile.object_query()]
+    query = ez_query_maker.match_all()
+    query['sort'] = [{"last_updated": {"order": "desc"}}]
+    query['size'] = 100
+    lic_related_files = [l for l in LicRelatedFile.object_query(query)]
     active_lr_files, inactive_lr_files = _split_list_by_cond_fn(lambda l: l.status == 'active',
                                                                 lic_related_files)
     active_lr_files = list(active_lr_files)
@@ -188,20 +191,23 @@ def _load_lic_file_by_xls_bytes(xls_bytes: bytes, filename: str) -> LicenseFile:
 
 @blueprint.route('/upload-license', methods=['POST'])
 def upload_license():
-    if request.values.get('lic_type') not in LRF_TYPES:
-        abort(400, f'Invalid parameter "lic_type" [{request.values.get("lic_type")}]')
-
-    # request values
-    lic_type = request.values['lic_type']
-    admin_notes = request.values.get('admin_notes', '')
-
     abort_if_not_admin()
-    if 'file' not in request.files:
+    _upload_new_lic_lrf(request.values.get('lic_type'),
+                        request.files.get('file'),
+                        admin_notes=request.values.get('admin_notes', ''))
+    return redirect(url_for('license-manage.details'))
+
+
+def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '', ):
+    if lic_type not in LRF_TYPES:
+        abort(400, f'Invalid parameter "lic_type" [{lic_type}]')
+
+    if file is None:
         abort(400, 'parameter "file" not found')
 
     # load lic_file
-    filename = request.files['file'].filename
-    file_bytes = request.files['file'].stream.read()
+    filename = file.filename
+    file_bytes = file.stream.read()
     lic_file = None
     if filename.lower().endswith('.csv'):
         lic_file = _load_lic_file_by_csv_bytes(file_bytes, filename=filename)
@@ -227,8 +233,8 @@ def upload_license():
                    admin_notes=admin_notes,
                    record_id=lic.id,
                    upload_date=dates.format(lic_file.version_datetime), )
-    LicRelatedFile.save_by_raw(lrf_raw, blocking=True)
-    return redirect(url_for('license-manage.details'))
+    lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=True)
+    return lrf
 
 
 @blueprint.route('/active-lic-related_file', methods=['POST'])
@@ -265,13 +271,16 @@ def _wait_unit_status(lrf_id: str, target_status):
 
 
 def _check_and_find_lic_related_file(lrf_id: str) -> LicRelatedFile:
-    if not lrf_id:
+    def _abort():
+        log.warning(f'lic_related_file not found lrf_id[{lrf_id}]')
         abort(404)
+
+    if not lrf_id:
+        _abort()
 
     lic_file: LicRelatedFile = object_query_first(LicRelatedFile, lrf_id)
     if not lic_file:
-        log.warning(f'lic_related_file not found lrf_id[{lrf_id}]')
-        abort(404)
+        _abort()
 
     return lic_file
 
@@ -297,7 +306,7 @@ def _save_lic_related_file(filename: str, file_bytes: bytes):
 def upload_participant():
     abort_if_not_admin()
 
-    lic_lrf_id = request.values.get('lrf_id')
+    lic_lrf_id = request.values.get('lic_lrf_id')
     lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
     # validate
@@ -344,12 +353,25 @@ def upload_participant():
 def update_license():
     abort_if_not_admin()
 
-    lrf_id = request.values.get('lrf_id')
-    lr_file: LicRelatedFile = _check_and_find_lic_related_file(lrf_id)
+    lic_lrf_id = request.values.get('lic_lrf_id')
+    lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
-    # KTODO
+    new_lrf = _upload_new_lic_lrf(lic_lr_file.type,
+                                  request.files.get('file'))
 
-    # KTODO change parti_lrf.lic_related_file_id to new_lic_lrf.id
+    _deactivate_lrf_by_lrf_id(lic_lrf_id, License)
+
+    # replace to new lic_lrf_id
+    parti_lrf_id = request.values.get('parti_lrf_id')
+    if parti_lrf_id:
+        parti_lr_file = _check_and_find_lic_related_file(parti_lrf_id)
+        parti_lr_file.lic_related_file_id = new_lrf.id
+        parti_lr_file.save()
+        ez_dao_utils.wait_unit(
+            lambda: LicRelatedFile.count(ez_query_maker.by_term("lic_related_file_id", new_lrf.id))
+        )
+
+    return redirect(url_for('license-manage.details'))
 
 
 @blueprint.route('/update-participant', methods=['POST'])
@@ -366,15 +388,15 @@ def deactivate_license():
     return redirect(url_for('license-manage.details'))
 
 
-def _deactivate_lrf_by_lrf_id(parti_lrf_id: str,
-                              record_cls: Type[DomainObject]):
-    lr_file = _check_and_find_lic_related_file(parti_lrf_id)
+def _deactivate_lrf_by_lrf_id(lrf_id: str,
+                              record_cls: Type[DomainObject], ):
+    lr_file = _check_and_find_lic_related_file(lrf_id)
     lr_file.status = "archived"
     lr_file.save()
 
     record = object_query_first(record_cls, lr_file.record_id)
     if record is None:
-        log.warning(f'alliance[{lr_file.record_id}]] not found')
+        log.warning(f'record[{lr_file.record_id}]] not found')
     else:
         record.status = 'inactive'
         record.save()

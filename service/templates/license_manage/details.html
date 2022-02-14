@@ -57,9 +57,9 @@
             <form method="POST"
                   action="{{ url_for('license-manage.upload_participant') }}"
                   enctype="multipart/form-data" >
-                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
+                <input type="hidden" name="lic_lrf_id" value="{{ l.lic_lrf_id }}">
                 <input type="file" name="file" class="hide_file_upload submit_on_change"/>
-                <button class="long_act_btn add_parti_btn"> Add </button>
+                <button class="long_act_btn trigger_file_btn"> Add </button>
             </form>
             {% endif %}
         </td>
@@ -67,10 +67,13 @@
             {{ l.parti_upload_date }}
         </td>
         <td>
-            <form method="POST" action="{{ url_for('license-manage.update_license') }}">
-                <!-- KTODO update_license -->
-                <input type="hidden" name="lrf_id" value="{{ l.lic_lrf_id }}">
-                <button type="submit" class="long_act_btn">
+            <form method="POST"
+                  action="{{ url_for('license-manage.update_license') }}"
+                  enctype="multipart/form-data" >
+                <input type="hidden" name="lic_lrf_id" value="{{ l.lic_lrf_id }}">
+                <input type="hidden" name="parti_lrf_id" value="{{ l.parti_lrf_id }}">
+                <input type="file" name="file" class="hide_file_upload submit_on_change"/>
+                <button type="submit" class="long_act_btn trigger_file_btn">
                     License
                 </button>
             </form>
@@ -162,7 +165,7 @@
 <script>
 
 
-    $('.add_parti_btn').click((e) => {
+    $('.trigger_file_btn').click((e) => {
         e.preventDefault()
         const jq_form = $(e.target.parentElement)
         const jq_file = jq_form.find('input[type=file]')

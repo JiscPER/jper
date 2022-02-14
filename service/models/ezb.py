@@ -806,11 +806,12 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
         super(LicRelatedFile, self).__init__(raw=raw)
 
     @classmethod
-    def save_by_raw(cls, lrf_raw: dict, blocking=False):
+    def save_by_raw(cls, lrf_raw: dict, blocking=False) -> "LicRelatedFile":
         new_lrf = cls(raw=lrf_raw)
         new_lrf.save()
         if blocking:
             ez_dao_utils.wait_unit_id_found(cls, new_lrf.id)
+        return new_lrf
 
     @property
     def status(self):

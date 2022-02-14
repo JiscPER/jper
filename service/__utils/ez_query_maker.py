@@ -8,3 +8,21 @@ def query_by_id(id_str: str) -> dict:
             }
         }
     }
+
+
+def by_term(term, value) -> dict:
+    return {"query": {"term": {
+        term: value
+    }}}
+
+
+def match_all() -> dict:
+    return {
+        'query': {
+            'bool': {
+                'must': [
+                    {'match_all': {}}
+                ]
+            }
+        }
+    }
