@@ -383,8 +383,9 @@ def update_participant():
 @blueprint.route('/deactivate-license', methods=['POST'])
 def deactivate_license():
     abort_if_not_admin()
-    _deactivate_lrf_by_lrf_id(request.values.get('lic_lrf_id'), Alliance)
-    _deactivate_lrf_by_lrf_id(request.values.get('parti_lrf_id'), Alliance)
+    _deactivate_lrf_by_lrf_id(request.values.get('lic_lrf_id'), License)
+    if request.values.get('parti_lrf_id'):
+        _deactivate_lrf_by_lrf_id(request.values.get('parti_lrf_id'), Alliance)
     return redirect(url_for('license-manage.details'))
 
 
