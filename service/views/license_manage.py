@@ -320,7 +320,7 @@ def _validate_parti_lrf(rows: list[list]):
 
 
 def _validate_lic_lrf(rows: list[list]):
-    n_cols = 17
+    n_cols = 9
     header_row_idx = 4
 
     if len(rows) == 0 or len(rows[0]) == 0:
@@ -334,12 +334,15 @@ def _validate_lic_lrf(rows: list[list]):
         raise ValueError(f'csv should have {n_cols} columns')
 
     header_row = rows[header_row_idx]
+
+    # check mandatory header
+    missing_headers = {'Titel', 'Verlag', 'E-ISSN', 'P-ISSN', 'Embargo'} - set(header_row)
+    if missing_headers:
+        raise ValueError(f'missing header {missing_headers}')
+
     validate_fn_list = [
         ValidEmptyOrInt('erstes Jahr', header_row),
-        ValidEmptyOrInt('erstes volume', header_row),
         ValidEmptyOrInt('Embargo', header_row),
-        ValidEmptyOrHttpLink('Link zur Zeitschrift', header_row),
-        ValidEmptyOrHttpLink('FrontdoorURL', header_row),
     ]
 
     row_validator_list = itertools.product(rows[header_row_idx + 1:], validate_fn_list)
