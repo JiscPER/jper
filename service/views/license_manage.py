@@ -8,7 +8,7 @@ import re
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, Callable, Type, Optional
+from typing import Iterable, Callable, Type, Optional, NoReturn
 
 import chardet
 import openpyxl
@@ -28,6 +28,8 @@ blueprint = Blueprint('license-manage', __name__)
 log: logging.Logger = app.logger
 
 ALLOWED_DEL_STATUS = ["validation failed", "archived"]
+
+CompleteChecker = Callable[[], NoReturn]
 
 
 def _create_versioned_filename(filename: str,
@@ -184,10 +186,11 @@ def _load_lic_file_by_rows(rows: list[list], filename: str) -> LicenseFile:
 @blueprint.route('/upload-license', methods=['POST'])
 def upload_license():
     abort_if_not_admin()
-    _upload_new_lic_lrf(request.values.get('lic_type'),
-                        request.files.get('file'),
-                        admin_notes=request.values.get('admin_notes', ''),
-                        is_active=False)
+    lrf = _upload_new_lic_lrf(request.values.get('lic_type'),
+                              request.files.get('file'),
+                              admin_notes=request.values.get('admin_notes', ''),
+                              is_active=False)
+    ez_dao_utils.wait_unit_id_found(LicRelatedFile, lrf.id)
     return redirect(url_for('license-manage.details'))
 
 
@@ -241,11 +244,8 @@ def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '',
     # prepare status
     rec_status, lrf_status = _prepare_upload_status(is_active)
 
-    # save file to hard disk
-    _save_lic_related_file(lic_file.versioned_filename, file_bytes)
-
-    # save license to db
-    lic = _load_or_create_lic(lic_file.ezb_id)
+    # create or update license by csv file
+    lic = _load_or_create_lic(lic_file.ezb_id)    # KTODO should always create new lic deactivate old lic
     lic.set_license_data(lic_file.ezb_id, lic_file.name,
                          type=lic_type, csvfile=lic_file.table_str,
                          init_status=rec_status)
@@ -258,7 +258,11 @@ def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '',
                    admin_notes=admin_notes,
                    record_id=lic.id,
                    upload_date=dates.format(lic_file.version_datetime), )
-    lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=True)
+    lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+
+    # save file to hard disk
+    _save_lic_related_file(lic_file.versioned_filename, file_bytes)
+
     return lrf
 
 
@@ -437,7 +441,7 @@ def update_license():
                                   request.files.get('file'),
                                   is_active=True)
 
-    _deactivate_lrf_by_lrf_id(lic_lrf_id, License)
+    deact_checker = _deactivate_lrf_by_lrf_id(lic_lrf_id, License)
 
     # replace to new lic_lrf_id
     parti_lrf_id = request.values.get('parti_lrf_id')
@@ -449,10 +453,14 @@ def update_license():
             lambda: LicRelatedFile.count(ez_query_maker.by_term("lic_related_file_id", new_lrf.id))
         )
 
+    # wait for completed
+    deact_checker()
+    ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
+
     return redirect(url_for('license-manage.details'))
 
 
-def _upload_new_parti_lrf(lic_lrf_id: str, file, is_active=False):
+def _upload_new_parti_lrf(lic_lrf_id: str, file, is_active=False) -> LicRelatedFile:
     lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
     # validate
@@ -481,11 +489,8 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file, is_active=False):
     # prepare status
     rec_status, lrf_status = _prepare_upload_status(is_active)
 
-    # save file to hard disk
-    _save_lic_related_file(parti_file.versioned_filename, file_bytes)
-
     # save participant to db
-    alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()
+    alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()   # KTODO should always create new one deactivate old one
     alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str,
                                init_status=rec_status)
 
@@ -498,8 +503,12 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file, is_active=False):
                        record_id=alliance.id,
                        upload_date=dates.format(parti_file.version_datetime),
                        lic_related_file_id=lic_lr_file.id)
-    LicRelatedFile.save_by_raw(lr_file_raw, blocking=True)
-    return lr_file_raw
+    new_lrf = LicRelatedFile.save_by_raw(lr_file_raw, blocking=False)
+
+    # save file to hard disk
+    _save_lic_related_file(parti_file.versioned_filename, file_bytes)
+
+    return new_lrf
 
 
 @blueprint.route('/update-participant', methods=['POST'])
@@ -509,12 +518,16 @@ def update_participant():
     _check_and_find_lic_related_file(lic_lrf_id)
 
     # save new parti
-    _upload_new_parti_lrf(lic_lrf_id, request.files.get('file'),
-                          is_active=True)
+    new_lrf = _upload_new_parti_lrf(lic_lrf_id, request.files.get('file'),
+                                    is_active=True)
 
     # deactivate old parti
     parti_lrf_id = request.values.get('parti_lrf_id')
-    _deactivate_lrf_by_lrf_id(parti_lrf_id, Alliance)
+    deact_checker = _deactivate_lrf_by_lrf_id(parti_lrf_id, Alliance)
+
+    # wait for completed
+    ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
+    deact_checker()
 
     return redirect(url_for('license-manage.details'))
 
@@ -522,9 +535,13 @@ def update_participant():
 @blueprint.route('/deactivate-license', methods=['POST'])
 def deactivate_license():
     abort_if_not_admin()
-    _deactivate_lrf_by_lrf_id(request.values.get('lic_lrf_id'), License)
+    lic_checker = _deactivate_lrf_by_lrf_id(request.values.get('lic_lrf_id'), License)
+    parti_checker = None
     if request.values.get('parti_lrf_id'):
-        _deactivate_lrf_by_lrf_id(request.values.get('parti_lrf_id'), Alliance)
+        parti_checker = _deactivate_lrf_by_lrf_id(request.values.get('parti_lrf_id'), Alliance)
+
+    lic_checker()
+    parti_checker and parti_checker()
     return redirect(url_for('license-manage.details'))
 
 
@@ -580,7 +597,7 @@ def download_lic_related_file():
 
 
 def _deactivate_lrf_by_lrf_id(lrf_id: str,
-                              record_cls: Type[DomainObject], ):
+                              record_cls: Type[DomainObject], ) -> CompleteChecker:
     lr_file = _check_and_find_lic_related_file(lrf_id)
     lr_file.status = "archived"
     lr_file.save()
@@ -592,14 +609,17 @@ def _deactivate_lrf_by_lrf_id(lrf_id: str,
         record.status = 'inactive'
         record.save()
 
-    _wait_unit_status(lr_file.id, 'archived')
+    def _complete_checker():
+        _wait_unit_status(lr_file.id, 'archived')
+
+    return _complete_checker
 
 
 @blueprint.route('/deactivate-participant', methods=['POST'])
 def deactivate_participant():
     abort_if_not_admin()
 
-    _deactivate_lrf_by_lrf_id(request.values.get('lrf_id'), Alliance)
+    _deactivate_lrf_by_lrf_id(request.values.get('lrf_id'), Alliance)()
 
     return redirect(url_for('license-manage.details'))
 
