@@ -31,7 +31,7 @@
 
 
 <h2>Current License Files</h2>
-<table>
+<table class="file_tbl">
     <thead>
     <tr>
         <th>License File</th>
@@ -65,7 +65,7 @@
                   enctype="multipart/form-data" >
                 <input type="hidden" name="lic_lrf_id" value="{{ l.lic_lrf_id }}">
                 <input type="file" name="file" class="hide_file_upload submit_on_change"/>
-                <button class="long_act_btn trigger_file_btn"> Add </button>
+                <button class="act_btn trigger_file_btn"> Add </button>
             </form>
             {% endif %}
         </td>
@@ -121,7 +121,7 @@
 
 
 <h2>History</h2>
-<table>
+<table class="file_tbl">
     <thead>
     <tr>
         <th>File name</th>
@@ -147,7 +147,7 @@
             {% if l.get('status') not in ['validation failed'] %}
             <form method="POST" action="{{ url_for('license-manage.active_lic_related_file') }}">
                 <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
-                <input type="submit" value="Active"/>
+                <input class="act_btn" type="submit" value="Active"/>
             </form>
             {% endif %}
         </td>
@@ -155,7 +155,7 @@
             {% if l.get('status') in allowed_del_status %}
             <form method="POST" action="{{ url_for('license-manage.delete_lic_related_file') }}">
                 <input type="hidden" name="lrf_id" value="{{ l.get('id') }}">
-                <input type="submit" value="Delete"/>
+                <input class="act_btn" type="submit" value="Delete"/>
             </form>
             {% endif %}
         </td>
@@ -179,6 +179,13 @@
         display: none;
     }
 
+    .file_tbl tr td {
+        font-size: 12px;
+    }
+    .act_btn {
+        font-size: 13px;
+    }
+
 
 </style>
 
@@ -198,12 +205,6 @@
             jq_file.parent('form').submit()
         }
     })
-
-
-    // $('#upload-btn').change(() => {
-    //     // KTODO test and handle filename empty
-    //     $('#upload-license-form').submit()
-    // })
 
 
 </script>
