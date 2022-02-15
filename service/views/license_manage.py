@@ -188,24 +188,12 @@ def upload_license():
     abort_if_not_admin()
     lrf = _upload_new_lic_lrf(request.values.get('lic_type'),
                               request.files.get('file'),
-                              admin_notes=request.values.get('admin_notes', ''),
-                              is_active=False)
+                              admin_notes=request.values.get('admin_notes', ''))
     ez_dao_utils.wait_unit_id_found(LicRelatedFile, lrf.id)
     return redirect(url_for('license-manage.details'))
 
 
-def _prepare_upload_status(is_active) -> tuple[str, str]:
-    if is_active:
-        rec_status = 'active'
-        lrf_status = 'active'
-    else:
-        rec_status = 'inactive'
-        lrf_status = 'validation passed'
-    return rec_status, lrf_status
-
-
-def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '',
-                        is_active=False):
+def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = ''):
     if lic_type not in LRF_TYPES:
         abort(400, f'Invalid parameter "lic_type" [{lic_type}]')
 
@@ -241,20 +229,17 @@ def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = '',
         return
     lic_file = _load_lic_file_by_rows(rows, filename=filename)
 
-    # prepare status
-    rec_status, lrf_status = _prepare_upload_status(is_active)
-
-    # create or update license by csv file
-    lic = _load_or_create_lic(lic_file.ezb_id)    # KTODO should always create new lic deactivate old lic
+    # create license by csv file
+    lic = License()
     lic.set_license_data(lic_file.ezb_id, lic_file.name,
                          type=lic_type, csvfile=lic_file.table_str,
-                         init_status=rec_status)
+                         init_status='inactive')
 
     # save lic_related_file to db
     lrf_raw = dict(file_name=lic_file.versioned_filename,
                    type=lic_type,
                    ezb_id=lic_file.ezb_id,
-                   status=lrf_status,
+                   status='validation passed',
                    admin_notes=admin_notes,
                    record_id=lic.id,
                    upload_date=dates.format(lic_file.version_datetime), )
@@ -356,14 +341,26 @@ def _validate_lic_lrf(rows: list[list]):
 def active_lic_related_file():
     abort_if_not_admin()
 
-    # active lic_related_file
     lrf_id = request.values.get('lrf_id')
+    checker = _active_lic_related_file(lrf_id)
+    checker()
+    return redirect(url_for('license-manage.details'))
+
+
+def _active_lic_related_file(lrf_id) -> CompleteChecker:
+    # active lic_related_file
     lr_file = _check_and_find_lic_related_file(lrf_id)
     lr_file.status = 'active'
     lr_file.save()
 
-    # active
     record_cls = Alliance if lr_file.lic_related_file_id else License
+
+    # disable all old record by ezb_id
+    for old_lic in record_cls.pull_all_by_status('active', {'identifier.id': lr_file.ezb_id}):
+        old_lic.status = 'inactive'
+        old_lic.save()
+
+    # active record
     record = object_query_first(record_cls, lr_file.record_id)
     if record:
         record.status = 'active'
@@ -371,8 +368,10 @@ def active_lic_related_file():
     else:
         log.warning(f'license / alliance not found record_id[{lr_file.record_id}] lrf_id[{lrf_id}]')
 
-    _wait_unit_status(lr_file.id, 'active')
-    return redirect(url_for('license-manage.details'))
+    def _checker():
+        _wait_unit_status(lr_file.id, 'active')
+
+    return _checker
 
 
 def _wait_unit_status(lrf_id: str, target_status):
@@ -427,8 +426,7 @@ def upload_participant():
     abort_if_not_admin()
 
     _upload_new_parti_lrf(request.values.get('lic_lrf_id'),
-                          request.files.get('file'),
-                          is_active=False)
+                          request.files.get('file'))
 
     return redirect(url_for('license-manage.details'))
 
@@ -441,8 +439,10 @@ def update_license():
     lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
     new_lrf = _upload_new_lic_lrf(lic_lr_file.type,
-                                  request.files.get('file'),
-                                  is_active=True)
+                                  request.files.get('file'))
+    ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
+
+    active_checker = _active_lic_related_file(new_lrf.id)
 
     deact_checker = _deactivate_lrf_by_lrf_id(lic_lrf_id, License)
 
@@ -457,13 +457,13 @@ def update_license():
         )
 
     # wait for completed
+    active_checker()
     deact_checker()
-    ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
 
     return redirect(url_for('license-manage.details'))
 
 
-def _upload_new_parti_lrf(lic_lrf_id: str, file, is_active=False) -> LicRelatedFile:
+def _upload_new_parti_lrf(lic_lrf_id: str, file) -> LicRelatedFile:
     lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
     # validate
@@ -489,19 +489,21 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file, is_active=False) -> LicRelatedF
 
     parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
 
-    # prepare status
-    rec_status, lrf_status = _prepare_upload_status(is_active)
+    # disable all old record
+    for old_lic in Alliance.pull_all_by_status('active', {'identifier.id': lic_ezb_id}):
+        old_lic.status = 'inactive'
+        old_lic.save()
 
     # save participant to db
-    alliance = Alliance.pull_by_key('identifier.id', lic_ezb_id) or Alliance()   # KTODO should always create new one deactivate old one
+    alliance = Alliance()
     alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str,
-                               init_status=rec_status)
+                               init_status='inactive')
 
     # save lic_related_file to db
     lr_file_raw = dict(file_name=parti_file.versioned_filename,
                        type=None,
                        ezb_id=lic_ezb_id,
-                       status=lrf_status,
+                       status='validation passed',
                        admin_notes=None,
                        record_id=alliance.id,
                        upload_date=dates.format(parti_file.version_datetime),
@@ -521,15 +523,18 @@ def update_participant():
     _check_and_find_lic_related_file(lic_lrf_id)
 
     # save new parti
-    new_lrf = _upload_new_parti_lrf(lic_lrf_id, request.files.get('file'),
-                                    is_active=True)
+    new_lrf = _upload_new_parti_lrf(lic_lrf_id, request.files.get('file'), )
+    ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
+
+    # active new record immediately
+    active_checker = _active_lic_related_file(new_lrf.id)
 
     # deactivate old parti
     parti_lrf_id = request.values.get('parti_lrf_id')
     deact_checker = _deactivate_lrf_by_lrf_id(parti_lrf_id, Alliance)
 
     # wait for completed
-    ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
+    active_checker()
     deact_checker()
 
     return redirect(url_for('license-manage.details'))
@@ -698,5 +703,54 @@ def main5():
     # print(results)
 
 
+def main6():
+    # Alliance.pull_by_key('identifier.id.exact', lic_ezb_id)
+    # a = Alliance.pull_by_key('status', 'inactive')
+    # a = License.pull_by_key('status', 'inactive')
+    ezb_id = 'EZB-NALIW-00493'
+    # query = {"query": {"term": {'identifier.id': ezb_id, 'status': 'active'}}}
+    # query = {"query": {"term": {'identifier.id': ezb_id}}}
+    # query = {"query": {"query_string": {"query": ezb_id, "default_field": 'identifier.id', "default_operator": "AND"}}}
+    query = {
+        'query': {
+            'bool': {
+                'must': [
+                    {'match': {'identifier.id': ezb_id}},
+                    {'match': {'status': 'active'}}
+                ]
+            }
+        }
+    }
+    # print(query)
+    # return
+
+    # query = {
+    #     "query": {
+    #         "bool": {
+    #             "must": [
+    #                 {"term": {'identifier.id': ezb_id}},
+    #                 {"term": {'status': 'active'}}
+    #             ]
+    #         }
+    #     },
+    #     "sort": {"last_updated": {"order": "desc"}}
+    # }
+    # a = ez_dao_utils.pull_all_by_key(License, 'status', 'active')
+
+    # a = ez_dao_utils.pull_all_by_key(License, 'identifier.id', ezb_id)
+    a = ez_dao_utils.query_objs(License, query)
+    # a = License.pull_by_key('identifier.id', ezb_id)
+    a = list(a)
+    print(a)
+
+    # License().save()
+
+
+def main7():
+    lic_list = License.pull_all_by_status('active', {'identifier.id': 'EZB-NALIW-00493'})
+    lic_list = list(lic_list)
+    print(lic_list)
+
+
 if __name__ == '__main__':
-    main3()
+    main7()

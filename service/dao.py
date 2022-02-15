@@ -6,9 +6,12 @@ Each DAO is an extension of the octopus ESDAO utility class which provides all o
 so these DAOs mostly just provide information on where to persist the data, and some additional storage-layer
 query methods as required
 """
-from typing import Iterable
+from typing import Iterable, Type
+
+from esprit.dao import DomainObject
 
 from octopus.modules.es import dao
+from service.__utils import ez_dao_utils
 
 
 class ContentLogDAO(dao.ESDAO):
@@ -171,6 +174,33 @@ class AllianceDAO(dao.ESDAO):
     __type__ = "alliance"
     """ The index type to use to store these objects """
 
+    @classmethod
+    def pull_all_by_status(cls, status: str,
+                           match_fields: dict = None) -> Iterable:
+        return pull_all_by_status(cls, status, match_fields)
+
+
+def pull_all_by_status(domain_obj_cls: Type[DomainObject],
+                       status: str,
+                       match_fields: dict) -> Iterable:
+    matches = [
+        {'match': {'status': status}}
+    ]
+
+    match_fields = match_fields or dict()
+    for k, v in match_fields.items():
+        matches.append({'match': {k: v}})
+
+    query = {
+        'query': {
+            'bool': {
+                'must': matches,
+            }
+        }
+    }
+    results = ez_dao_utils.query_objs(domain_obj_cls, query, wrap=True)
+    return results
+
 
 class LicenseDAO(dao.ESDAO):
     """
@@ -185,6 +215,11 @@ class LicenseDAO(dao.ESDAO):
         # KTODO any one call this method ??
         res = cls.object_query(q={"query": {"term": {'status.exact': 'active'}}})
         return res
+
+    @classmethod
+    def pull_all_by_status(cls, status: str,
+                           match_fields: dict = None) -> Iterable:
+        return pull_all_by_status(cls, status, match_fields)
 
 
 class RepositoryStatusDAO(dao.ESDAO):

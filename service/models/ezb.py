@@ -255,6 +255,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         self._delete_from_list("participant", matchsub=part_object)
         self._add_to_list("participant", part_object)
 
+
     @classmethod
     def pull_by_key(cls, key, value):
         res = cls.query(q={"query": {"term": {key + '.exact': value}}})
@@ -812,6 +813,14 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
         if blocking:
             ez_dao_utils.wait_unit_id_found(cls, new_lrf.id)
         return new_lrf
+
+    @property
+    def ezb_id(self):
+        return self._get_single("ezb_id", coerce=dataobj.to_unicode())
+
+    @ezb_id.setter
+    def ezb_id(self, val):
+        self._set_single("ezb_id", val, coerce=dataobj.to_unicode())
 
     @property
     def status(self):

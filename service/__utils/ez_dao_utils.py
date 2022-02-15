@@ -3,6 +3,7 @@ import time
 from typing import Callable, Iterable
 from typing import Type
 
+from esprit import raw
 from esprit.dao import DomainObject
 
 from octopus.core import app
@@ -38,7 +39,20 @@ def wait_unit_id_not_found(domain_obj_cls: Type[DomainObject], _id: str):
     wait_unit(lambda: domain_obj_cls.count(ez_query_maker.by_id(_id)) == 0)
 
 
-def pull_all_by_key(domain_obj_cls: Type[DomainObject], key, value, use_exact=True) -> Iterable:
-    exact_str = '.exact' if use_exact else ''
-    res = domain_obj_cls.query(q={"query": {"term": {key + exact_str: value}}})
-    return (domain_obj_cls.pull(obj['_source']['id']) for obj in res['hits']['hits'])
+def pull_all_by_key(domain_obj_cls: Type[DomainObject], key, value, wrap=True) -> Iterable:
+    return query_objs(domain_obj_cls=domain_obj_cls, query={"query": {"term": {key: value}}}, wrap=wrap)
+
+
+def query_objs(domain_obj_cls: Type[DomainObject], query: dict, wrap=True):
+    res = domain_obj_cls.query(q=query)
+    res = raw.unpack_json_result(res)
+
+    def _safe_wrap(_r):
+        try:
+            return domain_obj_cls(_r)
+        except Exception:
+            return None
+
+    results = (_safe_wrap(r) if wrap else r for r in res)
+    results = filter(None, results)
+    return results
