@@ -4,6 +4,7 @@ from typing import Iterable
 import flask
 import pkg_resources
 from bs4 import BeautifulSoup
+from flask import Response
 
 from octopus.core import app
 from octopus.modules.es.testindex import ESTestCase
@@ -129,23 +130,14 @@ class TestLicenseManage(ESTestCase):
         client = app.test_client()
         _login_as_admin(client)
 
-        lic_bytes = pkg_resources.resource_stream(
-            'service', '/tests/resources/new-EZB-NALIW-00493_AL.csv')
-
-        post_data = {
-            'file': lic_bytes,
-            'lic_type': 'alliance',
-            # request.values.get('lic_type')
-        }
-
         # prepare data for assert
         org_size = LicRelatedFile.count(ez_query_maker.match_all())
         org_detail_page = load_lic_detail_page_helper(client)
         org_lrf_id_list = set(org_detail_page.non_active_lrf_id_list())
 
         # run
-        resp: flask.Response = client.post('/license-manage/upload-license', data=post_data,
-                                           follow_redirects=True)
+        resp: flask.Response = self.do_upload(client, '/tests/resources/new-EZB-NALIW-00493_AL.csv',
+                                              lic_type='alliance', follow_redirects=True)
 
         # assert
 
@@ -174,3 +166,78 @@ class TestLicenseManage(ESTestCase):
         self.assertFalse(lic.is_active())
         self.assertGreater(len(lic.identifiers), 0)
         self.assertEqual(lrf.ezb_id, lic.get_first_ezb_id())
+
+        # KTODO check file saved to hard disk
+
+        # clean table
+        lic.delete()
+        lrf.delete()
+
+    def do_upload(self, client,
+                  file_path: str,
+                  lic_type: str = 'alliance',
+                  follow_redirects=False):
+        lic_bytes = pkg_resources.resource_stream('service', file_path)
+        post_data = {
+            'file': lic_bytes,
+            'lic_type': lic_type,
+        }
+
+        # run
+        resp: flask.Response = client.post('/license-manage/upload-license', data=post_data,
+                                           follow_redirects=follow_redirects)
+        return resp
+
+    def test_upload_license__invalid_lic_file(self):  # KTODO
+        pass
+
+    def test_active_lic_related_file__normal(self):
+        client = app.test_client()
+        _login_as_admin(client)
+
+        # org_lrf_id_list = {i.id for i in pull_all_by_status('validation passed')}
+        org_lrf_id_list = {i.id for i in LicRelatedFile.pull_all_by_query_str('status', 'validation passed')}
+
+        resp: flask.Response = self.do_upload(client, '/tests/resources/new-EZB-NALIW-00493_AL.csv',
+                                              lic_type='alliance', follow_redirects=True)
+        self.assertEqual(resp.status_code, 200)
+
+        new_lrf_id_list = {i.id for i in LicRelatedFile.pull_all_by_query_str('status', 'validation passed')}
+
+        diff_lrf_id_list = new_lrf_id_list - org_lrf_id_list
+        self.assertTrue(diff_lrf_id_list)
+        new_lrf_id = next(iter(diff_lrf_id_list))
+
+        new_lrf: LicRelatedFile = ez_dao_utils.pull_by_id(LicRelatedFile, new_lrf_id)
+
+        # prepare data before run
+        org_detail_page = LicDetailPageHelper(resp.data)
+
+        # run
+        resp: Response = client.post('/license-manage/active-lic-related_file',
+                                     data={'lrf_id': new_lrf.id, },
+                                     follow_redirects=True)
+        self.assertEqual(resp.status_code, 200)
+        new_detail_page = LicDetailPageHelper(resp.data)
+
+        self.assertGreater(
+            new_detail_page.n_active_row(),
+            org_detail_page.n_active_row(),
+        )
+        # KTODO
+
+        # cleanup
+        new_lrf.delete()
+        ez_dao_utils.pull_by_id(License, new_lrf.record_id).delete()
+
+
+def pull_all_by_status(status):
+    query = {
+        "query": {
+            "match": {
+                "status": status
+            }
+        }
+    }
+    results = ez_dao_utils.query_objs(LicRelatedFile, query)
+    return results

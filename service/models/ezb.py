@@ -3,7 +3,7 @@ Model objects used to represent interactions with ezb items
 """
 
 import csv
-from typing import Union, Iterable
+from typing import Union
 
 from octopus.core import app
 from octopus.lib import dataobj
@@ -829,13 +829,10 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
         return self.data.get("status") == 'active'
 
     @classmethod
-    def pull_all_by_query_str(cls, key, val):
-        return ez_dao_utils.query_objs(cls, ez_query_maker.query_key_by_query_str(key, val))
-
-    @classmethod
-    def pull_by_fields(cls, fields: dict) -> Iterable["LicRelatedFile"]:
-        ez_dao_utils.pull_all_by_key()
-        pass
+    def pull_all_by_query_str(cls, key, val, size=100):
+        query = ez_query_maker.query_key_by_query_str(key, val)
+        query['size'] = size
+        return ez_dao_utils.query_objs(cls, query)
 
     @classmethod
     def save_by_raw(cls, lrf_raw: dict, blocking=False) -> "LicRelatedFile":

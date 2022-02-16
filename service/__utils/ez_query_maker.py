@@ -16,7 +16,7 @@ def by_term(term, value) -> dict:
     }}}
 
 
-def match_all() -> dict:
+def match_all(size=1000) -> dict:
     return {
         'query': {
             'bool': {
@@ -24,7 +24,8 @@ def match_all() -> dict:
                     {'match_all': {}}
                 ]
             }
-        }
+        },
+        'size': size
     }
 
 
