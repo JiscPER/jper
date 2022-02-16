@@ -18,11 +18,10 @@ from flask_login.utils import current_user
 
 from octopus.core import app
 from octopus.lib import dates
-from service import models
 from service.__utils import ez_dao_utils, ez_query_maker
 from service.__utils.ez_dao_utils import object_query_first
 from service.models import License
-from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance, LIC_STATUS_ACTIVE
+from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance
 
 blueprint = Blueprint('license-manage', __name__)
 
@@ -341,10 +340,29 @@ def _validate_lic_lrf(rows: list[list]):
 @blueprint.route('/active-lic-related_file', methods=['POST'])
 def active_lic_related_file():
     abort_if_not_admin()
+    checker_list = []
 
     lrf_id = request.values.get('lrf_id')
-    checker = _active_lic_related_file(lrf_id)
-    checker()
+    checker_list.append(_active_lic_related_file(lrf_id))
+
+    # deactivate if lrf with same ezb_id
+    lr_file = _check_and_find_lic_related_file(lrf_id)
+    if lr_file.is_license():
+        old_lic_lrf_list = LicRelatedFile.pull_all_by_query_str('ezb_id', lr_file.ezb_id)
+        old_lic_lrf_list = (lrf for lrf in old_lic_lrf_list
+                            if lrf.id != lrf_id and lrf.is_active())
+        for old_lrf in old_lic_lrf_list:
+            checker_list.append(_deactivate_lrf_by_lrf_id(old_lrf.id, License))
+            old_pari_lrf_list = LicRelatedFile.pull_all_by_query_str("lic_related_file_id", old_lrf.id)
+            old_pari_lrf_list = (lrf for lrf in old_pari_lrf_list
+                                 if lrf.is_active())
+            for old_pari_lrf in old_pari_lrf_list:
+                checker_list.append(_deactivate_lrf_by_lrf_id(old_pari_lrf.id, Alliance))
+
+    # wait all db update completed
+    for checker in checker_list:
+        checker()
+
     return redirect(url_for('license-manage.details'))
 
 
@@ -355,11 +373,6 @@ def _active_lic_related_file(lrf_id) -> CompleteChecker:
     lr_file.save()
 
     record_cls = Alliance if lr_file.lic_related_file_id else License
-
-    # disable all old record by ezb_id
-    for old_lic in record_cls.pull_all_by_status_ezb_id('active', lr_file.ezb_id):
-        old_lic.status = 'inactive'
-        old_lic.save()
 
     # active record
     record = object_query_first(record_cls, lr_file.record_id)
@@ -426,8 +439,10 @@ def _path_lic_related_file(filename: str) -> Path:
 def upload_participant():
     abort_if_not_admin()
 
-    _upload_new_parti_lrf(request.values.get('lic_lrf_id'),
-                          request.files.get('file'))
+    lrf = _upload_new_parti_lrf(request.values.get('lic_lrf_id'),
+                                request.files.get('file'))
+
+    ez_dao_utils.wait_unit_id_found(LicRelatedFile, lrf.id)
 
     return redirect(url_for('license-manage.details'))
 

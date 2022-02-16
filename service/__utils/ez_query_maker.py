@@ -26,3 +26,15 @@ def match_all() -> dict:
             }
         }
     }
+
+
+def query_key_by_query_str(key: str, val: str) -> dict:
+    return {
+        "query": {
+            "query_string": {
+                "query": val,
+                "default_field": key,
+                "default_operator": "AND"
+            }
+        }
+    }

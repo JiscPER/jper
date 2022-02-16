@@ -3,12 +3,12 @@ Model objects used to represent interactions with ezb items
 """
 
 import csv
-from typing import Union
+from typing import Union, Iterable
 
 from octopus.core import app
 from octopus.lib import dataobj
 from service import dao
-from service.__utils import ez_dao_utils
+from service.__utils import ez_dao_utils, ez_query_maker
 
 LRF_TYPES = ["alliance", "national", "open", "gold", "deal", "fid"]
 LRF_STATUS = ["validation failed", "validation passed", "active", "archived", ]
@@ -821,6 +821,21 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
 
         self._add_struct(struct)
         super(LicRelatedFile, self).__init__(raw=raw)
+
+    def is_license(self) -> bool:
+        return self.data.get("lic_related_file_id") is None
+
+    def is_active(self) -> bool:
+        return self.data.get("status") == 'active'
+
+    @classmethod
+    def pull_all_by_query_str(cls, key, val):
+        return ez_dao_utils.query_objs(cls, ez_query_maker.query_key_by_query_str(key, val))
+
+    @classmethod
+    def pull_by_fields(cls, fields: dict) -> Iterable["LicRelatedFile"]:
+        ez_dao_utils.pull_all_by_key()
+        pass
 
     @classmethod
     def save_by_raw(cls, lrf_raw: dict, blocking=False) -> "LicRelatedFile":
