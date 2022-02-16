@@ -45,14 +45,17 @@ def pull_all_by_key(domain_obj_cls: Type[DomainObject], key, value, wrap=True) -
 
 def query_objs(domain_obj_cls: Type[DomainObject], query: dict, wrap=True):
     res = domain_obj_cls.query(q=query)
-    res = raw.unpack_json_result(res)
+    return wrap_all(domain_obj_cls, res, wrap=wrap)
 
+
+def wrap_all(domain_obj_cls: Type[DomainObject], result: dict, wrap=True):
     def _safe_wrap(_r):
         try:
             return domain_obj_cls(_r)
         except Exception:
             return None
 
+    res = raw.unpack_json_result(result)
     results = (_safe_wrap(r) if wrap else r for r in res)
     results = filter(None, results)
     return results

@@ -3,6 +3,7 @@ Model objects used to represent interactions with ezb items
 """
 
 import csv
+from typing import Union
 
 from octopus.core import app
 from octopus.lib import dataobj
@@ -11,6 +12,14 @@ from service.__utils import ez_dao_utils
 
 LRF_TYPES = ["alliance", "national", "open", "gold", "deal", "fid"]
 LRF_STATUS = ["validation failed", "validation passed", "active", "archived", ]
+
+LIC_STATUS_ACTIVE = 'active'
+LIC_STATUS_INACTIVE = 'inactive'
+
+
+def get_first_ezb_id(lic_like_obj: Union["Alliance", "License"]) -> str:
+    ids = [_id for _id in lic_like_obj.get_identifier('ezb') if _id]
+    return ids[0] if ids else None
 
 
 class Alliance(dataobj.DataObj, dao.AllianceDAO):
@@ -88,6 +97,12 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         }
         self._add_struct(struct)
         super(Alliance, self).__init__(raw=raw)
+
+    def get_first_ezb_id(self):
+        return get_first_ezb_id(self)
+
+    def is_active(self) -> bool:
+        return self.status == LIC_STATUS_ACTIVE
 
     @property
     def status(self):
@@ -254,7 +269,6 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
         """
         self._delete_from_list("participant", matchsub=part_object)
         self._add_to_list("participant", part_object)
-
 
     @classmethod
     def pull_by_key(cls, key, value):
@@ -465,9 +479,11 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         self._add_struct(struct)
         super(License, self).__init__(raw=raw)
 
-    def get_first_ezb_id(self) -> str:
-        ids = [_id for _id in self.get_identifier('ezb') if _id]
-        return ids[0] if ids else None
+    def is_active(self) -> bool:
+        return self.status == LIC_STATUS_ACTIVE
+
+    def get_first_ezb_id(self):
+        return get_first_ezb_id(self)
 
     @property
     def status(self):

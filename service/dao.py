@@ -159,12 +159,6 @@ class LicRelatedFileDAO(dao.ESDAO):
     __type__ = "lic_related_file"
     """ The index type to use to store these objects """
 
-    @classmethod
-    def pull_actives(cls):
-        # KTODO any one call this method ??
-        res = cls.object_query(q={"query": {"term": {'status.exact': 'active'}}})
-        return res
-
 
 class AllianceDAO(dao.ESDAO):
     """
@@ -175,29 +169,26 @@ class AllianceDAO(dao.ESDAO):
     """ The index type to use to store these objects """
 
     @classmethod
-    def pull_all_by_status(cls, status: str,
-                           match_fields: dict = None) -> Iterable:
-        return pull_all_by_status(cls, status, match_fields)
+    def pull_all_by_status_ezb_id(cls, status: str,
+                                  ezb_id: str, ) -> Iterable:
+        return pull_all_by_status_ezb_id(cls, status, ezb_id=ezb_id)
 
 
-def pull_all_by_status(domain_obj_cls: Type[DomainObject],
-                       status: str,
-                       match_fields: dict) -> Iterable:
-    matches = [
-        {'match': {'status': status}}
+def pull_all_by_status_ezb_id(domain_obj_cls: Type[DomainObject], status: str,
+                              ezb_id: str) -> Iterable:
+    must_list = [
+        {'match': {'status': status}},
+        {'term': {'identifier.id.exact': ezb_id}}
     ]
-
-    match_fields = match_fields or dict()
-    for k, v in match_fields.items():
-        matches.append({'match': {k: v}})
 
     query = {
         'query': {
             'bool': {
-                'must': matches,
+                'must': must_list
             }
         }
     }
+
     results = ez_dao_utils.query_objs(domain_obj_cls, query, wrap=True)
     return results
 
@@ -211,15 +202,9 @@ class LicenseDAO(dao.ESDAO):
     """ The index type to use to store these objects """
 
     @classmethod
-    def pull_actives(cls):
-        # KTODO any one call this method ??
-        res = cls.object_query(q={"query": {"term": {'status.exact': 'active'}}})
-        return res
-
-    @classmethod
-    def pull_all_by_status(cls, status: str,
-                           match_fields: dict = None) -> Iterable:
-        return pull_all_by_status(cls, status, match_fields)
+    def pull_all_by_status_ezb_id(cls, status: str,
+                                  ezb_id: str, ) -> Iterable:
+        return pull_all_by_status_ezb_id(cls, status, ezb_id=ezb_id)
 
 
 class RepositoryStatusDAO(dao.ESDAO):

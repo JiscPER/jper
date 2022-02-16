@@ -115,6 +115,7 @@ def _route(unrouted):
         lics = models.License.pull_by_journal_id(issn) # matches issn, eissn, doi, etc.
         if lics is None: # nothing found at all...
             continue
+        lics = (lic for lic in lics if lic.is_active())
         for lic in lics:
             # lic_data includes only valid license for the issn.
             # It is a list with the url for the journal changing between each entry.
@@ -129,7 +130,7 @@ def _route(unrouted):
                         part_bibids.append((bibid, lic_data[0]))
             elif lic.type in ["alliance", "national", "deal", "fid", "hybrid"]:
                 al = models.Alliance.pull_by_key("license_id", lic.id)
-                if al:
+                if al and al.is_active():
                     # collect all EZB-Ids of participating institutions of AL
                     for participant in al.participants:
                         for i in participant.get("identifier", []):

@@ -18,10 +18,11 @@ from flask_login.utils import current_user
 
 from octopus.core import app
 from octopus.lib import dates
+from service import models
 from service.__utils import ez_dao_utils, ez_query_maker
 from service.__utils.ez_dao_utils import object_query_first
 from service.models import License
-from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance
+from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance, LIC_STATUS_ACTIVE
 
 blueprint = Blueprint('license-manage', __name__)
 
@@ -356,7 +357,7 @@ def _active_lic_related_file(lrf_id) -> CompleteChecker:
     record_cls = Alliance if lr_file.lic_related_file_id else License
 
     # disable all old record by ezb_id
-    for old_lic in record_cls.pull_all_by_status('active', {'identifier.id': lr_file.ezb_id}):
+    for old_lic in record_cls.pull_all_by_status_ezb_id('active', lr_file.ezb_id):
         old_lic.status = 'inactive'
         old_lic.save()
 
@@ -490,7 +491,7 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file) -> LicRelatedFile:
     parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
 
     # disable all old record
-    for old_lic in Alliance.pull_all_by_status('active', {'identifier.id': lic_ezb_id}):
+    for old_lic in Alliance.pull_all_by_status_ezb_id('active', lic_ezb_id):
         old_lic.status = 'inactive'
         old_lic.save()
 
@@ -556,6 +557,8 @@ def deactivate_license():
 @blueprint.route('/delete-lic-related-file', methods=['POST'])
 def delete_lic_related_file():
     abort_if_not_admin()
+
+    # KTODO delete lic alli record ??
 
     # delete record LicRelatedFile
     lrf_id = request.values.get('lrf_id')
@@ -630,19 +633,6 @@ def deactivate_participant():
     _deactivate_lrf_by_lrf_id(request.values.get('lrf_id'), Alliance)()
 
     return redirect(url_for('license-manage.details'))
-
-
-def _load_or_create_lic(ezb_id: str) -> License:
-    lic = None
-    if ezb_id:
-        lic_list = License.pull_by_key('identifier.id.exact', ezb_id)
-        if lic_list and len(lic_list) > 0:
-            log.info('Existing license found for #{x}'.format(x=ezb_id))
-            lic = lic_list[0]
-    if not lic:
-        log.info('Adding new license for {x}'.format(x=ezb_id))
-        lic = License()
-    return lic
 
 
 def _decode_csv_bytes(csv_bytes: bytes) -> str:
@@ -752,5 +742,65 @@ def main7():
     print(lic_list)
 
 
+def main8():
+    # alliances = models.Alliance.pull_all_by_status(LIC_STATUS_ACTIVE, {'participant.identifier.id': account.repository_bibid})
+    alliances: Iterable[Alliance] = models.Alliance.pull_all_by_status(LIC_STATUS_ACTIVE)
+    for alli in alliances:
+        # alli.participants
+        print(alli)
+        # print(alli.participants)
+
+
+def main9():
+    # results = Alliance.pull_all_by_status('active', {'identifier.id': lr_file.ezb_id})
+    # results = Alliance.pull_all_by_status('inactive', {'identifier.id': 'EZB-NALJC-00505'})
+    # results = Alliance.pull_all_by_status('active', {'identifier.id.exact': 'EZB-NALJC-00505'})
+
+    results = ez_dao_utils.query_objs(License, ez_query_maker.match_all())
+    results = list(results)
+    print([r.get_first_ezb_id() for r in results])
+    print([r.id for r in results])
+
+    results = ez_dao_utils.query_objs(License, ez_query_maker.match_all())
+    results = list(results)
+    print([r.get_first_ezb_id() for r in results])
+    print([r.id for r in results])
+
+
+def main10():
+    # query = {"query": {
+    #     "query_string": {"query": 'EZB-NALJC-00505', "default_field": 'identifier.id', "default_operator": "AND"}}}
+
+    query = {
+        'query': {
+            'bool': {
+                'must': [
+                    {"term": {'identifier.id.exact': 'EZB-NALJC-00505'}},
+                    # {'match':
+                    #      {"query_string": {"query": 'identifier.id', "default_field": 'EZB-NALJC-00505',
+                    #                        "default_operator": "AND"}}
+                    #  }
+                ],
+            }
+        }
+    }
+    # res = License.query( q=
+    results = ez_dao_utils.query_objs(License, query)
+    results = list(results)
+    print(results)
+
+
+def main11():
+    # results = Alliance.query()
+    results = ez_dao_utils.query_objs(Alliance, ez_query_maker.match_all())
+    results = list(results)
+    print([r.get_first_ezb_id() for r in results])
+
+    results = Alliance.pull_by_key('identifier.id', 'EZB-NALJB-00504')
+    print(results)
+    # results = list(results)
+    # print([r.get_first_ezb_id() for r in results])
+
+
 if __name__ == '__main__':
-    main7()
+    main9()
