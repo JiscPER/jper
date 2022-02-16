@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Optional
 from typing import Type
 
 from esprit import raw
@@ -47,6 +47,12 @@ def query_objs(domain_obj_cls: Type[DomainObject], query: dict, wrap=True,
                raise_wrap_fail=False):
     res = domain_obj_cls.query(q=query)
     return wrap_all(domain_obj_cls, res, wrap=wrap, raise_wrap_fail=raise_wrap_fail)
+
+
+def pull_by_id(domain_obj_cls: Type[DomainObject], id_val: str) -> Optional:
+    lrf_list = query_objs(domain_obj_cls, ez_query_maker.by_id(id_val))
+    lrf_list = list(lrf_list)
+    return lrf_list[0] if lrf_list else None
 
 
 def wrap_all(domain_obj_cls: Type[DomainObject], result: dict, wrap=True, raise_wrap_fail=False):

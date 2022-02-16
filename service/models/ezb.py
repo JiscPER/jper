@@ -58,7 +58,7 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
                 "name": {"coerce": "unicode"},
                 "license_id": {"coerce": "unicode"},
                 "status": {"coerce": "unicode",
-                           "allowed_values": ['active', 'inactive']},  # KTODO only query active
+                           "allowed_values": ['active', 'inactive']},
 
             },
             # not (yet?) needed here
@@ -409,7 +409,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 "name": {"coerce": "unicode"},
                 "type": {"coerce": "unicode",
                          "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid"]},
-                "status": {"coerce": "unicode", "allowed_values": ['active', 'inactive']},  # KTODO only query active
+                "status": {"coerce": "unicode", "allowed_values": ['active', 'inactive']},
             },
             # not (yet?) needed here
             # "objects" : [ 
