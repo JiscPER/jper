@@ -14,7 +14,7 @@ log: logging.Logger = app.logger
 
 def object_query_first(domain_obj_cls: Type[DomainObject], *args, **kwargs):
     results = domain_obj_cls.object_query(*args, **kwargs)
-    results = results and results[0]
+    results = results[0] if results else None
     return results
 
 
@@ -43,16 +43,19 @@ def pull_all_by_key(domain_obj_cls: Type[DomainObject], key, value, wrap=True) -
     return query_objs(domain_obj_cls=domain_obj_cls, query={"query": {"term": {key: value}}}, wrap=wrap)
 
 
-def query_objs(domain_obj_cls: Type[DomainObject], query: dict, wrap=True):
+def query_objs(domain_obj_cls: Type[DomainObject], query: dict, wrap=True,
+               raise_wrap_fail=False):
     res = domain_obj_cls.query(q=query)
-    return wrap_all(domain_obj_cls, res, wrap=wrap)
+    return wrap_all(domain_obj_cls, res, wrap=wrap, raise_wrap_fail=raise_wrap_fail)
 
 
-def wrap_all(domain_obj_cls: Type[DomainObject], result: dict, wrap=True):
+def wrap_all(domain_obj_cls: Type[DomainObject], result: dict, wrap=True, raise_wrap_fail=False):
     def _safe_wrap(_r):
         try:
             return domain_obj_cls(_r)
-        except Exception:
+        except Exception as e:
+            if raise_wrap_fail:
+                raise e
             return None
 
     res = raw.unpack_json_result(result)
