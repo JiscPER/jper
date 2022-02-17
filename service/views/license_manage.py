@@ -340,7 +340,7 @@ def _validate_lic_lrf(rows: list[list]):
         raise ValueError(err_msg)
 
 
-@blueprint.route('/active-lic-related_file', methods=['POST'])
+@blueprint.route('/active-lic-related-file', methods=['POST'])
 def active_lic_related_file():
     abort_if_not_admin()
     checker_list = []
@@ -359,8 +359,8 @@ def active_lic_related_file():
             old_pari_lrf_list = LicRelatedFile.pull_all_by_query_str("lic_related_file_id", old_lrf.id)
             old_pari_lrf_list = (lrf for lrf in old_pari_lrf_list
                                  if lrf.is_active())
-            for old_pari_lrf in old_pari_lrf_list:
-                checker_list.append(_deactivate_lrf_by_lrf_id(old_pari_lrf.id, Alliance))
+            checker_list.extend(_deactivate_lrf_by_lrf_id(old_pari_lrf.id, Alliance)
+                                for old_pari_lrf in old_pari_lrf_list)
 
     # wait all db update completed
     for checker in checker_list:
