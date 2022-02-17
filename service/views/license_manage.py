@@ -193,7 +193,9 @@ def upload_license():
     return redirect(url_for('license-manage.details'))
 
 
-def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = ''):
+def _upload_new_lic_lrf(lic_type: str, file,
+                        admin_notes: str = '',
+                        ezb_id: str = None):
     if lic_type not in LRF_TYPES:
         abort(400, f'Invalid parameter "lic_type" [{lic_type}]')
 
@@ -228,17 +230,18 @@ def _upload_new_lic_lrf(lic_type: str, file, admin_notes: str = ''):
         abort(400, f'file validation fail --- {str(e)}')
         return
     lic_file = _load_lic_file_by_rows(rows, filename=filename)
+    ezb_id = ezb_id or lic_file.ezb_id
 
     # create license by csv file
     lic = License()
-    lic.set_license_data(lic_file.ezb_id, lic_file.name,
+    lic.set_license_data(ezb_id, lic_file.name,
                          type=lic_type, csvfile=lic_file.table_str,
                          init_status='inactive')
 
     # save lic_related_file to db
     lrf_raw = dict(file_name=lic_file.versioned_filename,
                    type=lic_type,
-                   ezb_id=lic_file.ezb_id,
+                   ezb_id=ezb_id,
                    status='validation passed',
                    admin_notes=admin_notes,
                    record_id=lic.id,
@@ -451,16 +454,17 @@ def upload_participant():
 def update_license():
     abort_if_not_admin()
 
-    lic_lrf_id = request.values.get('lic_lrf_id')
-    lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
+    old_lic_lrf_id = request.values.get('lic_lrf_id')
+    old_lic_lrf: LicRelatedFile = _check_and_find_lic_related_file(old_lic_lrf_id)
 
-    new_lrf = _upload_new_lic_lrf(lic_lr_file.type,
-                                  request.files.get('file'))
+    new_lrf = _upload_new_lic_lrf(old_lic_lrf.type,
+                                  request.files.get('file'),
+                                  ezb_id=old_lic_lrf.ezb_id)
     ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
 
     active_checker = _active_lic_related_file(new_lrf.id)
 
-    deact_checker = _deactivate_lrf_by_lrf_id(lic_lrf_id, License)
+    deact_checker = _deactivate_lrf_by_lrf_id(old_lic_lrf_id, License)
 
     # replace to new lic_lrf_id
     parti_lrf_id = request.values.get('parti_lrf_id')
