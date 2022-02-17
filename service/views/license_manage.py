@@ -8,6 +8,7 @@ import re
 import tempfile
 from datetime import datetime
 from pathlib import Path
+from statistics import mean
 from typing import Iterable, Callable, Type, Optional, NoReturn
 
 import chardet
@@ -146,8 +147,21 @@ def details():
 
 
 def _load_rows_by_csv_str(csv_str: str) -> list[list]:
-    return [row for row in csv.reader(io.StringIO(csv_str), delimiter='\t',
-                                      quoting=csv.QUOTE_ALL)]
+    """ Convert csv string to row list
+    auto guess delimiter "\t" or ","
+    """
+
+    def _load_rows(delimiter):
+        return [row for row in csv.reader(io.StringIO(csv_str),
+                                          delimiter=delimiter,
+                                          quoting=csv.QUOTE_ALL)]
+
+    rows = _load_rows('\t')
+    if mean([len(r) == 1 for r in rows]) < 0.5:
+        # use \t if 50% rows have been split more than one column
+        return rows
+    else:
+        return _load_rows(',')
 
 
 def _to_csv_str(headers: list, data: Iterable[list]) -> str:
