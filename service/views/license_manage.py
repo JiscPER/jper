@@ -230,6 +230,11 @@ def _upload_new_lic_lrf(lic_type: str, file,
         abort(400, f'file validation fail --- {str(e)}')
         return
     lic_file = _load_lic_file_by_rows(rows, filename=filename)
+
+    # handle ezb_id mismatch
+    validation_notes = None
+    if ezb_id != lic_file.ezb_id:
+        validation_notes = f"Warning, update with difference ezb_id. file[{lic_file.ezb_id}] org[{ezb_id}] "
     ezb_id = ezb_id or lic_file.ezb_id
 
     # create license by csv file
@@ -246,6 +251,8 @@ def _upload_new_lic_lrf(lic_type: str, file,
                    admin_notes=admin_notes,
                    record_id=lic.id,
                    upload_date=dates.format(lic_file.version_datetime), )
+    if validation_notes:
+        lrf_raw['validation_notes'] = validation_notes
     lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
 
     # save file to hard disk
