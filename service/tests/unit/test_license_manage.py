@@ -1,8 +1,9 @@
 import io
+import os
 import time
 from typing import Iterable, Callable, Optional
 
-import flask
+import bs4.element
 import pkg_resources
 from bs4 import BeautifulSoup
 from flask import Response
@@ -10,20 +11,20 @@ from flask import Response
 from octopus.core import app
 from octopus.modules.es.testindex import ESTestCase
 from service.__utils import ez_dao_utils, ez_query_maker
-from service.models import Account, LicRelatedFile, License
+from service.models import Account, LicRelatedFile, License, Alliance
 from service.views import license_manage
 
 PATH_LIC_A = '/tests/resources/new-EZB-NALIW-00493_AL.csv'
 PATH_PARTI_A = '/tests/resources/EZB-NALIW-00493_OA_participants_current.csv'
 
 
-def _is_incorrect_login(resp: flask.Response) -> bool:
+def _is_incorrect_login(resp: Response) -> bool:
     soup = BeautifulSoup(resp.data, 'html.parser')
     return any('Incorrect username/password' in ele.text
                for ele in soup.select('article'))
 
 
-def _login(client, username, password) -> flask.Response:
+def _login(client, username, password) -> Response:
     resp = client.post('/account/login',
                        data={'username': username,
                              'password': password})
@@ -36,21 +37,42 @@ def _login_as_admin(client):
         raise Exception("Unexpected login fail")
 
 
-def do_upload_lic(client,
-                  file_path: str,
-                  lic_type: str = 'alliance',
-                  follow_redirects=False):
+def load_file_for_upload(file_path: str) -> io.BytesIO:
     file_bytes: io.BufferedReader = pkg_resources.resource_stream('service', file_path)
     lic_bytes = io.BytesIO(file_bytes.read())
     lic_bytes.name = file_bytes.name.split('/')[-1]
+    return lic_bytes
+
+
+def send_upload_lic(client,
+                    file_path: str,
+                    lic_type: str = 'alliance',
+                    follow_redirects=False) -> Response:
     post_data = {
-        'file': lic_bytes,
+        'file': load_file_for_upload(file_path),
         'lic_type': lic_type,
     }
 
     # run
-    resp: flask.Response = client.post('/license-manage/upload-license', data=post_data,
-                                       follow_redirects=follow_redirects)
+    resp: Response = client.post('/license-manage/upload-license', data=post_data,
+                                 follow_redirects=follow_redirects)
+    return resp
+
+
+def send_deactivate_license(client, lic_lrf_id: str, follow_redirects=False) -> Response:
+    post_data = {
+        'lic_lrf_id': lic_lrf_id,
+    }
+    resp: Response = client.post('/license-manage/deactivate-license',
+                                 data=post_data,
+                                 follow_redirects=follow_redirects)
+    return resp
+
+
+def send_active_lic_related_file(client, lrf_id: str, follow_redirects=False) -> Response:
+    resp: Response = client.post('/license-manage/active-lic-related-file',
+                                 data={'lrf_id': lrf_id, },
+                                 follow_redirects=follow_redirects)
     return resp
 
 
@@ -85,9 +107,15 @@ class LicDetailPageHelper:
         lrf_id_list = filter(None, lrf_id_list)
         return lrf_id_list
 
+    def find_active_row_by_lrf_id(self, lrf_id: str) -> bs4.element.Tag:
+        rows = self.active_tbl().select('tr')
+        rows = [r for r in rows
+                if r.select(f'input[value="{lrf_id}"]')]
+        return rows[0] if rows else None
+
 
 def load_lic_detail_page_helper(client) -> LicDetailPageHelper:
-    resp: flask.Response = client.get('/license-manage/')
+    resp: Response = client.get('/license-manage/')
     return LicDetailPageHelper(resp.data)
 
 
@@ -109,7 +137,7 @@ class TestLicenseManage(ESTestCase):
         client = app.test_client()
         _login_as_admin(client)
 
-        resp: flask.Response = client.get('/license-manage/')
+        resp: Response = client.get('/license-manage/')
 
         self.assertEqual(resp.status_code, 200)
         soup = BeautifulSoup(resp.data, 'lxml')
@@ -145,7 +173,7 @@ class TestLicenseManage(ESTestCase):
         if _is_incorrect_login(resp):
             raise Exception("Unexpected login fail")
 
-        resp: flask.Response = client.get('/license-manage/')
+        resp: Response = client.get('/license-manage/')
 
         self.assertEqual(resp.status_code, 401)
 
@@ -159,8 +187,8 @@ class TestLicenseManage(ESTestCase):
         org_lrf_id_list = set(org_detail_page.non_active_lrf_id_list())
 
         # run
-        resp: flask.Response = do_upload_lic(client, PATH_LIC_A,
-                                             lic_type='alliance', follow_redirects=True)
+        resp: Response = send_upload_lic(client, PATH_LIC_A,
+                                         lic_type='alliance', follow_redirects=True)
 
         # assert
         new_size = LicRelatedFile.count(ez_query_maker.match_all())
@@ -196,8 +224,7 @@ class TestLicenseManage(ESTestCase):
                         .is_file())
 
         # clean table
-        lic.delete()
-        lrf.delete()
+        delete_lrf(lrf)
 
     def test_upload_license__invalid_lic_file(self):
         client = app.test_client()
@@ -209,8 +236,8 @@ class TestLicenseManage(ESTestCase):
         lrf_finder = create_new_lrf_finder()
 
         # run
-        resp: flask.Response = do_upload_lic(client, PATH_PARTI_A,
-                                             lic_type='alliance', follow_redirects=True)
+        resp: Response = send_upload_lic(client, PATH_PARTI_A,
+                                         lic_type='alliance', follow_redirects=True)
         self.assertEqual(resp.status_code, 400)
 
         time.sleep(3)  # wait for lrf saved
@@ -226,14 +253,78 @@ class TestLicenseManage(ESTestCase):
         self.assertEqual(lrf.status, 'validation failed')
         self.assertIsNotNone(lrf.data.get('validation_notes'))
 
-    def test_upload_license__duplicate_upload(self):  # KTODO
+    def test_upload_license__duplicate_upload(self):
         client = app.test_client()
         _login_as_admin(client)
 
+        lrf1 = self.do_upload_active_lic(client)
+        time.sleep(3)  # wait for license update
+        self.assert_only_one_ezb_id_active(lrf1.ezb_id, lrf1.record_id)
+        lrf2 = self.do_upload_active_lic(client)
+        time.sleep(3)  # wait for license update
+        self.assert_only_one_ezb_id_active(lrf2.ezb_id, lrf2.record_id)
+
+        lrf1 = ez_dao_utils.pull_by_id(LicRelatedFile, lrf1.id)
+        self.assertFalse(lrf1.is_active())
+        lic1 = ez_dao_utils.pull_by_id(License, lrf1.record_id)
+        self.assertFalse(lic1.is_active())
+
+        lrf2 = ez_dao_utils.pull_by_id(LicRelatedFile, lrf2.id)
+        self.assertTrue(lrf2.is_active())
+        lic2 = ez_dao_utils.pull_by_id(License, lrf2.record_id)
+        self.assertTrue(lic2.is_active())
+
+        delete_lrf(lrf1)
+        delete_lrf(lrf2)
+
+    def do_upload_active_lic(self, client, lic_path: str = None) -> LicRelatedFile:
+        lic_path = lic_path or PATH_LIC_A
+
+        # upload
         lrf_finder = create_new_lrf_finder()
-        resp: flask.Response = do_upload_lic(client, PATH_PARTI_A,
-                                             lic_type='alliance', follow_redirects=False)
-        lrf = lrf_finder()
+        resp: Response = send_upload_lic(client, lic_path,
+                                         lic_type='alliance', follow_redirects=False)
+        self.assertEqual(resp.status_code, 302)
+
+        # active
+        lrf1 = lrf_finder()
+        resp: Response = send_active_lic_related_file(client, lrf1.id, follow_redirects=False)
+        self.assertEqual(resp.status_code, 302)
+
+        # check active
+        lrf1: LicRelatedFile = ez_dao_utils.pull_by_id(LicRelatedFile, lrf1.id)
+        self.assertTrue(lrf1.is_active())
+
+        return lrf1
+
+    def do_upload_active_parti(self, client, lic_lrf_id: str, parti_path: str = None) -> LicRelatedFile:
+        parti_path = parti_path or PATH_PARTI_A
+
+        lrf_finder = create_new_lrf_finder()
+
+        post_data = dict(lic_lrf_id=lic_lrf_id,
+                         file=load_file_for_upload(parti_path), )
+        resp = client.post('/license-manage/upload-participant',
+                           data=post_data,
+                           follow_redirects=False)
+        self.assertEqual(resp.status_code, 302)
+
+        # active
+        parti_lrf = lrf_finder()
+        resp = send_active_lic_related_file(client, parti_lrf.id, follow_redirects=False)
+        self.assertEqual(resp.status_code, 302)
+
+        parti_lrf = reload_lrf(parti_lrf)
+
+        return parti_lrf
+
+    def assert_only_one_ezb_id_active(self, ezb_id: str, lic_id: str):
+        lic_id_list = (lrf.record_id for lrf in LicRelatedFile.pull_all_by_query_str('ezb_id', ezb_id)
+                       if lrf.is_license())
+        lic_list = (ez_dao_utils.pull_by_id(License, _id) for _id in lic_id_list)
+        lic_list = [l for l in lic_list if l.is_active()]
+        self.assertEqual(len(lic_list), 1)
+        self.assertEqual(lic_list[0].id, lic_id)
 
     def test_active_lic_related_file__normal(self):
         client = app.test_client()
@@ -241,8 +332,8 @@ class TestLicenseManage(ESTestCase):
 
         # prepare upload / validation passed record
         new_lrf_finder = create_new_lrf_finder()
-        resp: flask.Response = do_upload_lic(client, PATH_LIC_A,
-                                             lic_type='alliance', follow_redirects=True)
+        resp: Response = send_upload_lic(client, PATH_LIC_A,
+                                         lic_type='alliance', follow_redirects=True)
         self.assertEqual(resp.status_code, 200)
         new_lrf = new_lrf_finder()
         self.assertIsNotNone(new_lrf)
@@ -258,9 +349,7 @@ class TestLicenseManage(ESTestCase):
         incorrect_id_list = {l.id for l in License.pull_all_by_status_ezb_id('active', new_lrf.ezb_id)}
 
         # run
-        resp: Response = client.post('/license-manage/active-lic-related-file',
-                                     data={'lrf_id': new_lrf.id, },
-                                     follow_redirects=True)
+        resp: Response = send_active_lic_related_file(client, new_lrf.id, follow_redirects=True)
         self.assertEqual(resp.status_code, 200)
 
         # assert new active lrf record in table
@@ -277,14 +366,170 @@ class TestLicenseManage(ESTestCase):
         self.assertEqual(len(list(active_lic_id_list)), 1)
 
         # cleanup
-        new_lrf.delete()
-        ez_dao_utils.pull_by_id(License, new_lrf.record_id).delete()
+        delete_lrf(new_lrf)
 
-    def test_active_lic_related_file__auto_deactivate(self):  # KTODO
-        pass
+    def test_deactivate_license__normal_lic_only(self):
+        client = app.test_client()
+        _login_as_admin(client)
 
-    def test_update_license__difference_ezb_id(self):  # KTODO
-        pass
+        lrf = self.do_upload_active_lic(client)
+
+        old_detail_page = load_lic_detail_page_helper(client)
+
+        resp = send_deactivate_license(client, lrf.id, follow_redirects=True)
+        new_detail_page = LicDetailPageHelper(resp.data)
+
+        self.assertGreater(new_detail_page.n_history_row(),
+                           old_detail_page.n_history_row())
+
+        self.assertLess(new_detail_page.n_active_row(),
+                        old_detail_page.n_active_row())
+
+        delete_lrf(lrf)
+
+    def test_deactivate_license__normal_lic_parti(self):
+        client = app.test_client()
+        _login_as_admin(client)
+
+        # setup
+        lic_lrf = self.do_upload_active_lic(client)
+        parti_lrf = self.do_upload_active_parti(client, lic_lrf.id)
+        self.assertTrue(lic_lrf.is_active())
+        self.assertTrue(parti_lrf.is_active())
+
+        old_page = load_lic_detail_page_helper(client)
+
+        # run
+        resp = send_deactivate_license(client, lic_lrf.id, follow_redirects=True)
+        new_page = LicDetailPageHelper(resp.data)
+
+        # assert
+        lic_lrf = reload_lrf(lic_lrf)
+        self.assertFalse(lic_lrf.is_active())
+        parti_lrf = reload_lrf(parti_lrf)
+        self.assertFalse(parti_lrf.is_active())
+
+        self.assertGreater(old_page.n_active_row(),
+                           new_page.n_active_row(), )
+        self.assertLess(old_page.n_history_row(),
+                        new_page.n_history_row(), )
+
+        delete_lrf(lic_lrf)
+        delete_lrf(parti_lrf)
+
+    def test_upload_parti__normal(self):
+        client = app.test_client()
+        _login_as_admin(client)
+
+        lic_lrf = self.do_upload_active_lic(client)
+        self.assertTrue(lic_lrf.is_active())
+        self.assertTrue(lic_lrf.is_license())
+
+        old_page = load_lic_detail_page_helper(client)
+        lrf_row = old_page.find_active_row_by_lrf_id(lic_lrf.id)
+        self.assertIsNotNone(lrf_row)
+        self.assertEqual(len(lrf_row.select('form[action="/license-manage/upload-participant"]')), 1)
+
+        # run upload-participant
+
+        lrf_finder = create_new_lrf_finder()
+
+        post_data = dict(lic_lrf_id=lic_lrf.id,
+                         file=load_file_for_upload(PATH_PARTI_A), )
+        client.post('/license-manage/upload-participant',
+                    data=post_data,
+                    follow_redirects=False)
+
+        # assert parti lrf created
+        lrf = lrf_finder()
+        self.assertFalse(lrf.is_license())
+        self.assertEqual(lrf.status, 'validation passed')
+
+        # run active parti
+        resp = send_active_lic_related_file(client, lrf.id, follow_redirects=True)
+
+        #  assert lrf active and UI
+        lrf: LicRelatedFile = ez_dao_utils.pull_by_id(LicRelatedFile, lrf.id)
+        self.assertTrue(lrf.is_active())
+
+        new_page = LicDetailPageHelper(resp.data)
+
+        self.assertEqual(old_page.n_active_row(),
+                         new_page.n_active_row())
+
+        lrf_row = new_page.find_active_row_by_lrf_id(lic_lrf.id)
+        self.assertIsNotNone(lrf_row)
+        self.assertEqual(len(lrf_row.select('form[action="/license-manage/upload-participant"]')), 0)
+        self.assertEqual(len(lrf_row.select('form[action="/license-manage/update-participant"]')), 1)
+        self.assertEqual(len(lrf_row.select('form[action="/license-manage/deactivate-participant"]')), 1)
+
+        delete_lrf(lrf)
+        delete_lrf(lic_lrf)
+
+    def test_update_license__normal(self):
+        client = app.test_client()
+        _login_as_admin(client)
+
+        # setup
+        lic_lrf = self.do_upload_active_lic(client)
+        parti_lrf = self.do_upload_active_parti(client, lic_lrf.id, )
+        self.assertTrue(lic_lrf.is_active())
+        self.assertTrue(parti_lrf.is_active())
+        self.assertEqual(lic_lrf.id, parti_lrf.data.get("lic_related_file_id"))
+
+        old_page = load_lic_detail_page_helper(client)
+
+        lrf_finder = create_new_lrf_finder()
+
+        # run update-license
+        resp: Response = client.post('/license-manage/update-license',
+                                     data=dict(
+                                         lic_lrf_id=lic_lrf.id,
+                                         parti_lrf_id=parti_lrf.id,
+                                         file=load_file_for_upload(PATH_LIC_A),
+                                     ),
+                                     follow_redirects=True)
+        new_page = LicDetailPageHelper(resp.data)
+
+        lic_lrf = reload_lrf(lic_lrf)
+        self.assertFalse(lic_lrf.is_active())
+        parti_lrf = reload_lrf(parti_lrf)
+        self.assertTrue(parti_lrf.is_active())
+
+        new_lic_lrf = lrf_finder()
+        self.assertTrue(new_lic_lrf.is_license())
+        self.assertTrue(new_lic_lrf.is_active())
+        self.assertEqual(new_lic_lrf.id, parti_lrf.data.get("lic_related_file_id"))
+
+        self.assertEqual(old_page.n_active_row(),
+                         new_page.n_active_row())
+        self.assertLess(old_page.n_history_row(),
+                        new_page.n_history_row())
+
+        delete_lrf(parti_lrf)
+        delete_lrf(lic_lrf)
+        delete_lrf(new_lic_lrf)
+
+
+def reload_lrf(lrf: LicRelatedFile) -> LicRelatedFile:
+    lrf: LicRelatedFile = ez_dao_utils.pull_by_id(LicRelatedFile, lrf.id)
+    return lrf
+
+
+def delete_lrf(lrf: LicRelatedFile):
+    if lrf.is_license():
+        rec_cls = License
+    else:
+        rec_cls = Alliance
+    rec = ez_dao_utils.pull_by_id(rec_cls, lrf.record_id)
+    if rec:
+        rec.delete()
+
+    lrf.delete()
+
+    file_path = license_manage._path_lic_related_file(lrf.file_name)
+    if file_path.is_file():
+        os.remove(file_path)
 
 
 def create_new_lrf_finder() -> Callable[[], Optional[LicRelatedFile]]:
