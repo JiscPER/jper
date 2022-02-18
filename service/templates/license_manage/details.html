@@ -167,7 +167,7 @@
             {% endif %}
         </td>
     </tr>
-    <tr id="detail_row_{{loop.index0}}">
+    <tr id="detail_row_{{loop.index0}}" class="detail_row">
         <td colspan="6">
             <div>
                 <span style="font-weight: bold">Validation notes:</span>
@@ -211,6 +211,9 @@
         background-color: #cccccc;
         color: #666666;
 
+    }
+    .detail_row {
+        display: none;
     }
 
 
