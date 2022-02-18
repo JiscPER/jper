@@ -144,7 +144,11 @@
             </a>
         </td>
         <td> {{ l.get('type') }}</td>
-        <td> {{ l.get('status') }}</td>
+        <td>
+            <a class="toggle_detail_btn" toggle_detail="detail_row_{{loop.index0}}" href="#">
+                {{ l.get('status') }}
+            </a>
+        </td>
         <td> {{ l.get('upload_date') }}</td>
         <td>
             {% if l.get('status') not in ['validation failed'] %}
@@ -161,6 +165,18 @@
                 <input class="act_btn" type="submit" value="Delete"/>
             </form>
             {% endif %}
+        </td>
+    </tr>
+    <tr id="detail_row_{{loop.index0}}">
+        <td colspan="6">
+            <div>
+                <span style="font-weight: bold">Validation notes:</span>
+                <span>{{ l.get('validation_notes', '') }}</span>
+            </div>
+            <div>
+                <span style="font-weight: bold">Admin notes:</span>
+                <span>{{ l.get('admin_notes', '') }}</span>
+            </div>
         </td>
     </tr>
     {% endfor %}
@@ -223,8 +239,15 @@
 
     $('.act_btn').click((e) => {
         const jq_btn = $(e.target)
-        jq_btn .attr("disabled", true);
+        jq_btn.attr("disabled", true);
         jq_btn.parent('form').submit()
+    })
+
+    $('.toggle_detail_btn').click((e) => {
+        e.preventDefault()
+        const jq_btn = $(e.target)
+        const jq_detail = $('#' + jq_btn.attr('toggle_detail'))
+        jq_detail.toggle()
     })
 
 
