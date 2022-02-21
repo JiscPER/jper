@@ -59,10 +59,12 @@ def send_upload_lic(client,
     return resp
 
 
-def send_deactivate_license(client, lic_lrf_id: str, follow_redirects=False) -> Response:
-    post_data = {
-        'lic_lrf_id': lic_lrf_id,
-    }
+def send_deactivate_license(client, lic_lrf_id: str,
+                            parti_lrf_id: str = None,
+                            follow_redirects=False) -> Response:
+    post_data = dict(lic_lrf_id=lic_lrf_id)
+    if parti_lrf_id:
+        post_data['parti_lrf_id'] = parti_lrf_id
     resp: Response = client.post('/license-manage/deactivate-license',
                                  data=post_data,
                                  follow_redirects=follow_redirects)
@@ -91,7 +93,8 @@ class LicDetailPageHelper:
     def history_tbl(self):
         return self.active_history_table()[1]
 
-    def cnt_table_row(self, soup):
+    @staticmethod
+    def cnt_table_row(soup):
         return len(soup.select('tr')) - 1  # -1 for not include header
 
     def n_active_row(self):
@@ -100,7 +103,8 @@ class LicDetailPageHelper:
 
     def n_history_row(self):
         _, history_tbl = self.active_history_table()
-        return self.cnt_table_row(history_tbl)
+        rows = [r for r in history_tbl.select('tr') if 'detail_row' not in r.get('class', [])]
+        return len(rows)
 
     def non_active_lrf_id_list(self) -> Iterable[str]:
         lrf_id_list = (i.get('value') for i in self.history_tbl().select('input[type=hidden][name=lrf_id]'))
@@ -286,8 +290,11 @@ class TestLicenseManage(ESTestCase):
                                          lic_type='alliance', follow_redirects=False)
         self.assertEqual(resp.status_code, 302)
 
-        # active
+        # wait for lic created
         lrf1 = lrf_finder()
+        ez_dao_utils.wait_unit_id_found(License, lrf1.record_id)
+
+        # active
         resp: Response = send_active_lic_related_file(client, lrf1.id, follow_redirects=False)
         self.assertEqual(resp.status_code, 302)
 
@@ -338,14 +345,12 @@ class TestLicenseManage(ESTestCase):
         new_lrf = new_lrf_finder()
         self.assertIsNotNone(new_lrf)
 
-        # prepare data before run
-
         # deactivate all lrf
         for checker in [license_manage._deactivate_lrf_by_lrf_id(lrf.id, License) for lrf in
                         LicRelatedFile.pull_all_by_status('active')]:
             checker()
 
-        org_detail_page = LicDetailPageHelper(resp.data)
+        old_page = load_lic_detail_page_helper(client)
         incorrect_id_list = {l.id for l in License.pull_all_by_status_ezb_id('active', new_lrf.ezb_id)}
 
         # run
@@ -353,14 +358,14 @@ class TestLicenseManage(ESTestCase):
         self.assertEqual(resp.status_code, 200)
 
         # assert new active lrf record in table
-        new_detail_page = LicDetailPageHelper(resp.data)
-        self.assertGreater(new_detail_page.n_active_row(),
-                           org_detail_page.n_active_row(), )
+        new_page = LicDetailPageHelper(resp.data)
+        self.assertLess(old_page.n_active_row(),
+                        new_page.n_active_row(), )
 
         self.assertTrue(new_lrf.is_license())
 
         # only one active record for each ezb_id
-        time.sleep(2)  # wait for License.save()
+        time.sleep(3)  # wait for License.save()
         active_lic_id_list = {l.id for l in License.pull_all_by_status_ezb_id('active', new_lrf.ezb_id)}
         active_lic_id_list = active_lic_id_list - incorrect_id_list
         self.assertEqual(len(list(active_lic_id_list)), 1)
@@ -400,7 +405,8 @@ class TestLicenseManage(ESTestCase):
         old_page = load_lic_detail_page_helper(client)
 
         # run
-        resp = send_deactivate_license(client, lic_lrf.id, follow_redirects=True)
+        resp = send_deactivate_license(client, lic_lrf.id, parti_lrf_id=parti_lrf.id,
+                                       follow_redirects=True)
         new_page = LicDetailPageHelper(resp.data)
 
         # assert
@@ -509,6 +515,47 @@ class TestLicenseManage(ESTestCase):
         delete_lrf(parti_lrf)
         delete_lrf(lic_lrf)
         delete_lrf(new_lic_lrf)
+
+    def test_delete_lic_related_file__normal(self):
+        client = app.test_client()
+        _login_as_admin(client)
+
+        # setup
+        lic_lrf = self.do_upload_active_lic(client)
+        license_manage._deactivate_lrf_by_lrf_id(lic_lrf.id, License)()
+        lic_lrf = reload_lrf(lic_lrf)
+        self.assertFalse(lic_lrf.is_active())
+        self.assertTrue(license_manage._path_lic_related_file(lic_lrf.file_name).is_file())
+        old_page = load_lic_detail_page_helper(client)
+
+        # run
+        resp: Response = client.post('/license-manage/delete-lic-related-file',
+                                     data=dict(lrf_id=lic_lrf.id),
+                                     follow_redirects=True)
+        new_page = LicDetailPageHelper(resp.data)
+
+        # assert
+        self.assertEqual(old_page.n_active_row(),
+                         new_page.n_active_row())
+        self.assertGreater(old_page.n_history_row(),
+                           new_page.n_history_row())
+        self.assertFalse(license_manage._path_lic_related_file(lic_lrf.file_name).is_file())
+        self.assertIsNone(ez_dao_utils.pull_by_id(LicRelatedFile, lic_lrf.id))
+
+        delete_lrf(lic_lrf)
+
+    def test_do_upload_active_lic(self):
+        client = app.test_client()
+        _login_as_admin(client)
+
+        self.do_upload_active_lic(client)
+
+    def test_do_upload_active_parti(self):
+        client = app.test_client()
+        _login_as_admin(client)
+
+        lic_lrf = self.do_upload_active_lic(client)
+        self.do_upload_active_parti(client, lic_lrf.id)
 
 
 def reload_lrf(lrf: LicRelatedFile) -> LicRelatedFile:
