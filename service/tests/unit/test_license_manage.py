@@ -542,6 +542,9 @@ class TestLicenseManage(ESTestCase):
         self.assertFalse(license_manage._path_lic_related_file(lic_lrf.file_name).is_file())
         self.assertIsNone(ez_dao_utils.pull_by_id(LicRelatedFile, lic_lrf.id))
 
+        time.sleep(3)  # wait for license deleted
+        self.assertIsNone(lic_lrf.get_related_record())
+
         delete_lrf(lic_lrf)
 
     def test_do_upload_active_lic(self):

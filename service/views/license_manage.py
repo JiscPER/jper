@@ -89,7 +89,6 @@ class ActiveLicRelatedRow:
 
 
 def abort_if_not_admin():
-    # KTODO change it to Decorators
     if not current_user.is_super:
         abort(401)
 
@@ -136,8 +135,6 @@ def details():
     # prepare active_list
     active_list: Iterable[ActiveLicRelatedRow] = (_to_active_lr_rows(lic_lrf, parti_lr_files)
                                                   for lic_lrf in lic_lr_files)
-
-    # KTODO add disable btn message for parti msg
 
     return render_template('license_manage/details.html',
                            allowed_lic_types=LRF_TYPES,
@@ -392,22 +389,20 @@ def active_lic_related_file():
 
 def _active_lic_related_file(lrf_id) -> CompleteChecker:
     # active lic_related_file
-    lr_file = _check_and_find_lic_related_file(lrf_id)
-    lr_file.status = 'active'
-    lr_file.save()
-
-    record_cls = Alliance if lr_file.lic_related_file_id else License
+    lrf = _check_and_find_lic_related_file(lrf_id)
+    lrf.status = 'active'
+    lrf.save()
 
     # active record
-    record = object_query_first(record_cls, lr_file.record_id)
+    record = lrf.get_related_record()
     if record:
         record.status = 'active'
         record.save()
     else:
-        log.warning(f'license / alliance not found record_id[{lr_file.record_id}] lrf_id[{lrf_id}]')
+        log.warning(f'license / alliance not found record_id[{lrf.record_id}] lrf_id[{lrf_id}]')
 
     def _checker():
-        _wait_unit_status(lr_file.id, 'active')
+        _wait_unit_status(lrf.id, 'active')
 
     return _checker
 
@@ -598,20 +593,25 @@ def deactivate_license():
 def delete_lic_related_file():
     abort_if_not_admin()
 
-    # KTODO delete lic alli record ??
-
     # delete record LicRelatedFile
     lrf_id = request.values.get('lrf_id')
-    lr_file = _check_and_find_lic_related_file(lrf_id)
-    lr_file.delete()
+    lrf = _check_and_find_lic_related_file(lrf_id)
+    lrf.delete()
 
     # delete file from hard disk
-    path = _path_lic_related_file(filename=lr_file.file_name)
+    path = _path_lic_related_file(filename=lrf.file_name)
     if path.is_file():
         log.info(f'remove file[{path.as_posix()}]')
         os.remove(path)
     else:
         log.debug(f'skip remove -- file not found [{path.as_posix()}] ')
+
+    # delete License or Alliance
+    record = lrf.get_related_record()
+    if record:
+        record.delete()
+    else:
+        log.warning(f'license / alliance not found record_id[{lrf.record_id}] lrf_id[{lrf_id}]')
 
     # make sure removed from db
     ez_dao_utils.wait_unit_id_not_found(LicRelatedFile, lrf_id)

@@ -3,7 +3,7 @@ Model objects used to represent interactions with ezb items
 """
 
 import csv
-from typing import Union, Iterable
+from typing import Union, Iterable, Type, Optional
 
 from octopus.core import app
 from octopus.lib import dataobj
@@ -821,6 +821,13 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
 
         self._add_struct(struct)
         super(LicRelatedFile, self).__init__(raw=raw)
+
+    def get_related_record(self) -> Optional[Union[License, Alliance]]:
+        return ez_dao_utils.object_query_first(self.get_record_cls(), self.record_id)
+
+    def get_record_cls(self) -> Type[Union[License, Alliance]]:
+        record_cls = License if self.is_license() else Alliance
+        return record_cls
 
     def is_license(self) -> bool:
         return self.data.get("lic_related_file_id") is None
