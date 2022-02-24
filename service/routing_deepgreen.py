@@ -935,7 +935,7 @@ def _is_article_license_gold(metadata, provider_id):
     if metadata.license:
         license_typ = metadata.license.get('type', None)
         license_url = metadata.license.get('url', None)
-        provider = models.Account.get(provider_id)
+        provider = models.Account.pull(provider_id)
         gold_license = []
         if provider.license and provider.license.get('gold_license', []):
             gold_license = provider.license.get('gold_license')

@@ -192,7 +192,7 @@ class JPER(object):
         # incoming notification structure is demonstrated in the account model and also documented at:
         # https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md
         if notification.get('embargo', {}).get('duration', None) is None:
-            if account.data.get('embargo, {}').get('duration', None) is not None:
+            if account.data.get('embargo', {}).get('duration', None) is not None:
                 notification['embargo'] = {'duration': account.data['embargo']['duration']}
 
         # add a check for default license if the account has a non-null value set for it
