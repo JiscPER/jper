@@ -754,7 +754,7 @@ class JperHelper:
         deposit_date = None
         deposit_status = None
         if deposit_count > 0:
-            dr_info = dr.get('hits', {}).get('hits', {})[0].get('_source', {})
+            dr_info = dr.get('hits', {}).get('hits', [])[0].get('_source', {})
             deposit_date = dr_info.get('deposit_date', '')
             deposit_status = dr_info.get('completed_status', '')
         return deposit_count, deposit_date, deposit_status

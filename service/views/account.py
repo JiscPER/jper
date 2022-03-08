@@ -205,7 +205,7 @@ def _sword_logs(repo_id, from_date, to_date):
     try:
         logs_raw = models.RepositoryDepositLog().pull_by_date_range(repo_id, from_date, to_date)
         # use unpack_json_result in esprit raw.py - raw.unpack_json_result(logs_raw)
-        logs = logs_raw.get('hits', {}).get('hits', {})
+        logs = logs_raw.get('hits', {}).get('hits', [])
         deposit_record_logs = {}
         if logs and len(logs) > 0:
             for log in logs:
