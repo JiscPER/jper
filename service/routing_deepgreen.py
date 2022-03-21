@@ -11,6 +11,7 @@ from datetime import datetime
 import uuid, re
 import unicodedata
 from werkzeug.routing import BuildError
+import json
 
 class RoutingException(Exception):
     """
@@ -98,11 +99,11 @@ def _route(unrouted):
     else:
         doi = doi[0]
 
-    bibids = list(set(models.Account.pull_all_repositories()))
+    bibids = models.Account.pull_all_repositories()
     # NEW FEATURE
     # Get all subject repository accounts. Needed for Gold license. 
     # They do not get publications with gold license.
-    subject_repo_bibids = list(set(models.Account.pull_all_subject_repositories()))
+    subject_repo_bibids = models.Account.pull_all_subject_repositories()
 
     # participating repositories - who would like to receive article if matching
     part_bibids = {}
@@ -125,7 +126,7 @@ def _route(unrouted):
             if lic.type == "gold" or (lic.type == "hybrid" and gold_article_license):
                 for bibid in bibids:
                     # All repositories except subject repositories get publications with gold license
-                    if bibid not in subject_repo_bibids:
+                    if bibid not in subject_repo_bibids.keys():
                         if bibid not in part_bibids:
                             part_bibids[bibid] = []
                         part_bibids[bibid].append(lic_data[0])
@@ -154,13 +155,10 @@ def _route(unrouted):
         #                 although it would be *very* unlikely to be needed here.  Strange.
         if bibid is None:
             continue
-        print("finding account for bibid: #{a}".format(a=bibid))
-        account = models.Account.pull_by_key("repository.bibid.exact", bibid)
+        account = models.Account.pull(bibids[bibid])
         if account is not None and account.has_role("repository") and not account.is_passive:
             # extend this to hold all the license data may be?
             al_repos.append((account.id, lic_data, bibid))
-    print("Number of repositories to route with matching license and repo config:", len(al_repos))
-    print(json.dumps(al_repos))
     if len(al_repos) == 0:
         routing_reason = "No (active!) qualified repositories."
         app.logger.debug("Routing - Notification {y} No (active!) qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))
