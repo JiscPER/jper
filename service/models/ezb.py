@@ -373,7 +373,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 "created_date": {"coerce": "utcdatetime"},
                 "last_updated": {"coerce": "utcdatetime"},
                 "name": {"coerce": "unicode"},
-                "type": {"coerce": "unicode", "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid"]}
+                "type": {"coerce": "unicode", "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid", "hybrid"]}
             },
             # not (yet?) needed here
             # "objects" : [ 
