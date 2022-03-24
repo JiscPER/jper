@@ -842,9 +842,9 @@ def _coerce_account_hash(account_hash):
 
 
 def _extract_bibids(ans):
-    bibids = []
+    bibids = {}
     for rec in ans:
         bibid = rec.get('repository', {}).get('bibid', '').lstrip('a')
         if bibid:
-            bibids.append(bibid)
+            bibids[bibid] = rec['id']
     return bibids
