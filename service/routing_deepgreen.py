@@ -11,7 +11,6 @@ from datetime import datetime
 import uuid, re
 import unicodedata
 from werkzeug.routing import BuildError
-import json
 
 class RoutingException(Exception):
     """
