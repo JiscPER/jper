@@ -111,10 +111,15 @@ def flatten(destination, depth=None):
             try:
                 # shutil.move(depth + '/' + fl, destination)
                 # 2019-11-18 TD : Some 'new' +stem dst place to move all the single pubs into
-                if stem and os.path.isdir(destination + '/' + stem):
-                    shutil.move(depth + '/' + fl, destination + '/' + stem)
+                destpath = destination
+                if stem:
+                    destpath = os.path.join(destination, stem)
+                originpath = os.path.join(depth, fl)
+                print('Moving file #{a} tp #{b}'.format(a=originpath, b=destpath) )
+                if stem and os.path.isdir(destpath):
+                    shutil.move(originpath, destpath)
                 else:
-                    shutil.move(depth + '/' + fl, destination)
+                    shutil.move(originpath, destination)
             except:
                 pass
 
@@ -127,9 +132,10 @@ def pkgformat(src):
     for fl in os.listdir(src):
         app.logger.debug('Pkgformat at ' + fl)
         if '.xml' in fl:
-            app.logger.debug('Pkgformat tries to open ' + src + '/' + fl)
+            filepath = os.path.join(src, fl)
+            app.logger.debug('Pkgformat tries to open ' + filepath)
             try:
-                with open(src + '/' + fl, 'r') as f:
+                with open(filepath, 'r') as f:
                     for line in f:
                         if "//NLM//DTD Journal " in line:
                             pkg_fmt = "https://datahub.deepgreen.org/FilesAndJATS"
@@ -346,10 +352,6 @@ def checkunrouted():
                 robjids.append(obj.id)
             else:
                 urobjids.append(obj.id)
-            # 2019-06-13 TD : to cope with mass deliveries, we have to limit 
-            #                 the loop over the unrouted notifs
-            if counter >= limit:
-                break
 
         # 2017-06-06 TD : replace str() by .format() string interpolation
         app.logger.debug("Scheduler - routing sent {cnt} notification(s) for routing".format(cnt=counter))
