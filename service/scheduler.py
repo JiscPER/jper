@@ -342,7 +342,7 @@ def checkunrouted():
     # 2019-06-13 TD : to cope with mass deliveries, we have to limit the next loop 
     #                 (factor 10 times the time to the next call seems reasonable...)
     try:
-        app.logger.debug("Scheduler - check for unrouted notifications")
+        app.logger.info("Scheduler - check for unrouted notifications")
         # query the service.models.unroutednotification index
         # returns a list of unrouted notification from the last three up to four months
         for obj in models.UnroutedNotification.scroll():
@@ -352,13 +352,17 @@ def checkunrouted():
                 robjids.append(obj.id)
             else:
                 urobjids.append(obj.id)
+            # 2019-06-13 TD : to cope with mass deliveries, we have to limit
+            #                 the loop over the unrouted notifs
+            if counter >= limit:
+                break
 
         # 2017-06-06 TD : replace str() by .format() string interpolation
-        app.logger.debug("Scheduler - routing sent {cnt} notification(s) for routing".format(cnt=counter))
+        app.logger.info("Scheduler - routing sent {cnt} notification(s) for routing".format(cnt=counter))
 
         if app.config.get("DELETE_ROUTED", False) and len(robjids) > 0:
             # 2017-06-06 TD : replace str() by .format() string interpolation
-            app.logger.debug(
+            app.logger.info(
                 "Scheduler - routing deleting {x} of {cnt} unrouted notification(s) that have been processed and routed".format(
                     x=len(robjids), cnt=counter))
             models.UnroutedNotification.bulk_delete(robjids)
@@ -367,7 +371,7 @@ def checkunrouted():
 
         if app.config.get("DELETE_UNROUTED", False) and len(urobjids) > 0:
             # 2017-06-06 TD : replace str() by .format() string interpolation
-            app.logger.debug(
+            app.logger.info(
                 "Scheduler - routing deleting {x} of {cnt} unrouted notifications that have been processed and were unrouted".format(
                     x=len(urobjids), cnt=counter))
             models.UnroutedNotification.bulk_delete(urobjids)
