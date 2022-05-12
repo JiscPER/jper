@@ -192,7 +192,7 @@ class JPER(object):
         # incoming notification structure is demonstrated in the account model and also documented at:
         # https://github.com/JiscPER/jper/blob/develop/docs/api/IncomingNotification.md
         if notification.get('embargo', {}).get('duration', None) is None:
-            if account.data.get('embargo, {}').get('duration', None) is not None:
+            if account.data.get('embargo', {}).get('duration', None) is not None:
                 notification['embargo'] = {'duration': account.data['embargo']['duration']}
 
         # add a check for default license if the account has a non-null value set for it
@@ -754,7 +754,7 @@ class JperHelper:
         deposit_date = None
         deposit_status = None
         if deposit_count > 0:
-            dr_info = dr.get('hits', {}).get('hits', {})[0].get('_source', {})
+            dr_info = dr.get('hits', {}).get('hits', [])[0].get('_source', {})
             deposit_date = dr_info.get('deposit_date', '')
             deposit_status = dr_info.get('completed_status', '')
         return deposit_count, deposit_date, deposit_status

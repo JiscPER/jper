@@ -408,7 +408,7 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                 "last_updated": {"coerce": "utcdatetime"},
                 "name": {"coerce": "unicode"},
                 "type": {"coerce": "unicode",
-                         "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid"]},
+                         "allowed_values": ["alliance", "national", "open", "gold", "deal", "fid", "hybrid"]},
                 "status": {"coerce": "unicode", "allowed_values": ['active', 'inactive']},
             },
             # not (yet?) needed here
@@ -527,9 +527,9 @@ class License(dataobj.DataObj, dao.LicenseDAO):
   
         :param val: the license package type
         """
-        if val not in ["alliance", "national", "open", "gold", "deal", "fid"]:
+        if val not in ["alliance", "national", "open", "gold", "deal", "fid", "hybrid"]:
             raise dataobj.DataSchemaException(
-                "license type must be one of 'alliance', 'national', 'deal', 'open', 'fid' or 'gold'")
+                "license type must be one of 'alliance', 'national', 'deal', 'open', 'fid', 'gold' or 'hybrid'")
 
         self._set_single("type", val, coerce=dataobj.to_unicode())
 
