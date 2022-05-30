@@ -89,56 +89,6 @@ def abort_if_not_admin():
         abort(401)
 
 
-def _split_list_by_cond_fn(cond_fn: Callable[[any], bool],
-                           obj_list: list[any], ) -> tuple[Iterable, Iterable]:
-    return filter(cond_fn, obj_list), itertools.filterfalse(cond_fn, obj_list)
-
-
-def _to_active_lr_rows(lic_lrf: LicRelatedFile,
-                       parti_lr_files: list[LicRelatedFile]) -> ActiveLicRelatedRow:
-    parti = [lr for lr in parti_lr_files if lr.lic_related_file_id == lic_lrf.id]
-    parti = parti and parti[0]
-    if parti:
-        parti_filename = parti.file_name
-        parti_upload_date = parti.upload_date
-        parti_lrf_id = parti.id
-    else:
-        parti_filename = ''
-        parti_upload_date = ''
-        parti_lrf_id = ''
-
-    return ActiveLicRelatedRow(lic_lrf.id, lic_lrf.file_name, lic_lrf.upload_date, lic_lrf.type,
-                               parti_lrf_id, parti_filename, parti_upload_date)
-
-
-@blueprint.route('/old')
-def details_old():
-    abort_if_not_admin()
-
-    query = ez_query_maker.match_all()
-    query['sort'] = [{"last_updated": {"order": "desc"}}]
-    query['size'] = 100
-    lic_related_files = [l for l in LicRelatedFile.object_query(query)]
-    active_lr_files, inactive_lr_files = _split_list_by_cond_fn(lambda l: l.status == 'active',
-                                                                lic_related_files)
-    active_lr_files = list(active_lr_files)
-
-    # if lic_related_file_id is None, this record must be license file
-    lic_lr_files, parti_lr_files = _split_list_by_cond_fn(lambda l: l.lic_related_file_id is None,
-                                                          active_lr_files)
-    parti_lr_files = list(parti_lr_files)
-
-    # prepare active_list
-    active_list: Iterable[ActiveLicRelatedRow] = (_to_active_lr_rows(lic_lrf, parti_lr_files)
-                                                  for lic_lrf in lic_lr_files)
-
-    return render_template('license_manage/details_old.html',
-                           allowed_lic_types=LICENSE_TYPES,
-                           active_list=active_list,
-                           history_list=(l.data for l in inactive_lr_files),
-                           allowed_del_status=ALLOWED_DEL_STATUS, )
-
-
 @blueprint.route('/')
 def details():
     abort_if_not_admin()
