@@ -278,13 +278,13 @@ class AllianceDAO(dao.ESDAO):
     """ The index type to use to store these objects """
 
     @classmethod
-    def pull_all_by_status_ezb_id(cls, status: str,
+    def pull_all_by_status_and_id(cls, status: str,
                                   ezb_id: str, ) -> Iterable:
-        return pull_all_by_status_ezb_id(cls, status, ezb_id=ezb_id)
+        return pull_all_by_status_and_id(cls, status, ezb_id)
 
     @classmethod
-    def pull_all_by_ezb_id(cls, ezb_id: str) -> Iterable:
-        return pull_all_by_ezb_id(cls, ezb_id)
+    def pull_all_by_id(cls, ezb_id: str) -> Iterable:
+        return pull_all_by_id(cls, ezb_id)
 
 
 class LicenseDAO(dao.ESDAO):
@@ -296,16 +296,16 @@ class LicenseDAO(dao.ESDAO):
     """ The index type to use to store these objects """
 
     @classmethod
-    def pull_all_by_status_ezb_id(cls, status: str,
+    def pull_all_by_status_and_id(cls, status: str,
                                   ezb_id: str, ) -> Iterable:
-        return pull_all_by_status_ezb_id(cls, status, ezb_id=ezb_id)
+        return pull_all_by_status_and_id(cls, status, ezb_id)
 
     @classmethod
-    def pull_all_by_ezb_id(cls, ezb_id: str, ) -> Iterable:
-        return pull_all_by_ezb_id(cls, ezb_id)
+    def pull_all_by_id(cls, ezb_id: str, ) -> Iterable:
+        return pull_all_by_id(cls, ezb_id)
 
 
-def pull_all_by_status_ezb_id(domain_obj_cls: Type[DomainObject], status: str,
+def pull_all_by_status_and_id(domain_obj_cls: Type[DomainObject], status: str,
                               ezb_id: str) -> Iterable:
     must_list = [
         {'match': {'status': status}},
@@ -328,7 +328,7 @@ def pull_all_by_status_ezb_id(domain_obj_cls: Type[DomainObject], status: str,
         return obs
 
 
-def pull_all_by_ezb_id(domain_obj_cls: Type[DomainObject], ezb_id: str) -> Iterable:
+def pull_all_by_id(domain_obj_cls: Type[DomainObject], ezb_id: str) -> Iterable:
     must_list = [
         {'term': {'identifier.id.exact': ezb_id}}
     ]

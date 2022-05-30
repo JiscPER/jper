@@ -160,18 +160,18 @@ def details():
                     if file_type not in active_lr_files[ezb_id]:
                         active_lr_files[ezb_id][file_type] = []
                     active_lr_files[ezb_id][file_type].append(doc)
-                elif doc.get('status', None) == 'archived':
-                    if ezb_id not in archived_lr_files:
-                        archived_lr_files[ezb_id] = {}
-                    if file_type not in archived_lr_files[ezb_id]:
-                        archived_lr_files[ezb_id][file_type] = []
-                    archived_lr_files[ezb_id][file_type].append(doc)
-                else:
+                elif doc.get('status', None) in ["validation failed", "validation passed"]:
                     if ezb_id not in other_lr_files:
                         other_lr_files[ezb_id] = {}
                     if file_type not in other_lr_files[ezb_id]:
                         other_lr_files[ezb_id][file_type] = []
                     other_lr_files[ezb_id][file_type].append(doc)
+                else:
+                    if ezb_id not in archived_lr_files:
+                        archived_lr_files[ezb_id] = {}
+                    if file_type not in archived_lr_files[ezb_id]:
+                        archived_lr_files[ezb_id][file_type] = []
+                    archived_lr_files[ezb_id][file_type].append(doc)
 
     return render_template('license_manage/details.html',
                            allowed_lic_types=LICENSE_TYPES,
@@ -271,7 +271,7 @@ def _upload_new_lic_lrf(lic_type: str, file,
     # validate and abort if failed
     try:
         _validate_lic_lrf(rows)
-    except ValueError as e:
+    except Exception as e:
         lrf_raw = dict(file_name=filename,
                        type=lic_type,
                        name=license_name,
@@ -631,7 +631,7 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file) -> LicRelatedFile:
     rows = _load_rows_by_csv_str(csv_str)
     try:
         _validate_parti_lrf(rows)
-    except ValueError as e:
+    except Exception as e:
         lrf_raw = dict(file_name=filename,
                        type=None,
                        name=None,
@@ -651,7 +651,7 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file) -> LicRelatedFile:
     participant_status = 'inactive'
 
     # disable all old record
-    # for old_lic in Alliance.pull_all_by_status_ezb_id('active', lic_ezb_id):
+    # for old_lic in Alliance.pull_all_by_status_and_id('active', lic_ezb_id):
     #     old_lic.status = 'inactive'
     #     old_lic.save()
 
@@ -865,7 +865,7 @@ def _add_lrf_for_parti(lic_lrf_id: str, filepath) -> LicRelatedFile:
     parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
 
     # update status is participant record
-    participants = Alliance.pull_all_by_ezb_id(lic_ezb_id)
+    participants = Alliance.pull_all_by_id(lic_ezb_id)
     if not participants:
         raise Exception(ValueError, f'Participant not found for {lic_ezb_id}, {filepath}')
     elif len(participants) != 1:

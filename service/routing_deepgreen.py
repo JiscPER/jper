@@ -112,7 +112,8 @@ def _route(unrouted):
     for issn in issn_data:
         # are there licenses stored for this ISSN?
         # 2016-10-12 TD : an ISSN could appear in more than one license !
-        lics = models.License.pull_by_journal_id(issn) # matches issn, eissn, doi, etc.
+        # matches issn, eissn, doi, etc for active licences.
+        lics = models.License.pull_all_by_status_and_id('active', issn) 
         if lics is None: # nothing found at all...
             continue
         lics = (lic for lic in lics if lic.is_active())
