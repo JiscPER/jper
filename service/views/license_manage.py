@@ -1,5 +1,4 @@
 import csv
-import dataclasses
 import io
 import itertools
 import logging
@@ -50,13 +49,12 @@ def _create_versioned_filename(filename: str,
     return f'{name}.{date_str}.{fmt}'
 
 
-@dataclasses.dataclass
 class LicenseFile:
     ezb_id: str
     name: str
     table_str: str  # table data as csv string
     filename: str
-    version_datetime: datetime = dataclasses.field(default_factory=datetime.now)
+    version_datetime: datetime
 
     @property
     def versioned_filename(self):
@@ -64,12 +62,11 @@ class LicenseFile:
                                           self.version_datetime)
 
 
-@dataclasses.dataclass
 class ParticipantFile:
     lic_ezb_id: str
     table_str: str
     filename: str
-    version_datetime: datetime = dataclasses.field(default_factory=datetime.now)
+    version_datetime: datetime
 
     @property
     def versioned_filename(self):
@@ -77,7 +74,6 @@ class ParticipantFile:
                                           self.version_datetime)
 
 
-@dataclasses.dataclass
 class ActiveLicRelatedRow:
     lic_lrf_id: str
     lic_filename: str
