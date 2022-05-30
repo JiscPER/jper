@@ -7,7 +7,7 @@ so these DAOs mostly just provide information on where to persist the data, and 
 query methods as required
 """
 from typing import Iterable, Type
-
+from esprit import raw
 from esprit.dao import DomainObject
 
 from octopus.modules.es import dao
@@ -159,6 +159,115 @@ class LicRelatedFileDAO(dao.ESDAO):
     __type__ = "lic_related_file"
     """ The index type to use to store these objects """
 
+    @classmethod
+    def pull_by_file_path_prefix(cls, file_path_prefix: str):
+        query = {
+            "query": {
+                "match_phrase_prefix": {
+                    "file_name": {
+                        "query": file_path_prefix
+                    }
+                }
+            }
+        }
+        obs = cls.object_query(q=query)
+        if len(obs) > 0:
+            return obs
+
+    @classmethod
+    def pull_by_file_path_prefix_and_status(cls, file_path_prefix: str, status: str):
+        query = {
+            "query": {
+                "bool": {
+                    "filter": {
+                        "term": {
+                            "status": status
+                        }
+                    },
+                    "must": {
+                        "match_phrase_prefix": {
+                            "file_name": {
+                                "query": file_path_prefix
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        obs = cls.object_query(q=query)
+        if len(obs) > 0:
+            return obs
+
+    @classmethod
+    def pull_all_grouped_by_ezb_id_and_type(cls):
+        # Group license files by ezb_id and then file_type. Sort by status and date_updated
+        query = {
+          "aggs": {
+            "ezb_id": {
+              "terms": {
+                "field": "ezb_id.exact",
+                "size": 10000
+              },
+              "aggs": {
+                "file_type": {
+                  "terms": {
+                    "field": "file_type.exact"
+                  },
+                  "aggs": {
+                    "docs": {
+                      "top_hits": {
+                        "size": 20,
+                        "sort": [
+                          {"status.exact": {"order": "desc"}},
+                          {"last_updated": {"order": "desc"}}
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "size": 0
+        }
+        conn = cls.__conn__
+        types = cls.get_read_types(None)
+        r = raw.search(conn, types, query)
+        res = r.json()
+        total = res.get('hits', {}).get('total', {}).get('value', 0)
+        grouped_files = {}
+        if total > 0:
+            for ezb_bucket in res.get('aggregations', {}).get('ezb_id', {}).get('buckets', []):
+                ezb_id = ezb_bucket['key']
+                grouped_files[ezb_id] = {}
+                for file_type_bucket in ezb_bucket.get('file_type', {}).get('buckets', []):
+                    file_type = file_type_bucket['key']
+                    docs = [r.get("_source") for r in file_type_bucket.get('docs', {}).get('hits', {}).get('hits', [])]
+                    grouped_files[ezb_id][file_type] = docs
+        return grouped_files
+
+    @classmethod
+    def get_file_by_ezb_id(cls, ezb_id, status=None, file_type=None):
+        must_list = [
+            {'term': {'ezb_id.exact': ezb_id}}
+        ]
+        if file_type:
+            must_list.append({'term': {'file_type.exact': file_type}})
+        if status:
+            must_list.append({'match': {'status': status}})
+
+        query = {
+            'query': {
+                'bool': {
+                    'must': must_list
+                }
+            },
+            "sort": [{"last_updated": {"order": "asc"}}]
+        }
+        obs = cls.object_query(q=query)
+        if len(obs) > 0:
+            return obs
+
 
 class AllianceDAO(dao.ESDAO):
     """
@@ -173,24 +282,9 @@ class AllianceDAO(dao.ESDAO):
                                   ezb_id: str, ) -> Iterable:
         return pull_all_by_status_ezb_id(cls, status, ezb_id=ezb_id)
 
-
-def pull_all_by_status_ezb_id(domain_obj_cls: Type[DomainObject], status: str,
-                              ezb_id: str) -> Iterable:
-    must_list = [
-        {'match': {'status': status}},
-        {'term': {'identifier.id.exact': ezb_id}}
-    ]
-
-    query = {
-        'query': {
-            'bool': {
-                'must': must_list
-            }
-        }
-    }
-
-    results = ez_dao_utils.query_objs(domain_obj_cls, query, wrap=True)
-    return results
+    @classmethod
+    def pull_all_by_ezb_id(cls, ezb_id: str) -> Iterable:
+        return pull_all_by_ezb_id(cls, ezb_id)
 
 
 class LicenseDAO(dao.ESDAO):
@@ -206,6 +300,53 @@ class LicenseDAO(dao.ESDAO):
                                   ezb_id: str, ) -> Iterable:
         return pull_all_by_status_ezb_id(cls, status, ezb_id=ezb_id)
 
+    @classmethod
+    def pull_all_by_ezb_id(cls, ezb_id: str, ) -> Iterable:
+        return pull_all_by_ezb_id(cls, ezb_id)
+
+
+def pull_all_by_status_ezb_id(domain_obj_cls: Type[DomainObject], status: str,
+                              ezb_id: str) -> Iterable:
+    must_list = [
+        {'match': {'status': status}},
+        {'term': {'identifier.id.exact': ezb_id}}
+    ]
+
+    query = {
+        'query': {
+            'bool': {
+                'must': must_list
+            }
+        },
+        "sort": [{"last_updated": {"order": "asc"}}]
+    }
+
+    # results = ez_dao_utils.query_objs(domain_obj_cls, query, wrap=True)
+    # return results
+    obs = domain_obj_cls.object_query(q=query)
+    if len(obs) > 0:
+        return obs
+
+
+def pull_all_by_ezb_id(domain_obj_cls: Type[DomainObject], ezb_id: str) -> Iterable:
+    must_list = [
+        {'term': {'identifier.id.exact': ezb_id}}
+    ]
+
+    query = {
+        'query': {
+            'bool': {
+                'must': must_list
+            }
+        },
+        "sort": [{"last_updated": {"order": "asc"}}]
+    }
+
+    # results = ez_dao_utils.query_objs(domain_obj_cls, query, wrap=True)
+    # return results
+    obs = domain_obj_cls.object_query(q=query)
+    if len(obs) > 0:
+        return obs
 
 class RepositoryStatusDAO(dao.ESDAO):
     """

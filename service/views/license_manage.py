@@ -22,7 +22,7 @@ from octopus.lib import dates
 from service.__utils import ez_dao_utils, ez_query_maker
 from service.__utils.ez_dao_utils import object_query_first
 from service.models import License
-from service.models.ezb import LRF_TYPES, LicRelatedFile, Alliance
+from service.models.ezb import LICENSE_TYPES, LicRelatedFile, Alliance
 
 blueprint = Blueprint('license-manage', __name__)
 
@@ -115,8 +115,8 @@ def _to_active_lr_rows(lic_lrf: LicRelatedFile,
                                parti_lrf_id, parti_filename, parti_upload_date)
 
 
-@blueprint.route('/')
-def details():
+@blueprint.route('/old')
+def details_old():
     abort_if_not_admin()
 
     query = ez_query_maker.match_all()
@@ -136,10 +136,48 @@ def details():
     active_list: Iterable[ActiveLicRelatedRow] = (_to_active_lr_rows(lic_lrf, parti_lr_files)
                                                   for lic_lrf in lic_lr_files)
 
-    return render_template('license_manage/details.html',
-                           allowed_lic_types=LRF_TYPES,
+    return render_template('license_manage/details_old.html',
+                           allowed_lic_types=LICENSE_TYPES,
                            active_list=active_list,
                            history_list=(l.data for l in inactive_lr_files),
+                           allowed_del_status=ALLOWED_DEL_STATUS, )
+
+
+@blueprint.route('/')
+def details():
+    abort_if_not_admin()
+
+    grouped_lic_files = LicRelatedFile.pull_all_grouped_by_ezb_id_and_type()
+    active_lr_files = {}
+    archived_lr_files = {}
+    other_lr_files = {}
+    for ezb_id in grouped_lic_files:
+        for file_type in grouped_lic_files[ezb_id]:
+            for doc in grouped_lic_files[ezb_id][file_type]:
+                if doc.get('status', None) == 'active':
+                    if ezb_id not in active_lr_files:
+                        active_lr_files[ezb_id] = {}
+                    if file_type not in active_lr_files[ezb_id]:
+                        active_lr_files[ezb_id][file_type] = []
+                    active_lr_files[ezb_id][file_type].append(doc)
+                elif doc.get('status', None) == 'archived':
+                    if ezb_id not in archived_lr_files:
+                        archived_lr_files[ezb_id] = {}
+                    if file_type not in archived_lr_files[ezb_id]:
+                        archived_lr_files[ezb_id][file_type] = []
+                    archived_lr_files[ezb_id][file_type].append(doc)
+                else:
+                    if ezb_id not in other_lr_files:
+                        other_lr_files[ezb_id] = {}
+                    if file_type not in other_lr_files[ezb_id]:
+                        other_lr_files[ezb_id][file_type] = []
+                    other_lr_files[ezb_id][file_type].append(doc)
+
+    return render_template('license_manage/details.html',
+                           allowed_lic_types=LICENSE_TYPES,
+                           active_files=active_lr_files,
+                           other_files=other_lr_files,
+                           archived_files=archived_lr_files,
                            allowed_del_status=ALLOWED_DEL_STATUS, )
 
 
@@ -199,15 +237,18 @@ def upload_license():
     abort_if_not_admin()
     lrf = _upload_new_lic_lrf(request.values.get('lic_type'),
                               request.files.get('file'),
-                              admin_notes=request.values.get('admin_notes', ''))
+                              license_name=request.values.get('license_name', ''),
+                              admin_notes=request.values.get('admin_notes', ''),
+                              ezb_id=request.values.get('ezb_id', ''))
     ez_dao_utils.wait_unit_id_found(LicRelatedFile, lrf.id)
     return redirect(url_for('license-manage.details'))
 
 
 def _upload_new_lic_lrf(lic_type: str, file,
+                        license_name: str = '',
                         admin_notes: str = '',
                         ezb_id: str = None):
-    if lic_type not in LRF_TYPES:
+    if lic_type not in LICENSE_TYPES:
         abort(400, f'Invalid parameter "lic_type" [{lic_type}]')
 
     if file is None:
@@ -218,7 +259,7 @@ def _upload_new_lic_lrf(lic_type: str, file,
     file_bytes = file.stream.read()
 
     filename_lower: str = filename.lower().strip()
-    if all(not filename_lower.endswith(f) for f in ['.csv', '.xls', '.xlsx']):
+    if all(not filename_lower.endswith(f) for f in ['.tsv', '.csv', '.xls', '.xlsx']):
         abort(400, f'Invalid file format [{filename}]')
 
     if any(filename.lower().endswith(fmt) for fmt in ['.xls', '.xlsx']):
@@ -233,8 +274,10 @@ def _upload_new_lic_lrf(lic_type: str, file,
     except ValueError as e:
         lrf_raw = dict(file_name=filename,
                        type=lic_type,
+                       name=license_name,
                        status='validation failed',
                        admin_notes=admin_notes,
+                       file_type='license',
                        validation_notes=str(e),
                        )
         LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
@@ -242,34 +285,100 @@ def _upload_new_lic_lrf(lic_type: str, file,
         return
     lic_file = _load_lic_file_by_rows(rows, filename=filename)
 
+    validation_notes = []
     # handle ezb_id mismatch
-    validation_notes = None
     if ezb_id != lic_file.ezb_id:
-        validation_notes = f"Warning, update with difference ezb_id. file[{lic_file.ezb_id}] org[{ezb_id}] "
+        validation_notes.append(f"Warning, ezb id does not match with license file. file: {lic_file.ezb_id}, form: {ezb_id}. Using form value.")
     ezb_id = ezb_id or lic_file.ezb_id
+    # handle name mismatch
+    if license_name != lic_file.name:
+        validation_notes.append(f"Warning, name does not match with license file. file: {lic_file.name}, form: {license_name}. Using form value.")
+    license_name = license_name or lic_file.name
+
+    lrf_status = 'validation passed'
+    license_status = 'inactive'
 
     # create license by csv file
     lic = License()
-    lic.set_license_data(ezb_id, lic_file.name,
+    lic.set_license_data(ezb_id, license_name,
                          type=lic_type, csvfile=lic_file.table_str,
-                         init_status='inactive')
+                         init_status=license_status)
 
     # save lic_related_file to db
     lrf_raw = dict(file_name=lic_file.versioned_filename,
                    type=lic_type,
+                   name=license_name,
                    ezb_id=ezb_id,
-                   status='validation passed',
+                   status=lrf_status,
                    admin_notes=admin_notes,
                    record_id=lic.id,
+                   file_type='license',
                    upload_date=dates.format(lic_file.version_datetime), )
     if validation_notes:
-        lrf_raw['validation_notes'] = validation_notes
+        lrf_raw['validation_notes'] = "\n".join(validation_notes)
     lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
 
     # save file to hard disk
     _save_lic_related_file(lic_file.versioned_filename, file_bytes)
 
     return lrf
+
+
+def upload_existing_license(filepath):
+    _add_lrf_for_lic(filepath, '')
+    return
+
+
+def _add_lrf_for_lic(filepath, admin_notes: str = ''):
+    if not os.path.isfile(filepath):
+        abort(400, 'parameter "file_path" not found')
+
+    # load lic_file
+    filename = os.path.basename(filepath)
+
+    with open(filepath, "rb") as f:
+        file_bytes = f.read()
+        csv_str = _decode_csv_bytes(file_bytes)
+        rows = _load_rows_by_csv_str(csv_str)
+
+    lic_file = _load_lic_file_by_rows(rows, filename=filename)
+
+    validation_notes = []
+    ezb_id = lic_file.ezb_id
+    license_name = lic_file.name
+
+    # create license by csv file
+    licences = License.pull_by_key('identifier.id', ezb_id)
+    if not licences:
+        raise Exception(ValueError, f'licence not found for {lic_file.ezb_id}, {filepath}')
+    elif len(licences) != 1:
+        raise Exception(ValueError, f'{len(licences)} licences found for {lic_file.ezb_id}, {filepath}')
+
+    lrf_status='active'
+    lic_status = 'active'
+    lic = licences[0]
+    lic.status = lic_status
+    lic.save()
+    lic_type = lic.type
+
+    # save lic_related_file to db
+    lrf_raw = dict(file_name=lic_file.versioned_filename,
+                   type=lic_type,
+                   name=license_name,
+                   ezb_id=ezb_id,
+                   status=lrf_status,
+                   admin_notes=admin_notes,
+                   file_type='license',
+                   record_id=lic.id,
+                   upload_date=dates.format(lic_file.version_datetime), )
+    if validation_notes:
+        lrf_raw['validation_notes'] = "\n".join(validation_notes)
+    _lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+
+    # save file to hard disk
+    _save_lic_related_file(lic_file.versioned_filename, file_bytes)
+
+    return
 
 
 def _find_idx(header_row, col_name):
@@ -425,7 +534,7 @@ def _check_and_find_lic_related_file(lrf_id: str) -> LicRelatedFile:
     if not lrf_id:
         _abort()
 
-    lr_file: LicRelatedFile = object_query_first(LicRelatedFile, lrf_id)
+    lr_file: LicRelatedFile = LicRelatedFile.pull(lrf_id)
     if not lr_file:
         _abort()
 
@@ -449,7 +558,7 @@ def _save_lic_related_file(filename: str, file_bytes: bytes):
 
 
 def _path_lic_related_file(filename: str) -> Path:
-    path = app.config.get('LIC_RELATED_FILE_DIR', '/data/lic_related_file')
+    path = app.config.get('LICENSE_FILE_DIR', '/data/license_files')
     path = Path(path)
     return path.joinpath(filename)
 
@@ -474,8 +583,10 @@ def update_license():
     old_lic_lrf: LicRelatedFile = _check_and_find_lic_related_file(old_lic_lrf_id)
 
     new_lrf = _upload_new_lic_lrf(old_lic_lrf.type,
-                                  request.files.get('file'),
-                                  ezb_id=old_lic_lrf.ezb_id)
+                              request.files.get('file'),
+                              license_name=old_lic_lrf.name,
+                              admin_notes=old_lic_lrf.admin_notes,
+                              ezb_id=old_lic_lrf.ezb_id)
     ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
 
     active_checker = _active_lic_related_file(new_lrf.id)
@@ -483,14 +594,11 @@ def update_license():
     deact_checker = _deactivate_lrf_by_lrf_id(old_lic_lrf_id, License)
 
     # replace to new lic_lrf_id
-    parti_lrf_id = request.values.get('parti_lrf_id')
-    if parti_lrf_id:
-        parti_lr_file = _check_and_find_lic_related_file(parti_lrf_id)
-        parti_lr_file.lic_related_file_id = new_lrf.id
-        parti_lr_file.save()
-        ez_dao_utils.wait_unit(
-            lambda: LicRelatedFile.count(ez_query_maker.by_term("lic_related_file_id", new_lrf.id))
-        )
+    participant_files = LicRelatedFile.get_file_by_ezb_id(old_lic_lrf.ezb_id, status="active", file_type='participant')
+    if len(participant_files) > 0:
+        for participant_file in participant_files:
+            participant_file.lic_related_file_id = new_lrf.id
+            participant_file.save()
 
     # wait for completed
     active_checker()
@@ -521,28 +629,46 @@ def _upload_new_parti_lrf(lic_lrf_id: str, file) -> LicRelatedFile:
         abort(400, f'Invalid file format [{filename}]')
 
     rows = _load_rows_by_csv_str(csv_str)
-    _validate_parti_lrf(rows)
+    try:
+        _validate_parti_lrf(rows)
+    except ValueError as e:
+        lrf_raw = dict(file_name=filename,
+                       type=None,
+                       name=None,
+                       ezb_id=lic_ezb_id,
+                       status='validation failed',
+                       admin_notes=None,
+                       file_type='participant',
+                       validation_notes=str(e),
+                       lic_related_file_id=lic_lr_file.id)
+        LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        abort(400, f'file validation fail --- {str(e)}')
+        return
 
     parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
 
+    lrf_status = 'validation passed'
+    participant_status = 'inactive'
+
     # disable all old record
-    for old_lic in Alliance.pull_all_by_status_ezb_id('active', lic_ezb_id):
-        old_lic.status = 'inactive'
-        old_lic.save()
+    # for old_lic in Alliance.pull_all_by_status_ezb_id('active', lic_ezb_id):
+    #     old_lic.status = 'inactive'
+    #     old_lic.save()
 
     # save participant to db
     alliance = Alliance()
     alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str,
-                               init_status='inactive')
+                               init_status=participant_status)
 
     # save lic_related_file to db
     lr_file_raw = dict(file_name=parti_file.versioned_filename,
                        type=None,
                        ezb_id=lic_ezb_id,
-                       status='validation passed',
+                       status=lrf_status,
                        admin_notes=None,
                        record_id=alliance.id,
                        upload_date=dates.format(parti_file.version_datetime),
+                       file_type='participant',
                        lic_related_file_id=lic_lr_file.id)
     new_lrf = LicRelatedFile.save_by_raw(lr_file_raw, blocking=False)
 
@@ -579,10 +705,15 @@ def update_participant():
 @blueprint.route('/deactivate-license', methods=['POST'])
 def deactivate_license():
     abort_if_not_admin()
-    lic_checker = _deactivate_lrf_by_lrf_id(request.values.get('lic_lrf_id'), License)
+    lic_lrf_id = request.values.get('lic_lrf_id')
+    lr_file = _check_and_find_lic_related_file(lic_lrf_id)
+    lic_checker = _deactivate_lrf_by_lrf_id(lic_lrf_id, License)
+
     parti_checker = None
-    if request.values.get('parti_lrf_id'):
-        parti_checker = _deactivate_lrf_by_lrf_id(request.values.get('parti_lrf_id'), Alliance)
+    participant_files = LicRelatedFile.get_file_by_ezb_id(lr_file.ezb_id, status="active", file_type='participant')
+    if len(participant_files) > 0:
+        for participant_file in participant_files:
+            parti_checker = _deactivate_lrf_by_lrf_id(participant_file.id, Alliance)
 
     lic_checker()
     parti_checker and parti_checker()
@@ -692,3 +823,74 @@ def _extract_name_ezb_id_by_line(line: str) -> tuple[str, str]:
         return name.strip(), ezb_id.strip()
     else:
         raise ValueError(f'name and ezb_id not found[{line}]')
+
+
+def upload_existing_participant(file_path):
+    if not os.path.isfile(file_path):
+        abort(400, 'parameter "file_path" not found')
+
+    # load lic_file
+    filename = os.path.basename(file_path)
+
+    file_prefix = filename.split('_participant')[0]
+    lic_lr_files = LicRelatedFile.pull_by_file_path_prefix_and_status(file_prefix, 'active')
+    if not lic_lr_files:
+        abort(400, f'Found no related license files')
+    if len(lic_lr_files) != 1:
+        abort(400, f'Found {len(lic_lr_files)} related license files')
+    lic_lr_file = lic_lr_files[0]
+
+    _add_lrf_for_parti(lic_lr_file.id, file_path)
+    return
+
+
+def _add_lrf_for_parti(lic_lrf_id: str, filepath) -> LicRelatedFile:
+    lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
+
+    # validate
+    lic: License = License.pull(lic_lr_file.record_id) # object_query_first(License, lic_lr_file.record_id)
+    lic_ezb_id = lic and lic.get_first_ezb_id()
+    if lic_ezb_id is None:
+        log.warning(f'ezb_id not found -- {lic_lr_file.record_id}')
+        abort(404)
+
+    # load parti_file
+    filename = os.path.basename(filepath)
+    with open(filepath, "rb") as f:
+        file_bytes = f.read()
+        csv_str = _decode_csv_bytes(file_bytes)
+    rows = _load_rows_by_csv_str(csv_str)
+    _validate_parti_lrf(rows)
+
+    parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
+
+    # update status is participant record
+    participants = Alliance.pull_all_by_ezb_id(lic_ezb_id)
+    if not participants:
+        raise Exception(ValueError, f'Participant not found for {lic_ezb_id}, {filepath}')
+    elif len(participants) != 1:
+        raise Exception(ValueError, f'{len(participants)} participants found for {lic_ezb_id}, {filepath}')
+
+    # save participant to db
+    lrf_status='active'
+    lic_status = 'active'
+    participant = participants[0]
+    participant.status = lic_status
+    participant.save()
+
+    # save lic_related_file to db
+    lr_file_raw = dict(file_name=parti_file.versioned_filename,
+                       type=None,
+                       ezb_id=lic_ezb_id,
+                       status=lrf_status,
+                       admin_notes=None,
+                       record_id=participant.id,
+                       upload_date=dates.format(parti_file.version_datetime),
+                       file_type='participant',
+                       lic_related_file_id=lic_lr_file.id)
+    new_lrf = LicRelatedFile.save_by_raw(lr_file_raw, blocking=False)
+
+    # save file to hard disk
+    _save_lic_related_file(parti_file.versioned_filename, file_bytes)
+
+    return new_lrf
