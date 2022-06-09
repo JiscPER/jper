@@ -32,7 +32,7 @@ ALLOWED_DEL_STATUS = ["validation failed", "archived"]
 CompleteChecker = Callable[[], NoReturn]
 
 
-def _create_versioned_filename(filename, version_datetime = None):
+def _create_versioned_filename(filename, version_datetime=None):
     if version_datetime is None:
         version_datetime = datetime.now()
 
@@ -58,7 +58,7 @@ class LicenseFile:
 
     def versioned_filename(self):
         return _create_versioned_filename(self.filename,
-                                          self.version_datetime)
+                                          version_datetime=self.version_datetime)
 
 
 class ParticipantFile:
@@ -70,7 +70,7 @@ class ParticipantFile:
 
     def versioned_filename(self):
         return _create_versioned_filename(self.filename,
-                                          self.version_datetime)
+                                          version_datetime=self.version_datetime)
 
 
 class ActiveLicRelatedRow:
