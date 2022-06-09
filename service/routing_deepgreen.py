@@ -113,7 +113,7 @@ def _route(unrouted):
         # are there licenses stored for this ISSN?
         # 2016-10-12 TD : an ISSN could appear in more than one license !
         # matches issn, eissn, doi, etc for active licences.
-        lics = models.License.pull_all_by_status_and_id('active', issn) 
+        lics = models.License.pull_all_by_status_and_issn('active', issn)
         if lics is None: # nothing found at all...
             continue
         lics = (lic for lic in lics if lic.is_active())
@@ -132,7 +132,7 @@ def _route(unrouted):
                             part_bibids[bibid] = []
                         part_bibids[bibid].append(lic_data[0])
             elif lic.type in ["alliance", "national", "deal", "fid", "hybrid"]:
-                al = models.Alliance.pull_by_key("license_id", lic.id)
+                al = models.Alliance.pull_all_by_status_and_license_id("active", lic.id)
                 if al and al.is_active():
                     # collect all EZB-Ids of participating institutions of AL
                     for participant in al.participants:

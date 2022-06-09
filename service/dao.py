@@ -286,6 +286,27 @@ class AllianceDAO(dao.ESDAO):
     def pull_all_by_id(cls, ezb_id: str) -> Iterable:
         return pull_all_by_id(cls, ezb_id)
 
+    @classmethod
+    def pull_all_by_status_and_license_id(cls, status: str,
+                                  license_id: str, ) -> Iterable:
+        must_list = [
+            {'match': {'status': status}},
+            {'term': {'license_id.exact': license_id}}
+        ]
+
+        query = {
+            'query': {
+                'bool': {
+                    'must': must_list
+                }
+            },
+            "sort": [{"last_updated": {"order": "asc"}}]
+        }
+
+        obs = cls.object_query(q=query)
+        if len(obs) > 0:
+            return obs
+
 
 class LicenseDAO(dao.ESDAO):
     """
@@ -294,6 +315,29 @@ class LicenseDAO(dao.ESDAO):
 
     __type__ = "license"
     """ The index type to use to store these objects """
+
+    @classmethod
+    def pull_all_by_status_and_issn(cls, status: str,
+                                  issn: str, ) -> Iterable:
+        must_list = [
+            {'match': {'status': status}},
+            {'term': {'journal.identifier.id.exact': issn}}
+        ]
+
+        query = {
+            'query': {
+                'bool': {
+                    'must': must_list
+                }
+            },
+            "sort": [{"last_updated": {"order": "asc"}}]
+        }
+
+        # results = ez_dao_utils.query_objs(domain_obj_cls, query, wrap=True)
+        # return results
+        obs = cls.object_query(q=query)
+        if len(obs) > 0:
+            return obs
 
     @classmethod
     def pull_all_by_status_and_id(cls, status: str,
