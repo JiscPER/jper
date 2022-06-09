@@ -49,28 +49,22 @@ def _create_versioned_filename(filename, version_datetime=None):
 
 
 class LicenseFile:
-    def __init__(self, ezb_id, name, table_str, filename, version_datetime=None):
+    def __init__(self, ezb_id, name, table_str, filename, version_datetime=datetime.now()):
         self.ezb_id = ezb_id
         self.name = name
         self.table_str = table_str  # table data as csv string
         self.filename = filename
         self.version_datetime = version_datetime
-
-    def versioned_filename(self):
-        return _create_versioned_filename(self.filename,
-                                          version_datetime=self.version_datetime)
+        self.versioned_filename = _create_versioned_filename(self.filename, version_datetime=self.version_datetime)
 
 
 class ParticipantFile:
-    def __init__(self, lic_ezb_id, table_str, filename, version_datetime=None):
+    def __init__(self, lic_ezb_id, table_str, filename, version_datetime=datetime.now()):
         self.lic_ezb_id = lic_ezb_id
         self.table_str = table_str
         self.filename = filename
         self.version_datetime = version_datetime
-
-    def versioned_filename(self):
-        return _create_versioned_filename(self.filename,
-                                          version_datetime=self.version_datetime)
+        self.versioned_filename = _create_versioned_filename(self.filename, version_datetime=self.version_datetime)
 
 
 class ActiveLicRelatedRow:
