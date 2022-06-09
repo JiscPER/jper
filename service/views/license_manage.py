@@ -32,8 +32,7 @@ ALLOWED_DEL_STATUS = ["validation failed", "archived"]
 CompleteChecker = Callable[[], NoReturn]
 
 
-def _create_versioned_filename(filename: str,
-                               version_datetime: datetime = None) -> str:
+def _create_versioned_filename(filename, version_datetime = None):
     if version_datetime is None:
         version_datetime = datetime.now()
 
@@ -50,28 +49,20 @@ def _create_versioned_filename(filename: str,
 
 
 class LicenseFile:
-    ezb_id: str
-    name: str
-    table_str: str  # table data as csv string
-    filename: str
-    version_datetime: datetime
-
-    @property
-    def versioned_filename(self):
-        return _create_versioned_filename(self.filename,
-                                          self.version_datetime)
+    def __init__(self, ezb_id, name, table_str, filename):
+        self.ezb_id = ezb_id
+        self.name = name
+        self.table_str = table_str  # table data as csv string
+        self.filename = filename
+        self.version_datetime = _create_versioned_filename(self.filename, None)
 
 
 class ParticipantFile:
-    lic_ezb_id: str
-    table_str: str
-    filename: str
-    version_datetime: datetime
-
-    @property
-    def versioned_filename(self):
-        return _create_versioned_filename(self.filename,
-                                          self.version_datetime)
+    def __init__(self, lic_ezb_id, table_str, filename):
+        self.lic_ezb_id = lic_ezb_id
+        self.table_str = table_str
+        self.filename = filename
+        self.version_datetime = _create_versioned_filename(self.filename, None)
 
 
 class ActiveLicRelatedRow:
@@ -127,7 +118,7 @@ def details():
                            allowed_del_status=ALLOWED_DEL_STATUS, )
 
 
-def _load_rows_by_csv_str(csv_str: str) -> list[list]:
+def _load_rows_by_csv_str(csv_str):
     """ Convert csv string to row list
     auto guess delimiter "\t" or ","
     """
@@ -145,7 +136,7 @@ def _load_rows_by_csv_str(csv_str: str) -> list[list]:
         return _load_rows(',')
 
 
-def _to_csv_str(headers: list, data: Iterable[list]) -> str:
+def _to_csv_str(headers, data):
     dict_rows = [{headers[col_idx]: row[col_idx] for col_idx in range(len(headers))}
                  for row in data]
 
@@ -163,19 +154,19 @@ def _to_csv_str(headers: list, data: Iterable[list]) -> str:
     return table_str
 
 
-def _load_rows_by_xls_bytes(xls_bytes: bytes) -> list[list]:
+def _load_rows_by_xls_bytes(xls_bytes):
     workbook = openpyxl.load_workbook(io.BytesIO(xls_bytes))
     sheet = workbook.active
     rows = [[c.value for c in r] for r in sheet.rows]
     return rows
 
 
-def _load_lic_file_by_rows(rows: list[list], filename: str) -> LicenseFile:
+def _load_lic_file_by_rows(rows, filename):
     headers = rows[4]
     data = rows[5:]
     table_str = _to_csv_str(headers, data)
     name, ezb_id = _extract_name_ezb_id_by_line(rows[0][0])
-    return LicenseFile(ezb_id, name, table_str, filename=filename)
+    return LicenseFile(ezb_id, name, table_str, filename)
 
 
 @blueprint.route('/upload-license', methods=['POST'])
@@ -190,10 +181,7 @@ def upload_license():
     return redirect(url_for('license-manage.details'))
 
 
-def _upload_new_lic_lrf(lic_type: str, file,
-                        license_name: str = '',
-                        admin_notes: str = '',
-                        ezb_id: str = None):
+def _upload_new_lic_lrf(lic_type, file, license_name, admin_notes, ezb_id):
     if lic_type not in LICENSE_TYPES:
         abort(400, f'Invalid parameter "lic_type" [{lic_type}]')
 
@@ -275,7 +263,7 @@ def upload_existing_license(filepath):
     return
 
 
-def _add_lrf_for_lic(filepath, admin_notes: str = ''):
+def _add_lrf_for_lic(filepath, admin_notes=''):
     if not os.path.isfile(filepath):
         abort(400, 'parameter "file_path" not found')
 
@@ -345,7 +333,7 @@ def _is_empty_or_http(header_row, row, col_name):
 
 
 class ValidEmptyOrInt:
-    def __init__(self, col_name: str, header_row: list):
+    def __init__(self, col_name, header_row):
         self.col_name = col_name
         self.col_idx = _find_idx(header_row, col_name)
 
@@ -358,11 +346,11 @@ class ValidEmptyOrInt:
 
 
 class ValidEmptyOrHttpLink:
-    def __init__(self, col_name: str, header_row: list):
+    def __init__(self, col_name, header_row):
         self.col_name = col_name
         self.col_idx = _find_idx(header_row, col_name)
 
-    def validate(self, row: list) -> Optional[str]:
+    def validate(self, row):
         _val = row[self.col_idx].strip()
         if not _val or _val.startswith('http'):
             return None
@@ -370,7 +358,7 @@ class ValidEmptyOrHttpLink:
             return f'column [{self.col_name}][{_val}] must be start with http'
 
 
-def _validate_parti_lrf(rows: list[list]):
+def _validate_parti_lrf(rows):
     header_row_idx = 0
     n_cols = 3
     if len(rows) < header_row_idx + 1:
@@ -380,7 +368,7 @@ def _validate_parti_lrf(rows: list[list]):
         raise ValueError(f'csv should have {n_cols} columns')
 
 
-def _validate_lic_lrf(rows: list[list]):
+def _validate_lic_lrf(rows):
     n_cols = 9
     header_row_idx = 4
 
@@ -442,7 +430,7 @@ def active_lic_related_file():
     return redirect(url_for('license-manage.details'))
 
 
-def _active_lic_related_file(lrf_id) -> CompleteChecker:
+def _active_lic_related_file(lrf_id):
     # active lic_related_file
     lrf = _check_and_find_lic_related_file(lrf_id)
     lrf.status = 'active'
@@ -462,7 +450,7 @@ def _active_lic_related_file(lrf_id) -> CompleteChecker:
     return _checker
 
 
-def _wait_unit_status(lrf_id: str, target_status):
+def _wait_unit_status(lrf_id, target_status):
     def _is_updated():
         _obj = object_query_first(LicRelatedFile, lrf_id)
         if _obj:
@@ -472,7 +460,7 @@ def _wait_unit_status(lrf_id: str, target_status):
     ez_dao_utils.wait_unit(_is_updated)
 
 
-def _check_and_find_lic_related_file(lrf_id: str) -> LicRelatedFile:
+def _check_and_find_lic_related_file(lrf_id):
     def _abort():
         log.warning(f'lic_related_file not found lrf_id[{lrf_id}]')
         abort(404)
@@ -487,7 +475,7 @@ def _check_and_find_lic_related_file(lrf_id: str) -> LicRelatedFile:
     return lr_file
 
 
-def _load_parti_csv_str_by_xls_bytes(xls_bytes: bytes) -> str:
+def _load_parti_csv_str_by_xls_bytes(xls_bytes):
     rows = _load_rows_by_xls_bytes(xls_bytes)
     if len(rows) == 0:
         return ''
@@ -496,14 +484,14 @@ def _load_parti_csv_str_by_xls_bytes(xls_bytes: bytes) -> str:
     return table_str
 
 
-def _save_lic_related_file(filename: str, file_bytes: bytes):
+def _save_lic_related_file(filename, file_bytes):
     path = _path_lic_related_file(filename)
     if not path.parent.exists():
         path.parent.mkdir(exist_ok=True, parents=True)
     path.write_bytes(file_bytes)
 
 
-def _path_lic_related_file(filename: str) -> Path:
+def _path_lic_related_file(filename):
     path = app.config.get('LICENSE_FILE_DIR', '/data/license_files')
     path = Path(path)
     return path.joinpath(filename)
@@ -553,7 +541,7 @@ def update_license():
     return redirect(url_for('license-manage.details'))
 
 
-def _upload_new_parti_lrf(lic_lrf_id: str, file) -> LicRelatedFile:
+def _upload_new_parti_lrf(lic_lrf_id, file):
     lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
     # validate
@@ -724,8 +712,7 @@ def download_lic_related_file():
                      mimetype=mimetype)
 
 
-def _deactivate_lrf_by_lrf_id(lrf_id: str,
-                              record_cls: Type[DomainObject], ) -> CompleteChecker:
+def _deactivate_lrf_by_lrf_id(lrf_id, record_cls):
     lr_file = _check_and_find_lic_related_file(lrf_id)
     lr_file.status = "archived"
     lr_file.save()
@@ -752,7 +739,7 @@ def deactivate_participant():
     return redirect(url_for('license-manage.details'))
 
 
-def _decode_csv_bytes(csv_bytes: bytes) -> str:
+def _decode_csv_bytes(csv_bytes):
     encoding = chardet.detect(csv_bytes)['encoding']
     if encoding == 'ISO-8859-1':
         return csv_bytes.decode(encoding='iso-8859-1', errors='ignore')
@@ -762,7 +749,7 @@ def _decode_csv_bytes(csv_bytes: bytes) -> str:
         return csv_bytes.decode(encoding='utf-8', errors='ignore')
 
 
-def _extract_name_ezb_id_by_line(line: str) -> tuple[str, str]:
+def _extract_name_ezb_id_by_line(line):
     results = re.findall(r'.+:\s*(.+?)\s*\[(.+?)\]', line)
     if len(results) and len(results[0]) == 2:
         name, ezb_id = results[0]
@@ -790,7 +777,7 @@ def upload_existing_participant(file_path):
     return
 
 
-def _add_lrf_for_parti(lic_lrf_id: str, filepath) -> LicRelatedFile:
+def _add_lrf_for_parti(lic_lrf_id, filepath):
     lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
     # validate
