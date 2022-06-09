@@ -109,6 +109,7 @@ def _route(unrouted):
 
     gold_article_license = _is_article_license_gold(metadata, unrouted.provider_id)
     app.logger.debug("Staring get all matching license")
+
     for issn in issn_data:
         # are there licenses stored for this ISSN?
         # 2016-10-12 TD : an ISSN could appear in more than one license !
@@ -116,7 +117,6 @@ def _route(unrouted):
         lics = models.License.pull_all_by_status_and_issn('active', issn)
         if lics is None: # nothing found at all...
             continue
-        lics = (lic for lic in lics if lic.is_active())
         for lic in lics:
             # lic_data includes only valid license for the issn.
             # It is a list with the url for the journal changing between each entry.
@@ -132,8 +132,10 @@ def _route(unrouted):
                             part_bibids[bibid] = []
                         part_bibids[bibid].append(lic_data[0])
             elif lic.type in ["alliance", "national", "deal", "fid", "hybrid"]:
-                al = models.Alliance.pull_all_by_status_and_license_id("active", lic.id)
-                if al and al.is_active():
+                al_list = models.Alliance.pull_all_by_status_and_license_id("active", lic.id)
+                if not al_list:
+                    continue
+                for al in al_list:
                     # collect all EZB-Ids of participating institutions of AL
                     for participant in al.participants:
                         for i in participant.get("identifier", []):

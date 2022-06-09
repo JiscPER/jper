@@ -202,33 +202,33 @@ class LicRelatedFileDAO(dao.ESDAO):
     def pull_all_grouped_by_ezb_id_and_type(cls):
         # Group license files by ezb_id and then file_type. Sort by status and date_updated
         query = {
-          "aggs": {
-            "ezb_id": {
-              "terms": {
-                "field": "ezb_id.exact",
-                "size": 10000
-              },
-              "aggs": {
-                "file_type": {
-                  "terms": {
-                    "field": "file_type.exact"
-                  },
-                  "aggs": {
-                    "docs": {
-                      "top_hits": {
-                        "size": 20,
-                        "sort": [
-                          {"status.exact": {"order": "desc"}},
-                          {"last_updated": {"order": "desc"}}
-                        ]
-                      }
+            "aggs": {
+                "ezb_id": {
+                    "terms": {
+                        "field": "ezb_id.exact",
+                        "size": 10000
+                    },
+                    "aggs": {
+                        "file_type": {
+                            "terms": {
+                                "field": "file_type.exact"
+                            },
+                            "aggs": {
+                                "docs": {
+                                    "top_hits": {
+                                        "size": 20,
+                                        "sort": [
+                                            {"status.exact": {"order": "desc"}},
+                                            {"last_updated": {"order": "desc"}}
+                                        ]
+                                    }
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
-            }
-          },
-          "size": 0
+            },
+            "size": 0
         }
         conn = cls.__conn__
         types = cls.get_read_types(None)
@@ -288,10 +288,10 @@ class AllianceDAO(dao.ESDAO):
 
     @classmethod
     def pull_all_by_status_and_license_id(cls, status: str,
-                                  license_id: str, ) -> Iterable:
+                                          license_id: str, ) -> Iterable:
         must_list = [
-            {'match': {'status': status}},
-            {'term': {'license_id.exact': license_id}}
+            {'match': {'status.exact': status}},
+            {'match': {'license_id.exact': license_id}}
         ]
 
         query = {
@@ -318,10 +318,10 @@ class LicenseDAO(dao.ESDAO):
 
     @classmethod
     def pull_all_by_status_and_issn(cls, status: str,
-                                  issn: str, ) -> Iterable:
+                                    issn: str, ) -> Iterable:
         must_list = [
-            {'match': {'status': status}},
-            {'term': {'journal.identifier.id.exact': issn}}
+            {'match': {'status.exact': status}},
+            {'match': {'journal.identifier.id.exact': issn}}
         ]
 
         query = {
@@ -332,8 +332,48 @@ class LicenseDAO(dao.ESDAO):
             },
             "sort": [{"last_updated": {"order": "asc"}}]
         }
+        # return results
+        obs = cls.object_query(q=query)
+        if len(obs) > 0:
+            return obs
 
-        # results = ez_dao_utils.query_objs(domain_obj_cls, query, wrap=True)
+    @classmethod
+    def pull_all_other_by_status_and_issn(cls, status: str, issn: str or list) -> Iterable:
+        must_list = match_on_issn_query(issn)
+        must_not_list = [
+            {"match": {"type.exact": "gold"}},
+            {"match": {"type.exact": "hybrid"}}
+        ]
+        must_list.append({"match": {"status.exact": status}})
+        query = {
+            "query": {
+                "bool": {
+                    "must": must_list,
+                    "must_not": must_not_list
+                }
+            }
+        }
+        # return results
+        obs = cls.object_query(q=query)
+        if len(obs) > 0:
+            return obs
+
+    @classmethod
+    def pull_all_green_by_status_and_issn(cls, status: str, issn: str) -> Iterable:
+        must_list = match_on_issn_query(issn)
+        should_list = [
+            {"term": {"type.exact": "gold"}},
+            {"term": {"type.exact": "hybrid"}}
+        ]
+        must_list.append({"match": {"status.exact": status}})
+        must_list.append({"bool": {"should": should_list }})
+        query = {
+            "query": {
+                "bool": {
+                    "must": must_list
+                }
+            }
+        }
         # return results
         obs = cls.object_query(q=query)
         if len(obs) > 0:
@@ -347,6 +387,19 @@ class LicenseDAO(dao.ESDAO):
     @classmethod
     def pull_all_by_id(cls, ezb_id: str, ) -> Iterable:
         return pull_all_by_id(cls, ezb_id)
+
+
+def match_on_issn_query(issn: str or list) -> Iterable:
+    must_list = []
+    should_list = []
+    if isinstance(issn, list):
+        for each_issn in issn:
+            should_list.append({"term": {"journal.identifier.id.exact": each_issn}})
+        if len(should_list) > 0:
+            must_list.append({"bool": {"should": should_list}})
+    else:
+        must_list.append({"match": {"journal.identifier.id.exact": issn}})
+    return must_list
 
 
 def pull_all_by_status_and_id(domain_obj_cls: Type[DomainObject], status: str,
@@ -391,6 +444,7 @@ def pull_all_by_id(domain_obj_cls: Type[DomainObject], ezb_id: str) -> Iterable:
     obs = domain_obj_cls.object_query(q=query)
     if len(obs) > 0:
         return obs
+
 
 class RepositoryStatusDAO(dao.ESDAO):
     """
