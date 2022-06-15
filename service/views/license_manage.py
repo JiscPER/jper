@@ -111,13 +111,14 @@ def details():
                     if file_type not in archived_lr_files[ezb_id]:
                         archived_lr_files[ezb_id][file_type] = []
                     archived_lr_files[ezb_id][file_type].append(doc)
+    new_ezbids = list(set(other_lr_files.keys()) - set(active_lr_files.keys()))
 
     return render_template('license_manage/details.html',
                            allowed_lic_types=LICENSE_TYPES,
                            active_files=active_lr_files,
                            other_files=other_lr_files,
                            archived_files=archived_lr_files,
-                           allowed_del_status=ALLOWED_DEL_STATUS, )
+                           allowed_del_status=ALLOWED_DEL_STATUS, new_ezbids=new_ezbids)
 
 
 def _load_rows_by_csv_str(csv_str):
@@ -531,7 +532,7 @@ def update_license():
 
     # replace to new lic_lrf_id
     participant_files = LicRelatedFile.get_file_by_ezb_id(old_lic_lrf.ezb_id, status="active", file_type='participant')
-    if len(participant_files) > 0:
+    if participant_files and len(participant_files) > 0:
         for participant_file in participant_files:
             participant_file.lic_related_file_id = new_lrf.id
             participant_file.save()
@@ -647,7 +648,7 @@ def deactivate_license():
 
     parti_checker = None
     participant_files = LicRelatedFile.get_file_by_ezb_id(lr_file.ezb_id, status="active", file_type='participant')
-    if len(participant_files) > 0:
+    if participant_files and len(participant_files) > 0:
         for participant_file in participant_files:
             parti_checker = _deactivate_lrf_by_lrf_id(participant_file.id, Alliance)
 
