@@ -394,7 +394,7 @@ def _validate_lic_lrf(rows):
     if len(rows) < header_row_idx + 1:
         raise ValueError('header not found')
 
-    if len(rows) < n_cols:
+    if len(rows[header_row_idx]) < n_cols:
         raise ValueError(f'csv should have {n_cols} columns')
 
     header_row = rows[header_row_idx]
