@@ -185,19 +185,31 @@ def upload_license():
 
 
 def _upload_new_lic_lrf(lic_type, file, license_name, admin_notes, ezb_id):
-    if lic_type not in LICENSE_TYPES:
-        abort(400, f'Invalid parameter "lic_type" [{lic_type}]')
-
     if file is None:
         abort(400, 'parameter "file" not found')
 
     # load lic_file
     filename = file.filename
     file_bytes = file.stream.read()
-
     filename_lower: str = filename.lower().strip()
+
+    lrf_raw = dict(file_name=filename,
+                   type=lic_type,
+                   name=license_name,
+                   ezb_id=ezb_id,
+                   status='validation failed',
+                   admin_notes=admin_notes,
+                   file_type='license'
+                   )
+    if lic_type not in LICENSE_TYPES:
+        lrf_raw['validation_notes'] = f'Invalid parameter "lic_type" [{lic_type}]'
+        lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        return lrf
+
     if all(not filename_lower.endswith(f) for f in ['.tsv', '.csv', '.xls', '.xlsx']):
-        abort(400, f'Invalid file format [{filename}]')
+        lrf_raw['validation_notes'] = f'Invalid file format [{filename}]'
+        lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        return lrf
 
     if any(filename.lower().endswith(fmt) for fmt in ['.xls', '.xlsx']):
         rows = _load_rows_by_xls_bytes(file_bytes)
@@ -209,17 +221,10 @@ def _upload_new_lic_lrf(lic_type, file, license_name, admin_notes, ezb_id):
     try:
         _validate_lic_lrf(rows)
     except Exception as e:
-        lrf_raw = dict(file_name=filename,
-                       type=lic_type,
-                       name=license_name,
-                       status='validation failed',
-                       admin_notes=admin_notes,
-                       file_type='license',
-                       validation_notes=str(e),
-                       )
-        LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
-        abort(400, f'file validation fail --- {str(e)}')
-        return
+        lrf_raw['validation_notes'] = str(e)
+        lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        return lrf
+
     lic_file = _load_lic_file_by_rows(rows, filename=filename)
 
     validation_notes = []
@@ -369,6 +374,13 @@ def _validate_parti_lrf(rows):
 
     if len(rows[0]) < n_cols:
         raise ValueError(f'csv should have {n_cols} columns')
+
+    # check mandatory header
+    header_row = rows[header_row_idx]
+    if 'Institution' not in header_row:
+        raise ValueError(f'missing header Institution')
+    if 'EZB-Id' not in header_row and 'Sigel' not in header_row:
+        raise ValueError(f'missing header. Need either EZB-Id or Sigel')
 
 
 def _validate_lic_lrf(rows):
@@ -547,40 +559,46 @@ def update_license():
 def _upload_new_parti_lrf(lic_lrf_id, file):
     lic_lr_file: LicRelatedFile = _check_and_find_lic_related_file(lic_lrf_id)
 
+    filename = file.filename
+    file_bytes = file.stream.read()
+
     # validate
     lic: License = object_query_first(License, lic_lr_file.record_id)
     lic_ezb_id = lic and lic.get_first_ezb_id()
+
+    lrf_raw = dict(file_name=filename,
+                   type=None,
+                   name=None,
+                   ezb_id=lic_ezb_id,
+                   status='validation failed',
+                   admin_notes=None,
+                   file_type='participant',
+                   lic_related_file_id=lic_lr_file.record_id)
+
     if lic_ezb_id is None:
-        log.warning(f'ezb_id not found -- {lic_lr_file.record_id}')
-        abort(404)
+        lrf_raw['validation_notes'] = f'ezb_id not found -- {lic_lr_file.record_id}'
+        lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        return lrf
 
     # load parti_file
-    filename = file.filename
-    file_bytes = file.stream.read()
+
     csv_str: str = None
     if filename.lower().endswith('.csv'):
         csv_str = _decode_csv_bytes(file_bytes)
     elif any(filename.lower().endswith(fmt) for fmt in ['xls', 'xlsx']):
         csv_str = _load_parti_csv_str_by_xls_bytes(file_bytes)
     else:
-        abort(400, f'Invalid file format [{filename}]')
+        lrf_raw['validation_notes'] = f'Invalid file format [{filename}]'
+        lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        return lrf
 
     rows = _load_rows_by_csv_str(csv_str)
     try:
         _validate_parti_lrf(rows)
     except Exception as e:
-        lrf_raw = dict(file_name=filename,
-                       type=None,
-                       name=None,
-                       ezb_id=lic_ezb_id,
-                       status='validation failed',
-                       admin_notes=None,
-                       file_type='participant',
-                       validation_notes=str(e),
-                       lic_related_file_id=lic_lr_file.id)
-        LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
-        abort(400, f'file validation fail --- {str(e)}')
-        return
+        lrf_raw['validation_notes'] = str(e)
+        lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
+        return lrf
 
     parti_file = ParticipantFile(lic_lrf_id, csv_str, filename)
 
