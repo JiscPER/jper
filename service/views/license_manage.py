@@ -27,7 +27,7 @@ blueprint = Blueprint('license-manage', __name__)
 
 log: logging.Logger = app.logger
 
-ALLOWED_DEL_STATUS = ["validation failed", "archived"]
+ALLOWED_DEL_STATUS = ["validation failed", "archived", "validation passed"]
 
 CompleteChecker = Callable[[], NoReturn]
 
