@@ -225,9 +225,15 @@ def _upload_new_lic_lrf(lic_type, file, license_name, admin_notes, ezb_id):
         lrf = LicRelatedFile.save_by_raw(lrf_raw, blocking=False)
         return lrf
 
+    validation_notes = []
+
+    missing_headers = _check_all_lic_rows_exist(rows)
+    if missing_headers:
+        validation_notes.append(f"Warning: Following headers are missing (headers are case sensitive)"
+                                f" : {missing_headers}")
+
     lic_file = _load_lic_file_by_rows(rows, filename=filename)
 
-    validation_notes = []
     # handle ezb_id mismatch
     if ezb_id != lic_file.ezb_id:
         validation_notes.append(f"Warning, ezb id does not match with license file. file: {lic_file.ezb_id}, form: {ezb_id}. Using form value.")
@@ -377,10 +383,10 @@ def _validate_parti_lrf(rows):
 
     # check mandatory header
     header_row = rows[header_row_idx]
-    if 'Institution' not in header_row:
-        raise ValueError(f'missing header Institution')
-    if 'EZB-Id' not in header_row and 'Sigel' not in header_row:
-        raise ValueError(f'missing header. Need either EZB-Id or Sigel')
+    missing_headers = {'Institution', 'EZB-Id', 'Sigel'} - set(header_row)
+    if missing_headers:
+        raise ValueError(f'missing header {missing_headers}')
+    return
 
 
 def _validate_lic_lrf(rows):
@@ -406,14 +412,25 @@ def _validate_lic_lrf(rows):
 
     validate_fn_list = [
         ValidEmptyOrInt('erstes Jahr', header_row),
-        ValidEmptyOrInt('Embargo', header_row),
     ]
 
     row_validator_list = itertools.product(rows[header_row_idx + 1:], validate_fn_list)
     err_msgs = (validator.validate(row) for row, validator in row_validator_list)
-    err_msgs = filter(None, err_msgs)
-    for err_msg in err_msgs:
-        raise ValueError(err_msg)
+    err_msgs = list(set(filter(None, err_msgs)))
+    if err_msgs:
+        raise ValueError("\n".join(err_msgs))
+    return
+
+
+def _check_all_lic_rows_exist(rows):
+    # check all headers
+    all_headers = { 'EZB-Id', 'Titel', 'Verlag', 'Fach', 'Schlagworte', 'E-ISSN', 'P-ISSN', 'ZDB-Nummer',
+                    'FrontdoorURL', 'Link zur Zeitschrift', 'erstes Jahr', 'erstes volume', 'erstes issue',
+                    'letztes Jahr', 'letztes volume', 'letztes issue', 'Embargo'}
+    header_row_idx = 4
+    header_row = rows[header_row_idx]
+    missing_headers = all_headers - set(header_row)
+    return missing_headers
 
 
 @blueprint.route('/active-lic-related-file', methods=['POST'])

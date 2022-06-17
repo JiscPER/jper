@@ -10,7 +10,7 @@ from octopus.lib import dataobj
 from service import dao
 from service.__utils import ez_dao_utils, ez_query_maker
 
-LICENSE_TYPES = ["alliance", "national", "open", "gold", "deal", "fid", "hybrid"]
+LICENSE_TYPES = ["alliance", "national", "gold", "deal", "fid", "hybrid"]
 LRF_STATUS = ["validation failed", "validation passed", "active", "archived", ]
 LRF_FILE_TYPES = ["license", "participant"]
 
@@ -765,8 +765,8 @@ class License(dataobj.DataObj, dao.LicenseDAO):
                         volume['end'] = row[x].strip()
                     elif x == 'letztes issue' and len(row[x].strip()) > 0:
                         issue['end'] = row[x].strip()
-                    elif x == 'Embargo' and len(row[x].strip()) > 0 and row[x].strip().isnumeric():
-                        journal['embargo']['duration'] = int(row[x].strip())
+                    elif x == 'Embargo' and len(row[x].strip()) > 0:
+                        journal['embargo']['duration'] = row[x].strip()
 
                 journal['period'] = [year, volume, issue]
                 if journal not in self.data.get('journal', []):
