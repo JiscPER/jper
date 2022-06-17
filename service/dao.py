@@ -228,7 +228,8 @@ class LicRelatedFileDAO(dao.ESDAO):
                     }
                 }
             },
-            "size": 0
+            "size": 0,
+            "sort": [{"last_updated": {"order": "desc"}}]
         }
         conn = cls.__conn__
         types = cls.get_read_types(None)
