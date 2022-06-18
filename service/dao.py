@@ -7,6 +7,7 @@ so these DAOs mostly just provide information on where to persist the data, and 
 query methods as required
 """
 from typing import Iterable, Type
+import collections
 from esprit import raw
 from esprit.dao import DomainObject
 
@@ -197,6 +198,85 @@ class LicRelatedFileDAO(dao.ESDAO):
         obs = cls.object_query(q=query)
         if len(obs) > 0:
             return obs
+
+    @classmethod
+    def pull_all_grouped_by_status_ezb_id_and_type(cls):
+        # Group license files by status, ezb_id and then file_type
+        query = {
+            "aggs": {
+                "status": {
+                    "terms": {
+                        "field": "status.exact"
+                    },
+                    "aggs": {
+                        "ezb_id": {
+                            "terms": {
+                                "field": "ezb_id.exact",
+                                "size": 10000
+                            },
+                            "aggs": {
+                                "file_type": {
+                                    "terms": {
+                                        "field": "file_type.exact"
+                                    },
+                                    "aggs": {
+                                        "docs": {
+                                            "top_hits": {
+                                                "size": 20
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "size": 0
+        }
+        conn = cls.__conn__
+        types = cls.get_read_types(None)
+        r = raw.search(conn, types, query)
+        res = r.json()
+        total = res.get('hits', {}).get('total', {}).get('value', 0)
+        grouped_files = {}
+        sorted_active_dates_dict = {}
+        sorted_archive_dates_dict = {}
+        if total > 0:
+            active_dates = {}
+            archive_dates = {}
+            for status_bucket in res.get('aggregations', {}).get('status', {}).get('buckets', []):
+                status = status_bucket['key']
+                if status in ['validation passed', 'validation_failed']:
+                    status = 'new'
+                grouped_files[status] = {}
+                for ezb_bucket in status_bucket.get('ezb_id', {}).get('buckets', []):
+                    ezb_id = ezb_bucket['key']
+                    if ezb_id not in grouped_files[status]:
+                        grouped_files[status][ezb_id] = {}
+                    for file_type_bucket in ezb_bucket.get('file_type', {}).get('buckets', []):
+                        file_type = file_type_bucket['key']
+                        if file_type not in grouped_files[status][ezb_id]:
+                            grouped_files[status][ezb_id][file_type] = []
+                        for rec in file_type_bucket.get('docs', {}).get('hits', {}).get('hits', []):
+                            doc = rec.get("_source")
+                            grouped_files[status][ezb_id][file_type].append(doc)
+                            dt_updated = doc.get('last_updated', '')
+                            if status == 'archived':
+                                if ezb_id not in archive_dates:
+                                    archive_dates[ezb_id] = dt_updated
+                                elif dt_updated > archive_dates[ezb_id]:
+                                    archive_dates[ezb_id] = dt_updated
+                            else:
+                                if ezb_id not in active_dates:
+                                    active_dates[ezb_id] = dt_updated
+                                elif dt_updated > active_dates[ezb_id]:
+                                    active_dates[ezb_id] = dt_updated
+            sorted_active_dates = sorted(active_dates.items(), key=lambda kv: kv[1], reverse=True)
+            sorted_active_dates_dict = collections.OrderedDict(sorted_active_dates)
+            sorted_archive_dates = sorted(archive_dates.items(), key=lambda kv: kv[1], reverse=True)
+            sorted_archive_dates_dict = collections.OrderedDict(sorted_archive_dates)
+        return grouped_files, sorted_active_dates_dict, sorted_archive_dates_dict
 
     @classmethod
     def pull_all_grouped_by_ezb_id_and_type(cls):

@@ -86,39 +86,18 @@ def abort_if_not_admin():
 def details():
     abort_if_not_admin()
 
-    grouped_lic_files = LicRelatedFile.pull_all_grouped_by_ezb_id_and_type()
-    active_lr_files = {}
-    archived_lr_files = {}
-    other_lr_files = {}
-    for ezb_id in grouped_lic_files:
-        for file_type in grouped_lic_files[ezb_id]:
-            for doc in grouped_lic_files[ezb_id][file_type]:
-                if doc.get('status', None) == 'active':
-                    if ezb_id not in active_lr_files:
-                        active_lr_files[ezb_id] = {}
-                    if file_type not in active_lr_files[ezb_id]:
-                        active_lr_files[ezb_id][file_type] = []
-                    active_lr_files[ezb_id][file_type].append(doc)
-                elif doc.get('status', None) in ["validation failed", "validation passed"]:
-                    if ezb_id not in other_lr_files:
-                        other_lr_files[ezb_id] = {}
-                    if file_type not in other_lr_files[ezb_id]:
-                        other_lr_files[ezb_id][file_type] = []
-                    other_lr_files[ezb_id][file_type].append(doc)
-                else:
-                    if ezb_id not in archived_lr_files:
-                        archived_lr_files[ezb_id] = {}
-                    if file_type not in archived_lr_files[ezb_id]:
-                        archived_lr_files[ezb_id][file_type] = []
-                    archived_lr_files[ezb_id][file_type].append(doc)
-    new_ezbids = list(set(other_lr_files.keys()) - set(active_lr_files.keys()))
+    grouped_lic_files, active_dates, archive_dates = LicRelatedFile.pull_all_grouped_by_status_ezb_id_and_type()
+    new_ezbids = grouped_lic_files.get('new', {}).keys()
+    active_ezbids = grouped_lic_files.get('active', {}).keys()
+    only_new_ezbids = list(set(new_ezbids) - set(active_ezbids))
 
     return render_template('license_manage/details.html',
                            allowed_lic_types=LICENSE_TYPES,
-                           active_files=active_lr_files,
-                           other_files=other_lr_files,
-                           archived_files=archived_lr_files,
-                           allowed_del_status=ALLOWED_DEL_STATUS, new_ezbids=new_ezbids)
+                           grouped_lic_files=grouped_lic_files,
+                           allowed_del_status=ALLOWED_DEL_STATUS,
+                           new_ezbids=only_new_ezbids,
+                           active_dates=active_dates,
+                           archive_dates=archive_dates)
 
 
 def _load_rows_by_csv_str(csv_str):
