@@ -212,7 +212,7 @@ class LicRelatedFileDAO(dao.ESDAO):
                         "ezb_id": {
                             "terms": {
                                 "field": "ezb_id.exact",
-                                "size": 10000
+                                "size": 100
                             },
                             "aggs": {
                                 "file_type": {
@@ -277,55 +277,6 @@ class LicRelatedFileDAO(dao.ESDAO):
             sorted_archive_dates = sorted(archive_dates.items(), key=lambda kv: kv[1], reverse=True)
             sorted_archive_dates_dict = collections.OrderedDict(sorted_archive_dates)
         return grouped_files, sorted_active_dates_dict, sorted_archive_dates_dict
-
-    @classmethod
-    def pull_all_grouped_by_ezb_id_and_type(cls):
-        # Group license files by ezb_id and then file_type. Sort by status and date_updated
-        query = {
-            "aggs": {
-                "ezb_id": {
-                    "terms": {
-                        "field": "ezb_id.exact",
-                        "size": 10000
-                    },
-                    "aggs": {
-                        "file_type": {
-                            "terms": {
-                                "field": "file_type.exact"
-                            },
-                            "aggs": {
-                                "docs": {
-                                    "top_hits": {
-                                        "size": 20,
-                                        "sort": [
-                                            {"status.exact": {"order": "desc"}},
-                                            {"last_updated": {"order": "desc"}}
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "size": 0,
-            "sort": [{"last_updated": {"order": "desc"}}]
-        }
-        conn = cls.__conn__
-        types = cls.get_read_types(None)
-        r = raw.search(conn, types, query)
-        res = r.json()
-        total = res.get('hits', {}).get('total', {}).get('value', 0)
-        grouped_files = {}
-        if total > 0:
-            for ezb_bucket in res.get('aggregations', {}).get('ezb_id', {}).get('buckets', []):
-                ezb_id = ezb_bucket['key']
-                grouped_files[ezb_id] = {}
-                for file_type_bucket in ezb_bucket.get('file_type', {}).get('buckets', []):
-                    file_type = file_type_bucket['key']
-                    docs = [r.get("_source") for r in file_type_bucket.get('docs', {}).get('hits', {}).get('hits', [])]
-                    grouped_files[ezb_id][file_type] = docs
-        return grouped_files
 
     @classmethod
     def get_file_by_ezb_id(cls, ezb_id, status=None, file_type=None):
