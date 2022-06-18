@@ -66,6 +66,8 @@
                             </a></dd>
                             <dt>Status</dt>
                             <dd>{{ doc.get('status') }}</dd>
+                            <dt>Date last updated</dt>
+                            <dd>{{ doc.get('last_updated', '') }}</dd>
                             <dt>date uploaded</dt>
                             <dd>{{ doc.get('upload_date', '') }}</dd>
                             <dt>Validation notes:</dt>
@@ -135,6 +137,8 @@
                 <td>
                     <dl>
                         {% for doc in grouped_lic_files['active'][ezb_id].get('license', []) %}
+                            <dt>Date last updated</dt>
+                            <dd>{{ doc.get('last_updated', '') }}</dd>
                             <dt>date uploaded</dt>
                             <dd>{{ doc.get('upload_date', '') }}</dd>
                             <dt>Download license file</dt>
@@ -178,6 +182,8 @@
                         {%  set has_participant = False %}
                         {% for doc in grouped_lic_files['active'][ezb_id].get('participant', []) %}
                             {%  set has_participant = True %}
+                            <dt>Date last updated</dt>
+                            <dd>{{ doc.get('last_updated', '') }}</dd>
                             <dt>date uploaded</dt>
                             <dd>{{ doc.get('upload_date', '') }}</dd>
                             <dt>Download participant file</dt>
@@ -238,6 +244,8 @@
                                 <dd>{{ file_type }}</dd>
                                 <dt>Status</dt>
                                 <dd>{{ doc.get('status') }}</dd>
+                                <dt>Date last updated</dt>
+                                <dd>{{ doc.get('last_updated', '') }}</dd>
                                 <dt>date uploaded</dt>
                                 <dd>{{ doc.get('upload_date', '') }}</dd>
                                 <dt>Validation notes:</dt>
@@ -279,13 +287,9 @@
     <tr>
         <th>EZB Id</th>
         <th>Name</th>
-        <th>File name</th>
         <th>File type</th>
-        <th>Type</th>
-        <th>Status</th>
-        <th>Upload Date</th>
-        <th>Activate</th>
-        <th>Delete</th>
+        <th>Date last updated</th>
+        <th>Details</th>
     </tr>
     </thead>
     {% for ezb_id in archive_dates %}
@@ -294,47 +298,51 @@
                 <tr class="tablesorter">
                     <td>{{ ezb_id }}</td>
                     <td>{{ doc.get('name', '') }}</td>
-                    <td><a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=doc.get('id') ) }}">
-                                {{ doc.get('file_name') }}
-                            </a></td>
                     <td>{{ file_type }}</td>
-                    <td>{{ doc.get('type', '') }}</td>
+                    <td>{{ doc.get('last_updated', '') }}</td>
                     <td>
-                        {{ doc.get('status', '') }}<br/>
-                        <a class="toggle_detail_btn" toggle_detail="detail_row_{{doc.get('id')}}" href="#">
-                            show details
-                        </a>
-                    </td>
-                    <td>{{ doc.get('upload_date', '') }}</td>
-                    <td>
-                        {% if doc.get('status') not in ['validation failed'] %}
-                            <div>
-                                <form method="POST" action="{{ url_for('license-manage.active_lic_related_file') }}">
-                                    <input type="hidden" name="lrf_id" value="{{ doc.get('id') }}">
-                                    <input class="act_btn" type="submit" value="Activate"/>
-                                </form>
-                            </div>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if doc.get('status') in allowed_del_status %}
-                            <div>
-                                <form method="POST" action="{{ url_for('license-manage.delete_lic_related_file') }}">
-                                    <input type="hidden" name="lrf_id" value="{{ doc.get('id') }}">
-                                    <input class="act_btn" type="submit" value="Delete"/>
-                                </form>
-                            </div>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr id="detail_row_{{doc.get('id')}}" class="detail_row">
-                    <td colspan="7">
-                        <dl>
-                            <dt>Validation notes:</dt>
+                        <dt>File name</dt>
+                        <dd><a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=doc.get('id') ) }}">
+                                {{ doc.get('file_name') }}
+                            </a></dd>
+                        <dt>Type</dt>
+                        <dd>{{ doc.get('type', '') }}</dd>
+                        <dt>Status</dt>
+                        <dd>
+                            {{ doc.get('status', '') }}<br/>
+                            <a class="toggle_detail_btn" toggle_detail="detail_row_{{doc.get('id')}}" href="#">
+                                show details
+                            </a>
+                        </dd>
+                        <dt>Upload date</dt>
+                        <dd>{{ doc.get('upload_date', '') }}</dd>
+                        <dt>Actions</dt>
+                        <dd>
+                            {% if doc.get('status') not in ['validation failed'] %}
+                                <div>
+                                    <form method="POST" action="{{ url_for('license-manage.active_lic_related_file') }}">
+                                        <input type="hidden" name="lrf_id" value="{{ doc.get('id') }}">
+                                        <input class="act_btn" type="submit" value="Activate"/>
+                                    </form>
+                                </div>
+                            {% endif %}
+                            {% if doc.get('status') in allowed_del_status %}
+                                <div>
+                                    <form method="POST" action="{{ url_for('license-manage.delete_lic_related_file') }}">
+                                        <input type="hidden" name="lrf_id" value="{{ doc.get('id') }}">
+                                        <input class="act_btn" type="submit" value="Delete"/>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </dd>
+                        {% if doc.get('validation_notes', '') %}
+                            <dt>Validation notes</dt>
                             <dd>{{ doc.get('validation_notes', '') }}</dd>
-                            <dt>Admin notes:</dt>
+                        {% endif %}
+                        {% if doc.get('admin_notes', '') %}
+                            <dt>Admin notes</dt>
                             <dd>{{ doc.get('admin_notes', '') }}</dd>
-                        </dl>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
