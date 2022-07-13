@@ -98,11 +98,11 @@ def _route(unrouted):
     else:
         doi = doi[0]
 
-    bibids = models.Account.pull_all_repositories()
+    bibids = models.Account.pull_all_active_repositories()
     # NEW FEATURE
     # Get all subject repository accounts. Needed for Gold license. 
     # They do not get publications with gold license.
-    subject_repo_bibids = models.Account.pull_all_subject_repositories()
+    subject_repo_bibids = models.Account.pull_all_active_subject_repositories()
 
     # participating repositories - who would like to receive article if matching
     part_bibids = {}
@@ -154,14 +154,9 @@ def _route(unrouted):
     al_repos = []
 
     for bibid, lic_data in part_bibids.items():
-        # 2017-06-06 TD : insert of this safeguard ;
-        #                 although it would be *very* unlikely to be needed here.  Strange.
         if bibid is None:
             continue
-        account = models.Account.pull(bibids[bibid])
-        if account is not None and account.has_role("repository") and not account.is_passive:
-            # extend this to hold all the license data may be?
-            al_repos.append((account.id, lic_data, bibid))
+        al_repos.append((bibids[bibid], lic_data, bibid))
     if len(al_repos) == 0:
         routing_reason = "No (active!) qualified repositories."
         app.logger.debug("Routing - Notification {y} No (active!) qualified repositories currently found to receive this notification.  Notification will not be routed!".format(y=unrouted.id))

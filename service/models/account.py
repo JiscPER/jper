@@ -691,14 +691,17 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         q = {
             "query": {
                 "bool": {
-                    "must": {
-                        "match": {
-                            "role": "repository",
-                        },
-                        "match": {
-                            "role": "subject_repository",
-                        },
-                    }
+                    "must": [
+                        {
+                            "match": {
+                                "role": "repository"
+                            }
+                        }, {
+                            "match": {
+                                "role": "subject_repository"
+                            }
+                        }
+                    ]
                 }
             },
             "size": size,
@@ -736,6 +739,65 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         }
         ans = cls.pull_all(q, size=size, return_as_object=False)
         return _extract_bibids(ans)
+
+    @classmethod
+    def pull_all_active_repositories(cls):
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            "role": "repository"
+                        }
+                    },
+                    "must_not": [
+                        {
+                            "match": {
+                                "role": "passive"
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        ans = cls.pull_all(q, size=size, return_as_object=False)
+        return _extract_bibids(ans)
+
+    @classmethod
+    def pull_all_active_subject_repositories(cls):
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "role": "repository"
+                            }
+                        }, {
+                            "match": {
+                                "role": "subject_repository"
+                            }
+                        }
+                    ],
+                    "must_not": [
+                        {
+                            "match": {
+                                "role": "passive"
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        ans = cls.pull_all(q, size=size, return_as_object=False)
+        return _extract_bibids(ans)
+
 
     @classmethod
     def pull_all_by_email(cls,email):
