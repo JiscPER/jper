@@ -101,7 +101,7 @@ def details():
                            archive_dates=archive_dates)
 
 
-@blueprint.route('/view_license')
+@blueprint.route('/view-license')
 def view_license():
     rec_id = request.values.get('record_id')
     rec = License.pull(rec_id)
