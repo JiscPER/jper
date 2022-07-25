@@ -298,7 +298,6 @@
         <th>EZB Id</th>
         <th>Name</th>
         <th>File type</th>
-        <th>Date last updated</th>
         <th>Details</th>
     </tr>
     </thead>
@@ -309,8 +308,9 @@
                     <td>{{ ezb_id }}</td>
                     <td>{{ doc.get('name', '') }}</td>
                     <td>{{ file_type }}</td>
-                    <td>{{ doc.get('last_updated', '') }}</td>
-                    <td>
+                    <td><dl>
+                        <dt>Date last updated</dt>
+                        <dd>{{ doc.get('last_updated', '') }}</dd>
                         <dt>File name</dt>
                         <dd><a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=doc.get('id') ) }}">
                                 {{ doc.get('file_name') }}
@@ -320,9 +320,11 @@
                         <dt>Status</dt>
                         <dd>
                             {{ doc.get('status', '') }}<br/>
-                            <a class="toggle_detail_btn" toggle_detail="detail_row_{{doc.get('id')}}" href="#">
-                                show details
-                            </a>
+                        </dd>
+                        <dt>View license</dt>
+                        <dd>
+                            <a href="{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}">
+                                {{ doc.get('record_id', '') }}</a>
                         </dd>
                         <dt>Upload date</dt>
                         <dd>{{ doc.get('upload_date', '') }}</dd>
@@ -334,7 +336,7 @@
                                         <input type="hidden" name="lrf_id" value="{{ doc.get('id') }}">
                                         <input class="act_btn" type="submit" value="Activate"/>
                                     </form>
-                                </div>
+                                </div><br/>
                             {% endif %}
                             {% if doc.get('status') in allowed_del_status %}
                                 <div>
@@ -353,7 +355,7 @@
                             <dt>Admin notes</dt>
                             <dd>{{ doc.get('admin_notes', '') }}</dd>
                         {% endif %}
-                    </td>
+                    </dl></td>
                 </tr>
             {% endfor %}
         {%  endfor %}
