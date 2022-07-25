@@ -105,7 +105,11 @@ def details():
 def view_license():
     rec_id = request.values.get('record_id')
     rec = License.pull(rec_id)
-    return render_template('license_manage/view_license.html', rec=rec.data)
+    if not rec:
+        data = {'Error': f"Record {rec_id} not found"}
+    else:
+        data = rec.data
+    return render_template('license_manage/view_license.html', rec=data)
 
 
 @blueprint.app_template_filter()
