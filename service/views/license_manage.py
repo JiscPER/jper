@@ -100,6 +100,18 @@ def details():
                            archive_dates=archive_dates)
 
 
+@blueprint.route('/view_license')
+def view_license():
+    rec_id = request.values.get('record_id')
+    rec = License.pull(rec_id)
+    return render_template('license_manage/view_license.html', rec=rec)
+
+
+@blueprint.app_template_filter()
+def pretty_json(value, indent=2):
+    return json.dumps(value, indent=indent)
+
+
 def _load_rows_by_csv_str(csv_str):
     """ Convert csv string to row list
     auto guess delimiter "\t" or ","

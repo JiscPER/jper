@@ -72,8 +72,10 @@
                             <dd>{{ doc.get('upload_date', '') }}</dd>
                             <dt>Validation notes:</dt>
                             <dd>{{ doc.get('validation_notes', '') }}</dd>
-                            <dt>Admin notes:</dt>
+                            <dt>Admin notes</dt>
                             <dd>{{ doc.get('admin_notes', '') }}</dd>
+                            <dt>View license</dt>
+                            <dd>{{ doc.get('record_id', '') }}</dd>
                         </dl>
                         <div class="actions">
                             <h3>Actions</h3>
@@ -141,6 +143,8 @@
                             <dd>{{ doc.get('last_updated', '') }}</dd>
                             <dt>date uploaded</dt>
                             <dd>{{ doc.get('upload_date', '') }}</dd>
+                            <dt>View license</dt>
+                            <dd>{{ doc.get('record_id', '') }}</dd>
                             <dt>Download license file</dt>
                             <dd><a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=doc['id'] ) }}">
                                 {{ doc.get('file_name', 'license file') }}
@@ -248,9 +252,9 @@
                                 <dd>{{ doc.get('last_updated', '') }}</dd>
                                 <dt>date uploaded</dt>
                                 <dd>{{ doc.get('upload_date', '') }}</dd>
-                                <dt>Validation notes:</dt>
+                                <dt>Validation notes</dt>
                                 <dd>{{ doc.get('validation_notes', '') }}</dd>
-                                <dt>Admin notes:</dt>
+                                <dt>Admin notes</dt>
                                 <dd>{{ doc.get('admin_notes', '') }}</dd>
                             </dl>
                             <div class="actions">
