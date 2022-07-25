@@ -105,12 +105,12 @@ def details():
 def view_license():
     rec_id = request.values.get('record_id')
     rec = License.pull(rec_id)
-    return render_template('license_manage/view_license.html', rec=rec)
+    return render_template('license_manage/view_license.html', rec=rec.data)
 
 
 @blueprint.app_template_filter()
 def pretty_json(value, indent=2):
-    return json.dumps(value, indent=indent)
+    return json.dumps(value, indent=indent, ensure_ascii=False)
 
 
 def _load_rows_by_csv_str(csv_str):
