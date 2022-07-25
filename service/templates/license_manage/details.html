@@ -75,7 +75,10 @@
                             <dt>Admin notes</dt>
                             <dd>{{ doc.get('admin_notes', '') }}</dd>
                             <dt>View license</dt>
-                            <dd>{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}</dd>
+                            <dd>
+                                <a href="{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}">
+                                    {{ doc.get('record_id', '') }}</a>
+                            </dd>
                         </dl>
                         <div class="actions">
                             <h3>Actions</h3>
@@ -144,7 +147,10 @@
                             <dt>date uploaded</dt>
                             <dd>{{ doc.get('upload_date', '') }}</dd>
                             <dt>View license</dt>
-                            <dd>{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}</dd>
+                            <dd>
+                                <a href="{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}">
+                                    {{ doc.get('record_id', '') }}</a>
+                            </dd>
                             <dt>Download license file</dt>
                             <dd><a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=doc['id'] ) }}">
                                 {{ doc.get('file_name', 'license file') }}
