@@ -196,6 +196,11 @@
                             <dd>{{ doc.get('last_updated', '') }}</dd>
                             <dt>date uploaded</dt>
                             <dd>{{ doc.get('upload_date', '') }}</dd>
+                            <dt>View participant</dt>
+                            <dd>
+                                <a href="{{ url_for('license-manage.view_participant') }}?record_id={{ doc.get('record_id', '') }}">
+                                    {{ doc.get('record_id', '') }}</a>
+                            </dd>
                             <dt>Download participant file</dt>
                             <dd><a href="{{ url_for('license-manage.download_lic_related_file', lrf_id=doc['id'] ) }}">
                                 {{ doc.get('file_name', 'participant file') }}
@@ -321,11 +326,20 @@
                         <dd>
                             {{ doc.get('status', '') }}<br/>
                         </dd>
-                        <dt>View license</dt>
-                        <dd>
-                            <a href="{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}">
-                                {{ doc.get('record_id', '') }}</a>
-                        </dd>
+                        {% if doc.get('type', '') == 'license' %}
+                            <dt>View license</dt>
+                            <dd>
+                                <a href="{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}">
+                                    {{ doc.get('record_id', '') }}</a>
+                            </dd>
+                        {% endif %}
+                        {% if doc.get('type', '') == 'participant' %}
+                            <dt>View participant</dt>
+                            <dd>
+                                <a href="{{ url_for('license-manage.view_participant') }}?record_id={{ doc.get('record_id', '') }}">
+                                    {{ doc.get('record_id', '') }}</a>
+                            </dd>
+                        {% endif %}
                         <dt>Upload date</dt>
                         <dd>{{ doc.get('upload_date', '') }}</dd>
                         <dt>Actions</dt>

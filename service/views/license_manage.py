@@ -104,12 +104,29 @@ def details():
 @blueprint.route('/view-license')
 def view_license():
     rec_id = request.values.get('record_id')
-    rec = License.pull(rec_id)
-    if not rec:
-        data = {'Error': f"Record {rec_id} not found"}
+    if rec_id:
+        rec = License.pull(rec_id)
+        if not rec:
+            data = {'Error': f"Record {rec_id} not found"}
+        else:
+            data = rec.data
     else:
-        data = rec.data
+        data = {'Error': f"Please specify a record_id"}
     return render_template('license_manage/view_license.html', rec=data)
+
+
+@blueprint.route('/view-participant')
+def view_participant():
+    rec_id = request.values.get('record_id')
+    if rec_id:
+        rec = Alliance.pull(rec_id)
+        if not rec:
+            data = {'Error': f"Record {rec_id} not found"}
+        else:
+            data = rec.data
+    else:
+        data = {'Error': f"Please specify a record_id"}
+    return render_template('license_manage/view_participant.html', rec=data)
 
 
 @blueprint.app_template_filter()
