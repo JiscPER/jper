@@ -326,14 +326,14 @@
                         <dd>
                             {{ doc.get('status', '') }}<br/>
                         </dd>
-                        {% if doc.get('type', '') == 'license' %}
+                        {% if file_type == 'license' %}
                             <dt>View license</dt>
                             <dd>
                                 <a href="{{ url_for('license-manage.view_license') }}?record_id={{ doc.get('record_id', '') }}">
                                     {{ doc.get('record_id', '') }}</a>
                             </dd>
                         {% endif %}
-                        {% if doc.get('type', '') == 'participant' %}
+                        {% if file_type == 'participant' %}
                             <dt>View participant</dt>
                             <dd>
                                 <a href="{{ url_for('license-manage.view_participant') }}?record_id={{ doc.get('record_id', '') }}">
