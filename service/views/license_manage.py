@@ -262,7 +262,7 @@ def _upload_new_lic_lrf(lic_type, file, license_name, admin_notes, ezb_id):
     # create license by csv file
     lic = License()
     lic.set_license_data(ezb_id, license_name,
-                         type=lic_type, csvfile=lic_file.table_str,
+                         type=lic_type, csvfile=io.StringIO(lic_file.table_str),
                          init_status=license_status)
 
     # save lic_related_file to db
@@ -642,7 +642,7 @@ def _upload_new_parti_lrf(lic_lrf_id, file):
 
     # save participant to db
     alliance = Alliance()
-    alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=csv_str,
+    alliance.set_alliance_data(lic_lr_file.record_id, lic_ezb_id, csvfile=io.StringIO(csv_str),
                                init_status=participant_status)
 
     # save lic_related_file to db
