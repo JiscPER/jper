@@ -578,6 +578,9 @@ def update_license():
         for participant_file in participant_files:
             participant_file.lic_related_file_id = new_lrf.id
             participant_file.save()
+            alliance = Alliance.pull(participant_file.record_id)
+            alliance.license_id = new_lrf.record_id 
+            alliance.save()
 
     # wait for completed
     active_checker()
