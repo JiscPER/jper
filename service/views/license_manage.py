@@ -419,12 +419,15 @@ def _validate_lic_lrf(rows):
     header_row = rows[header_row_idx]
 
     # check mandatory header
-    missing_headers = {'Titel', 'Verlag', 'E-ISSN', 'P-ISSN', 'Embargo'} - set(header_row)
+    missing_headers = {'Titel', 'Verlag', 'E-ISSN', 'P-ISSN', 'Embargo', 'erstes Jahr', 'letztes Jahr'} - set(header_row)
     if missing_headers:
         raise ValueError(f'missing header {missing_headers}')
 
+    # CHeck journal year start and year end are integers or empty.
+    # It is used during routing.
     validate_fn_list = [
         ValidEmptyOrInt('erstes Jahr', header_row),
+        ValidEmptyOrInt('letztes Jahr', header_row),
     ]
 
     row_validator_list = itertools.product(rows[header_row_idx + 1:], validate_fn_list)
