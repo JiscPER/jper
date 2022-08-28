@@ -367,7 +367,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                         "issn" : {"coerce" : "unicode"},
                         "doi" : {"coerce" : "unicode"},
                         "link" : {"coerce" : "unicode"},
-                        "embargo" : {"coerce" : "integer"}
+                        "embargo" : {"coerce" : "unicode"}
                     }
                 },
                 # 2016-10-13 TD : additional object for licensing data (alliance license)
