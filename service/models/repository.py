@@ -529,7 +529,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 "issn" : "<issn (or eissn!) of the involved journal>,
                 "doi" : "<DOI of the involved article>,
                 "link" : "<url of license information (e.g. as given by EZB)>",
-                "embargo" : <number of month(s)> (integer)
+                "embargo" : <number of month(s)> (unicode)
             }
 
         :return: The alliance license information as a python dict object
@@ -552,7 +552,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
                 "issn" : "<issn (or eissn!) of the involved journal>,
                 "doi" : "<DOI of the involved article>,
                 "link" : "<url of license information (e.g. as given by EZB)>",
-                "embargo" : <number of month(s)> (integer)
+                "embargo" : <number of month(s)> (unicode)
             }
 
         :param obj: the alliance license object as a dict
@@ -566,13 +566,9 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
 
         # coerce the values of the keys
         uc = dataobj.to_unicode()
-        it = dataobj.to_int()
         for k in allowed:
             if k in obj:
-                if k == "embargo":
-                    obj[k] = self._coerce(obj[k], it)
-                else:
-                    obj[k] = self._coerce(obj[k], uc)
+                obj[k] = self._coerce(obj[k], uc)
 
         # finally write it
         self._set_single("alliance", obj)
