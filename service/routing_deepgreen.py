@@ -97,6 +97,7 @@ def _route(unrouted):
         doi = "unknown"
     else:
         doi = doi[0]
+    app.logger.debug("Article DOI is {x}".format(x=doi))
 
     bibids = models.Account.pull_all_active_repositories()
     # NEW FEATURE
@@ -146,11 +147,12 @@ def _route(unrouted):
                                     if bibid not in part_bibids:
                                         part_bibids[bibid] = []
                                     part_bibids[bibid].append(lic_data[0])
+    app.logger.debug("Found {x} repositories that can be matched, based on license".format(x=len(part_bibids)))
 
     # Get only active repository accounts
     # 2019-06-03 TD : yet a level more to differentiate between active and passive
     #                 accounts. A new requirement, at a /very/ early stage... gosh.
-    app.logger.debug("Starting get repo for all matched license")
+    app.logger.debug("Starting get active repositories for all matched license")
     al_repos = []
 
     for bibid, lic_data in part_bibids.items():
@@ -183,6 +185,7 @@ def _route(unrouted):
                     unrouted.embargo = lic.get("embargo", None)
                     break
             if not matched_license:
+                app.logger.debug("All matching license was excluded by repository")
                 continue
             prov = models.MatchProvenance()
             prov.repository = repo
