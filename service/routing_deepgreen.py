@@ -670,7 +670,7 @@ def get_current_license_data(lic, publ_year, issn, doi):
                 })
                 break
         else:
-            app.logger.debug(f"publication year {publ_year} is not within start {ys} and end {yt}")
+            app.logger.debug(f"publication year {publ_year} is not within start {ys} and end {yt} for ISSN {issn} in license {lic.name}")
     return lic_data
 
 
