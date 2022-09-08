@@ -669,6 +669,8 @@ def get_current_license_data(lic, publ_year, issn, doi):
                     'embargo': embargo
                 })
                 break
+        else:
+            app.logger.debug(f"publication year {publ_year} is not within start {ys} and end {yt}")
     return lic_data
 
 
