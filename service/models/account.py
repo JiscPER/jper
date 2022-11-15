@@ -681,6 +681,22 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         return ans
 
     @classmethod
+    def pull_all_accounts(cls):
+        size = 1000
+        q = {
+            "query": {
+                "match_all": {}
+            },
+            "size": size,
+            "from": 0
+        }
+        ans = cls.pull_all(q, size=1000, return_as_object=False)
+        accounts = {}
+        for rec in ans:
+            accounts[rec.get("id")] = rec.get("email", '')
+        return accounts
+
+    @classmethod
     def pull_all_repositories(cls):
         ans = cls.pull_all_by_key("role.exact", "repository", return_as_object=False)
         return _extract_bibids(ans)

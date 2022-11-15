@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'jper',
-    version = '1.0.0-p3',
-    packages = find_packages(),
-    install_requires = [
+    name='jper',
+    version='1.0.0-p3',
+    packages=find_packages(),
+    install_requires=[
         "beautifulsoup4==4.9.3",
         "openpyxl==3.0.9",
         "werkzeug==1.0.1",
@@ -22,14 +22,15 @@ setup(
         "schedule==1.0.0",
         "jsonpath-rw-ext==1.2.2",
         "unicodecsv==0.14.1",
+        "Jinja2==3.0.3",
         "esprit",
         "octopus"
     ],
-    url = 'http://cottagelabs.com/',
-    author = 'Cottage Labs',
-    author_email = 'us@cottagelabs.com',
-    description = 'Jisc Publications Event Router',
-    classifiers = [
+    url='http://cottagelabs.com/',
+    author='Cottage Labs',
+    author_email='us@cottagelabs.com',
+    description='Jisc Publications Event Router',
+    classifiers=[
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
