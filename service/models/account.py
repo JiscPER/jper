@@ -639,105 +639,96 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     def can_log_in(self):
         return True
 
-    # 2019-03-21 TD : Sometimes, ALL items of a 'key' are wanted ...
     @classmethod
-    def pull_all_by_key(cls,key,value):
-        res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}})
-        n = res.get('hits',{}).get('total',{}).get('value', 0)
-        # 2019-06-11 TD : re-query necessary as a precautionary measure because len(res) seems
-        #                 to be restricted to 10 records only per default...
-        if n > 10:
-            res = cls.query(q={"query":{"query_string":{"query":value,"default_field":key,"default_operator":"AND"}}},size=n)
-        return [ cls.pull( res['hits']['hits'][k]['_source']['id'] ) for k in range(n) ]
+    def pull_all(cls, query, size=1000, return_as_object=True):
+        conn = cls.__conn__
+        types = cls.get_read_types(None)
+        total = size
+        n_from = 0
+        ans = []
+        while n_from <= total:
+            query['from'] = n_from
+            r = raw.search(conn, types, query)
+            res = r.json()
+            total = res.get('hits',{}).get('total',{}).get('value', 0)
+            n_from += size
+            for hit in res['hits']['hits']:
+                if return_as_object:
+                    obj_id = hit.get('_source', {}).get('id', None)
+                    if obj_id:
+                        ans.append(cls.pull(obj_id))
+                else:
+                    ans.append(hit.get('_source', {}))
+        return ans
+
+    @classmethod
+    def pull_all_by_key(cls,key,value, return_as_object=True):
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            key: value
+                        }
+                    }
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        ans = cls.pull_all(q, size=size, return_as_object=return_as_object)
+        return ans
 
     @classmethod
     def pull_all_accounts(cls):
+        size = 1000
         q = {
             "query": {
                 "match_all": {}
             },
-            "fields": ["id", "email"],
-            "_source": False,
-            "size": 0
+            "size": size,
+            "from": 0
         }
-        conn = cls.__conn__
-        types = cls.get_read_types(None)
-        r = raw.search(conn, types, q)
-        res = r.json()
-        n = res.get('hits', {}).get('total', {}).get('value', 0)
-        q["size"] = n
-        r = raw.search(conn, types, q)
-        res = r.json()
-        ans = {}
-        for hit in res['hits']['hits']:
-            acc = hit.get('fields', {})
-            acc_id = acc.get("id", [])
-            acc_email = acc.get("email", [])
-            if acc_id and acc_email:
-                ans[acc_id[0]] = acc_email[0]
-        return ans
+        ans = cls.pull_all(q, size=1000, return_as_object=False)
+        accounts = {}
+        for rec in ans:
+            accounts[rec.get("id")] = rec.get("email", '')
+        return accounts
 
     @classmethod
     def pull_all_repositories(cls):
-        q = {
-            "query": {
-                "bool": {
-                    "must": {
-                        "match": {
-                            "role": "repository"
-                        }
-                    }
-                }
-            }
-        }
-        conn = cls.__conn__
-        types = cls.get_read_types(None)
-        r = raw.search(conn, types, q)
-        res = r.json()
-        # res = cls.query(q=q)
-        n = res.get('hits',{}).get('total',{}).get('value', 0)
-        if n > 10:
-            q["size"] = n
-            r = raw.search(conn, types, q)
-            res = r.json()
-        ans = []
-        for hit in res['hits']['hits']:
-            ans.append(hit.get('_source', {}).get('repository', {}).get('bibid', u"*****").lstrip('a'))
-        return ans
+        ans = cls.pull_all_by_key("role.exact", "repository", return_as_object=False)
+        return _extract_bibids(ans)
 
     @classmethod
     def pull_all_subject_repositories(cls):
+        size = 1000
         q = {
             "query": {
                 "bool": {
-                    "must": {
-                        "match": {
-                            "role": "repository",
-                        },
-                        "match": {
-                            "role": "subject_repository",
-                        },
-                    }
+                    "must": [
+                        {
+                            "match": {
+                                "role": "repository"
+                            }
+                        }, {
+                            "match": {
+                                "role": "subject_repository"
+                            }
+                        }
+                    ]
                 }
-            }
+            },
+            "size": size,
+            "from": 0
         }
-        conn = cls.__conn__
-        types = cls.get_read_types(None)
-        r = raw.search(conn, types, q)
-        res = r.json()
-        # res = cls.query(q=q)
-        n = res.get('hits',{}).get('total',{}).get('value', 0)
-        if n > 10:
-            q["size"] = n
-            r = raw.search(conn, types, q)
-            res = r.json()
-        ans = []
-        for hit in res['hits']['hits']:
-            ans.append(hit.get('_source', {}).get('repository', {}).get('bibid', u"*****").lstrip('a'))
-        return ans
+        ans = cls.pull_all(q, size=size, return_as_object=False)
+        return _extract_bibids(ans)
 
     @classmethod
     def pull_all_non_subject_repositories(cls):
+        size = 1000
         q = {
           "query": {
             "bool": {
@@ -758,27 +749,75 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
                 }
               }
             }
-          }
+          },
+          "size": size,
+          "from": 0
         }
-        conn = cls.__conn__
-        types = cls.get_read_types(None)
-        r = raw.search(conn, types, q)
-        res = r.json()
-        # res = cls.query(q=q)
-        n = res.get('hits',{}).get('total',{}).get('value', 0)
-        if n > 10:
-            q["size"] = n
-            r = raw.search(conn, types, q)
-            res = r.json()
-        ans = []
-        for hit in res['hits']['hits']:
-            ans.append(hit.get('_source', {}).get('repository', {}).get('bibid', u"*****").lstrip('a'))
-        return ans
+        ans = cls.pull_all(q, size=size, return_as_object=False)
+        return _extract_bibids(ans)
+
+    @classmethod
+    def pull_all_active_repositories(cls):
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            "role": "repository"
+                        }
+                    },
+                    "must_not": [
+                        {
+                            "match": {
+                                "role": "passive"
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        ans = cls.pull_all(q, size=size, return_as_object=False)
+        return _extract_bibids(ans)
+
+    @classmethod
+    def pull_all_active_subject_repositories(cls):
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "role": "repository"
+                            }
+                        }, {
+                            "match": {
+                                "role": "subject_repository"
+                            }
+                        }
+                    ],
+                    "must_not": [
+                        {
+                            "match": {
+                                "role": "passive"
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        ans = cls.pull_all(q, size=size, return_as_object=False)
+        return _extract_bibids(ans)
+
 
     @classmethod
     def pull_all_by_email(cls,email):
         return cls.pull_all_by_key('email',email)
-    # 2019-03-21 TD : (* end-of-addition *)
 
     @classmethod
     def pull_by_key(cls,key,value):
@@ -878,3 +917,12 @@ def _coerce_account_hash(account_hash):
     if packaging:
         account_hash['packaging'] = packaging.split(',')
     return account_hash
+
+
+def _extract_bibids(ans):
+    bibids = {}
+    for rec in ans:
+        bibid = rec.get('repository', {}).get('bibid', '').lstrip('a')
+        if bibid:
+            bibids[bibid] = rec['id']
+    return bibids
