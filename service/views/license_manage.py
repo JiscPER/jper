@@ -21,7 +21,7 @@ from octopus.core import app
 from octopus.lib import dates
 from service.__utils import ez_dao_utils, ez_query_maker
 from service.__utils.ez_dao_utils import object_query_first
-from service.models import License
+from service.models import License, Account, RepositoryConfig
 from service.models.ezb import LICENSE_TYPES, LicRelatedFile, Alliance
 
 blueprint = Blueprint('license-manage', __name__)
@@ -578,9 +578,21 @@ def update_license():
                               ezb_id=old_lic_lrf.ezb_id)
     ez_dao_utils.wait_unit_id_found(LicRelatedFile, new_lrf.id)
 
+    # Record all licences that need updating
+    accounts = _get_accounts_with_excluded_license(old_lic_lrf.record_id)
+    if accounts:
+        notes = new_lrf.validation_notes
+        notes += "\nThe following accounts have excluded the old license and will be updated with the new license id:\n"
+        notes += accounts.join("\n")
+        new_lrf.validation_notes = notes
+        new_lrf.save()
+
     active_checker = _active_lic_related_file(new_lrf.id)
 
     deact_checker = _deactivate_lrf_by_lrf_id(old_lic_lrf_id, License)
+
+    # Update matching repository configs with the new license id
+    _update_accounts_with_excluded_license(old_lic_lrf.record_id, new_lrf.record_id)
 
     # replace to new lic_lrf_id
     participant_files = LicRelatedFile.get_file_by_ezb_id(old_lic_lrf.ezb_id, status="active", file_type='participant')
@@ -891,3 +903,20 @@ def _add_lrf_for_parti(lic_lrf_id, filepath):
     _save_lic_related_file(parti_file.versioned_filename, file_bytes)
 
     return new_lrf
+
+
+def _get_accounts_with_excluded_license(license_id):
+    matching_repo_configs = RepositoryConfig.pull_all_by_key('excluded_license', license_id, return_as_object=False)
+    accounts = []
+    for rc in matching_repo_configs:
+        a = Account.pull(rc['repo'])
+        accounts.append(a.repository['bibid'])
+    return accounts
+
+
+def _update_accounts_with_excluded_license(old_license_id, new_license_id):
+    matching_repo_configs = RepositoryConfig.pull_all_by_key('excluded_license', old_license_id)
+    for rc in matching_repo_configs:
+        rc.remove_excluded_license(old_license_id)
+        rc.add_excluded_license(new_license_id)
+        rc.save()

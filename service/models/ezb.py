@@ -900,6 +900,14 @@ class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):
         self._set_single("admin_notes", val, coerce=dataobj.to_unicode())
 
     @property
+    def validation_notes(self):
+        return self._get_single("validation_notes", coerce=dataobj.to_unicode())
+
+    @validation_notes.setter
+    def validation_notes(self, val):
+        self._set_single("validation_notes", val, coerce=dataobj.to_unicode())
+
+    @property
     def lic_related_file_id(self):
         return self._get_single("lic_related_file_id", coerce=dataobj.to_unicode())
 

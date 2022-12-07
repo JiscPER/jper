@@ -6,6 +6,7 @@ from octopus.lib import dataobj
 from octopus.core import app
 from service import dao
 import csv
+from esprit import raw
 
 class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
     """
@@ -26,31 +27,31 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         :param raw: python dict object containing the data
         """
         struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "created_date" : {"coerce" : "unicode"},
-                "last_updated" : {"coerce" : "unicode"},
-                "repo" : {"coerce" : "unicode"},
-                "institutional_identifier": {"coerce" : "unicode"},
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "created_date": {"coerce": "unicode"},
+                "last_updated": {"coerce": "unicode"},
+                "repo": {"coerce": "unicode"},
+                "institutional_identifier": {"coerce": "unicode"},
                 # "repository" : {"coerce" : "unicode"}
                 # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
             },
-            "lists" : {
-                "domains" : {"contains" : "field", "coerce" : "unicode"},
-                "name_variants" : {"contains" : "field", "coerce" : "unicode"},
-                "author_ids" : {"contains" : "object"},
-                "postcodes" : {"contains" : "field", "coerce" : "unicode"},
-                "keywords" : {"contains" : "field", "coerce" : "unicode"},
-                "grants" : {"contains" : "field", "coerce" : "unicode"},
-                "content_types" : {"contains" : "field", "coerce" : "unicode"},
-                "strings" : {"contains" : "field", "coerce" : "unicode"},
-                "excluded_license": {"contains" : "field", "coerce" : "unicode"},
+            "lists": {
+                "domains": {"contains": "field", "coerce": "unicode"},
+                "name_variants": {"contains": "field", "coerce": "unicode"},
+                "author_ids": {"contains": "object"},
+                "postcodes": {"contains": "field", "coerce": "unicode"},
+                "keywords": {"contains": "field", "coerce": "unicode"},
+                "grants": {"contains": "field", "coerce": "unicode"},
+                "content_types": {"contains": "field", "coerce": "unicode"},
+                "strings": {"contains": "field", "coerce": "unicode"},
+                "excluded_license": {"contains": "field", "coerce": "unicode"},
             },
-            "structs" : {
-                "author_ids" : {
-                    "fields" : {
-                        "id" : {"coerce" : "unicode"},
-                        "type" : {"coerce" : "unicode"}
+            "structs": {
+                "author_ids": {
+                    "fields": {
+                        "id": {"coerce": "unicode"},
+                        "type": {"coerce": "unicode"}
                     }
                 }
             }
@@ -237,29 +238,69 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         return license in self.excluded_license
 
     @classmethod
-    def pull_by_key(cls,key,value):
-        res = cls.query(q={"query":{"term":{key+'.exact':value}}})
-        if res.get('hits',{}).get('total',{}).get('value', 0) == 1:
-            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
-        else:
-            return None        
+    def pull_all(cls, query, size=1000, return_as_object=True):
+        conn = cls.__conn__
+        types = cls.get_read_types(None)
+        total = size
+        n_from = 0
+        ans = []
+        while n_from <= total:
+            query['from'] = n_from
+            r = raw.search(conn, types, query)
+            res = r.json()
+            total = res.get('hits',{}).get('total',{}).get('value', 0)
+            n_from += size
+            for hit in res['hits']['hits']:
+                if return_as_object:
+                    obj_id = hit.get('_source', {}).get('id', None)
+                    if obj_id:
+                        ans.append(cls.pull(obj_id))
+                else:
+                    ans.append(hit.get('_source', {}))
+        return ans
 
     @classmethod
-    def pull_by_repo(cls,repoid):
-        return cls.pull_by_key('repo',repoid)
+    def pull_all_by_key(cls,key,value, return_as_object=True):
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            key: value
+                        }
+                    }
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        ans = cls.pull_all(q, size=size, return_as_object=return_as_object)
+        return ans
+
+    @classmethod
+    def pull_by_key(cls, key, value):
+        res = cls.query(q={"query": {"term": {key + '.exact': value}}})
+        if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
+            return cls.pull(res['hits']['hits'][0]['_source']['id'])
+        else:
+            return None
+
+    @classmethod
+    def pull_by_repo(cls, repoid):
+        return cls.pull_by_key('repo', repoid)
         # return cls.pull_by_key('repository',repoid)
         # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
-        
 
-    def set_repo_config(self,repository,csvfile=None,textfile=None,jsoncontent=None):
+    def set_repo_config(self, repository, csvfile=None, textfile=None, jsoncontent=None):
         repoid = repository
         # human readable fields are 'Domains','Name Variants','Author Emails','Postcodes','Grant Numbers','ORCIDs'
         #
         # 2019-02-25 TD : /German/ Postcodes are not sensible for DeepGreen, thus now disabled 
         # 2019-03-27 TD : Due to data privacy issues, Author Emails and ORCIDs will not be read until further notice (see also the comment below)
         #
-        fields = ['domains','name_variants','author_ids','postcodes','grants','keywords',
-                  'content_types','strings','institutional_identifier']
+        fields = ['domains', 'name_variants', 'author_ids', 'postcodes', 'grants', 'keywords',
+                  'content_types', 'strings', 'institutional_identifier']
         for f in fields:
             if f in self.data: del self.data[f]
         if csvfile is not None:
@@ -273,19 +314,21 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
                     if None in list(row.values()):
                         continue
                     # 2019-05-21 TD
-                    if x.strip().lower().replace(' ','').replace('s','').replace('number','') == 'grant' and len(row[x].strip()) > 1:
-                        self.data['grants'] = self.data.get('grants',[]) + [row[x].strip()]
+                    if x.strip().lower().replace(' ', '').replace('s', '').replace('number', '') == 'grant' and len(
+                            row[x].strip()) > 1:
+                        self.data['grants'] = self.data.get('grants', []) + [row[x].strip()]
                     # 2019-02-25 TD : Instead of 'postcode' we will support 'keywords' here!
-                    #elif x.strip().lower().replace(' ','').strip('s') == 'postcode' and len(row[x].strip()) > 1:
+                    # elif x.strip().lower().replace(' ','').strip('s') == 'postcode' and len(row[x].strip()) > 1:
                     #    self.data['postcodes'] = self.data.get('postcodes',[]) + [row[x].strip()]
-                    elif x.strip().lower().replace(' ','').strip('s') == 'keyword' and len(row[x].strip()) > 1:
-                        self.data['keywords'] = self.data.get('keywords',[]) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ', '').strip('s') == 'keyword' and len(row[x].strip()) > 1:
+                        self.data['keywords'] = self.data.get('keywords', []) + [row[x].strip()]
                     # 2019-02-25 TD
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'namevariant' and len(row[x].strip()) > 1:
-                        self.data['name_variants'] = self.data.get('name_variants',[]) + [row[x].strip()]
-                    elif x.strip().lower().replace(' ','').replace('s','') == 'domain' and len(row[x].strip()) > 1:
-                        self.data['domains'] = self.data.get('domains',[]) + [row[x].strip()]
-                    elif x.strip().lower().replace(' ','') == 'institutionalidentifier' and len(row[x].strip()) > 1:
+                    elif x.strip().lower().replace(' ', '').replace('s', '') == 'namevariant' and len(
+                            row[x].strip()) > 1:
+                        self.data['name_variants'] = self.data.get('name_variants', []) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ', '').replace('s', '') == 'domain' and len(row[x].strip()) > 1:
+                        self.data['domains'] = self.data.get('domains', []) + [row[x].strip()]
+                    elif x.strip().lower().replace(' ', '') == 'institutionalidentifier' and len(row[x].strip()) > 1:
                         self.data['institutional_identifier'] = row[x].strip()
             app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=repoid))
             # app.logger.debug("Extracted complex config from .csv file for repo: {x}".format(x=self.id))
@@ -297,7 +340,8 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
         elif textfile is not None:
             app.logger.debug("Extracted simple config from .txt file for repo: {x}".format(x=repoid))
             # app.logger.debug("Extracted simple config from .txt file for repo: {x}".format(x=self.id))
-            self.data['strings'] = [line.rstrip('\n').rstrip('\r').strip() for line in textfile if len(line.rstrip('\n').rstrip('\r').strip()) > 1]
+            self.data['strings'] = [line.rstrip('\n').rstrip('\r').strip() for line in textfile if
+                                    len(line.rstrip('\n').rstrip('\r').strip()) > 1]
             self.data['repo'] = repoid
             # self.data['repository'] = repository
             # 2016-06-29 TD : index mapping exception fix for ES 2.3.3
@@ -315,10 +359,9 @@ class RepositoryConfig(dataobj.DataObj, dao.RepositoryConfigDAO):
             # app.logger.debug("Saved config for repo: {x}".format(x=self.id))
             return True
         else:
-            app.logger.error("Could not save config for repo: {x}".format(x=repoid))            
+            app.logger.error("Could not save config for repo: {x}".format(x=repoid))
             # app.logger.error("Could not save config for repo: {x}".format(x=self.id))            
             return False
-        
 
 
 class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
@@ -339,45 +382,45 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         :param raw: python dict object containing the metadata
         """
         struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "created_date" : {"coerce" : "unicode"},
-                "last_updated" : {"coerce" : "unicode"},
-                "bibid" : {"coerce" : "unicode"},
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "created_date": {"coerce": "unicode"},
+                "last_updated": {"coerce": "unicode"},
+                "bibid": {"coerce": "unicode"},
                 # 2016-10-18 TD : additional field to hold EZB-Id (which is more 'human' readable...)
-                "repo" : {"coerce" : "unicode"},
+                "repo": {"coerce": "unicode"},
                 # "repository" : {"coerce" : "unicode"},
                 # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
-                "pub" : {"coerce" : "unicode"},
+                "pub": {"coerce": "unicode"},
                 # 2016-08-10 TD : add an additional field for origin of notification (publisher)
-                "notification" : {"coerce" : "unicode"}
+                "notification": {"coerce": "unicode"}
             },
-            "objects" : [
-                "alliance" 
+            "objects": [
+                "alliance"
             ],
             # 2016-10-13 TD : additional object for licensing data (alliance license)
-            "lists" : {
-                "provenance" : {"contains" : "object"}
+            "lists": {
+                "provenance": {"contains": "object"}
             },
-            "structs" : {
-                "alliance" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "id" : {"coerce" : "unicode"},
-                        "issn" : {"coerce" : "unicode"},
-                        "doi" : {"coerce" : "unicode"},
-                        "link" : {"coerce" : "unicode"},
-                        "embargo" : {"coerce" : "unicode"}
+            "structs": {
+                "alliance": {
+                    "fields": {
+                        "name": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"},
+                        "issn": {"coerce": "unicode"},
+                        "doi": {"coerce": "unicode"},
+                        "link": {"coerce": "unicode"},
+                        "embargo": {"coerce": "unicode"}
                     }
                 },
                 # 2016-10-13 TD : additional object for licensing data (alliance license)
-                "provenance" : {
-                    "fields" : {
-                        "source_field" : {"coerce" : "unicode"},
-                        "term" : {"coerce" : "unicode"},
-                        "notification_field" : {"coerce" : "unicode"},
-                        "matched" : {"coerce" : "unicode"},
-                        "explanation" : {"coerce" : "unicode"}
+                "provenance": {
+                    "fields": {
+                        "source_field": {"coerce": "unicode"},
+                        "term": {"coerce": "unicode"},
+                        "notification_field": {"coerce": "unicode"},
+                        "matched": {"coerce": "unicode"},
+                        "explanation": {"coerce": "unicode"}
                     }
                 }
             }
@@ -408,7 +451,6 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         # self._set_single("repository", val, coerce=dataobj.to_unicode())
         # 2016-06-29 TD : index type 'match_prov' mapping exception fix for ES 2.3.3
 
-
     # 2016-10-18 TD : additional field "bibid" --- start ---
     #
     @property
@@ -428,9 +470,9 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         :param val: EZB-Id (or any more 'human' readable unique(!) repository id...)
         """
         self._set_single("bibid", val, coerce=dataobj.to_unicode())
+
     #
     # 2016-10-18 TD : additional field "bibid" --- end ---
-
 
     # 2016-08-10 TD : add additional field "pub" --- start ---
     #
@@ -451,6 +493,7 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         :param val: publisher id
         """
         self._set_single("pub", val, coerce=dataobj.to_unicode())
+
     #
     # 2016-08-10 TD : add additional field "pub" --- end ---
 
@@ -506,11 +549,11 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         """
         uc = dataobj.to_unicode()
         obj = {
-            "source_field" : self._coerce(source_field, uc),
-            "term" : self._coerce(term, uc),
-            "notification_field" : self._coerce(notification_field, uc),
-            "matched" : self._coerce(matched, uc),
-            "explanation" : self._coerce(explanation, uc)
+            "source_field": self._coerce(source_field, uc),
+            "term": self._coerce(term, uc),
+            "notification_field": self._coerce(notification_field, uc),
+            "matched": self._coerce(matched, uc),
+            "explanation": self._coerce(explanation, uc)
         }
         self._add_to_list("provenance", obj)
 
@@ -562,7 +605,8 @@ class MatchProvenance(dataobj.DataObj, dao.MatchProvenanceDAO):
         allowed = ["name", "id", "issn", "doi", "link", "embargo"]
         for k in list(obj.keys()):
             if k not in allowed:
-                raise dataobj.DataSchemaException("Alliance license object must only contain the following keys: {x}".format(x=", ".join(allowed)))
+                raise dataobj.DataSchemaException(
+                    "Alliance license object must only contain the following keys: {x}".format(x=", ".join(allowed)))
 
         # coerce the values of the keys
         uc = dataobj.to_unicode()
@@ -583,23 +627,24 @@ class RetrievalRecord(dataobj.DataObj, dao.RetrievalRecordDAO):
     This class is not currently in use in the system, but may be activated later.  In the mean time,
     you should ignore it!
     """
+
     def __init__(self, raw=None):
         struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "created_date" : {"coerce" : "unicode"},
-                "last_updated" : {"coerce" : "unicode"},
-                "repo" : {"coerce" : "unicode"},
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "created_date": {"coerce": "unicode"},
+                "last_updated": {"coerce": "unicode"},
+                "repo": {"coerce": "unicode"},
                 # "repository" : {"coerce" : "unicode"},
                 # 2016-06-29 TD : index type 'retrieval'(???) mapping exception fix for ES 2.3.3
-                "pub" : {"coerce" : "unicode"},
+                "pub": {"coerce": "unicode"},
                 # 2016-08-10 TD : add additional field for origin of notification (publisher)
-                "notification" : {"coerce" : "unicode"},
-                "payload" : {"coerce" : "unicode"},
+                "notification": {"coerce": "unicode"},
+                "payload": {"coerce": "unicode"},
                 # "content" : {"coerce" : "unicode"},
                 # 2016-09-01 TD : index type 'retrieval'(!) mapping exception fix for ES 2.3.3
-                "retrieval_date" : {"coerce" : "utcdatetime"},
-                "scope" : {"coerce" : "unicode", "allowed_values" : ["notification", "fulltext"]}
+                "retrieval_date": {"coerce": "utcdatetime"},
+                "scope": {"coerce": "unicode", "allowed_values": ["notification", "fulltext"]}
             }
         }
 
