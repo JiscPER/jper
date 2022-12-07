@@ -1361,6 +1361,50 @@ class FailedNotification(BaseNotification, RoutingInformation, dao.FailedNotific
         """
         super(FailedNotification, self).__init__(raw=raw)
 
+    def make_outgoing(self, provider=False):
+        """
+        Create an instance of an OutgoingNotification or ProviderOutgoingNotification (depending on the provider flag supplied)
+        from this object.
+
+        This is suitable for use in exposing data to the API
+
+        :return: OutgoingNotification or ProviderOutgoingNotification
+        """
+        d = deepcopy(self.data)
+        if "reason" in d:
+            del d["reason"]
+        if "last_updated" in d:
+            del d["last_updated"]
+        if not provider:
+            if "provider" in d:
+                del d["provider"]
+        if "content" in d and "store_id" in d.get("content", {}):
+            del d["content"]["store_id"]
+
+        # filter out all non-router links if the request is not for the provider copy
+        if "links" in d:
+            keep = []
+            for link in d.get("links", []):
+                if provider:  # if you're the provider keep all the links
+                    if "access" in link:
+                        del link["access"]
+                    keep.append(link)
+                elif link.get("access") == "router":  # otherwise, only share router links
+                    del link["access"]
+                    keep.append(link)
+            if len(keep) > 0:
+                d["links"] = keep
+            else:
+                if "links" in d:
+                    del d["links"]
+
+        # delayed import required because of circular dependencies
+        from service.models import OutgoingNotification, ProviderOutgoingNotification
+        if not provider:
+            return OutgoingNotification(d)
+        else:
+            return ProviderOutgoingNotification(d)
+
 
 class RoutingMetadata(dataobj.DataObj):
     """

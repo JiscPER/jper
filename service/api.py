@@ -287,6 +287,7 @@ class JPER(object):
         # notifications may either be in the unrouted or routed indices.
         # start at the routed notification (as they may appear in both)
         rn = models.RoutedNotification.pull(notification_id)
+        fn = models.FailedNotification.pull(notification_id)
         if rn is not None:
             if accid == rn.provider_id:
                 app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the routed notification".format(z=magic, x=accid, y=notification_id))
@@ -294,6 +295,13 @@ class JPER(object):
             else:
                 app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the routed notification".format(z=magic, x=accid, y=notification_id))
                 return rn.make_outgoing()
+        elif fn is not None:
+            if accid == fn.provider_id:
+                app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the provider's version of the routed notification".format(z=magic, x=accid, y=notification_id))
+                return fn.make_outgoing(provider=True)
+            else:
+                app.logger.debug("Request:{z} - Retrieve request from Account:{x} on Notification:{y}; returns the public version of the routed notification".format(z=magic, x=accid, y=notification_id))
+                return fn.make_outgoing()
         if accid is not None and (account.has_role('publisher') or current_user.is_super):
             urn = models.UnroutedNotification.pull(notification_id)
             if urn is not None:
