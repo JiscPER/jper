@@ -35,7 +35,7 @@ def jsonp(f):
 @jsonp
 def query(path=''):
     """
-    Query endpoint for general queries via the web interface.  Calls on the DOAJ.queryService for action
+    Query endpoint for general queries via the web interface.
 
     :param path:
     :return:

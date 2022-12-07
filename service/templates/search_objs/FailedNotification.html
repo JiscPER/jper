@@ -25,6 +25,15 @@
     }
 
     let fieldRender = {
+        titleField: function (val, resultobj, renderer) {
+            var field = '<div><h3>';
+            if (resultobj.id) {
+                display = "<a href='/api/v1/notification/" + resultobj.id + "'>" + resultobj.id + "</a>";
+                return display;
+            } else {
+                return false;
+            }
+        },
         publicationDateField: function (val, resultobj, renderer) {
             if (resultobj.metadata.publication_date) {
                 return format_date(resultobj.metadata.publication_date);
@@ -93,8 +102,8 @@
                 rowDisplay: [
                     [{
                         "pre" : format_result_row_pre("Notification ID"),
-                        field: "id",
-                        "post": format_result_row_post(),
+                        valueFunction: fieldRender.titleField,
+                         "post": format_result_row_post(),
                     }],
                     [{
                         "pre" : format_result_row_pre("Title"),
@@ -187,7 +196,7 @@
                 size: 10,
                 category: "facet"
             }),
-            edges.newRefiningANDTermSelector({
+             edges.newRefiningANDTermSelector({
                 id: "provider_id",
                 field: "provider.id.exact",
                 display: "Provider",
@@ -197,7 +206,7 @@
             }),
             edges.newRefiningANDTermSelector({
                 id: "embargo",
-                field: "embargo.duration",
+                field: "embargo.duration.exact",
                 display: "Embargo",
                 size: 10,
                 category: "facet"
@@ -263,7 +272,6 @@
                     "provider.id.exact": "Provider",
                 }
             }), */
-          /* InDOAJ - filter facet */
 
         ],
     }

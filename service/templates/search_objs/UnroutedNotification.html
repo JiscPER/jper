@@ -25,6 +25,15 @@
     }
 
     let fieldRender = {
+        titleField: function (val, resultobj, renderer) {
+            var field = '<div><h3>';
+            if (resultobj.id) {
+                display = "<a href='/api/v1/notification/" + resultobj.id + "'>" + resultobj.id + "</a>";
+                return display;
+            } else {
+                return false;
+            }
+        },
         createdDateField: function (val, resultobj, renderer) {
             if (resultobj.created_date) {
                 return format_date(resultobj.created_date);
@@ -64,7 +73,12 @@
                 rowDisplay: [
                     [{
                         "pre" : format_result_row_pre("Notification ID"),
-                        field: "id",
+                        valueFunction: fieldRender.titleField,
+                        "post": format_result_row_post(),
+                    }],
+                    [{
+                        "pre" : format_result_row_pre("Embargo"),
+                        field: "embargo.duration",
                         "post": format_result_row_post(),
                     }],
                     [{
