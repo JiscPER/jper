@@ -583,7 +583,7 @@ def update_license():
     if accounts:
         notes = new_lrf.validation_notes
         notes += "\nThe following accounts have excluded the old license and will be updated with the new license id:\n"
-        notes += accounts.join("\n")
+        notes += "\n".join(accounts)
         new_lrf.validation_notes = notes
         new_lrf.save()
 
