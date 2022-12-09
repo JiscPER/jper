@@ -281,20 +281,31 @@ class Alliance(dataobj.DataObj, dao.AllianceDAO):
 
     @classmethod
     def pull_by_participant_id(cls, value):
-        key = 'participant.identifier.id'
-        res = cls.query(
-            q={"query": {"query_string": {"query": value, "default_field": key, "default_operator": "AND"}}})
-        n = res.get('hits', {}).get('total', {}).get('value', 0)
-        if n > 10:
-            # re-query necessary as a precautionary measure because len(res) seems 
-            # to be restricted to 10 records only per default...
-            res = cls.query(
-                q={"query": {"query_string": {"query": value, "default_field": key, "default_operator": "AND"}}},
-                size=n)
-        if n > 0:
-            return [cls.pull(res['hits']['hits'][k]['_source']['id']) for k in range(n)]
-        else:
-            return None
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "participant.identifier.id.exact": value
+                            }
+                        }, {
+                            "match": {
+                                "status": LIC_STATUS_ACTIVE
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        res = cls.pull_all(q, size=size, return_as_object=True)
+        ans = []
+        for doc in res:
+            ans.append(doc)
+        return ans
 
     def set_alliance_data(self, license, ezbid, csvfile=None, jsoncontent=None, init_status='active'):
         licid = license
@@ -701,17 +712,6 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         self._delete_from_list("journal", matchsub=journal_object)
         self._add_to_list("journal", journal_object)
 
-    @classmethod
-    def pull_by_key(cls, key, value):
-        res = cls.query(
-            q={"query": {"query_string": {"query": value, "default_field": key, "default_operator": "AND"}}})
-        nres = res.get('hits', {}).get('total', {}).get('value', 0)
-        if nres > 0:
-            return [cls.pull(res['hits']['hits'][k]['_source']['id']) for k in range(nres)]
-        else:
-            return None
-
-
     def set_license_data(self, ezbid, name, type='alliance', csvfile=None, jsoncontent=None,
                          init_status='active'):
         fields = ['name', 'type', 'identifier', 'journal']
@@ -792,6 +792,40 @@ class License(dataobj.DataObj, dao.LicenseDAO):
         else:
             app.logger.error("Could not save any data for license: {x}".format(x=ezbid))
             return False
+
+    @classmethod
+    def pull_by_key(cls, key, value):
+        res = cls.query(
+            q={"query": {"query_string": {"query": value, "default_field": key, "default_operator": "AND"}}})
+        ans = []
+        for doc in res.get('hits', {}).get('hits', []):
+            ans.append(doc['_source']['id'])
+        return ans
+
+    @classmethod
+    def pull_all_active_gold_licences(cls, return_as_object=True):
+        size = 1000
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "type": 'gold'
+                            }
+                        }, {
+                            "match": {
+                                "status": LIC_STATUS_ACTIVE
+                            }
+                        }
+                    ]
+                }
+            },
+            "size": size,
+            "from": 0
+        }
+        res = cls.pull_all(q, size=size, return_as_object=return_as_object)
+        return res
 
 
 class LicRelatedFile(dataobj.DataObj, dao.LicRelatedFileDAO):

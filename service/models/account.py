@@ -640,47 +640,6 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         return True
 
     @classmethod
-    def pull_all(cls, query, size=1000, return_as_object=True):
-        conn = cls.__conn__
-        types = cls.get_read_types(None)
-        total = size
-        n_from = 0
-        ans = []
-        while n_from <= total:
-            query['from'] = n_from
-            r = raw.search(conn, types, query)
-            res = r.json()
-            total = res.get('hits',{}).get('total',{}).get('value', 0)
-            n_from += size
-            for hit in res['hits']['hits']:
-                if return_as_object:
-                    obj_id = hit.get('_source', {}).get('id', None)
-                    if obj_id:
-                        ans.append(cls.pull(obj_id))
-                else:
-                    ans.append(hit.get('_source', {}))
-        return ans
-
-    @classmethod
-    def pull_all_by_key(cls,key,value, return_as_object=True):
-        size = 1000
-        q = {
-            "query": {
-                "bool": {
-                    "must": {
-                        "match": {
-                            key: value
-                        }
-                    }
-                }
-            },
-            "size": size,
-            "from": 0
-        }
-        ans = cls.pull_all(q, size=size, return_as_object=return_as_object)
-        return ans
-
-    @classmethod
     def pull_all_accounts(cls):
         size = 1000
         q = {
